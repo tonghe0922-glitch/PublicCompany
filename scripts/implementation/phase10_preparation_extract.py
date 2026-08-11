@@ -144,7 +144,7 @@ def build_payload() -> dict[str, Any]:
 
     if workbook_count != 15:
         raise RuntimeError(f"expected 15 workbooks, got {workbook_count}")
-    if API_RECORDS.stat().st_size != 0:
+    if API_RECORDS.is_file() and API_RECORDS.stat().st_size != 0:
         raise RuntimeError("PHASE-01 api_records.jsonl is no longer empty; preparation contract must be revisited")
 
     return {

@@ -24,7 +24,7 @@ function agendaItems(v:MeetingAggregate){return items(v,'AGENDA')}
 function actionItems(v:MeetingAggregate){return items(v,'ACTION_ITEM')}
 function ownActionItems(v:MeetingAggregate){return actionItems(v).filter(x=>x.actionOwnerEmployeeId===employeeId.value)}
 function ownParticipant(v:MeetingAggregate){return items(v,'PARTICIPANT').find(x=>x.relatedObjectId===employeeId.value)??null}
-function idem(p:string){return `${p}-${crypto.randomUUID()}`}
+function idem(p:string){return `${p}-${globalThis.crypto.randomUUID()}`}
 function iso(v:string){if(!v.trim())return null;const d=new Date(v);if(Number.isNaN(d.getTime()))throw new Error('日期时间格式无效');return d.toISOString()}
 function ids(v:string){return [...new Set(v.split(/[\s,，;；]+/).map(x=>x.trim()).filter(Boolean))]}
 async function run(fn:()=>Promise<void>){busy.value=true;feedback.value='';try{await fn()}catch(e){feedback.value=e instanceof Error?e.message:'操作失败'}finally{busy.value=false}}

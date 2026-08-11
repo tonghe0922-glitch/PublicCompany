@@ -81,7 +81,19 @@ jobs:
         run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
       - name: PostgreSQL16 API integration regression
         shell: bash
-        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -Pphase04-integration verify
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e -pl technical-platform/backend/apps/api -am -Pphase04-integration verify 2>&1 | tee /tmp/phase10-api-integration.log; then
+            echo '::group::PHASE-10 API integration diagnostic'
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="
+              tail -n 160 "$report" || true
+            done
+            echo '===== Maven/Flyway error summary ====='
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException' /tmp/phase10-api-integration.log | tail -n 240 || true
+            echo '::endgroup::'
+            exit 1
+          fi
       - name: Workflow and platform side-effect database regression
         shell: bash
         run: |
