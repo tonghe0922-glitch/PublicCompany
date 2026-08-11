@@ -1,0 +1,123 @@
+name: PHASE-10 Full Construction Gate
+
+on:
+  push:
+    branches:
+      - agent/phase-10-public-capabilities-b
+    paths:
+      - ".github/workflows/phase10-full-gate.yml"
+      - "docs/implementation/phases/PHASE-10/**"
+      - "docs/implementation/contracts/phase-10/**"
+      - "docs/implementation/MASTER_*.md"
+      - "docs/implementation/MASTER_*_CATALOG.json"
+      - "scripts/implementation/phase10_*.py"
+      - "technical-platform/backend/**"
+      - "technical-platform/database/flyway-overlays/oms/**"
+      - "technical-platform/web/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/phase10-full-gate.yml"
+      - "docs/implementation/phases/PHASE-10/**"
+      - "docs/implementation/contracts/phase-10/**"
+      - "docs/implementation/MASTER_*.md"
+      - "docs/implementation/MASTER_*_CATALOG.json"
+      - "scripts/implementation/phase10_*.py"
+      - "technical-platform/backend/**"
+      - "technical-platform/database/flyway-overlays/oms/**"
+      - "technical-platform/web/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase10-full-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE10_BASE_SHA: cd4f5c05f259c043fbe3e1288d6addccff6110e9
+
+jobs:
+  contract:
+    name: PHASE-10 scope source and safety contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify frozen source contracts and phase boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/implementation/phase10_contract.py
+          test -s docs/implementation/phases/PHASE-10/IMPACT_MATRIX.md
+          test -s docs/implementation/phases/PHASE-10/GAP_MATRIX.md
+          git diff --check "$PHASE10_BASE_SHA"...HEAD
+          TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/database/flyway-overlays/oms)
+          ADDED=$(git diff -U0 "$PHASE10_BASE_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
+          if printf '%s\n' "$ADDED" | grep -E '\bP0(11|12|13|14|15|16)\b|\bP(0?[1-9][7-9]|0?[2-9][0-9]|1[0-2][0-9])\b'; then
+            echo 'PHASE-10 introduced later-phase executable coupling'; exit 1
+          fi
+          if printf '%s\n' "$ADDED" | grep -Ei 'CREATE TABLE[^;]*(phase[_-]?10|p00(6|7|8|9)|p010)'; then
+            echo 'PHASE-10 shadow business table is forbidden'; exit 1
+          fi
+          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|临时演示入口|bypass login' "${TARGETS[@]}"; then exit 1; fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
+
+  backend:
+    name: Java21 backend unit and integration regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Unit compile and tests
+        shell: bash
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+      - name: PostgreSQL16 API integration regression
+        shell: bash
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -Pphase04-integration verify
+      - name: Workflow and platform side-effect database regression
+        shell: bash
+        run: |
+          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase05-integration verify
+          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase06-integration verify
+          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase09-integration verify
+
+  web:
+    name: Vue TypeScript lint unit and three-build regression
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+  verdict:
+    name: PHASE-10 full gate verdict
+    needs: [contract, backend, web]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every gate green
+        run: |
+          test '${{ needs.contract.result }}' = 'success'
+          test '${{ needs.backend.result }}' = 'success'
+          test '${{ needs.web.result }}' = 'success'
