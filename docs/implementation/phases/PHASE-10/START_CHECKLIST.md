@@ -12,6 +12,7 @@
 - [x] 已确认施工分支 `agent/phase-10-public-capabilities-b`，通过 GitHub connector 执行等价的 fetch/read/commit/push/ref-SHA 验证；不使用 force update。
 - [x] P006 已形成远端代码 checkpoint；继续以真实 CI/E2E 作为 CLOSED 门槛。
 - [x] P007 已形成远端代码 checkpoint并完成 frozen HTTP/permission contract 对齐；继续以真实 CI/E2E 作为 CLOSED 门槛。
+- [x] PHASE-10 active full construction gate 已建立；第一轮失败已定位并进入 remediation，不将失败冒充 PASS。
 - [ ] P008 请假与考勤完整闭环。
 - [ ] P009 加班与调休完整闭环。
 - [ ] P010 员工学习、考试与资格完整闭环。
