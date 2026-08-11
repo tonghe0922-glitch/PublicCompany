@@ -1,0 +1,81 @@
+name: PHASE-09 C0 Contract Freeze
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - ".github/workflows/phase09-c0.yml"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/phases/PHASE-09/**"
+      - "docs/implementation/contracts/phase-09/**"
+      - "scripts/implementation/phase09_*.py"
+      - "docs/implementation/contracts/phase-01/pages.json"
+      - "docs/implementation/contracts/phase-01/api_records.jsonl"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase09-c0-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE09_BASE_SHA: b5ea67c5d8298ff9365c27588b8af5cf143dddc8
+
+jobs:
+  source-contract:
+    name: PHASE-09 C0 source page API permission and MFA contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify C0 contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          MASTER=docs/implementation/MASTER_PROGRESS.md
+          PHASE_DIR=docs/implementation/phases/PHASE-09
+
+          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          grep -q '| PHASE-08 | COMPLETE |' "$MASTER"
+          grep -Eq '\| PHASE-09 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' "$MASTER"
+          grep -q '| PHASE-10 | NOT_STARTED |' "$MASTER"
+
+          python -m py_compile scripts/implementation/phase09_preparation_extract.py scripts/implementation/phase09_page_trace.py scripts/implementation/phase09_contract.py
+          python scripts/implementation/phase09_preparation_extract.py --check
+          python scripts/implementation/phase09_page_trace.py --check
+          python scripts/implementation/phase09_contract.py --check
+
+          if grep -q '| PHASE-09 | COMPLETE |' "$MASTER"; then
+            # C0 remains frozen after closeout; COMPLETE is a valid lifecycle
+            # state only when the formal report/gate and all checkpoints exist.
+            grep -q 'COMPLETE / FULL_CONSTRUCTION_GATE_PASS' "$PHASE_DIR/README.md"
+            test -s "$PHASE_DIR/PHASE_REPORT.md"
+            test -s "$PHASE_DIR/PHASE_GATE.md"
+            for process in P001 P002 P003 P004 P005; do
+              test -s "$PHASE_DIR/${process}_CHECKPOINT.md"
+            done
+          fi
+
+          git diff --check
+      - name: Reject new next-phase coupling and credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/web/src technical-platform/backend/apps/api/src/main/java technical-platform/backend/modules)
+          ADDED=$(git diff -U0 "$PHASE09_BASE_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
+          if printf '%s\n' "$ADDED" | grep -E '\bP00(6|7|8|9)\b|\bP010\b'; then
+            echo 'PHASE-09 introduced PHASE-10/P006-P010 executable coupling'
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
+
+  verdict:
+    name: PHASE-09 C0 verdict
+    needs: [source-contract]
+    runs-on: ubuntu-latest
+    steps:
+      - run: test '${{ needs.source-contract.result }}' = 'success'

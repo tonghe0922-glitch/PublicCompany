@@ -1,0 +1,86 @@
+:root {
+  --sgj-brand-50: #eef2ff;
+  --sgj-brand-100: #e0e7ff;
+  --sgj-brand-200: #c7d2fe;
+  --sgj-brand-500: #6366f1;
+  --sgj-brand-600: #4f46e5;
+  --sgj-brand-700: #4338ca;
+  --sgj-brand-800: #3730a3;
+
+  --sgj-canvas: #f8fafc;
+  --sgj-surface: #ffffff;
+  --sgj-surface-muted: #f1f5f9;
+  --sgj-surface-strong: #0f172a;
+  --sgj-border: #e2e8f0;
+  --sgj-border-subtle: #f1f5f9;
+
+  --sgj-text-primary: #0f172a;
+  --sgj-text-secondary: #475569;
+  --sgj-text-tertiary: #64748b;
+  --sgj-text-disabled: #94a3b8;
+  --sgj-text-on-strong: #f8fafc;
+
+  --sgj-success: #059669;
+  --sgj-success-bg: #ecfdf5;
+  --sgj-success-border: #a7f3d0;
+  --sgj-warning: #d97706;
+  --sgj-warning-bg: #fffbeb;
+  --sgj-warning-border: #fde68a;
+  --sgj-danger: #e11d48;
+  --sgj-danger-hover: #be123c;
+  --sgj-danger-bg: #fff1f2;
+  --sgj-danger-border: #fecdd3;
+  --sgj-info: #2563eb;
+  --sgj-info-bg: #eff6ff;
+  --sgj-info-border: #bfdbfe;
+  --sgj-neutral-bg: #f1f5f9;
+  --sgj-neutral-border: #cbd5e1;
+  --sgj-overlay-backdrop: rgba(15, 23, 42, 0.48);
+
+  --sgj-space-1: 4px;
+  --sgj-space-2: 8px;
+  --sgj-space-3: 12px;
+  --sgj-space-4: 16px;
+  --sgj-space-5: 20px;
+  --sgj-space-6: 24px;
+  --sgj-space-8: 32px;
+  --sgj-space-10: 40px;
+  --sgj-space-12: 48px;
+
+  --sgj-font-xs: 12px;
+  --sgj-font-sm: 14px;
+  --sgj-font-md: 16px;
+  --sgj-font-lg: 18px;
+  --sgj-font-xl: 21px;
+  --sgj-font-2xl: 28px;
+  --sgj-font-3xl: 36px;
+  --sgj-line-body: 1.65;
+  --sgj-line-heading: 1.2;
+
+  --sgj-radius-sm: 8px;
+  --sgj-radius-md: 12px;
+  --sgj-radius-lg: 16px;
+  --sgj-radius-xl: 20px;
+  --sgj-radius-2xl: 24px;
+
+  --sgj-shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --sgj-shadow-overlay: 0 24px 64px rgba(15, 23, 42, 0.2);
+  --sgj-focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.28);
+
+  --sgj-motion-fast: 120ms;
+  --sgj-motion-normal: 180ms;
+  --sgj-motion-slow: 240ms;
+  --sgj-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  --sgj-header-height: 76px;
+  --sgj-sidebar-width: 288px;
+  --sgj-sidebar-collapsed-width: 76px;
+  --sgj-content-max: 1600px;
+  --sgj-control-min-height: 44px;
+  --sgj-touch-min: 44px;
+
+  --sgj-z-header: 20;
+  --sgj-z-floating: 40;
+  --sgj-z-overlay: 100;
+  --sgj-z-toast: 120;
+}

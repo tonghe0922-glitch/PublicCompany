@@ -1,0 +1,8 @@
+﻿database,类型,定位,写入来源,一致性,RPO,RTO
+sjg_oms,PostgreSQL 16 OLTP,核心交易与主数据,员工端、中心管理端、技术后台服务,本地ACID；跨域Outbox/Saga,≤5分钟,≤30分钟
+sjg_audit,PostgreSQL 16 审计库,操作、访问、变更、规则、导出与安全审计,CDC/Outbox/审计SDK，只增不改,最终一致，审计事件不可覆盖,≤1分钟,≤60分钟
+sjg_dw,PostgreSQL/ClickHouse 分析库,指标、宽表、主题数据集与报表,CDC/ETL，不接受业务端直写,T+0分钟级或T+1,≤30分钟,≤4小时
+redis,Redis 7 Cluster,会话、验证码、权限缓存、分布式锁、限流,应用服务,缓存失效优先；不得作为唯一事实源,可重建,≤15分钟
+object_storage,S3/MinIO,附件、签署文件、影像、报表导出、证据原件,文件服务,对象版本化+哈希校验+WORM策略,≤5分钟,≤60分钟
+message_bus,Kafka/RabbitMQ,领域事件、异步任务、补偿、通知,Outbox Publisher,至少一次投递+消费者幂等,≤1分钟,≤30分钟
+search,OpenSearch 可选,全文检索、日志检索、舆情检索,CDC/索引任务,最终一致，不作为审批事实源,可重建,≤4小时

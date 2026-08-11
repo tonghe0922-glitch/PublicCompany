@@ -1,0 +1,309 @@
+openapi: 3.1.0
+info:
+  title: Shangjingu PHASE-05 Shared Process Kernel API
+  version: 0.5.0
+  description: |
+    Engineering API contract for PHASE-05 P016-P020. Business process names, status semantics,
+    audit requirements, and approved physical ownership are derived from the repository Knowledge Base.
+    HTTP paths, header names, and permission codes in this file are implementation contracts and are not
+    represented as original Knowledge Base facts.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/phase05/welfare/care-cases:
+    post:
+      operationId: createWelfareCareCase
+      summary: Create P016 welfare/care case
+      x-permission: phase05.p016.write
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        $ref: '#/components/requestBodies/JsonBody'
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/v1/phase05/welfare/care-cases/{id}:
+    get:
+      operationId: getWelfareCareCase
+      summary: Read P016 case under controller data-scope authorization
+      x-permission: phase05.p016.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/v1/phase05/welfare/care-cases/{id}/advance:
+    post:
+      operationId: advanceWelfareCareCase
+      summary: Advance P016 only through the published service state machine
+      x-permission: phase05.p016.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /api/v1/phase05/welfare/care-cases/{id}/invoice-evidence/validate:
+    post:
+      operationId: validateWelfareInvoiceEvidence
+      summary: Validate P016 invoice evidence and duplicate-control boundary
+      x-permission: phase05.p016.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { description: Evidence accepted by the configured validation boundary. }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  /api/v1/phase05/signatures/envelopes:
+    post:
+      operationId: createSignatureEnvelope
+      summary: Create P017 signature envelope
+      x-permission: phase05.p017.write
+      parameters: [ { $ref: '#/components/parameters/IdempotencyKey' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/signatures/envelopes/{id}:
+    get:
+      operationId: getSignatureEnvelope
+      x-permission: phase05.p017.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/signatures/envelopes/{id}/advance:
+    post:
+      operationId: advanceSignatureEnvelope
+      summary: Advance P017; external-provider-required transitions fail closed if capability is unavailable
+      x-permission: phase05.p017.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /api/v1/phase05/signatures/envelopes/{id}/provider-callback:
+    post:
+      operationId: verifySignatureProviderCallback
+      summary: Verify idempotent provider evidence before P017 completion
+      x-permission: phase05.p017.provider-callback
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+        - name: Provider-Event-Key
+          in: header
+          required: true
+          schema: { type: string, minLength: 1 }
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /api/v1/phase05/data-imports:
+    post:
+      operationId: createDataImport
+      summary: Create P018 import job
+      x-permission: phase05.p018.write
+      parameters: [ { $ref: '#/components/parameters/IdempotencyKey' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-imports/{id}:
+    get:
+      operationId: getDataImport
+      x-permission: phase05.p018.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-imports/{id}/items:
+    get:
+      operationId: getDataImportItems
+      x-permission: phase05.p018.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-imports/{id}/preview:
+    post:
+      operationId: saveDataImportPreview
+      summary: Save P018 validation/preview evidence before execution confirmation
+      x-permission: phase05.p018.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-imports/{id}/advance:
+    post:
+      operationId: advanceDataImport
+      summary: Advance P018; execution is queued through outbox and never exposed as synchronous arbitrary SQL
+      x-permission: phase05.p018.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+
+  /api/v1/phase05/sensitive-exports:
+    post:
+      operationId: createSensitiveExport
+      summary: Create P019 sensitive export request
+      x-permission: phase05.p019.write
+      parameters: [ { $ref: '#/components/parameters/IdempotencyKey' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/sensitive-exports/{id}:
+    get:
+      operationId: getSensitiveExport
+      x-permission: phase05.p019.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/sensitive-exports/{id}/items:
+    get:
+      operationId: getSensitiveExportItems
+      x-permission: phase05.p019.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/sensitive-exports/{id}/advance:
+    post:
+      operationId: advanceSensitiveExport
+      summary: Advance P019 through approval and asynchronous generation states
+      x-permission: phase05.p019.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/sensitive-exports/{id}/download-grant:
+    post:
+      operationId: issueSensitiveExportDownloadGrant
+      summary: Consume one-time contextual Step-Up ticket before audited P019 delivery grant
+      x-permission: phase05.p019.download
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+        - name: Step-Up-Ticket
+          in: header
+          required: true
+          schema: { type: string, minLength: 1 }
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /api/v1/phase05/sensitive-exports/{id}/expire:
+    post:
+      operationId: expireSensitiveExport
+      summary: Expire and destroy P019 delivery capability
+      x-permission: phase05.p019.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/sensitive-exports/{id}/close:
+    post:
+      operationId: closeSensitiveExport
+      x-permission: phase05.p019.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+
+  /api/v1/phase05/data-quality/issues:
+    post:
+      operationId: createDataQualityIssue
+      summary: Create P020 data-quality issue
+      x-permission: phase05.p020.write
+      parameters: [ { $ref: '#/components/parameters/IdempotencyKey' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}:
+    get:
+      operationId: getDataQualityIssue
+      x-permission: phase05.p020.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}/items:
+    get:
+      operationId: getDataQualityIssueItems
+      x-permission: phase05.p020.read
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}/advance:
+    post:
+      operationId: advanceDataQualityIssue
+      x-permission: phase05.p020.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}/approve-plan:
+    post:
+      operationId: approveDataQualityRepairPlan
+      summary: Persist reviewer identity and approved P020 repair plan
+      x-permission: phase05.p020.repair
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}/execute:
+    post:
+      operationId: executeDataQualityRepair
+      summary: Execute only through registered repair handler; executor must differ from persisted reviewer
+      x-permission: phase05.p020.repair
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /api/v1/phase05/data-quality/issues/{id}/verify:
+    post:
+      operationId: verifyDataQualityRepair
+      summary: Verify P020 before/after evidence before archive/close
+      x-permission: phase05.p020.repair
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+  /api/v1/phase05/data-quality/issues/{id}/close:
+    post:
+      operationId: closeDataQualityIssue
+      x-permission: phase05.p020.write
+      parameters: [ { $ref: '#/components/parameters/ResourceId' } ]
+      requestBody: { $ref: '#/components/requestBodies/JsonBody' }
+      responses:
+        '200': { $ref: '#/components/responses/JsonSuccess' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 128 }
+  requestBodies:
+    JsonBody:
+      required: true
+      content:
+        application/json:
+          schema: { type: object, additionalProperties: true }
+  responses:
+    JsonSuccess:
+      description: Successful state-machine operation.
+      content:
+        application/json:
+          schema: { type: object, additionalProperties: true }
+    Forbidden:
+      description: Authentication, permission, data-scope, or Step-Up requirement rejected.
+    Conflict:
+      description: Optimistic-lock, idempotency, evidence, or state-transition conflict.
+    Unavailable:
+      description: Required external capability or critical audit persistence is unavailable; operation fails closed.

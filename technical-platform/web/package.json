@@ -1,0 +1,52 @@
+{
+  "name": "@shangjingu/platform-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.0",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "dev:employee": "vite --mode employee",
+    "dev:center": "vite --mode center",
+    "dev:admin": "vite --mode admin",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
+    "test": "vitest run src",
+    "test:unit": "vitest run src",
+    "quality:duplicates": "jscpd src",
+    "quality:deadcode": "knip --config knip.json",
+    "quality:source": "python ../../scripts/implementation/phase07_frontend_quality.py --stage source",
+    "quality:artifacts": "python ../../scripts/implementation/phase07_frontend_quality.py --stage artifacts",
+    "build:employee": "vite build --mode employee",
+    "build:center": "vite build --mode center",
+    "build:admin": "vite build --mode admin",
+    "build": "pnpm run build:employee && pnpm run build:center && pnpm run build:admin",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "pinia": "2.3.1",
+    "vue": "3.5.40",
+    "vue-router": "4.6.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "^22.15.30",
+    "@vitejs/plugin-vue": "6.0.8",
+    "@vue/test-utils": "2.4.11",
+    "eslint": "10.8.1",
+    "eslint-plugin-vue": "10.10.0",
+    "happy-dom": "20.11.2",
+    "jscpd": "5.0.14",
+    "knip": "6.32.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.66.0",
+    "vite": "8.2.1",
+    "vitest": "4.1.7",
+    "vue-eslint-parser": "10.4.1",
+    "vue-tsc": "3.2.0"
+  }
+}

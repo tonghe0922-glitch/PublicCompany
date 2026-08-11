@@ -1,0 +1,176 @@
+name: Phase 01 Independent Gate
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - ".github/workflows/phase01-gate.yml"
+      - "docs/implementation/phases/PHASE-01/PHASE_GATE.md"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "scripts/knowledge_base/**"
+      - "docs/implementation/contracts/phase-01/**"
+      - "docs/implementation/evidence/PHASE-01_VALIDATION.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PHASE01_BASE: 624abbbccfeffe00c7c2b4ee165cfbf2a0dd5e65
+  PHASE01_GATE_HEAD: a28fb2f17ffc95317299d083930a94374e2e9faf
+
+jobs:
+  independent-gate:
+    name: Independent PHASE-01 Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact gate commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: scripts/knowledge_base/requirements-phase01.txt
+
+      - name: Install parser dependency
+        run: python -m pip install --disable-pip-version-check -r scripts/knowledge_base/requirements-phase01.txt
+
+      - name: Verify frozen PHASE-01 boundary and current source immutability
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet "$PHASE01_BASE" HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+          if git diff --name-only "$PHASE01_BASE" "$PHASE01_GATE_HEAD" | grep -E '(\.vue$|\.tsx?$|\.java$|(^|/)db/migration/|Flyway)' ; then
+            echo "Frozen PHASE-01 introduced business/runtime source files outside its allowed scope."
+            exit 1
+          fi
+          echo "Frozen PHASE-01 boundary verified at $PHASE01_GATE_HEAD; current canonical sources remain immutable"
+
+      - name: Scan PHASE-01 executable/config sources for fake completion and secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(scripts/knowledge_base .github/workflows/phase01-kb-contracts.yml)
+          if grep -R -nE 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|catch[[:space:]]*\{\}|\bmock\b|\bfake\b|\bdemo\b' "${TARGETS[@]}"; then
+            echo "Forbidden fake-completion marker found."
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            echo "Potential secret found."
+            exit 1
+          fi
+
+      - name: Compile parser modules
+        run: |
+          python -m py_compile scripts/knowledge_base/phase01_parse.py
+          python -m py_compile scripts/knowledge_base/phase01_fix.py
+          python -m py_compile scripts/knowledge_base/phase01_fix_v2.py
+          python -m py_compile scripts/knowledge_base/phase01_fix_v3.py
+          python -m py_compile scripts/knowledge_base/phase01_debug.py
+
+      - name: Re-run frozen PHASE-01 Knowledge Base parser in isolated copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          FROZEN_ROOT="$(mktemp -d)"
+          FROZEN_REPO="$FROZEN_ROOT/source"
+          TMP_REPO="$FROZEN_ROOT/rerun"
+          git worktree add --detach "$FROZEN_REPO" "$PHASE01_GATE_HEAD"
+          mkdir -p "$TMP_REPO"
+          rsync -a --exclude='.git' "$FROZEN_REPO/" "$TMP_REPO/"
+          python "$TMP_REPO/scripts/knowledge_base/phase01_fix_v3.py" --repo-root "$TMP_REPO"
+          echo "$FROZEN_REPO" > /tmp/phase01_gate_frozen
+          echo "$TMP_REPO" > /tmp/phase01_gate_repo
+
+      - name: Independently assert machine contract invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP_REPO="$(cat /tmp/phase01_gate_repo)"
+          python - "$TMP_REPO" <<'PY'
+          import json, sys
+          from pathlib import Path
+          tmp = Path(sys.argv[1])
+          v = json.loads((tmp / 'docs/implementation/evidence/PHASE-01_VALIDATION.json').read_text(encoding='utf-8'))
+          s = v['summary']
+          assert v['phase_gate'] == 'PASS'
+          assert v['hard_failures'] == []
+          assert s['kb']['files'] == 524 and s['kb']['failures'] == 0
+          assert s['pages']['records'] == 7126
+          assert s['pages']['source_routes_expected'] == 7025
+          assert s['pages']['source_routes_sourced'] == 7025
+          assert s['process']['catalog'] == 126
+          assert s['process']['workbooks_total'] == 378
+          assert s['process']['s0_codes'] == 126 and s['process']['s1_codes'] == 126
+          assert s['process']['field_rows'] == 90124
+          assert s['database']['count'] == 3
+          assert s['database']['schemas'] == 46
+          assert s['database']['tables'] == 265
+          current_mapping = json.loads(Path('docs/implementation/MASTER_DATABASE_MAPPING.json').read_text(encoding='utf-8'))
+          assert len(current_mapping['processes']) == 126
+          assert all(p['database_mappings'] for p in current_mapping['processes'])
+          print('Independent invariant assertions: PASS')
+          PY
+
+      - name: Verify frozen determinism and current PHASE-01-owned collections
+        shell: bash
+        run: |
+          set -euo pipefail
+          FROZEN_REPO="$(cat /tmp/phase01_gate_frozen)"
+          TMP_REPO="$(cat /tmp/phase01_gate_repo)"
+
+          cmp "$FROZEN_REPO/docs/implementation/MASTER_PAGE_CATALOG.json" "$TMP_REPO/docs/implementation/MASTER_PAGE_CATALOG.json"
+          cmp "$FROZEN_REPO/docs/implementation/MASTER_PROCESS_CATALOG.json" "$TMP_REPO/docs/implementation/MASTER_PROCESS_CATALOG.json"
+          cmp "$FROZEN_REPO/docs/implementation/MASTER_DATABASE_MAPPING.json" "$TMP_REPO/docs/implementation/MASTER_DATABASE_MAPPING.json"
+          cmp "$FROZEN_REPO/docs/implementation/contracts/phase-01/pages.json" "$TMP_REPO/docs/implementation/contracts/phase-01/pages.json"
+          cmp "$FROZEN_REPO/docs/implementation/contracts/phase-01/processes.json" "$TMP_REPO/docs/implementation/contracts/phase-01/processes.json"
+          cmp "$FROZEN_REPO/docs/implementation/contracts/phase-01/database_process_table_mapping.jsonl" "$TMP_REPO/docs/implementation/contracts/phase-01/database_process_table_mapping.jsonl"
+          cmp "$FROZEN_REPO/docs/implementation/contracts/phase-01/s0_records.jsonl" "$TMP_REPO/docs/implementation/contracts/phase-01/s0_records.jsonl"
+          cmp "$FROZEN_REPO/docs/implementation/contracts/phase-01/s1_index_records.jsonl" "$TMP_REPO/docs/implementation/contracts/phase-01/s1_index_records.jsonl"
+
+          python - "$FROZEN_REPO" <<'PY'
+          import json, sys
+          from pathlib import Path
+          frozen = Path(sys.argv[1])
+          checks = [
+              ('docs/implementation/MASTER_PAGE_CATALOG.json', 'pages'),
+              ('docs/implementation/MASTER_PROCESS_CATALOG.json', 'processes'),
+              ('docs/implementation/MASTER_DATABASE_MAPPING.json', 'processes'),
+          ]
+          for rel, key in checks:
+              current = json.loads(Path(rel).read_text(encoding='utf-8'))
+              historical = json.loads((frozen / rel).read_text(encoding='utf-8'))
+              assert current[key] == historical[key], f'PHASE-01-owned collection drift: {rel}:{key}'
+          print('Current PHASE-01-owned page/process/mapping collections remain identical to frozen Gate')
+          PY
+
+          for rel in \
+            docs/implementation/contracts/phase-01/pages.json \
+            docs/implementation/contracts/phase-01/processes.json \
+            docs/implementation/contracts/phase-01/database_process_table_mapping.jsonl \
+            docs/implementation/contracts/phase-01/s0_records.jsonl \
+            docs/implementation/contracts/phase-01/s1_index_records.jsonl; do
+            cmp "$rel" "$FROZEN_REPO/$rel"
+          done
+
+      - name: Verify gate documents and formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check HEAD^
+          python - <<'PY'
+          from pathlib import Path
+          gate = Path('docs/implementation/phases/PHASE-01/PHASE_GATE.md')
+          progress = Path('docs/implementation/MASTER_PROGRESS.md').read_text(encoding='utf-8')
+          if gate.exists():
+              assert gate.stat().st_size > 0
+              assert 'PHASE-01 | COMPLETE' in progress
+              assert 'PHASE GATE: PASS' in gate.read_text(encoding='utf-8')
+          print('Gate document consistency: PASS')
+          PY

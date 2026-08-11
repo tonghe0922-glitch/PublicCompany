@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "baseline_date": "2026-08-07",
+  "canonical_rule": "business documentation uses canonical_portal_code; runtime_alias preserves current implementation",
+  "portals": [
+    {
+      "canonical_portal_code": "employee",
+      "display_name": "员工端",
+      "runtime_alias": "employee",
+      "code_path": "technical-platform/web/src/portals/employee",
+      "build_command": "pnpm build:employee",
+      "kb_sources": [
+        "Knowledge Base/01 完整的页面架构/1-1 员工首页.xlsx",
+        "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx"
+      ]
+    },
+    {
+      "canonical_portal_code": "center",
+      "display_name": "中心管理端",
+      "runtime_alias": "center",
+      "code_path": "technical-platform/web/src/portals/center",
+      "build_command": "pnpm build:center",
+      "kb_sources": [
+        "Knowledge Base/01 完整的页面架构/2-1 中心首页.xlsx",
+        "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx"
+      ]
+    },
+    {
+      "canonical_portal_code": "tech",
+      "display_name": "技术后台端",
+      "runtime_alias": "admin",
+      "legacy_aliases": [
+        "admin",
+        "tech-web"
+      ],
+      "code_path": "technical-platform/web/src/portals/admin",
+      "build_command": "pnpm build:admin",
+      "kb_sources": [
+        "Knowledge Base/01 完整的页面架构/3-1技术-首页.xlsx",
+        "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx"
+      ],
+      "business_super_admin": false
+    }
+  ]
+}

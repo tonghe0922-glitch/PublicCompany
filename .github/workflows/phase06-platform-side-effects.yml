@@ -1,0 +1,143 @@
+name: Phase 06 Platform Side Effects Kernel
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.05]
+    paths:
+      - "Construction Master Schedule.csv"
+      - "docs/implementation/PHASE_02_29_WORKLIST.md"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_API_CATALOG.md"
+      - "docs/implementation/phases/PHASE-06/**"
+      - "docs/implementation/contracts/phase-06/**"
+      - "scripts/implementation/phase05_source_contract.py"
+      - "scripts/implementation/phase06_*.py"
+      - "technical-platform/backend/modules/core/**"
+      - "technical-platform/backend/modules/iam/**"
+      - "technical-platform/backend/modules/document/**"
+      - "technical-platform/backend/modules/notification/**"
+      - "technical-platform/backend/modules/integration/**"
+      - "technical-platform/backend/modules/audit/**"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/backend/apps/api/**"
+      - "technical-platform/backend/apps/worker/**"
+      - "technical-platform/database/**"
+      - "docker/compose/**"
+      - "technical-platform/web/src/**"
+      - "technical-platform/web/package.json"
+      - "technical-platform/web/pnpm-lock.yaml"
+      - "pom.xml"
+      - ".github/workflows/phase06-platform-side-effects.yml"
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: phase06-platform-side-effects-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-contract:
+    name: PHASE-06 completed source scope and Gate contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify completed PHASE-06 ledger and immutable scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          grep -q '| PHASE-05 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-06 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-07 | NOT_STARTED |' docs/implementation/MASTER_PROGRESS.md
+          git diff --check
+          python scripts/implementation/phase05_source_contract.py --check
+          python scripts/implementation/phase06_source_contract.py --check
+          python scripts/implementation/phase06_complete_contract.py --check
+      - name: Reject fake completion, browser truth and committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/backend/apps technical-platform/backend/modules technical-platform/web/src)
+          if grep -R -nE 'TODO|FIXME|@Disabled|@Ignore|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|默认密码|测试验证码|临时演示入口' "${TARGETS[@]}"; then exit 1; fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
+          if grep -R -nE 'flyway-core|flyway-database-postgresql' technical-platform/backend/apps/api/pom.xml technical-platform/backend/apps/worker/pom.xml; then exit 1; fi
+  java-regression:
+    name: Completed Java regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - run: bash ./mvnw -B -ntp test
+  phase05-database-regression:
+    name: PHASE-05 PostgreSQL canonical regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - run: bash ./mvnw -B -ntp -am -pl technical-platform/backend/modules/database-baseline -Pphase05-integration verify
+  phase06-database-regression:
+    name: PHASE-06 PostgreSQL completed regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - run: bash ./mvnw -B -ntp -am -pl technical-platform/backend/modules/database-baseline -Pphase06-integration verify
+      - if: failure()
+        run: find technical-platform/backend -path '*/target/failsafe-reports/*' -type f -maxdepth 12 -print -exec sed -n '1,360p' {} \; || true
+  phase06-minio-regression:
+    name: PHASE-06 real MinIO regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - run: bash ./mvnw -B -ntp -am -pl technical-platform/backend/modules/document -Pphase06-minio-integration verify
+  c7-api-worker-security:
+    name: PHASE-06 C7 API Worker security Step-Up regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - run: bash ./mvnw -B -ntp -am -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker test
+  web-regression:
+    name: Completed Web typecheck test and build
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: technical-platform/web}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22", cache: pnpm, cache-dependency-path: technical-platform/web/pnpm-lock.yaml}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+  phase-complete-verdict:
+    name: PHASE-06 COMPLETE closeout verdict
+    if: always()
+    needs: [source-contract,java-regression,phase05-database-regression,phase06-database-regression,phase06-minio-regression,c7-api-worker-security,web-regression]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Require all closeout evidence to pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ needs.source-contract.result }}' = 'success'
+          test '${{ needs.java-regression.result }}' = 'success'
+          test '${{ needs.phase05-database-regression.result }}' = 'success'
+          test '${{ needs.phase06-database-regression.result }}' = 'success'
+          test '${{ needs.phase06-minio-regression.result }}' = 'success'
+          test '${{ needs.c7-api-worker-security.result }}' = 'success'
+          test '${{ needs.web-regression.result }}' = 'success'
+          python scripts/implementation/phase06_complete_contract.py --check
+          echo 'PHASE-06: COMPLETE'
+          echo 'PHASE-07: NOT_STARTED'

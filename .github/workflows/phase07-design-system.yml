@@ -1,0 +1,175 @@
+name: Phase 07 Design System
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/phases/PHASE-07/**"
+      - "scripts/implementation/phase07_design_system_contract.py"
+      - "scripts/implementation/phase07_frontend_quality.py"
+      - "technical-platform/web/src/design-system/**"
+      - "technical-platform/web/src/platform/PlatformShell.vue"
+      - "technical-platform/web/src/styles.css"
+      - "technical-platform/web/e2e/**"
+      - "technical-platform/web/eslint.config.js"
+      - "technical-platform/web/.jscpd.json"
+      - "technical-platform/web/knip.json"
+      - "technical-platform/web/playwright.config.ts"
+      - "technical-platform/web/vite.config.ts"
+      - "technical-platform/web/package.json"
+      - "technical-platform/web/pnpm-lock.yaml"
+      - ".github/workflows/phase07-design-system.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase07-design-system-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-contract:
+    name: PHASE-07 source scope and contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify phase boundary and complete design-system contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          grep -q '| PHASE-06 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-07 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Eq '\| PHASE-08 \| (NOT_STARTED|IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
+          git diff --check HEAD^ HEAD
+          python -m py_compile scripts/implementation/phase07_design_system_contract.py scripts/implementation/phase07_frontend_quality.py
+          python scripts/implementation/phase07_design_system_contract.py --stage complete
+          python scripts/implementation/phase07_frontend_quality.py --stage source
+      - name: Reject business truth and fake completion in Design System
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=technical-platform/web/src/design-system
+          BAD='TODO|FIXME|mock|fake|demo|hardcode|localStorage|sessionStorage|catch[[:space:]]*\{[[:space:]]*\}|@ts-ignore|@ts-nocheck|:[[:space:]]*any\b|as[[:space:]]+any\b|\.skip\(|describe\.skip|it\.skip|test\.skip|临时账号|测试验证码|默认密码|临时演示入口'
+          if grep -R -nEi "$BAD" "$TARGET"; then exit 1; fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "$TARGET"; then exit 1; fi
+          if grep -R -nE '/api/|\bP[0-9]{3}\b|\bfetch[[:space:]]*\(|\baxios\b' "$TARGET"; then exit 1; fi
+
+  static-quality:
+    name: ESLint duplication dead-code and dependency quality
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: mkdir -p reports
+      - name: ESLint
+        run: |
+          set -euo pipefail
+          pnpm lint 2>&1 | tee reports/eslint.txt
+      - name: Duplicate detection
+        run: |
+          set -euo pipefail
+          pnpm quality:duplicates 2>&1 | tee reports/jscpd.txt
+      - name: Dead-code detection
+        run: |
+          set -euo pipefail
+          pnpm quality:deadcode 2>&1 | tee reports/knip.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase07-static-quality-${{ github.sha }}
+          path: technical-platform/web/reports
+          if-no-files-found: warn
+
+  web-regression:
+    name: Strict typecheck component tests build and artifact scan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm quality:artifacts
+      - name: Require three real portal build entries
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s dist/employee/employee.html
+          test -s dist/center/center.html
+          test -s dist/admin/admin.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase07-three-portal-dist-${{ github.sha }}
+          path: |
+            technical-platform/web/dist
+            technical-platform/web/reports/phase07-quality.json
+          if-no-files-found: error
+
+  browser-smoke:
+    name: Playwright three-portal desktop and mobile smoke
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase07-playwright-${{ github.sha }}
+          path: technical-platform/web/reports/playwright
+          if-no-files-found: warn
+
+  checkpoint-verdict:
+    name: PHASE-07 checkpoint verdict
+    if: always()
+    needs: [source-contract, static-quality, web-regression, browser-smoke]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require verified checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ needs.source-contract.result }}' = 'success'
+          test '${{ needs.static-quality.result }}' = 'success'
+          test '${{ needs.web-regression.result }}' = 'success'
+          test '${{ needs.browser-smoke.result }}' = 'success'
+          echo 'PHASE-07 checkpoint: PASS'

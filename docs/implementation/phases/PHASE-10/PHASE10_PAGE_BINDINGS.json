@@ -1,0 +1,48 @@
+{
+  "phase": "PHASE-10",
+  "status": "C0_FROZEN",
+  "rule": "Explicit source-coordinate selections from PHASE-01 pages.json. No fuzzy runtime matching. A shared tech monitor route may serve multiple processes without granting business approval authority.",
+  "bindings": [
+    {"process_code":"P006","portal":"employee","purpose":"meeting detail and materials","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R342:be2cc5d93d00","route_path":"/employee/05/01/03"},
+    {"process_code":"P006","portal":"employee","purpose":"action items in progress","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R372:24468512bdea","route_path":"/employee/05/07/02"},
+    {"process_code":"P006","portal":"center","purpose":"meeting agenda materials attendance minutes and actions","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R379:23fac09d28f9","route_path":"/center/06/09/03"},
+    {"process_code":"P006","portal":"center","purpose":"meeting action ledger","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R270:5be309bd5911","route_path":"/center/05/02/02"},
+    {"process_code":"P006","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P007","portal":"employee","purpose":"my schedule today","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R307:39c32c70588b","route_path":"/employee/04/01/01"},
+    {"process_code":"P007","portal":"employee","purpose":"shift change request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R272:317cfbb97c59","route_path":"/employee/03/01/09"},
+    {"process_code":"P007","portal":"employee","purpose":"substitution request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R273:c55d4075f322","route_path":"/employee/03/01/10"},
+    {"process_code":"P007","portal":"center","purpose":"schedule plan and shift templates","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R197:349f812a9873","route_path":"/center/04/01/01"},
+    {"process_code":"P007","portal":"center","purpose":"shift/substitution supervisor approval","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R243:3a115384ae52","route_path":"/center/04/07/04"},
+    {"process_code":"P007","portal":"center","purpose":"qualification validation","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R244:c582feaa0ea1","route_path":"/center/04/07/05"},
+    {"process_code":"P007","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P008","portal":"employee","purpose":"leave request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R264:f18c1aabd77e","route_path":"/employee/03/01/01"},
+    {"process_code":"P008","portal":"employee","purpose":"leave quota ledger","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R320:d7701f5f2f13","route_path":"/employee/04/03/02"},
+    {"process_code":"P008","portal":"employee","purpose":"cancel leave or early return","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R265:2e3a5a1a9b4f","route_path":"/employee/03/01/02"},
+    {"process_code":"P008","portal":"center","purpose":"pending leave approval","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R219:81275d02d34b","route_path":"/center/04/04/01"},
+    {"process_code":"P008","portal":"center","purpose":"leave quota reservation ledger","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R221:e0b442cb0477","route_path":"/center/04/04/03"},
+    {"process_code":"P008","portal":"center","purpose":"leave cancellation and change","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R224:7286eb8c024f","route_path":"/center/04/04/06"},
+    {"process_code":"P008","portal":"tech","purpose":"attendance integration runtime monitor","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R734:47d4aa8d9569","route_path":"/tech/07/11/01"},
+    {"process_code":"P008","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P009","portal":"employee","purpose":"overtime request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R269:6f71a5c2ccdc","route_path":"/employee/03/01/06"},
+    {"process_code":"P009","portal":"employee","purpose":"time-off request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R270:90eaa9abc433","route_path":"/employee/03/01/07"},
+    {"process_code":"P009","portal":"employee","purpose":"overtime result acceptance","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R325:bca9f3906135","route_path":"/employee/04/04/02"},
+    {"process_code":"P009","portal":"center","purpose":"overtime request management","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R226:9d7544f50422","route_path":"/center/04/05/01"},
+    {"process_code":"P009","portal":"center","purpose":"HR review","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R230:31b7259b71df","route_path":"/center/04/05/05"},
+    {"process_code":"P009","portal":"center","purpose":"overtime payroll basis","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R231:20b218709c2e","route_path":"/center/04/05/06"},
+    {"process_code":"P009","portal":"tech","purpose":"HR payroll integration runtime monitor","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R716:d4f1606159a9","route_path":"/tech/07/09/01"},
+    {"process_code":"P009","portal":"tech","purpose":"attendance integration runtime monitor","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R734:47d4aa8d9569","route_path":"/tech/07/11/01"},
+
+    {"process_code":"P010","portal":"employee","purpose":"my learning tasks","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R421:87150a0da1b6","route_path":"/employee/07/01/01"},
+    {"process_code":"P010","portal":"employee","purpose":"online examination","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R437:83d0d1e4dafb","route_path":"/employee/07/04/02"},
+    {"process_code":"P010","portal":"employee","purpose":"practical certification task","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R441:5623dd0301e1","route_path":"/employee/07/05/01"},
+    {"process_code":"P010","portal":"employee","purpose":"current qualifications","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R446:47fd69adc4ca","route_path":"/employee/07/06/01"},
+    {"process_code":"P010","portal":"center","purpose":"learning examination practical and qualification management","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R336:c887d2de9360","route_path":"/center/06/03/07"},
+    {"process_code":"P010","portal":"center","purpose":"practical certification","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R819:001531771b39","route_path":"/center/10/08/03"},
+    {"process_code":"P010","portal":"center","purpose":"high-risk permission linkage","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R823:5fc68b66f107","route_path":"/center/10/08/07"},
+    {"process_code":"P010","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+    {"process_code":"P010","portal":"tech","purpose":"role action permission audit","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R396:f42d85d92e03","route_path":"/tech/03/03/09"}
+  ]
+}

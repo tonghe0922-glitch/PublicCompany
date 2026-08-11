@@ -1,0 +1,6 @@
+-- 分区模板：由DBA按月提前创建未来3个月分区。
+-- 示例（请替换日期）：
+-- CREATE TABLE workflow.wf_instance_2026_08 PARTITION OF workflow.wf_instance
+-- FOR VALUES FROM ('2026-08-01') TO ('2026-09-01');
+-- 注意：当前DDL为普通表以便首次部署；当单表预计超过2000万行或50GB时，迁移为声明式分区表。
+-- 推荐分区表：wf_instance、wf_task、wf_action_log、wf_submission、wf_submission_value、outbox_event、接口日志、审计日志。

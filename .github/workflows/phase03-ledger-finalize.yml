@@ -1,0 +1,60 @@
+name: Phase 03 Ledger Finalize
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - "scripts/implementation/phase03_finalize_ledgers.py"
+      - ".github/workflows/phase03-ledger-finalize.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase03-ledger-finalize-agent-full-build
+  cancel-in-progress: false
+
+jobs:
+  finalize-ledgers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch PHASE-03 metadata without mutating business collections
+        run: python scripts/implementation/phase03_finalize_ledgers.py
+      - name: Validate ledger diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --stat
+          python scripts/implementation/phase03_finalize_ledgers.py
+          git diff --check
+      - name: Persist PHASE-03 ledgers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/implementation/MASTER_PAGE_CATALOG.json \
+            docs/implementation/MASTER_PROCESS_CATALOG.json \
+            docs/implementation/MASTER_PROGRESS.md \
+            docs/implementation/MASTER_TRACEABILITY.md \
+            docs/implementation/MASTER_API_CATALOG.md \
+            docs/implementation/MASTER_PERMISSION_MATRIX.md \
+            docs/implementation/MASTER_DATABASE_MAPPING.md \
+            docs/implementation/MASTER_GAPS.md
+          if git diff --cached --quiet; then
+            echo "PHASE-03 ledgers already current"
+            exit 0
+          fi
+          git commit -m "phase-03: finalize master ledgers"
+          git fetch origin agent/full-build
+          git rebase origin/agent/full-build
+          python scripts/implementation/phase03_finalize_ledgers.py
+          git diff --exit-code
+          git push origin HEAD:agent/full-build

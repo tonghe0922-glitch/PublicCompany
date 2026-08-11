@@ -1,0 +1,44 @@
+name: PHASE-10 Preparation Gate
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - ".github/workflows/phase10-preparation-gate.yml"
+      - "scripts/implementation/phase10_*.py"
+      - "docs/implementation/phases/PHASE-10/**"
+      - "docs/implementation/contracts/phase-10/**"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_PAGE_CATALOG.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase10-preparation-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preparation:
+    name: PHASE-10 authoritative source and construction-start contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify preparation and formal C0 inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          grep -q '| PHASE-09 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Eq '\| PHASE-10 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-11 | NOT_STARTED |' docs/implementation/MASTER_PROGRESS.md
+          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py scripts/implementation/phase10_contract.py
+          python scripts/implementation/phase10_contract.py
+          test -s docs/implementation/phases/PHASE-10/IMPACT_MATRIX.md
+          test -s docs/implementation/phases/PHASE-10/GAP_MATRIX.md
+          test -s docs/implementation/phases/PHASE-10/START_CHECKLIST.md
+          git diff --check

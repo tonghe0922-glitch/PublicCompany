@@ -1,0 +1,230 @@
+name: Phase 02 Build
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - "pom.xml"
+      - "mvnw"
+      - "mvnw.cmd"
+      - ".mvn/**"
+      - "technical-platform/backend/**"
+      - "technical-platform/web/**"
+      - "docker/**"
+      - "scripts/windows/**"
+      - "scripts/implementation/phase02_finalize_ledgers.py"
+      - ".env.example"
+      - ".github/workflows/phase02-build.yml"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_TRACEABILITY.md"
+      - "docs/implementation/MASTER_PAGE_CATALOG.json"
+      - "docs/implementation/MASTER_PROCESS_CATALOG.json"
+      - "docs/implementation/MASTER_API_CATALOG.md"
+      - "docs/implementation/MASTER_PERMISSION_MATRIX.md"
+      - "docs/implementation/MASTER_DATABASE_MAPPING.md"
+      - "docs/implementation/MASTER_GAPS.md"
+      - "docs/implementation/phases/PHASE-02/**"
+      - "docs/implementation/evidence/PHASE-02*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Repository quality and phase boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Diff whitespace check
+        run: git diff --check HEAD^
+      - name: Verify canonical sources unchanged since PHASE-01 gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet a28fb2f17ffc95317299d083930a94374e2e9faf HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+      - name: Verify canonical tech uses approved admin runtime/build alias
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('.')
+          package = (root / 'technical-platform/web/package.json').read_text(encoding='utf-8')
+          vite = (root / 'technical-platform/web/vite.config.ts').read_text(encoding='utf-8')
+          portal_config = (root / 'technical-platform/web/src/platform/portal-config.ts').read_text(encoding='utf-8')
+          start_bat = (root / 'scripts/windows/start.bat').read_text(encoding='utf-8')
+          agent = (root / 'AGENT.md').read_text(encoding='utf-8-sig')
+          design = (root / 'DESIGN.md').read_text(encoding='utf-8')
+
+          assert 'portal_runtime_aliases: employee=employee; center=center; tech=admin' in agent
+          assert 'runtime_portals: employee / center / admin' in design
+          assert (root / 'technical-platform/web/admin.html').is_file()
+          assert not (root / 'technical-platform/web/tech.html').exists()
+          assert (root / 'technical-platform/web/src/portals/admin/main.ts').is_file()
+          assert not (root / 'technical-platform/web/src/portals/tech').exists()
+          assert "tech: 'admin'" in portal_config
+          assert "admin: { input: 'admin.html', outDir: 'dist/admin', port: 5175 }" in vite
+          assert "tech: { input:" not in vite
+          assert '"dev:admin": "vite --mode admin"' in package
+          assert '"build:admin": "vite build --mode admin"' in package
+          assert '"build:tech"' not in package
+          assert 'pnpm dev:admin' in start_bat
+          PY
+      - name: Verify PHASE-02 ledgers are idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/implementation/phase02_finalize_ledgers.py
+          git diff --exit-code
+      - name: Reject fake completion and obvious secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform scripts/windows scripts/implementation .env.example)
+          if grep -R -nE 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|catch[[:space:]]*\{\}|\bmock api\b|\bfake api\b|临时账号|测试验证码|默认密码|临时演示入口' "${TARGETS[@]}"; then
+            echo "Forbidden fake-completion marker found"
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            echo "Potential secret found"
+            exit 1
+          fi
+      - name: Verify stage evidence exists
+        run: |
+          test -s docs/implementation/phases/PHASE-02/IMPACT_MATRIX.md
+          test -s docs/implementation/phases/PHASE-02/GAP_MATRIX.md
+          test -s docs/implementation/phases/PHASE-02/PHASE_REPORT.md
+          test -s docs/implementation/evidence/PHASE-02_VALIDATION.json
+
+  backend:
+    name: Java 21 backend compile and smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Verify forbidden backend technologies are absent
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -nE 'spring-boot-starter-data-jpa|hibernate-core|spring-boot-starter-webflux|com\.h2database|org\.xerial:sqlite' pom.xml technical-platform/backend --include='pom.xml'; then
+            echo "Forbidden backend dependency detected"
+            exit 1
+          fi
+      - name: Maven wrapper version
+        run: ./mvnw --version
+      - name: Compile and run PHASE-02-owned backend smoke tests
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
+
+  frontend:
+    name: Vue three-portal typecheck test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Activate pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.0 --activate
+          pnpm --version
+      - name: Install frozen dependencies
+        working-directory: technical-platform/web
+        run: pnpm install --frozen-lockfile
+      - name: Reject React and business browser-storage shortcuts
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -nE 'react|next\.js|localStorage|sessionStorage|mock api|fake api' technical-platform/web/src technical-platform/web/package.json; then
+            echo "Forbidden frontend technology or fake data shortcut detected"
+            exit 1
+          fi
+      - name: Strict typecheck
+        working-directory: technical-platform/web
+        run: pnpm typecheck
+      - name: Unit smoke tests
+        working-directory: technical-platform/web
+        run: pnpm test
+      - name: Build employee center and tech canonical portals through approved runtime aliases
+        working-directory: technical-platform/web
+        run: pnpm build
+
+  infrastructure:
+    name: Docker development infrastructure smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Compose configuration
+        run: docker compose --env-file .env.example -f docker/compose/docker-compose.dev.yml config >/tmp/sjg-compose.yml
+      - name: Start and verify PostgreSQL Redis MinIO RabbitMQ
+        shell: bash
+        run: |
+          set -euo pipefail
+          set -a
+          . ./.env.example
+          set +a
+          COMPOSE=(docker compose --env-file .env.example -f docker/compose/docker-compose.dev.yml)
+          cleanup() { "${COMPOSE[@]}" down -v --remove-orphans || true; }
+          trap cleanup EXIT
+          "${COMPOSE[@]}" up -d --wait --wait-timeout 180
+          "${COMPOSE[@]}" exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+          "${COMPOSE[@]}" exec -T redis redis-cli ping | grep -q PONG
+          "${COMPOSE[@]}" exec -T rabbitmq rabbitmq-diagnostics -q ping
+          for attempt in $(seq 1 40); do
+            if curl -fsS "http://127.0.0.1:${MINIO_API_PORT}/minio/health/live" >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS "http://127.0.0.1:${MINIO_API_PORT}/minio/health/live" >/dev/null
+          DATABASES=''
+          for attempt in $(seq 1 30); do
+            DATABASES=$("${COMPOSE[@]}" exec -T postgres psql -U "$POSTGRES_USER" -d postgres -Atc "SELECT datname FROM pg_database WHERE datname IN ('sjg_oms','sjg_audit','sjg_dw') ORDER BY datname") || true
+            if printf '%s\n' "$DATABASES" | grep -qx 'sjg_audit' && printf '%s\n' "$DATABASES" | grep -qx 'sjg_dw' && printf '%s\n' "$DATABASES" | grep -qx 'sjg_oms'; then break; fi
+            sleep 2
+          done
+          printf '%s\n' "$DATABASES" | grep -qx 'sjg_audit'
+          printf '%s\n' "$DATABASES" | grep -qx 'sjg_dw'
+          printf '%s\n' "$DATABASES" | grep -qx 'sjg_oms'
+
+  windows-path:
+    name: Windows Chinese-path BAT smoke
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Copy repository into Chinese path
+        shell: pwsh
+        run: |
+          $target = Join-Path $env:RUNNER_TEMP '中文路径\NEWSTART'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
+          }
+          "SJG_CHINESE_PATH=$target" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Run install and verify BAT in Chinese path
+        shell: cmd
+        run: |
+          cd /d "%SJG_CHINESE_PATH%"
+          call scripts\windows\install.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\verify.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\start.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\stop.bat --ci
+          if errorlevel 1 exit /b 1

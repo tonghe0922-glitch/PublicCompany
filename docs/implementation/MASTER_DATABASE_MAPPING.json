@@ -1,0 +1,1537 @@
+{
+  "generated_in_phase": "PHASE-01",
+  "stats": {
+    "count": 3,
+    "schemas": 46,
+    "tables": 265,
+    "field_rows": 7116,
+    "relations": 1335,
+    "indexes": 1024,
+    "ddl": {
+      "database": 3,
+      "schema": 46,
+      "table": 266,
+      "index": 1019
+    },
+    "core_databases": [
+      "sjg_audit",
+      "sjg_dw",
+      "sjg_oms"
+    ],
+    "data_sources_total": 7
+  },
+  "processes": [
+    {
+      "process_code": "P001",
+      "name": "统一登录与多岗位身份切换",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 2,
+          "schema": "iam",
+          "table": "iam.login_session"
+        }
+      ]
+    },
+    {
+      "process_code": "P002",
+      "name": "权限申请、复核与回收",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 3,
+          "schema": "iam",
+          "table": "iam.permission_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P003",
+      "name": "个人资料变更",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 4,
+          "schema": "hr",
+          "table": "hr.employee_profile_change"
+        }
+      ]
+    },
+    {
+      "process_code": "P004",
+      "name": "通用申请与审批",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 5,
+          "schema": "workflow",
+          "table": "workflow.generic_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P005",
+      "name": "制度、通知与执行回执",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 6,
+          "schema": "collaboration",
+          "table": "collaboration.notice"
+        }
+      ]
+    },
+    {
+      "process_code": "P006",
+      "name": "会议与行动项",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 7,
+          "schema": "collaboration",
+          "table": "collaboration.meeting"
+        }
+      ]
+    },
+    {
+      "process_code": "P007",
+      "name": "排班与班次调整",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 8,
+          "schema": "attendance",
+          "table": "attendance.shift_change_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P008",
+      "name": "请假与考勤",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 9,
+          "schema": "attendance",
+          "table": "attendance.leave_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P009",
+      "name": "加班与调休",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 10,
+          "schema": "attendance",
+          "table": "attendance.overtime_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P010",
+      "name": "员工学习、考试与资格",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 11,
+          "schema": "learning",
+          "table": "learning.learning_assignment"
+        }
+      ]
+    },
+    {
+      "process_code": "P011",
+      "name": "绩效管理",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 12,
+          "schema": "performance",
+          "table": "performance.performance_cycle"
+        }
+      ]
+    },
+    {
+      "process_code": "P012",
+      "name": "晋升与任职发展",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 13,
+          "schema": "hr",
+          "table": "hr.promotion_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P013",
+      "name": "奖励",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 14,
+          "schema": "reward",
+          "table": "reward.reward_case"
+        }
+      ]
+    },
+    {
+      "process_code": "P014",
+      "name": "纪律、责任与申诉",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 15,
+          "schema": "reward",
+          "table": "reward.discipline_case"
+        }
+      ]
+    },
+    {
+      "process_code": "P015",
+      "name": "成长积分与荣誉积分",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 16,
+          "schema": "reward",
+          "table": "reward.point_transaction"
+        }
+      ]
+    },
+    {
+      "process_code": "P016",
+      "name": "员工福利与关怀",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 17,
+          "schema": "welfare",
+          "table": "welfare.care_case"
+        }
+      ]
+    },
+    {
+      "process_code": "P017",
+      "name": "电子签署",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 18,
+          "schema": "document",
+          "table": "document.signature_envelope"
+        }
+      ]
+    },
+    {
+      "process_code": "P018",
+      "name": "数据导入",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 19,
+          "schema": "integration",
+          "table": "integration.data_import_job"
+        }
+      ]
+    },
+    {
+      "process_code": "P019",
+      "name": "敏感导出与文件下载",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 20,
+          "schema": "audit",
+          "table": "audit.data_export_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P020",
+      "name": "数据质量与修复",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 21,
+          "schema": "audit",
+          "table": "audit.data_quality_issue"
+        }
+      ]
+    },
+    {
+      "process_code": "P021",
+      "name": "经营会议闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 22,
+          "schema": "collaboration",
+          "table": "collaboration.meeting"
+        }
+      ]
+    },
+    {
+      "process_code": "P022",
+      "name": "总裁指令闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 23,
+          "schema": "collaboration",
+          "table": "collaboration.executive_directive"
+        }
+      ]
+    },
+    {
+      "process_code": "P023",
+      "name": "重大事项升级",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 24,
+          "schema": "collaboration",
+          "table": "collaboration.major_matter"
+        }
+      ]
+    },
+    {
+      "process_code": "P024",
+      "name": "预算闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 25,
+          "schema": "finance",
+          "table": "finance.budget_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P025",
+      "name": "报销闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 26,
+          "schema": "finance",
+          "table": "finance.expense_claim"
+        }
+      ]
+    },
+    {
+      "process_code": "P026",
+      "name": "借款核销",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 27,
+          "schema": "finance",
+          "table": "finance.loan_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P027",
+      "name": "跨系统对账",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 28,
+          "schema": "finance",
+          "table": "finance.reconciliation_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P028",
+      "name": "录用入职闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 29,
+          "schema": "hr",
+          "table": "hr.employee_onboarding"
+        }
+      ]
+    },
+    {
+      "process_code": "P029",
+      "name": "调岗闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 30,
+          "schema": "hr",
+          "table": "hr.employee_transfer"
+        }
+      ]
+    },
+    {
+      "process_code": "P030",
+      "name": "离职闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 31,
+          "schema": "hr",
+          "table": "hr.employee_offboarding"
+        }
+      ]
+    },
+    {
+      "process_code": "P031",
+      "name": "归档接收",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 32,
+          "schema": "archive",
+          "table": "archive.archive_package"
+        }
+      ]
+    },
+    {
+      "process_code": "P032",
+      "name": "借阅归还",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 33,
+          "schema": "archive",
+          "table": "archive.borrow_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P033",
+      "name": "销毁鉴定",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 34,
+          "schema": "archive",
+          "table": "archive.disposal_appraisal"
+        }
+      ]
+    },
+    {
+      "process_code": "P034",
+      "name": "标准采购",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 35,
+          "schema": "procurement",
+          "table": "procurement.purchase_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P035",
+      "name": "紧急采购",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 36,
+          "schema": "procurement",
+          "table": "procurement.emergency_purchase"
+        }
+      ]
+    },
+    {
+      "process_code": "P036",
+      "name": "退换货",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 37,
+          "schema": "procurement",
+          "table": "procurement.purchase_return"
+        }
+      ]
+    },
+    {
+      "process_code": "P037",
+      "name": "售检票闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 38,
+          "schema": "ticketing",
+          "table": "ticketing.ticket_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P038",
+      "name": "退款改签",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 39,
+          "schema": "ticketing",
+          "table": "ticketing.ticket_refund_change"
+        }
+      ]
+    },
+    {
+      "process_code": "P039",
+      "name": "离线检票",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 40,
+          "schema": "ticketing",
+          "table": "ticketing.offline_check_event"
+        }
+      ]
+    },
+    {
+      "process_code": "P040",
+      "name": "商机推进",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 41,
+          "schema": "crm",
+          "table": "crm.opportunity"
+        }
+      ]
+    },
+    {
+      "process_code": "P041",
+      "name": "市场活动",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 42,
+          "schema": "marketing",
+          "table": "marketing.campaign"
+        }
+      ]
+    },
+    {
+      "process_code": "P042",
+      "name": "渠道准入",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 43,
+          "schema": "crm",
+          "table": "crm.channel_partner"
+        }
+      ]
+    },
+    {
+      "process_code": "P043",
+      "name": "课程产品上线",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 44,
+          "schema": "education",
+          "table": "education.course_product"
+        }
+      ]
+    },
+    {
+      "process_code": "P044",
+      "name": "研学团队交付",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 45,
+          "schema": "education",
+          "table": "education.study_tour_delivery"
+        }
+      ]
+    },
+    {
+      "process_code": "P045",
+      "name": "讲师排课",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 46,
+          "schema": "education",
+          "table": "education.teacher_schedule"
+        }
+      ]
+    },
+    {
+      "process_code": "P046",
+      "name": "通知执行",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 47,
+          "schema": "collaboration",
+          "table": "collaboration.notice"
+        }
+      ]
+    },
+    {
+      "process_code": "P047",
+      "name": "正式公文",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 48,
+          "schema": "administration",
+          "table": "administration.official_document"
+        }
+      ]
+    },
+    {
+      "process_code": "P048",
+      "name": "会议行动",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 49,
+          "schema": "collaboration",
+          "table": "collaboration.meeting"
+        }
+      ]
+    },
+    {
+      "process_code": "P049",
+      "name": "大型活动",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 50,
+          "schema": "administration",
+          "table": "administration.large_event"
+        }
+      ]
+    },
+    {
+      "process_code": "P050",
+      "name": "入库",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 51,
+          "schema": "asset",
+          "table": "asset.stock_in"
+        }
+      ]
+    },
+    {
+      "process_code": "P051",
+      "name": "领借调还",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 52,
+          "schema": "asset",
+          "table": "asset.asset_use_transaction"
+        }
+      ]
+    },
+    {
+      "process_code": "P052",
+      "name": "盘点",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 53,
+          "schema": "asset",
+          "table": "asset.stocktake"
+        }
+      ]
+    },
+    {
+      "process_code": "P053",
+      "name": "报废处置",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 54,
+          "schema": "asset",
+          "table": "asset.asset_disposal"
+        }
+      ]
+    },
+    {
+      "process_code": "P054",
+      "name": "派车",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 55,
+          "schema": "fleet",
+          "table": "fleet.vehicle_dispatch"
+        }
+      ]
+    },
+    {
+      "process_code": "P055",
+      "name": "车辆事故",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 56,
+          "schema": "fleet",
+          "table": "fleet.vehicle_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P056",
+      "name": "宿舍入住退宿",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 57,
+          "schema": "dormitory",
+          "table": "dormitory.stay_record"
+        }
+      ]
+    },
+    {
+      "process_code": "P057",
+      "name": "报修",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 58,
+          "schema": "maintenance",
+          "table": "maintenance.repair_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P058",
+      "name": "团餐交付",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 59,
+          "schema": "catering",
+          "table": "catering.group_meal_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P059",
+      "name": "食材验收",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 60,
+          "schema": "catering",
+          "table": "catering.ingredient_acceptance"
+        }
+      ]
+    },
+    {
+      "process_code": "P060",
+      "name": "食品安全事件",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 61,
+          "schema": "catering",
+          "table": "catering.food_safety_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P061",
+      "name": "餐卡结算",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 62,
+          "schema": "catering",
+          "table": "catering.meal_card_settlement"
+        }
+      ]
+    },
+    {
+      "process_code": "P062",
+      "name": "日常巡逻",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 63,
+          "schema": "security",
+          "table": "security.patrol_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P063",
+      "name": "客流预警",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 64,
+          "schema": "security",
+          "table": "security.crowd_alert"
+        }
+      ]
+    },
+    {
+      "process_code": "P064",
+      "name": "安全事件",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 65,
+          "schema": "security",
+          "table": "security.security_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P065",
+      "name": "活动安保",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 66,
+          "schema": "security",
+          "table": "security.event_security_plan"
+        }
+      ]
+    },
+    {
+      "process_code": "P066",
+      "name": "日常清洁",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 67,
+          "schema": "cleaning",
+          "table": "cleaning.cleaning_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P067",
+      "name": "污染应急",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 68,
+          "schema": "cleaning",
+          "table": "cleaning.pollution_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P068",
+      "name": "活动保障",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 69,
+          "schema": "cleaning",
+          "table": "cleaning.event_support"
+        }
+      ]
+    },
+    {
+      "process_code": "P069",
+      "name": "商户准入",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 70,
+          "schema": "merchant",
+          "table": "merchant.merchant_admission"
+        }
+      ]
+    },
+    {
+      "process_code": "P070",
+      "name": "日常巡检",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 71,
+          "schema": "merchant",
+          "table": "merchant.merchant_inspection"
+        }
+      ]
+    },
+    {
+      "process_code": "P071",
+      "name": "退场",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 72,
+          "schema": "merchant",
+          "table": "merchant.merchant_exit"
+        }
+      ]
+    },
+    {
+      "process_code": "P072",
+      "name": "节目上线",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 73,
+          "schema": "entertainment",
+          "table": "entertainment.program"
+        }
+      ]
+    },
+    {
+      "process_code": "P073",
+      "name": "场次执行",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 74,
+          "schema": "entertainment",
+          "table": "entertainment.show_session"
+        }
+      ]
+    },
+    {
+      "process_code": "P074",
+      "name": "临时缺员",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 75,
+          "schema": "entertainment",
+          "table": "entertainment.staff_shortage"
+        }
+      ]
+    },
+    {
+      "process_code": "P075",
+      "name": "停演",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 76,
+          "schema": "entertainment",
+          "table": "entertainment.suspension_decision"
+        }
+      ]
+    },
+    {
+      "process_code": "P076",
+      "name": "场次准备",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 77,
+          "schema": "costume",
+          "table": "costume.session_preparation"
+        }
+      ]
+    },
+    {
+      "process_code": "P077",
+      "name": "损坏报损",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 78,
+          "schema": "costume",
+          "table": "costume.damage_report"
+        }
+      ]
+    },
+    {
+      "process_code": "P078",
+      "name": "盘点",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 79,
+          "schema": "costume",
+          "table": "costume.inventory_check"
+        }
+      ]
+    },
+    {
+      "process_code": "P079",
+      "name": "飞行任务",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 80,
+          "schema": "drone",
+          "table": "drone.flight_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P080",
+      "name": "任务取消",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 81,
+          "schema": "drone",
+          "table": "drone.flight_cancellation"
+        }
+      ]
+    },
+    {
+      "process_code": "P081",
+      "name": "飞行事故",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 82,
+          "schema": "drone",
+          "table": "drone.flight_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P082",
+      "name": "场次技术保障",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 83,
+          "schema": "entertainment",
+          "table": "entertainment.tech_support_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P083",
+      "name": "设备故障",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 84,
+          "schema": "entertainment",
+          "table": "entertainment.equipment_fault"
+        }
+      ]
+    },
+    {
+      "process_code": "P084",
+      "name": "停演技术建议",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 85,
+          "schema": "entertainment",
+          "table": "entertainment.suspension_advice"
+        }
+      ]
+    },
+    {
+      "process_code": "P085",
+      "name": "网络故障",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 86,
+          "schema": "itops",
+          "table": "itops.network_incident"
+        }
+      ]
+    },
+    {
+      "process_code": "P086",
+      "name": "网络变更",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 87,
+          "schema": "itops",
+          "table": "itops.network_change"
+        }
+      ]
+    },
+    {
+      "process_code": "P087",
+      "name": "活动保障",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 88,
+          "schema": "itops",
+          "table": "itops.event_support"
+        }
+      ]
+    },
+    {
+      "process_code": "P088",
+      "name": "IT服务请求",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 89,
+          "schema": "itops",
+          "table": "itops.service_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P089",
+      "name": "生产发布",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 90,
+          "schema": "devops",
+          "table": "devops.release"
+        }
+      ]
+    },
+    {
+      "process_code": "P090",
+      "name": "账号执行",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 91,
+          "schema": "iam",
+          "table": "iam.account_execution"
+        }
+      ]
+    },
+    {
+      "process_code": "P091",
+      "name": "恢复演练",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 92,
+          "schema": "itops",
+          "table": "itops.recovery_drill"
+        }
+      ]
+    },
+    {
+      "process_code": "P092",
+      "name": "需求开发",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 93,
+          "schema": "devops",
+          "table": "devops.requirement"
+        }
+      ]
+    },
+    {
+      "process_code": "P093",
+      "name": "缺陷修复",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 94,
+          "schema": "devops",
+          "table": "devops.defect"
+        }
+      ]
+    },
+    {
+      "process_code": "P094",
+      "name": "版本发布",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 95,
+          "schema": "devops",
+          "table": "devops.release"
+        }
+      ]
+    },
+    {
+      "process_code": "P095",
+      "name": "宣传物料制作",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 96,
+          "schema": "content",
+          "table": "content.material_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P096",
+      "name": "拍摄任务",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 97,
+          "schema": "content",
+          "table": "content.shooting_task"
+        }
+      ]
+    },
+    {
+      "process_code": "P097",
+      "name": "返工变更",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 98,
+          "schema": "content",
+          "table": "content.change_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P098",
+      "name": "策划项目",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 99,
+          "schema": "planning",
+          "table": "planning.project"
+        }
+      ]
+    },
+    {
+      "process_code": "P099",
+      "name": "方案变更",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 100,
+          "schema": "planning",
+          "table": "planning.change_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P100",
+      "name": "活动策划移交",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 101,
+          "schema": "planning",
+          "table": "planning.event_handover"
+        }
+      ]
+    },
+    {
+      "process_code": "P101",
+      "name": "产品上架",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 102,
+          "schema": "ecommerce",
+          "table": "ecommerce.product_listing"
+        }
+      ]
+    },
+    {
+      "process_code": "P102",
+      "name": "OTA订单",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 103,
+          "schema": "ecommerce",
+          "table": "ecommerce.ota_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P103",
+      "name": "退款",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 104,
+          "schema": "ecommerce",
+          "table": "ecommerce.refund_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P104",
+      "name": "评价客诉",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 105,
+          "schema": "ecommerce",
+          "table": "ecommerce.review_complaint"
+        }
+      ]
+    },
+    {
+      "process_code": "P105",
+      "name": "短视频发布",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 106,
+          "schema": "media",
+          "table": "media.short_video_release"
+        }
+      ]
+    },
+    {
+      "process_code": "P106",
+      "name": "直播执行",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 107,
+          "schema": "media",
+          "table": "media.live_session"
+        }
+      ]
+    },
+    {
+      "process_code": "P107",
+      "name": "投放",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 108,
+          "schema": "media",
+          "table": "media.ad_campaign"
+        }
+      ]
+    },
+    {
+      "process_code": "P108",
+      "name": "舆情",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 109,
+          "schema": "media",
+          "table": "media.public_opinion_case"
+        }
+      ]
+    },
+    {
+      "process_code": "P109",
+      "name": "品牌授权",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 110,
+          "schema": "brand",
+          "table": "brand.authorization"
+        }
+      ]
+    },
+    {
+      "process_code": "P110",
+      "name": "物料审核",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 111,
+          "schema": "brand",
+          "table": "brand.material_review"
+        }
+      ]
+    },
+    {
+      "process_code": "P111",
+      "name": "侵权处理",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 112,
+          "schema": "brand",
+          "table": "brand.infringement_case"
+        }
+      ]
+    },
+    {
+      "process_code": "P112",
+      "name": "标准接待",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 113,
+          "schema": "reception",
+          "table": "reception.reception_order"
+        }
+      ]
+    },
+    {
+      "process_code": "P113",
+      "name": "临时变更",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 114,
+          "schema": "reception",
+          "table": "reception.change_request"
+        }
+      ]
+    },
+    {
+      "process_code": "P114",
+      "name": "导游执行",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 115,
+          "schema": "reception",
+          "table": "reception.guide_execution"
+        }
+      ]
+    },
+    {
+      "process_code": "P115",
+      "name": "接待客诉",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 116,
+          "schema": "reception",
+          "table": "reception.complaint"
+        }
+      ]
+    },
+    {
+      "process_code": "P116",
+      "name": "线索转商机",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 117,
+          "schema": "sales",
+          "table": "sales.lead"
+        }
+      ]
+    },
+    {
+      "process_code": "P117",
+      "name": "销售成交",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 118,
+          "schema": "sales",
+          "table": "sales.deal"
+        }
+      ]
+    },
+    {
+      "process_code": "P118",
+      "name": "二次销售",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 119,
+          "schema": "sales",
+          "table": "sales.secondary_sale"
+        }
+      ]
+    },
+    {
+      "process_code": "P119",
+      "name": "客户移交",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 120,
+          "schema": "sales",
+          "table": "sales.customer_handover"
+        }
+      ]
+    },
+    {
+      "process_code": "P120",
+      "name": "全员生命周期闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 121,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P121",
+      "name": "市场获客到交付回款闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 122,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P122",
+      "name": "接待资源闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 123,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P123",
+      "name": "演艺场次闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 124,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P124",
+      "name": "采购资产财务闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 125,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P125",
+      "name": "内容生产发布闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 126,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    },
+    {
+      "process_code": "P126",
+      "name": "事件与整改闭环",
+      "database_mappings": [
+        {
+          "source_file": "Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+          "source_row": 127,
+          "schema": "workflow",
+          "table": "workflow.wf_orchestration_instance"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sjg.internal/contracts/page-catalog.schema.json",
+  "title": "SJG Three-Portal Page Catalog",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "portal_code",
+      "runtime_portal",
+      "source_file",
+      "source_sheet",
+      "source_key",
+      "level_1",
+      "display_name",
+      "data_scope",
+      "sensitive_level",
+      "mobile_access",
+      "status"
+    ],
+    "properties": {
+      "portal_code": {
+        "enum": [
+          "employee",
+          "center",
+          "tech"
+        ]
+      },
+      "runtime_portal": {
+        "enum": [
+          "employee",
+          "center",
+          "admin"
+        ]
+      },
+      "source_file": {
+        "type": "string",
+        "minLength": 1
+      },
+      "source_sheet": {
+        "type": "string",
+        "minLength": 1
+      },
+      "source_key": {
+        "type": "string",
+        "minLength": 1
+      },
+      "level_1": {
+        "type": "string",
+        "minLength": 1
+      },
+      "level_2": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "level_3": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "display_name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "aliases": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      },
+      "route_name": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "route_path": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "implementation_path": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "permission_codes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      },
+      "process_codes": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^P(00[1-9]|0[1-9][0-9]|1[01][0-9]|12[0-6])$"
+        },
+        "uniqueItems": true
+      },
+      "data_scope": {
+        "type": "string",
+        "minLength": 1
+      },
+      "sensitive_level": {
+        "enum": [
+          "DATA-L1",
+          "DATA-L2",
+          "DATA-L3",
+          "DATA-L4"
+        ]
+      },
+      "mobile_access": {
+        "enum": [
+          "full",
+          "limited",
+          "no"
+        ]
+      },
+      "status": {
+        "enum": [
+          "planned",
+          "implemented",
+          "deprecated"
+        ]
+      },
+      "notes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  }
+}

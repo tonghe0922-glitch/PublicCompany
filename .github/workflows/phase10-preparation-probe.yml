@@ -1,0 +1,76 @@
+name: PHASE-10 Preparation Source Probe
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - ".github/workflows/phase10-preparation-probe.yml"
+      - "scripts/implementation/phase10_preparation_extract.py"
+      - "scripts/implementation/phase10_page_trace.py"
+      - "scripts/implementation/phase10_page_candidates.py"
+      - "docs/implementation/MASTER_PROCESS_CATALOG.json"
+      - "docs/implementation/contracts/phase-01/pages.json"
+      - "docs/implementation/contracts/phase-01/api_records.jsonl"
+      - "Knowledge Base/02 业务流程 表单 字段/S1 三端业务流程表单字段包/**/01_平台公共能力/*.xlsx"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase10-preparation-source-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-probe:
+    name: Parse P006-P010 authoritative XLSX and discover C0 page candidates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Parse authoritative sources and emit candidate evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py
+          python scripts/implementation/phase10_preparation_extract.py
+          python scripts/implementation/phase10_page_trace.py
+          python scripts/implementation/phase10_page_candidates.py
+          test -s docs/implementation/phases/PHASE-10/P006_P010_SOURCE_SNAPSHOT.json
+          test -s docs/implementation/phases/PHASE-10/P006_P010_PAGE_TRACE.json
+          test -s docs/implementation/phases/PHASE-10/P006_P010_PAGE_CANDIDATES.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source = json.loads(Path('docs/implementation/phases/PHASE-10/P006_P010_SOURCE_SNAPSHOT.json').read_text(encoding='utf-8'))
+          trace = json.loads(Path('docs/implementation/phases/PHASE-10/P006_P010_PAGE_TRACE.json').read_text(encoding='utf-8'))
+          candidates = json.loads(Path('docs/implementation/phases/PHASE-10/P006_P010_PAGE_CANDIDATES.json').read_text(encoding='utf-8'))
+          assert source['workbook_count'] == 15 and source['parse_failures'] == 0
+          assert trace['target_process_codes'] == ['P006','P007','P008','P009','P010']
+          for code in ['P006','P007','P008','P009','P010']:
+              for portal in ['employee','center','tech']:
+                  assert candidates['processes'][code][portal]['candidate_count'] > 0, (code, portal)
+          print(json.dumps({
+            'source': {k:source[k] for k in ('workbook_count','sheet_count','nonempty_row_count','parse_failures')},
+            'direct_page_trace_count': trace['matched_page_records'],
+            'candidate_counts': {c:{p:candidates['processes'][c][p]['candidate_count'] for p in ['employee','center','tech']} for c in ['P006','P007','P008','P009','P010']}
+          }, ensure_ascii=False))
+          PY
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase10-p006-p010-source-probe
+          path: |
+            docs/implementation/phases/PHASE-10/P006_P010_SOURCE_SNAPSHOT.json
+            docs/implementation/phases/PHASE-10/P006_P010_SOURCE_SNAPSHOT.md
+            docs/implementation/phases/PHASE-10/P006_P010_PAGE_TRACE.json
+            docs/implementation/phases/PHASE-10/P006_P010_PAGE_TRACE.md
+            docs/implementation/phases/PHASE-10/P006_P010_PAGE_CANDIDATES.json
+            docs/implementation/phases/PHASE-10/P006_P010_PAGE_CANDIDATES.md
+          if-no-files-found: error
+          retention-days: 14

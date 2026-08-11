@@ -1,0 +1,63 @@
+name: PHASE-10 C0 Contract Freeze
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - ".github/workflows/phase10-c0.yml"
+      - "scripts/implementation/phase10_*.py"
+      - "docs/implementation/phases/PHASE-10/**"
+      - "docs/implementation/contracts/phase-10/**"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "technical-platform/database/flyway/oms/**"
+      - "technical-platform/web/src/**"
+      - "technical-platform/backend/apps/api/src/main/java/**"
+      - "technical-platform/backend/modules/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase10-c0-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE10_BASE_SHA: 14f4c51fb968a606de812bc7457813af6e1b0434
+
+jobs:
+  c0:
+    name: PHASE-10 source page API permission DB and boundary contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify frozen C0 contracts
+        run: |
+          set -euo pipefail
+          python scripts/implementation/phase10_contract.py
+          git diff --check
+      - name: Reject P011+ executable coupling, shadow tables and credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/web/src technical-platform/backend/apps/api/src/main/java technical-platform/backend/modules technical-platform/database/flyway/oms)
+          ADDED=$(git diff -U0 "$PHASE10_BASE_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
+          if printf '%s\n' "$ADDED" | grep -E '\bP0(11|12|13|14|15|16)\b|\bP(0?[1-9][7-9]|0?[2-9][0-9]|1[0-2][0-9])\b'; then
+            echo 'PHASE-10 introduced next-phase executable coupling'
+            exit 1
+          fi
+          if printf '%s\n' "$ADDED" | grep -Ei 'CREATE TABLE[^;]*(phase[_-]?10|p00(6|7|8|9)|p010)'; then
+            echo 'PHASE-10 shadow business table is forbidden; use canonical tables/additive overlays'
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
+
+  verdict:
+    name: PHASE-10 C0 verdict
+    needs: [c0]
+    runs-on: ubuntu-latest
+    steps:
+      - run: test '${{ needs.c0.result }}' = 'success'

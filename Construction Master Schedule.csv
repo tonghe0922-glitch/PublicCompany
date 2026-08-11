@@ -1,0 +1,37 @@
+阶段,名称,范围,核心门槛,GitHub阶段门禁
+PHASE-00,项目宪法读取、空仓初始化与施工控制面,基础治理,台账建立，无假业务,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-01,全量 Knowledge Base 机器化解析与需求追溯,全 KB,页面/流程/DB全量机器化,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-02,仓库工程骨架、构建系统与开发环境,工程骨架,前后端/Worker可编译,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-03,数据库三库、Schema、Flyway 与基础角色,数据库基线,空库Flyway成功/RLS,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-04,Core IAM、组织、员工、任职、会话与权限内核,IAM/ORG,RBAC+ABAC+RLS可测,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-05,统一流程引擎、表单版本、任务、SLA 与编排内核,Workflow,状态机/版本/SLA可测,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-06,文档、附件、通知、审计、Integration、Outbox/Inbox 内核,Document/Outbox/Worker,Outbox/Inbox/DLQ/文件证据,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-07,前端 Design System 与共享组件库,Design System,设计系统组件测试,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-08,三端 Portal Shell、Router、导航、Session 与 API Client,三端壳,三端可build/login壳,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-09,P001–P005 公共能力 A,P001–P005,5流程三端闭环,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-10,P006–P010 公共能力 B,P006–P010,5流程三端闭环,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-11,P011–P016 绩效成长福利,P011–P016,6流程三端闭环,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-12,P017–P020 签署、导入导出、数据质量,P017–P020,4高风险公共流程,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-13,P021–P023 总裁办经营治理,P021–P023,3经营流程,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-14,P024–P027 财务核心,P024–P027,4财务流程幂等可靠,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-15,P028–P030 人员生命周期,P028–P030,人员生命周期,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-16,P031–P033 档案,P031–P033,档案敏感闭环,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-17,P034–P039 采购与票务,P034–P039,采购/票务幂等,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-18,P040–P045 市场与教育,P040–P045,市场教育,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-19,P046–P049 行政办公室,P046–P049,行政,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-20,P050–P053 资产仓储,P050–P053,资产流水,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-21,P054–P061 后勤餐饮,P054–P061,后勤餐饮,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-22,P062–P071 物业中心,P062–P071,物业整改,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-23,P072–P078 演艺表演与服化道,P072–P078,演艺场次,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-24,P079–P084 无人机与演艺技术,P079–P084,技术建议≠业务决定,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-25,P085–P094 网络、IT、研发、发布,P085–P094,IT发布恢复,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-26,P095–P100 企划内容,P095–P100,内容版本,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-27,P101–P111 新媒体与品牌,P101–P111,OTA/品牌外部可靠性,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-28,P112–P119 运营中心,P112–P119,运营销售,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-29,P120–P126 跨中心黄金路径,P120–P126,黄金路径不复制子单,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-30,六份页面架构逐行对账与全页面补齐,全页面,页面覆盖100%,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-31,全站权限、安全、敏感数据专项硬化,全安全,S0/S1安全清零,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-32,测试体系、CI 质量门禁与质量棘轮,全 CI,CI全门禁,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-33,独立 Worker、三端 Docker 与完整部署闭环,部署,六类runtime部署,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-34,性能、备份、恢复、对账与故障演练,性能恢复,性能+恢复实测,commit + push agent/full-build；远端SHA验证；PR/CI状态记录
+PHASE-35,最终 UAT、126 流程验收、缺陷清零与正式交付,最终 UAT,126流程+页面100%+发布,commit + push agent/full-build；远端SHA验证；PR/CI状态记录

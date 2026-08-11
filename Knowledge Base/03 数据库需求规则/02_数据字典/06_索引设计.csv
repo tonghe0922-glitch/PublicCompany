@@ -1,0 +1,1025 @@
+﻿table,name,columns,kind,unique,where,purpose
+core.tenant,idx_core_tenant_status,status,BTREE,否,,租户状态筛选
+core.tenant,idx_core_tenant_created,created_at DESC,BTREE,否,,租户创建时间查询
+core.tenant,uk_core_tenant_tenant_code,tenant_code,BTREE,是,,租户编码唯一约束
+core.dictionary,idx_core_dictionary_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.dictionary,idx_core_dictionary_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+core.dictionary,uk_core_dictionary_dict_code,"tenant_id,dict_code",BTREE,是,,字典编码唯一约束
+core.dictionary_item,idx_core_dictionary_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.dictionary_item,idx_core_dictionary_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+core.sequence_rule,idx_core_sequence_rule_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.sequence_rule,idx_core_sequence_rule_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+core.sequence_rule,uk_core_sequence_rule_rule_code,"tenant_id,rule_code",BTREE,是,,规则编码唯一约束
+core.idempotency_record,idx_core_idempotency_record_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.idempotency_record,idx_core_idempotency_record_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+core.idempotency_record,uk_core_idempotency_record_idempotency_key,"tenant_id,idempotency_key",BTREE,是,,幂等键唯一约束
+core.outbox_event,idx_core_outbox_event_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.outbox_event,idx_core_outbox_event_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+core.outbox_event,uk_core_outbox_event_event_key,"tenant_id,event_key",BTREE,是,,事件幂等键唯一约束
+core.inbox_event,idx_core_inbox_event_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+core.inbox_event,idx_core_inbox_event_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.user_account,idx_iam_user_account_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.user_account,idx_iam_user_account_status,"tenant_id,status",BTREE,否,,待办和状态查询
+iam.user_account,idx_iam_user_account_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.user_account,uk_iam_user_account_login_name,"tenant_id,login_name",BTREE,是,,登录名唯一约束
+iam.user_identity,idx_iam_user_identity_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.user_identity,idx_iam_user_identity_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.role,idx_iam_role_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.role,idx_iam_role_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.role,uk_iam_role_role_code,"tenant_id,role_code",BTREE,是,,角色编码唯一约束
+iam.permission,idx_iam_permission_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.permission,idx_iam_permission_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.permission,uk_iam_permission_permission_code,"tenant_id,permission_code",BTREE,是,,权限编码唯一约束
+iam.role_permission,idx_iam_role_permission_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.role_permission,idx_iam_role_permission_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.user_role,idx_iam_user_role_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.user_role,idx_iam_user_role_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.data_scope_rule,idx_iam_data_scope_rule_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.data_scope_rule,idx_iam_data_scope_rule_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.data_scope_rule,uk_iam_data_scope_rule_scope_code,"tenant_id,scope_code",BTREE,是,,范围编码唯一约束
+org.organization,idx_org_organization_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+org.organization,idx_org_organization_status,"tenant_id,status",BTREE,否,,待办和状态查询
+org.organization,idx_org_organization_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+org.organization,uk_org_organization_org_code,"tenant_id,org_code",BTREE,是,,组织编码唯一约束
+org.position,idx_org_position_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+org.position,idx_org_position_status,"tenant_id,status",BTREE,否,,待办和状态查询
+org.position,idx_org_position_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+org.position,uk_org_position_position_code,"tenant_id,position_code",BTREE,是,,岗位编码唯一约束
+org.employee,idx_org_employee_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+org.employee,idx_org_employee_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+org.employee,uk_org_employee_employee_no,"tenant_id,employee_no",BTREE,是,,员工编号唯一约束
+org.employee_position,idx_org_employee_position_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+org.employee_position,idx_org_employee_position_status,"tenant_id,status",BTREE,否,,待办和状态查询
+org.employee_position,idx_org_employee_position_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.customer,idx_mdm_customer_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.customer,idx_mdm_customer_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.customer,idx_mdm_customer_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.customer,uk_mdm_customer_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+mdm.supplier,idx_mdm_supplier_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.supplier,idx_mdm_supplier_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.supplier,idx_mdm_supplier_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.supplier,uk_mdm_supplier_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+mdm.merchant,idx_mdm_merchant_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.merchant,idx_mdm_merchant_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.merchant,idx_mdm_merchant_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.merchant,uk_mdm_merchant_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+mdm.product,idx_mdm_product_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.product,idx_mdm_product_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.product,idx_mdm_product_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.product,uk_mdm_product_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+mdm.asset,idx_mdm_asset_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.asset,idx_mdm_asset_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.asset,idx_mdm_asset_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.asset,uk_mdm_asset_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+mdm.location,idx_mdm_location_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+mdm.location,idx_mdm_location_status,"tenant_id,status",BTREE,否,,待办和状态查询
+mdm.location,idx_mdm_location_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+mdm.location,uk_mdm_location_master_code,"tenant_id,master_code",BTREE,是,,主数据编码唯一约束
+workflow.wf_definition,idx_workflow_wf_definition_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_definition,idx_workflow_wf_definition_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_definition,uk_workflow_wf_definition_process_code,"tenant_id,process_code",BTREE,是,,流程编码唯一约束
+workflow.wf_version,idx_workflow_wf_version_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_version,idx_workflow_wf_version_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_version,idx_workflow_wf_version_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_node,idx_workflow_wf_node_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_node,idx_workflow_wf_node_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_transition,idx_workflow_wf_transition_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_transition,idx_workflow_wf_transition_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_instance,idx_workflow_wf_instance_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_instance,idx_workflow_wf_instance_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_instance,idx_workflow_wf_instance_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_instance,uk_workflow_wf_instance_instance_no,"tenant_id,instance_no",BTREE,是,,流程实例编号唯一约束
+workflow.wf_task,idx_workflow_wf_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_task,idx_workflow_wf_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_task,idx_workflow_wf_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_task,uk_workflow_wf_task_task_no,"tenant_id,task_no",BTREE,是,,任务编号唯一约束
+workflow.wf_action_log,idx_workflow_wf_action_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_action_log,idx_workflow_wf_action_log_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_form_definition,idx_workflow_wf_form_definition_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_form_definition,idx_workflow_wf_form_definition_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_submission,idx_workflow_wf_submission_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_submission,idx_workflow_wf_submission_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_submission,idx_workflow_wf_submission_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_submission,uk_workflow_wf_submission_submission_no,"tenant_id,submission_no",BTREE,是,,提交编号唯一约束
+workflow.wf_submission_value,idx_workflow_wf_submission_value_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_submission_value,idx_workflow_wf_submission_value_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_business_relation,idx_workflow_wf_business_relation_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_business_relation,idx_workflow_wf_business_relation_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_orchestration_instance,idx_workflow_wf_orchestration_instance_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_orchestration_instance,uk_workflow_wf_orchestration_instance_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+workflow.wf_orchestration_instance,idx_workflow_wf_orchestration_instance_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_orchestration_instance,idx_workflow_wf_orchestration_instance_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_orchestration_instance,idx_workflow_wf_orchestration_instance_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+workflow.wf_orchestration_instance,uk_workflow_wf_orchestration_instance_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+workflow.wf_orchestration_link,idx_workflow_wf_orchestration_link_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_orchestration_link,idx_workflow_wf_orchestration_link_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.wf_orchestration_link,idx_workflow_wf_orchestration_link_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_rule,idx_workflow_wf_rule_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_rule,idx_workflow_wf_rule_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_sla_policy,idx_workflow_wf_sla_policy_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_sla_policy,idx_workflow_wf_sla_policy_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_sla_policy,uk_workflow_wf_sla_policy_policy_code,"tenant_id,policy_code",BTREE,是,,策略编码唯一约束
+workflow.generic_request,idx_workflow_generic_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.generic_request,uk_workflow_generic_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+workflow.generic_request,idx_workflow_generic_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+workflow.generic_request,idx_workflow_generic_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.generic_request,idx_workflow_generic_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+workflow.generic_request,uk_workflow_generic_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+document.file_object,idx_document_file_object_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+document.file_object,idx_document_file_object_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+document.file_object,uk_document_file_object_object_key,"tenant_id,object_key",BTREE,是,,对象键唯一约束
+document.attachment_link,idx_document_attachment_link_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+document.attachment_link,idx_document_attachment_link_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+document.signature_envelope,idx_document_signature_envelope_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+document.signature_envelope,uk_document_signature_envelope_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+document.signature_envelope,idx_document_signature_envelope_status,"tenant_id,status",BTREE,否,,待办和状态查询
+document.signature_envelope,idx_document_signature_envelope_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+document.signature_envelope,idx_document_signature_envelope_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+document.signature_envelope,uk_document_signature_envelope_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+document.signature_envelope,uk_document_signature_envelope_envelope_no,"tenant_id,envelope_no",BTREE,是,,签署信封号唯一约束
+document.signature_party,idx_document_signature_party_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+document.signature_party,idx_document_signature_party_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+document.signature_party,uk_document_signature_party_order,"tenant_id,envelope_id,sign_order",BTREE,是,is_deleted = false,同一签署信封内签署顺序唯一
+notification.template,idx_notification_template_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+notification.template,idx_notification_template_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+notification.template,uk_notification_template_template_code,"tenant_id,template_code",BTREE,是,,模板编码唯一约束
+notification.message,idx_notification_message_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+notification.message,idx_notification_message_status,"tenant_id,status",BTREE,否,,待办和状态查询
+notification.message,idx_notification_message_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+notification.message,uk_notification_message_message_no,"tenant_id,message_no",BTREE,是,,消息编号唯一约束
+integration.endpoint,idx_integration_endpoint_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.endpoint,idx_integration_endpoint_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+integration.endpoint,uk_integration_endpoint_endpoint_code,"tenant_id,endpoint_code",BTREE,是,,端点编码唯一约束
+integration.request_log,idx_integration_request_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.request_log,idx_integration_request_log_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+integration.request_log,uk_integration_request_log_request_id,"tenant_id,request_id",BTREE,是,,请求ID唯一约束
+integration.retry_task,idx_integration_retry_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.retry_task,idx_integration_retry_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+integration.retry_task,idx_integration_retry_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+integration.dead_letter,idx_integration_dead_letter_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.dead_letter,idx_integration_dead_letter_status,"tenant_id,status",BTREE,否,,待办和状态查询
+integration.dead_letter,idx_integration_dead_letter_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+integration.data_import_job,idx_integration_data_import_job_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.data_import_job,uk_integration_data_import_job_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+integration.data_import_job,idx_integration_data_import_job_status,"tenant_id,status",BTREE,否,,待办和状态查询
+integration.data_import_job,idx_integration_data_import_job_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+integration.data_import_job,idx_integration_data_import_job_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+integration.data_import_job,uk_integration_data_import_job_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+audit.data_export_request,idx_audit_data_export_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.data_export_request,uk_audit_data_export_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+audit.data_export_request,idx_audit_data_export_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+audit.data_export_request,idx_audit_data_export_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+audit.data_export_request,idx_audit_data_export_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+audit.data_export_request,uk_audit_data_export_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+audit.data_quality_issue,idx_audit_data_quality_issue_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.data_quality_issue,uk_audit_data_quality_issue_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+audit.data_quality_issue,idx_audit_data_quality_issue_status,"tenant_id,status",BTREE,否,,待办和状态查询
+audit.data_quality_issue,idx_audit_data_quality_issue_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+audit.data_quality_issue,idx_audit_data_quality_issue_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+audit.data_quality_issue,uk_audit_data_quality_issue_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+audit.audit_policy,idx_audit_audit_policy_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.audit_policy,idx_audit_audit_policy_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+audit.audit_policy,uk_audit_audit_policy_policy_code,"tenant_id,policy_code",BTREE,是,,策略编码唯一约束
+audit.operation_log,idx_audit_operation_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.data_change_log,idx_audit_data_change_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.access_log,idx_audit_access_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.rule_execution_log,idx_audit_rule_execution_log_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.security_event,idx_audit_security_event_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.login_session,idx_iam_login_session_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.login_session,uk_iam_login_session_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+iam.login_session,idx_iam_login_session_status,"tenant_id,status",BTREE,否,,待办和状态查询
+iam.login_session,idx_iam_login_session_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.login_session,idx_iam_login_session_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+iam.login_session,uk_iam_login_session_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+iam.login_session_item,idx_iam_login_session_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.login_session_item,idx_iam_login_session_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.permission_request,idx_iam_permission_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.permission_request,uk_iam_permission_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+iam.permission_request,idx_iam_permission_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+iam.permission_request,idx_iam_permission_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.permission_request,idx_iam_permission_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+iam.permission_request,uk_iam_permission_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+iam.permission_request_item,idx_iam_permission_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.permission_request_item,idx_iam_permission_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_profile_change,idx_hr_employee_profile_change_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_profile_change,uk_hr_employee_profile_change_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+hr.employee_profile_change,idx_hr_employee_profile_change_status,"tenant_id,status",BTREE,否,,待办和状态查询
+hr.employee_profile_change,idx_hr_employee_profile_change_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_profile_change,idx_hr_employee_profile_change_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+hr.employee_profile_change,uk_hr_employee_profile_change_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.employee_profile_change_item,idx_hr_employee_profile_change_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_profile_change_item,idx_hr_employee_profile_change_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.notice,idx_collaboration_notice_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.notice,uk_collaboration_notice_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+collaboration.notice,idx_collaboration_notice_status,"tenant_id,status",BTREE,否,,待办和状态查询
+collaboration.notice,idx_collaboration_notice_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.notice,idx_collaboration_notice_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+collaboration.notice,uk_collaboration_notice_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+collaboration.notice_item,idx_collaboration_notice_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.notice_item,idx_collaboration_notice_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.meeting,idx_collaboration_meeting_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.meeting,uk_collaboration_meeting_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+collaboration.meeting,idx_collaboration_meeting_status,"tenant_id,status",BTREE,否,,待办和状态查询
+collaboration.meeting,idx_collaboration_meeting_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.meeting,idx_collaboration_meeting_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+collaboration.meeting,uk_collaboration_meeting_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+collaboration.meeting_item,idx_collaboration_meeting_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.meeting_item,idx_collaboration_meeting_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.shift_change_request,idx_attendance_shift_change_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.shift_change_request,uk_attendance_shift_change_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+attendance.shift_change_request,idx_attendance_shift_change_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+attendance.shift_change_request,idx_attendance_shift_change_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.shift_change_request,idx_attendance_shift_change_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+attendance.shift_change_request,uk_attendance_shift_change_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+attendance.shift_change_request_item,idx_attendance_shift_change_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.shift_change_request_item,idx_attendance_shift_change_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.leave_request,idx_attendance_leave_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.leave_request,uk_attendance_leave_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+attendance.leave_request,idx_attendance_leave_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+attendance.leave_request,idx_attendance_leave_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.leave_request,idx_attendance_leave_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+attendance.leave_request,uk_attendance_leave_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+attendance.leave_request_item,idx_attendance_leave_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.leave_request_item,idx_attendance_leave_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.overtime_request,idx_attendance_overtime_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.overtime_request,uk_attendance_overtime_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+attendance.overtime_request,idx_attendance_overtime_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+attendance.overtime_request,idx_attendance_overtime_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+attendance.overtime_request,idx_attendance_overtime_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+attendance.overtime_request,uk_attendance_overtime_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+attendance.overtime_request_item,idx_attendance_overtime_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+attendance.overtime_request_item,idx_attendance_overtime_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+learning.learning_assignment,idx_learning_learning_assignment_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+learning.learning_assignment,uk_learning_learning_assignment_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+learning.learning_assignment,idx_learning_learning_assignment_status,"tenant_id,status",BTREE,否,,待办和状态查询
+learning.learning_assignment,idx_learning_learning_assignment_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+learning.learning_assignment,idx_learning_learning_assignment_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+learning.learning_assignment,uk_learning_learning_assignment_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+performance.performance_cycle,idx_performance_performance_cycle_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+performance.performance_cycle,uk_performance_performance_cycle_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+performance.performance_cycle,idx_performance_performance_cycle_status,"tenant_id,status",BTREE,否,,待办和状态查询
+performance.performance_cycle,idx_performance_performance_cycle_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+performance.performance_cycle,idx_performance_performance_cycle_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+performance.performance_cycle,uk_performance_performance_cycle_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.promotion_request,idx_hr_promotion_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.promotion_request,uk_hr_promotion_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+hr.promotion_request,idx_hr_promotion_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+hr.promotion_request,idx_hr_promotion_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.promotion_request,idx_hr_promotion_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+hr.promotion_request,uk_hr_promotion_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.promotion_request_item,idx_hr_promotion_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.promotion_request_item,idx_hr_promotion_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reward.reward_case,idx_reward_reward_case_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reward.reward_case,uk_reward_reward_case_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reward.reward_case,idx_reward_reward_case_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reward.reward_case,idx_reward_reward_case_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reward.reward_case,idx_reward_reward_case_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reward.reward_case,uk_reward_reward_case_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reward.discipline_case,idx_reward_discipline_case_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reward.discipline_case,uk_reward_discipline_case_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reward.discipline_case,idx_reward_discipline_case_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reward.discipline_case,idx_reward_discipline_case_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reward.discipline_case,idx_reward_discipline_case_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reward.discipline_case,uk_reward_discipline_case_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reward.point_transaction,idx_reward_point_transaction_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reward.point_transaction,uk_reward_point_transaction_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reward.point_transaction,idx_reward_point_transaction_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reward.point_transaction,idx_reward_point_transaction_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reward.point_transaction,idx_reward_point_transaction_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reward.point_transaction,uk_reward_point_transaction_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reward.point_transaction_item,idx_reward_point_transaction_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reward.point_transaction_item,idx_reward_point_transaction_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+welfare.care_case,idx_welfare_care_case_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+welfare.care_case,uk_welfare_care_case_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+welfare.care_case,idx_welfare_care_case_status,"tenant_id,status",BTREE,否,,待办和状态查询
+welfare.care_case,idx_welfare_care_case_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+welfare.care_case,idx_welfare_care_case_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+welfare.care_case,uk_welfare_care_case_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+integration.data_import_job_item,idx_integration_data_import_job_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+integration.data_import_job_item,idx_integration_data_import_job_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+audit.data_export_request_item,idx_audit_data_export_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.data_export_request_item,idx_audit_data_export_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+audit.data_quality_issue_item,idx_audit_data_quality_issue_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+audit.data_quality_issue_item,idx_audit_data_quality_issue_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.executive_directive,idx_collaboration_executive_directive_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.executive_directive,uk_collaboration_executive_directive_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+collaboration.executive_directive,idx_collaboration_executive_directive_status,"tenant_id,status",BTREE,否,,待办和状态查询
+collaboration.executive_directive,idx_collaboration_executive_directive_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.executive_directive,idx_collaboration_executive_directive_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+collaboration.executive_directive,uk_collaboration_executive_directive_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+collaboration.executive_directive_item,idx_collaboration_executive_directive_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.executive_directive_item,idx_collaboration_executive_directive_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.major_matter,idx_collaboration_major_matter_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+collaboration.major_matter,uk_collaboration_major_matter_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+collaboration.major_matter,idx_collaboration_major_matter_status,"tenant_id,status",BTREE,否,,待办和状态查询
+collaboration.major_matter,idx_collaboration_major_matter_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+collaboration.major_matter,idx_collaboration_major_matter_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+collaboration.major_matter,uk_collaboration_major_matter_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+finance.budget_request,idx_finance_budget_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.budget_request,uk_finance_budget_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+finance.budget_request,idx_finance_budget_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+finance.budget_request,idx_finance_budget_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.budget_request,idx_finance_budget_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+finance.budget_request,uk_finance_budget_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+finance.budget_request_item,idx_finance_budget_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.budget_request_item,idx_finance_budget_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.expense_claim,idx_finance_expense_claim_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.expense_claim,uk_finance_expense_claim_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+finance.expense_claim,idx_finance_expense_claim_status,"tenant_id,status",BTREE,否,,待办和状态查询
+finance.expense_claim,idx_finance_expense_claim_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.expense_claim,idx_finance_expense_claim_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+finance.expense_claim,uk_finance_expense_claim_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+finance.expense_claim_item,idx_finance_expense_claim_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.expense_claim_item,idx_finance_expense_claim_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.loan_request,idx_finance_loan_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.loan_request,uk_finance_loan_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+finance.loan_request,idx_finance_loan_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+finance.loan_request,idx_finance_loan_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.loan_request,idx_finance_loan_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+finance.loan_request,uk_finance_loan_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+finance.loan_request_item,idx_finance_loan_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.loan_request_item,idx_finance_loan_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.reconciliation_task,idx_finance_reconciliation_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.reconciliation_task,uk_finance_reconciliation_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+finance.reconciliation_task,idx_finance_reconciliation_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+finance.reconciliation_task,idx_finance_reconciliation_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+finance.reconciliation_task,idx_finance_reconciliation_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+finance.reconciliation_task,uk_finance_reconciliation_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+finance.reconciliation_task_item,idx_finance_reconciliation_task_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+finance.reconciliation_task_item,idx_finance_reconciliation_task_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_onboarding,idx_hr_employee_onboarding_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_onboarding,uk_hr_employee_onboarding_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+hr.employee_onboarding,idx_hr_employee_onboarding_status,"tenant_id,status",BTREE,否,,待办和状态查询
+hr.employee_onboarding,idx_hr_employee_onboarding_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_onboarding,idx_hr_employee_onboarding_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+hr.employee_onboarding,uk_hr_employee_onboarding_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.employee_onboarding_item,idx_hr_employee_onboarding_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_onboarding_item,idx_hr_employee_onboarding_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_transfer,idx_hr_employee_transfer_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_transfer,uk_hr_employee_transfer_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+hr.employee_transfer,idx_hr_employee_transfer_status,"tenant_id,status",BTREE,否,,待办和状态查询
+hr.employee_transfer,idx_hr_employee_transfer_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_transfer,idx_hr_employee_transfer_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+hr.employee_transfer,uk_hr_employee_transfer_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.employee_transfer_item,idx_hr_employee_transfer_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_transfer_item,idx_hr_employee_transfer_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_offboarding,idx_hr_employee_offboarding_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_offboarding,uk_hr_employee_offboarding_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+hr.employee_offboarding,idx_hr_employee_offboarding_status,"tenant_id,status",BTREE,否,,待办和状态查询
+hr.employee_offboarding,idx_hr_employee_offboarding_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+hr.employee_offboarding,idx_hr_employee_offboarding_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+hr.employee_offboarding,uk_hr_employee_offboarding_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+hr.employee_offboarding_item,idx_hr_employee_offboarding_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+hr.employee_offboarding_item,idx_hr_employee_offboarding_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.archive_package,idx_archive_archive_package_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.archive_package,uk_archive_archive_package_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+archive.archive_package,idx_archive_archive_package_status,"tenant_id,status",BTREE,否,,待办和状态查询
+archive.archive_package,idx_archive_archive_package_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.archive_package,idx_archive_archive_package_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+archive.archive_package,uk_archive_archive_package_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+archive.archive_package_item,idx_archive_archive_package_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.archive_package_item,idx_archive_archive_package_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.borrow_request,idx_archive_borrow_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.borrow_request,uk_archive_borrow_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+archive.borrow_request,idx_archive_borrow_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+archive.borrow_request,idx_archive_borrow_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.borrow_request,idx_archive_borrow_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+archive.borrow_request,uk_archive_borrow_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+archive.borrow_request_item,idx_archive_borrow_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.borrow_request_item,idx_archive_borrow_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.disposal_appraisal,idx_archive_disposal_appraisal_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.disposal_appraisal,uk_archive_disposal_appraisal_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+archive.disposal_appraisal,idx_archive_disposal_appraisal_status,"tenant_id,status",BTREE,否,,待办和状态查询
+archive.disposal_appraisal,idx_archive_disposal_appraisal_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+archive.disposal_appraisal,idx_archive_disposal_appraisal_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+archive.disposal_appraisal,uk_archive_disposal_appraisal_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+archive.disposal_appraisal_item,idx_archive_disposal_appraisal_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+archive.disposal_appraisal_item,idx_archive_disposal_appraisal_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.purchase_request,idx_procurement_purchase_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.purchase_request,uk_procurement_purchase_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+procurement.purchase_request,idx_procurement_purchase_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+procurement.purchase_request,idx_procurement_purchase_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.purchase_request,idx_procurement_purchase_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+procurement.purchase_request,uk_procurement_purchase_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+procurement.purchase_request_item,idx_procurement_purchase_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.purchase_request_item,idx_procurement_purchase_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.emergency_purchase,idx_procurement_emergency_purchase_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.emergency_purchase,uk_procurement_emergency_purchase_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+procurement.emergency_purchase,idx_procurement_emergency_purchase_status,"tenant_id,status",BTREE,否,,待办和状态查询
+procurement.emergency_purchase,idx_procurement_emergency_purchase_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.emergency_purchase,idx_procurement_emergency_purchase_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+procurement.emergency_purchase,uk_procurement_emergency_purchase_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+procurement.emergency_purchase_item,idx_procurement_emergency_purchase_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.emergency_purchase_item,idx_procurement_emergency_purchase_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.purchase_return,idx_procurement_purchase_return_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.purchase_return,uk_procurement_purchase_return_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+procurement.purchase_return,idx_procurement_purchase_return_status,"tenant_id,status",BTREE,否,,待办和状态查询
+procurement.purchase_return,idx_procurement_purchase_return_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+procurement.purchase_return,idx_procurement_purchase_return_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+procurement.purchase_return,uk_procurement_purchase_return_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+procurement.purchase_return_item,idx_procurement_purchase_return_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+procurement.purchase_return_item,idx_procurement_purchase_return_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.ticket_order,idx_ticketing_ticket_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.ticket_order,uk_ticketing_ticket_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ticketing.ticket_order,idx_ticketing_ticket_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ticketing.ticket_order,idx_ticketing_ticket_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.ticket_order,idx_ticketing_ticket_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ticketing.ticket_order,uk_ticketing_ticket_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ticketing.ticket_order_item,idx_ticketing_ticket_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.ticket_order_item,idx_ticketing_ticket_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.ticket_refund_change,idx_ticketing_ticket_refund_change_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.ticket_refund_change,uk_ticketing_ticket_refund_change_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ticketing.ticket_refund_change,idx_ticketing_ticket_refund_change_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ticketing.ticket_refund_change,idx_ticketing_ticket_refund_change_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.ticket_refund_change,idx_ticketing_ticket_refund_change_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ticketing.ticket_refund_change,uk_ticketing_ticket_refund_change_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ticketing.ticket_refund_change_item,idx_ticketing_ticket_refund_change_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.ticket_refund_change_item,idx_ticketing_ticket_refund_change_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.offline_check_event,idx_ticketing_offline_check_event_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.offline_check_event,uk_ticketing_offline_check_event_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ticketing.offline_check_event,idx_ticketing_offline_check_event_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ticketing.offline_check_event,idx_ticketing_offline_check_event_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ticketing.offline_check_event,idx_ticketing_offline_check_event_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ticketing.offline_check_event,uk_ticketing_offline_check_event_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ticketing.offline_check_event_item,idx_ticketing_offline_check_event_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ticketing.offline_check_event_item,idx_ticketing_offline_check_event_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+crm.opportunity,idx_crm_opportunity_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+crm.opportunity,uk_crm_opportunity_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+crm.opportunity,idx_crm_opportunity_status,"tenant_id,status",BTREE,否,,待办和状态查询
+crm.opportunity,idx_crm_opportunity_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+crm.opportunity,idx_crm_opportunity_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+crm.opportunity,uk_crm_opportunity_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+crm.opportunity_item,idx_crm_opportunity_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+crm.opportunity_item,idx_crm_opportunity_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+marketing.campaign,idx_marketing_campaign_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+marketing.campaign,uk_marketing_campaign_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+marketing.campaign,idx_marketing_campaign_status,"tenant_id,status",BTREE,否,,待办和状态查询
+marketing.campaign,idx_marketing_campaign_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+marketing.campaign,idx_marketing_campaign_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+marketing.campaign,uk_marketing_campaign_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+marketing.campaign_item,idx_marketing_campaign_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+marketing.campaign_item,idx_marketing_campaign_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+crm.channel_partner,idx_crm_channel_partner_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+crm.channel_partner,uk_crm_channel_partner_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+crm.channel_partner,idx_crm_channel_partner_status,"tenant_id,status",BTREE,否,,待办和状态查询
+crm.channel_partner,idx_crm_channel_partner_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+crm.channel_partner,idx_crm_channel_partner_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+crm.channel_partner,uk_crm_channel_partner_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+crm.channel_partner_item,idx_crm_channel_partner_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+crm.channel_partner_item,idx_crm_channel_partner_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+education.course_product,idx_education_course_product_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+education.course_product,uk_education_course_product_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+education.course_product,idx_education_course_product_status,"tenant_id,status",BTREE,否,,待办和状态查询
+education.course_product,idx_education_course_product_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+education.course_product,idx_education_course_product_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+education.course_product,uk_education_course_product_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+education.study_tour_delivery,idx_education_study_tour_delivery_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+education.study_tour_delivery,uk_education_study_tour_delivery_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+education.study_tour_delivery,idx_education_study_tour_delivery_status,"tenant_id,status",BTREE,否,,待办和状态查询
+education.study_tour_delivery,idx_education_study_tour_delivery_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+education.study_tour_delivery,idx_education_study_tour_delivery_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+education.study_tour_delivery,uk_education_study_tour_delivery_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+education.teacher_schedule,idx_education_teacher_schedule_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+education.teacher_schedule,uk_education_teacher_schedule_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+education.teacher_schedule,idx_education_teacher_schedule_status,"tenant_id,status",BTREE,否,,待办和状态查询
+education.teacher_schedule,idx_education_teacher_schedule_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+education.teacher_schedule,idx_education_teacher_schedule_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+education.teacher_schedule,uk_education_teacher_schedule_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+education.teacher_schedule_item,idx_education_teacher_schedule_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+education.teacher_schedule_item,idx_education_teacher_schedule_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+administration.official_document,idx_administration_official_document_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+administration.official_document,uk_administration_official_document_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+administration.official_document,idx_administration_official_document_status,"tenant_id,status",BTREE,否,,待办和状态查询
+administration.official_document,idx_administration_official_document_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+administration.official_document,idx_administration_official_document_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+administration.official_document,uk_administration_official_document_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+administration.official_document_item,idx_administration_official_document_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+administration.official_document_item,idx_administration_official_document_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+administration.large_event,idx_administration_large_event_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+administration.large_event,uk_administration_large_event_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+administration.large_event,idx_administration_large_event_status,"tenant_id,status",BTREE,否,,待办和状态查询
+administration.large_event,idx_administration_large_event_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+administration.large_event,idx_administration_large_event_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+administration.large_event,uk_administration_large_event_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+administration.large_event_item,idx_administration_large_event_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+administration.large_event_item,idx_administration_large_event_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.stock_in,idx_asset_stock_in_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+asset.stock_in,uk_asset_stock_in_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+asset.stock_in,idx_asset_stock_in_status,"tenant_id,status",BTREE,否,,待办和状态查询
+asset.stock_in,idx_asset_stock_in_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.stock_in,idx_asset_stock_in_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+asset.stock_in,uk_asset_stock_in_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+asset.asset_use_transaction,idx_asset_asset_use_transaction_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+asset.asset_use_transaction,uk_asset_asset_use_transaction_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+asset.asset_use_transaction,idx_asset_asset_use_transaction_status,"tenant_id,status",BTREE,否,,待办和状态查询
+asset.asset_use_transaction,idx_asset_asset_use_transaction_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.asset_use_transaction,idx_asset_asset_use_transaction_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+asset.asset_use_transaction,uk_asset_asset_use_transaction_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+asset.stocktake,idx_asset_stocktake_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+asset.stocktake,uk_asset_stocktake_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+asset.stocktake,idx_asset_stocktake_status,"tenant_id,status",BTREE,否,,待办和状态查询
+asset.stocktake,idx_asset_stocktake_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.stocktake,idx_asset_stocktake_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+asset.stocktake,uk_asset_stocktake_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+asset.stocktake_item,idx_asset_stocktake_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+asset.stocktake_item,idx_asset_stocktake_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.asset_disposal,idx_asset_asset_disposal_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+asset.asset_disposal,uk_asset_asset_disposal_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+asset.asset_disposal,idx_asset_asset_disposal_status,"tenant_id,status",BTREE,否,,待办和状态查询
+asset.asset_disposal,idx_asset_asset_disposal_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+asset.asset_disposal,idx_asset_asset_disposal_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+asset.asset_disposal,uk_asset_asset_disposal_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+fleet.vehicle_dispatch,idx_fleet_vehicle_dispatch_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+fleet.vehicle_dispatch,uk_fleet_vehicle_dispatch_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+fleet.vehicle_dispatch,idx_fleet_vehicle_dispatch_status,"tenant_id,status",BTREE,否,,待办和状态查询
+fleet.vehicle_dispatch,idx_fleet_vehicle_dispatch_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+fleet.vehicle_dispatch,idx_fleet_vehicle_dispatch_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+fleet.vehicle_dispatch,uk_fleet_vehicle_dispatch_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+fleet.vehicle_incident,idx_fleet_vehicle_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+fleet.vehicle_incident,uk_fleet_vehicle_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+fleet.vehicle_incident,idx_fleet_vehicle_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+fleet.vehicle_incident,idx_fleet_vehicle_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+fleet.vehicle_incident,idx_fleet_vehicle_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+fleet.vehicle_incident,uk_fleet_vehicle_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+dormitory.stay_record,idx_dormitory_stay_record_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+dormitory.stay_record,uk_dormitory_stay_record_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+dormitory.stay_record,idx_dormitory_stay_record_status,"tenant_id,status",BTREE,否,,待办和状态查询
+dormitory.stay_record,idx_dormitory_stay_record_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+dormitory.stay_record,idx_dormitory_stay_record_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+dormitory.stay_record,uk_dormitory_stay_record_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+maintenance.repair_order,idx_maintenance_repair_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+maintenance.repair_order,uk_maintenance_repair_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+maintenance.repair_order,idx_maintenance_repair_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+maintenance.repair_order,idx_maintenance_repair_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+maintenance.repair_order,idx_maintenance_repair_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+maintenance.repair_order,uk_maintenance_repair_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+maintenance.repair_order_item,idx_maintenance_repair_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+maintenance.repair_order_item,idx_maintenance_repair_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.group_meal_order,idx_catering_group_meal_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.group_meal_order,uk_catering_group_meal_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+catering.group_meal_order,idx_catering_group_meal_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+catering.group_meal_order,idx_catering_group_meal_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.group_meal_order,idx_catering_group_meal_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+catering.group_meal_order,uk_catering_group_meal_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+catering.group_meal_order_item,idx_catering_group_meal_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.group_meal_order_item,idx_catering_group_meal_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.ingredient_acceptance,idx_catering_ingredient_acceptance_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.ingredient_acceptance,uk_catering_ingredient_acceptance_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+catering.ingredient_acceptance,idx_catering_ingredient_acceptance_status,"tenant_id,status",BTREE,否,,待办和状态查询
+catering.ingredient_acceptance,idx_catering_ingredient_acceptance_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.ingredient_acceptance,idx_catering_ingredient_acceptance_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+catering.ingredient_acceptance,uk_catering_ingredient_acceptance_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+catering.ingredient_acceptance_item,idx_catering_ingredient_acceptance_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.ingredient_acceptance_item,idx_catering_ingredient_acceptance_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.food_safety_incident,idx_catering_food_safety_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.food_safety_incident,uk_catering_food_safety_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+catering.food_safety_incident,idx_catering_food_safety_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+catering.food_safety_incident,idx_catering_food_safety_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.food_safety_incident,idx_catering_food_safety_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+catering.food_safety_incident,uk_catering_food_safety_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+catering.food_safety_incident_item,idx_catering_food_safety_incident_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.food_safety_incident_item,idx_catering_food_safety_incident_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.meal_card_settlement,idx_catering_meal_card_settlement_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.meal_card_settlement,uk_catering_meal_card_settlement_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+catering.meal_card_settlement,idx_catering_meal_card_settlement_status,"tenant_id,status",BTREE,否,,待办和状态查询
+catering.meal_card_settlement,idx_catering_meal_card_settlement_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+catering.meal_card_settlement,idx_catering_meal_card_settlement_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+catering.meal_card_settlement,uk_catering_meal_card_settlement_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+catering.meal_card_settlement_item,idx_catering_meal_card_settlement_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+catering.meal_card_settlement_item,idx_catering_meal_card_settlement_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+security.patrol_task,idx_security_patrol_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+security.patrol_task,uk_security_patrol_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+security.patrol_task,idx_security_patrol_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+security.patrol_task,idx_security_patrol_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+security.patrol_task,idx_security_patrol_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+security.patrol_task,uk_security_patrol_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+security.crowd_alert,idx_security_crowd_alert_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+security.crowd_alert,uk_security_crowd_alert_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+security.crowd_alert,idx_security_crowd_alert_status,"tenant_id,status",BTREE,否,,待办和状态查询
+security.crowd_alert,idx_security_crowd_alert_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+security.crowd_alert,idx_security_crowd_alert_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+security.crowd_alert,uk_security_crowd_alert_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+security.security_incident,idx_security_security_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+security.security_incident,uk_security_security_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+security.security_incident,idx_security_security_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+security.security_incident,idx_security_security_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+security.security_incident,idx_security_security_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+security.security_incident,uk_security_security_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+security.event_security_plan,idx_security_event_security_plan_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+security.event_security_plan,uk_security_event_security_plan_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+security.event_security_plan,idx_security_event_security_plan_status,"tenant_id,status",BTREE,否,,待办和状态查询
+security.event_security_plan,idx_security_event_security_plan_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+security.event_security_plan,idx_security_event_security_plan_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+security.event_security_plan,uk_security_event_security_plan_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+cleaning.cleaning_task,idx_cleaning_cleaning_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.cleaning_task,uk_cleaning_cleaning_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+cleaning.cleaning_task,idx_cleaning_cleaning_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+cleaning.cleaning_task,idx_cleaning_cleaning_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+cleaning.cleaning_task,idx_cleaning_cleaning_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+cleaning.cleaning_task,uk_cleaning_cleaning_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+cleaning.cleaning_task_item,idx_cleaning_cleaning_task_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.cleaning_task_item,idx_cleaning_cleaning_task_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+cleaning.pollution_incident,idx_cleaning_pollution_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.pollution_incident,uk_cleaning_pollution_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+cleaning.pollution_incident,idx_cleaning_pollution_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+cleaning.pollution_incident,idx_cleaning_pollution_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+cleaning.pollution_incident,idx_cleaning_pollution_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+cleaning.pollution_incident,uk_cleaning_pollution_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+cleaning.pollution_incident_item,idx_cleaning_pollution_incident_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.pollution_incident_item,idx_cleaning_pollution_incident_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+cleaning.event_support,idx_cleaning_event_support_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.event_support,uk_cleaning_event_support_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+cleaning.event_support,idx_cleaning_event_support_status,"tenant_id,status",BTREE,否,,待办和状态查询
+cleaning.event_support,idx_cleaning_event_support_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+cleaning.event_support,idx_cleaning_event_support_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+cleaning.event_support,uk_cleaning_event_support_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+cleaning.event_support_item,idx_cleaning_event_support_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+cleaning.event_support_item,idx_cleaning_event_support_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_admission,idx_merchant_merchant_admission_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_admission,uk_merchant_merchant_admission_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+merchant.merchant_admission,idx_merchant_merchant_admission_status,"tenant_id,status",BTREE,否,,待办和状态查询
+merchant.merchant_admission,idx_merchant_merchant_admission_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_admission,idx_merchant_merchant_admission_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+merchant.merchant_admission,uk_merchant_merchant_admission_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+merchant.merchant_admission_item,idx_merchant_merchant_admission_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_admission_item,idx_merchant_merchant_admission_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_inspection,idx_merchant_merchant_inspection_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_inspection,uk_merchant_merchant_inspection_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+merchant.merchant_inspection,idx_merchant_merchant_inspection_status,"tenant_id,status",BTREE,否,,待办和状态查询
+merchant.merchant_inspection,idx_merchant_merchant_inspection_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_inspection,idx_merchant_merchant_inspection_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+merchant.merchant_inspection,uk_merchant_merchant_inspection_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+merchant.merchant_inspection_item,idx_merchant_merchant_inspection_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_inspection_item,idx_merchant_merchant_inspection_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_exit,idx_merchant_merchant_exit_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_exit,uk_merchant_merchant_exit_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+merchant.merchant_exit,idx_merchant_merchant_exit_status,"tenant_id,status",BTREE,否,,待办和状态查询
+merchant.merchant_exit,idx_merchant_merchant_exit_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+merchant.merchant_exit,idx_merchant_merchant_exit_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+merchant.merchant_exit,uk_merchant_merchant_exit_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+merchant.merchant_exit_item,idx_merchant_merchant_exit_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+merchant.merchant_exit_item,idx_merchant_merchant_exit_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.program,idx_entertainment_program_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.program,uk_entertainment_program_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.program,idx_entertainment_program_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.program,idx_entertainment_program_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.program,idx_entertainment_program_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.program,uk_entertainment_program_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.show_session,idx_entertainment_show_session_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.show_session,uk_entertainment_show_session_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.show_session,idx_entertainment_show_session_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.show_session,idx_entertainment_show_session_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.show_session,idx_entertainment_show_session_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.show_session,uk_entertainment_show_session_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.show_session_item,idx_entertainment_show_session_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.show_session_item,idx_entertainment_show_session_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.staff_shortage,idx_entertainment_staff_shortage_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.staff_shortage,uk_entertainment_staff_shortage_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.staff_shortage,idx_entertainment_staff_shortage_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.staff_shortage,idx_entertainment_staff_shortage_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.staff_shortage,idx_entertainment_staff_shortage_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.staff_shortage,uk_entertainment_staff_shortage_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.staff_shortage_item,idx_entertainment_staff_shortage_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.staff_shortage_item,idx_entertainment_staff_shortage_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.suspension_decision,idx_entertainment_suspension_decision_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.suspension_decision,uk_entertainment_suspension_decision_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.suspension_decision,idx_entertainment_suspension_decision_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.suspension_decision,idx_entertainment_suspension_decision_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.suspension_decision,idx_entertainment_suspension_decision_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.suspension_decision,uk_entertainment_suspension_decision_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.suspension_decision_item,idx_entertainment_suspension_decision_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.suspension_decision_item,idx_entertainment_suspension_decision_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+costume.session_preparation,idx_costume_session_preparation_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+costume.session_preparation,uk_costume_session_preparation_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+costume.session_preparation,idx_costume_session_preparation_status,"tenant_id,status",BTREE,否,,待办和状态查询
+costume.session_preparation,idx_costume_session_preparation_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+costume.session_preparation,idx_costume_session_preparation_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+costume.session_preparation,uk_costume_session_preparation_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+costume.damage_report,idx_costume_damage_report_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+costume.damage_report,uk_costume_damage_report_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+costume.damage_report,idx_costume_damage_report_status,"tenant_id,status",BTREE,否,,待办和状态查询
+costume.damage_report,idx_costume_damage_report_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+costume.damage_report,idx_costume_damage_report_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+costume.damage_report,uk_costume_damage_report_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+costume.inventory_check,idx_costume_inventory_check_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+costume.inventory_check,uk_costume_inventory_check_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+costume.inventory_check,idx_costume_inventory_check_status,"tenant_id,status",BTREE,否,,待办和状态查询
+costume.inventory_check,idx_costume_inventory_check_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+costume.inventory_check,idx_costume_inventory_check_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+costume.inventory_check,uk_costume_inventory_check_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+drone.flight_task,idx_drone_flight_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_task,uk_drone_flight_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+drone.flight_task,idx_drone_flight_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+drone.flight_task,idx_drone_flight_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+drone.flight_task,idx_drone_flight_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+drone.flight_task,uk_drone_flight_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+drone.flight_task_item,idx_drone_flight_task_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_task_item,idx_drone_flight_task_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+drone.flight_cancellation,idx_drone_flight_cancellation_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_cancellation,uk_drone_flight_cancellation_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+drone.flight_cancellation,idx_drone_flight_cancellation_status,"tenant_id,status",BTREE,否,,待办和状态查询
+drone.flight_cancellation,idx_drone_flight_cancellation_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+drone.flight_cancellation,idx_drone_flight_cancellation_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+drone.flight_cancellation,uk_drone_flight_cancellation_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+drone.flight_cancellation_item,idx_drone_flight_cancellation_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_cancellation_item,idx_drone_flight_cancellation_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+drone.flight_incident,idx_drone_flight_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_incident,uk_drone_flight_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+drone.flight_incident,idx_drone_flight_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+drone.flight_incident,idx_drone_flight_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+drone.flight_incident,idx_drone_flight_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+drone.flight_incident,uk_drone_flight_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+drone.flight_incident_item,idx_drone_flight_incident_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+drone.flight_incident_item,idx_drone_flight_incident_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.tech_support_task,idx_entertainment_tech_support_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.tech_support_task,uk_entertainment_tech_support_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.tech_support_task,idx_entertainment_tech_support_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.tech_support_task,idx_entertainment_tech_support_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.tech_support_task,idx_entertainment_tech_support_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.tech_support_task,uk_entertainment_tech_support_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.equipment_fault,idx_entertainment_equipment_fault_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.equipment_fault,uk_entertainment_equipment_fault_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.equipment_fault,idx_entertainment_equipment_fault_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.equipment_fault,idx_entertainment_equipment_fault_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.equipment_fault,idx_entertainment_equipment_fault_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.equipment_fault,uk_entertainment_equipment_fault_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+entertainment.equipment_fault_item,idx_entertainment_equipment_fault_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.equipment_fault_item,idx_entertainment_equipment_fault_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.suspension_advice,idx_entertainment_suspension_advice_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+entertainment.suspension_advice,uk_entertainment_suspension_advice_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+entertainment.suspension_advice,idx_entertainment_suspension_advice_status,"tenant_id,status",BTREE,否,,待办和状态查询
+entertainment.suspension_advice,idx_entertainment_suspension_advice_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+entertainment.suspension_advice,idx_entertainment_suspension_advice_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+entertainment.suspension_advice,uk_entertainment_suspension_advice_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.network_incident,idx_itops_network_incident_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.network_incident,uk_itops_network_incident_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+itops.network_incident,idx_itops_network_incident_status,"tenant_id,status",BTREE,否,,待办和状态查询
+itops.network_incident,idx_itops_network_incident_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.network_incident,idx_itops_network_incident_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+itops.network_incident,uk_itops_network_incident_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.network_incident_item,idx_itops_network_incident_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.network_incident_item,idx_itops_network_incident_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.network_change,idx_itops_network_change_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.network_change,uk_itops_network_change_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+itops.network_change,idx_itops_network_change_status,"tenant_id,status",BTREE,否,,待办和状态查询
+itops.network_change,idx_itops_network_change_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.network_change,idx_itops_network_change_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+itops.network_change,uk_itops_network_change_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.network_change_item,idx_itops_network_change_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.network_change_item,idx_itops_network_change_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.event_support,idx_itops_event_support_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.event_support,uk_itops_event_support_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+itops.event_support,idx_itops_event_support_status,"tenant_id,status",BTREE,否,,待办和状态查询
+itops.event_support,idx_itops_event_support_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.event_support,idx_itops_event_support_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+itops.event_support,uk_itops_event_support_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.event_support_item,idx_itops_event_support_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.event_support_item,idx_itops_event_support_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.service_request,idx_itops_service_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.service_request,uk_itops_service_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+itops.service_request,idx_itops_service_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+itops.service_request,idx_itops_service_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.service_request,idx_itops_service_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+itops.service_request,uk_itops_service_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.service_request_item,idx_itops_service_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.service_request_item,idx_itops_service_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.release,idx_devops_release_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.release,uk_devops_release_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+devops.release,idx_devops_release_status,"tenant_id,status",BTREE,否,,待办和状态查询
+devops.release,idx_devops_release_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.release,idx_devops_release_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+devops.release,uk_devops_release_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+devops.release_item,idx_devops_release_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.release_item,idx_devops_release_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.account_execution,idx_iam_account_execution_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.account_execution,uk_iam_account_execution_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+iam.account_execution,idx_iam_account_execution_status,"tenant_id,status",BTREE,否,,待办和状态查询
+iam.account_execution,idx_iam_account_execution_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+iam.account_execution,idx_iam_account_execution_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+iam.account_execution,uk_iam_account_execution_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+iam.account_execution_item,idx_iam_account_execution_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+iam.account_execution_item,idx_iam_account_execution_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.recovery_drill,idx_itops_recovery_drill_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.recovery_drill,uk_itops_recovery_drill_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+itops.recovery_drill,idx_itops_recovery_drill_status,"tenant_id,status",BTREE,否,,待办和状态查询
+itops.recovery_drill,idx_itops_recovery_drill_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+itops.recovery_drill,idx_itops_recovery_drill_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+itops.recovery_drill,uk_itops_recovery_drill_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+itops.recovery_drill_item,idx_itops_recovery_drill_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+itops.recovery_drill_item,idx_itops_recovery_drill_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.requirement,idx_devops_requirement_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.requirement,uk_devops_requirement_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+devops.requirement,idx_devops_requirement_status,"tenant_id,status",BTREE,否,,待办和状态查询
+devops.requirement,idx_devops_requirement_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.requirement,idx_devops_requirement_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+devops.requirement,uk_devops_requirement_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+devops.requirement_item,idx_devops_requirement_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.requirement_item,idx_devops_requirement_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.defect,idx_devops_defect_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.defect,uk_devops_defect_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+devops.defect,idx_devops_defect_status,"tenant_id,status",BTREE,否,,待办和状态查询
+devops.defect,idx_devops_defect_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+devops.defect,idx_devops_defect_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+devops.defect,uk_devops_defect_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+devops.defect_item,idx_devops_defect_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+devops.defect_item,idx_devops_defect_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.material_request,idx_content_material_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.material_request,uk_content_material_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+content.material_request,idx_content_material_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+content.material_request,idx_content_material_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.material_request,idx_content_material_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+content.material_request,uk_content_material_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+content.material_request_item,idx_content_material_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.material_request_item,idx_content_material_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.shooting_task,idx_content_shooting_task_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.shooting_task,uk_content_shooting_task_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+content.shooting_task,idx_content_shooting_task_status,"tenant_id,status",BTREE,否,,待办和状态查询
+content.shooting_task,idx_content_shooting_task_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.shooting_task,idx_content_shooting_task_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+content.shooting_task,uk_content_shooting_task_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+content.shooting_task_item,idx_content_shooting_task_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.shooting_task_item,idx_content_shooting_task_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.change_request,idx_content_change_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.change_request,uk_content_change_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+content.change_request,idx_content_change_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+content.change_request,idx_content_change_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+content.change_request,idx_content_change_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+content.change_request,uk_content_change_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+content.change_request_item,idx_content_change_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+content.change_request_item,idx_content_change_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.project,idx_planning_project_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.project,uk_planning_project_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+planning.project,idx_planning_project_status,"tenant_id,status",BTREE,否,,待办和状态查询
+planning.project,idx_planning_project_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.project,idx_planning_project_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+planning.project,uk_planning_project_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+planning.project_item,idx_planning_project_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.project_item,idx_planning_project_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.change_request,idx_planning_change_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.change_request,uk_planning_change_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+planning.change_request,idx_planning_change_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+planning.change_request,idx_planning_change_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.change_request,idx_planning_change_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+planning.change_request,uk_planning_change_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+planning.change_request_item,idx_planning_change_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.change_request_item,idx_planning_change_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.event_handover,idx_planning_event_handover_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.event_handover,uk_planning_event_handover_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+planning.event_handover,idx_planning_event_handover_status,"tenant_id,status",BTREE,否,,待办和状态查询
+planning.event_handover,idx_planning_event_handover_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+planning.event_handover,idx_planning_event_handover_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+planning.event_handover,uk_planning_event_handover_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+planning.event_handover_item,idx_planning_event_handover_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+planning.event_handover_item,idx_planning_event_handover_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.product_listing,idx_ecommerce_product_listing_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.product_listing,uk_ecommerce_product_listing_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ecommerce.product_listing,idx_ecommerce_product_listing_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ecommerce.product_listing,idx_ecommerce_product_listing_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.product_listing,idx_ecommerce_product_listing_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ecommerce.product_listing,uk_ecommerce_product_listing_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ecommerce.product_listing_item,idx_ecommerce_product_listing_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.product_listing_item,idx_ecommerce_product_listing_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.ota_order,idx_ecommerce_ota_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.ota_order,uk_ecommerce_ota_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ecommerce.ota_order,idx_ecommerce_ota_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ecommerce.ota_order,idx_ecommerce_ota_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.ota_order,idx_ecommerce_ota_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ecommerce.ota_order,uk_ecommerce_ota_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ecommerce.ota_order_item,idx_ecommerce_ota_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.ota_order_item,idx_ecommerce_ota_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.refund_order,idx_ecommerce_refund_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.refund_order,uk_ecommerce_refund_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ecommerce.refund_order,idx_ecommerce_refund_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ecommerce.refund_order,idx_ecommerce_refund_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.refund_order,idx_ecommerce_refund_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ecommerce.refund_order,uk_ecommerce_refund_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ecommerce.refund_order_item,idx_ecommerce_refund_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.refund_order_item,idx_ecommerce_refund_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.review_complaint,idx_ecommerce_review_complaint_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.review_complaint,uk_ecommerce_review_complaint_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+ecommerce.review_complaint,idx_ecommerce_review_complaint_status,"tenant_id,status",BTREE,否,,待办和状态查询
+ecommerce.review_complaint,idx_ecommerce_review_complaint_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+ecommerce.review_complaint,idx_ecommerce_review_complaint_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+ecommerce.review_complaint,uk_ecommerce_review_complaint_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+ecommerce.review_complaint_item,idx_ecommerce_review_complaint_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+ecommerce.review_complaint_item,idx_ecommerce_review_complaint_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.short_video_release,idx_media_short_video_release_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.short_video_release,uk_media_short_video_release_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+media.short_video_release,idx_media_short_video_release_status,"tenant_id,status",BTREE,否,,待办和状态查询
+media.short_video_release,idx_media_short_video_release_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.short_video_release,idx_media_short_video_release_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+media.short_video_release,uk_media_short_video_release_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+media.short_video_release_item,idx_media_short_video_release_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.short_video_release_item,idx_media_short_video_release_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.live_session,idx_media_live_session_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.live_session,uk_media_live_session_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+media.live_session,idx_media_live_session_status,"tenant_id,status",BTREE,否,,待办和状态查询
+media.live_session,idx_media_live_session_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.live_session,idx_media_live_session_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+media.live_session,uk_media_live_session_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+media.live_session_item,idx_media_live_session_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.live_session_item,idx_media_live_session_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.ad_campaign,idx_media_ad_campaign_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.ad_campaign,uk_media_ad_campaign_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+media.ad_campaign,idx_media_ad_campaign_status,"tenant_id,status",BTREE,否,,待办和状态查询
+media.ad_campaign,idx_media_ad_campaign_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.ad_campaign,idx_media_ad_campaign_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+media.ad_campaign,uk_media_ad_campaign_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+media.ad_campaign_item,idx_media_ad_campaign_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.ad_campaign_item,idx_media_ad_campaign_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.public_opinion_case,idx_media_public_opinion_case_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.public_opinion_case,uk_media_public_opinion_case_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+media.public_opinion_case,idx_media_public_opinion_case_status,"tenant_id,status",BTREE,否,,待办和状态查询
+media.public_opinion_case,idx_media_public_opinion_case_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+media.public_opinion_case,idx_media_public_opinion_case_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+media.public_opinion_case,uk_media_public_opinion_case_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+media.public_opinion_case_item,idx_media_public_opinion_case_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+media.public_opinion_case_item,idx_media_public_opinion_case_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.authorization,idx_brand_authorization_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.authorization,uk_brand_authorization_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+brand.authorization,idx_brand_authorization_status,"tenant_id,status",BTREE,否,,待办和状态查询
+brand.authorization,idx_brand_authorization_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.authorization,idx_brand_authorization_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+brand.authorization,uk_brand_authorization_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+brand.authorization_item,idx_brand_authorization_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.authorization_item,idx_brand_authorization_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.material_review,idx_brand_material_review_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.material_review,uk_brand_material_review_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+brand.material_review,idx_brand_material_review_status,"tenant_id,status",BTREE,否,,待办和状态查询
+brand.material_review,idx_brand_material_review_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.material_review,idx_brand_material_review_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+brand.material_review,uk_brand_material_review_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+brand.material_review_item,idx_brand_material_review_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.material_review_item,idx_brand_material_review_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.infringement_case,idx_brand_infringement_case_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.infringement_case,uk_brand_infringement_case_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+brand.infringement_case,idx_brand_infringement_case_status,"tenant_id,status",BTREE,否,,待办和状态查询
+brand.infringement_case,idx_brand_infringement_case_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+brand.infringement_case,idx_brand_infringement_case_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+brand.infringement_case,uk_brand_infringement_case_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+brand.infringement_case_item,idx_brand_infringement_case_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+brand.infringement_case_item,idx_brand_infringement_case_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.reception_order,idx_reception_reception_order_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.reception_order,uk_reception_reception_order_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reception.reception_order,idx_reception_reception_order_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reception.reception_order,idx_reception_reception_order_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.reception_order,idx_reception_reception_order_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reception.reception_order,uk_reception_reception_order_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reception.reception_order_item,idx_reception_reception_order_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.reception_order_item,idx_reception_reception_order_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.change_request,idx_reception_change_request_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.change_request,uk_reception_change_request_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reception.change_request,idx_reception_change_request_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reception.change_request,idx_reception_change_request_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.change_request,idx_reception_change_request_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reception.change_request,uk_reception_change_request_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reception.change_request_item,idx_reception_change_request_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.change_request_item,idx_reception_change_request_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.guide_execution,idx_reception_guide_execution_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.guide_execution,uk_reception_guide_execution_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reception.guide_execution,idx_reception_guide_execution_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reception.guide_execution,idx_reception_guide_execution_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.guide_execution,idx_reception_guide_execution_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reception.guide_execution,uk_reception_guide_execution_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+reception.guide_execution_item,idx_reception_guide_execution_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.guide_execution_item,idx_reception_guide_execution_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.complaint,idx_reception_complaint_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+reception.complaint,uk_reception_complaint_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+reception.complaint,idx_reception_complaint_status,"tenant_id,status",BTREE,否,,待办和状态查询
+reception.complaint,idx_reception_complaint_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+reception.complaint,idx_reception_complaint_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+reception.complaint,uk_reception_complaint_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+sales.lead,idx_sales_lead_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.lead,uk_sales_lead_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+sales.lead,idx_sales_lead_status,"tenant_id,status",BTREE,否,,待办和状态查询
+sales.lead,idx_sales_lead_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.lead,idx_sales_lead_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+sales.lead,uk_sales_lead_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+sales.lead_item,idx_sales_lead_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.lead_item,idx_sales_lead_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.deal,idx_sales_deal_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.deal,uk_sales_deal_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+sales.deal,idx_sales_deal_status,"tenant_id,status",BTREE,否,,待办和状态查询
+sales.deal,idx_sales_deal_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.deal,idx_sales_deal_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+sales.deal,uk_sales_deal_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+sales.deal_item,idx_sales_deal_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.deal_item,idx_sales_deal_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.secondary_sale,idx_sales_secondary_sale_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.secondary_sale,uk_sales_secondary_sale_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+sales.secondary_sale,idx_sales_secondary_sale_status,"tenant_id,status",BTREE,否,,待办和状态查询
+sales.secondary_sale,idx_sales_secondary_sale_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.secondary_sale,idx_sales_secondary_sale_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+sales.secondary_sale,uk_sales_secondary_sale_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+sales.secondary_sale_item,idx_sales_secondary_sale_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.secondary_sale_item,idx_sales_secondary_sale_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.customer_handover,idx_sales_customer_handover_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.customer_handover,uk_sales_customer_handover_bizno,"tenant_id,business_no",BTREE,是,,租户内业务单号唯一
+sales.customer_handover,idx_sales_customer_handover_status,"tenant_id,status",BTREE,否,,待办和状态查询
+sales.customer_handover,idx_sales_customer_handover_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+sales.customer_handover,idx_sales_customer_handover_wf,workflow_instance_id,BTREE,否,,流程与业务对象关联
+sales.customer_handover,uk_sales_customer_handover_business_no,"tenant_id,business_no",BTREE,是,,业务单号唯一约束
+sales.customer_handover_item,idx_sales_customer_handover_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+sales.customer_handover_item,idx_sales_customer_handover_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询
+workflow.wf_orchestration_instance_item,idx_workflow_wf_orchestration_instance_item_tenant,tenant_id,BTREE,否,,租户过滤/RLS
+workflow.wf_orchestration_instance_item,idx_workflow_wf_orchestration_instance_item_created,"tenant_id,created_at DESC",BTREE,否,,时间范围查询

@@ -1,0 +1,177 @@
+name: Phase 03 Database Baseline
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - "pom.xml"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/database/**"
+      - "scripts/implementation/phase03_prepare_flyway.py"
+      - "scripts/implementation/phase03_flyway_compat.py"
+      - "scripts/implementation/phase03_database_baseline_report.py"
+      - ".github/workflows/phase03-database.yml"
+      - "docs/implementation/phases/PHASE-03/**"
+      - "docs/implementation/evidence/PHASE-03*"
+      - "docs/implementation/MASTER_DATABASE_MAPPING.md"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_GAPS.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Flyway provenance and phase boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Diff whitespace check
+        run: git diff --check HEAD^
+      - name: Verify canonical sources unchanged by PHASE-03
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet 496e57801e5df849638d1f91e4423f251f9489d5 HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+      - name: Verify deterministic Flyway generation and explicit compatibility rules
+        run: python scripts/implementation/phase03_flyway_compat.py --check
+      - name: Verify deterministic database baseline report
+        run: python scripts/implementation/phase03_database_baseline_report.py --check
+      - name: Verify manifest source, execution role, and generated checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          root = Path('.')
+          manifest = json.loads((root / 'technical-platform/database/flyway/manifest.json').read_text(encoding='utf-8'))
+          policy = manifest['compatibility_policy']
+          assert policy['transformed_source_count'] == 1
+          assert policy['required_deployment_placeholders'] == ['sjg_tenant_id', 'sjg_tenant_code', 'sjg_tenant_name']
+          assert policy['migration_execution_role'] == 'sjg_migration'
+          for db in manifest['databases'].values():
+              for item in db['approved_source_migrations']:
+                  source = root / item['source_path']
+                  generated = root / 'technical-platform/database/flyway' / item['migration']
+                  assert hashlib.sha256(source.read_bytes()).hexdigest() == item['source_sha256'], item['source_path']
+                  assert hashlib.sha256(generated.read_bytes()).hexdigest() == item['generated_sha256'], item['migration']
+          seed = next(item for item in manifest['databases']['sjg_oms']['approved_source_migrations'] if item['source_path'].endswith('/95_seed_process_catalog.sql'))
+          transform = seed['transformations'][0]
+          assert transform['type'] == 'psql_set_variable_to_flyway_placeholder'
+          assert transform['flyway_placeholder'] == 'sjg_tenant_id'
+          print('Flyway provenance, migration role, and deployment-placeholder checksums verified')
+          PY
+      - name: Verify generated migrations contain no unresolved psql client syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          for path in Path('technical-platform/database/flyway').rglob('*.sql'):
+              text = path.read_text(encoding='utf-8')
+              assert not re.search(r'(?m)^\s*\\', text), f'unresolved psql metacommand: {path}'
+              assert not re.search(r":'[A-Za-z_][A-Za-z0-9_]*'", text), f'unresolved psql variable: {path}'
+          print('No unresolved psql client syntax in formal Flyway migrations')
+          PY
+      - name: Verify Flyway version uniqueness
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          root = Path('technical-platform/database')
+          for db in ('oms', 'audit', 'dw'):
+              files = list((root / 'flyway' / db).glob('V*__*.sql')) + list((root / 'flyway-overlays' / db).glob('V*__*.sql'))
+              versions = {}
+              for path in files:
+                  match = re.match(r'V([^_]+(?:_[^_]+)*)__', path.name)
+                  assert match, path
+                  version = match.group(1).replace('_', '.')
+                  assert version not in versions, f'duplicate Flyway version {version}: {versions.get(version)} / {path}'
+                  versions[version] = str(path)
+              assert versions, db
+          print('Flyway versions are unique per database')
+          PY
+      - name: Verify the five catalogued audit indexes are closed by overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          evidence = json.loads(Path('docs/implementation/evidence/PHASE-03_STATIC_BASELINE.json').read_text(encoding='utf-8'))
+          assert evidence['counts']['table_catalog_unique'] == 265
+          assert evidence['counts']['ddl_create_table_unique'] == 265
+          assert evidence['table_diff']['catalog_only_count'] == 0
+          assert evidence['table_diff']['ddl_only_count'] == 0
+          assert evidence['counts']['index_catalog_unique'] == 1024
+          assert evidence['counts']['ddl_create_index_unique'] == 1019
+          missing = set(evidence['index_diff']['catalog_only'])
+          assert len(missing) == 5 and evidence['index_diff']['ddl_only_count'] == 0
+          overlay = Path('technical-platform/database/flyway-overlays/audit/V91__catalog_index_gap_closure.sql').read_text(encoding='utf-8')
+          pattern = re.compile(r'(?im)^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:IF\s+NOT\s+EXISTS\s+)?(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s+ON\s+(?P<schema>[A-Za-z_][A-Za-z0-9_]*)\.(?P<table>[A-Za-z_][A-Za-z0-9_]*)')
+          overlay_keys = {f"{m.group('schema')}.{m.group('table')}|{m.group('name')}" for m in pattern.finditer(overlay)}
+          assert overlay_keys == missing, (overlay_keys, missing)
+          assert evidence['counts']['ddl_create_index_unique'] + len(overlay_keys) == evidence['counts']['index_catalog_unique']
+          print('Index catalog closure verified: 1019 approved DDL + 5 sourced overlays = 1024')
+          PY
+      - name: Enforce Flyway-only formal structural SQL under technical platform
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r path; do
+            case "$path" in
+              technical-platform/database/flyway/*|technical-platform/database/flyway-overlays/*) ;;
+              *) echo "Structural SQL outside formal Flyway locations: $path"; exit 1 ;;
+            esac
+          done < <(find technical-platform -type f -name '*.sql' -print)
+      - name: Reject secrets and fake database completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/database technical-platform/backend/modules/database-baseline scripts/implementation/phase03_prepare_flyway.py scripts/implementation/phase03_flyway_compat.py scripts/implementation/phase03_database_baseline_report.py)
+          if grep -R -nE 'TODO|FIXME|@Disabled|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|mock api|fake api|默认密码|测试验证码|临时演示入口' "${TARGETS[@]}"; then
+            echo "Forbidden bypass/fake-completion marker found"
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            echo "Potential token secret found"
+            exit 1
+          fi
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          literal = re.compile(r"(?i)\bPASSWORD\s+'(?!\$\{)[^']+'")
+          for path in Path('technical-platform/database').rglob('*.sql'):
+              text = path.read_text(encoding='utf-8')
+              match = literal.search(text)
+              assert match is None, f'committed SQL password literal found in {path}'
+          print('No committed SQL password literals detected')
+          PY
+
+  postgres-integration:
+    name: PostgreSQL 16 Flyway and security integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Maven wrapper version
+        run: ./mvnw --version
+      - name: Run PHASE-03 Testcontainers PostgreSQL integration suite
+        run: ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase03-integration verify

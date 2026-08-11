@@ -1,0 +1,204 @@
+name: Phase 04 Independent Gate
+
+on:
+  push:
+    branches: [agent/full-build]
+    paths:
+      - ".github/workflows/phase04-gate.yml"
+      - ".github/workflows/phase04-iam-kernel.yml"
+      - ".github/workflows/phase04-source-contract.yml"
+      - "docs/implementation/phases/PHASE-04/**"
+      - "docs/implementation/evidence/PHASE-04*"
+      - "docs/implementation/contracts/phase-04/**"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "technical-platform/backend/modules/core/**"
+      - "technical-platform/backend/modules/org/**"
+      - "technical-platform/backend/modules/iam/**"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/backend/apps/api/**"
+      - "technical-platform/database/**"
+      - "scripts/implementation/phase04_*.py"
+      - "pom.xml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase04-independent-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE03_COMPLETE_BASE: 6ac2c3e80c4f699d62c20e736026042dc58eb2c7
+  PHASE04_GATE_HEAD: 534b27d316e190bb15a869c983d39e2714b47808
+
+jobs:
+  gate-preflight:
+    name: Independent source scope security and fake-completion gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify repository phase state and canonical sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "louthison/NEWSTART"
+          grep -q '| PHASE-03 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-04 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Eq '\| PHASE-05 \| (NOT_STARTED|IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
+          git diff --quiet "$PHASE03_COMPLETE_BASE" HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+          git diff --check "$PHASE03_COMPLETE_BASE" HEAD
+      - name: Verify phase artifacts and source evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in \
+            docs/implementation/phases/PHASE-04/C4_CHECKPOINT.md \
+            docs/implementation/phases/PHASE-04/C5_CHECKPOINT.md \
+            docs/implementation/phases/PHASE-04/C6_CHECKPOINT.md \
+            docs/implementation/phases/PHASE-04/PHASE_REPORT.md \
+            docs/implementation/phases/PHASE-04/IMPACT_MATRIX.md \
+            docs/implementation/phases/PHASE-04/GAP_MATRIX.md \
+            docs/implementation/phases/PHASE-04/ADR_001_IAM_KERNEL_CONTRACT.md \
+            docs/implementation/phases/PHASE-04/ADR_002_HTTP_SECURITY_CONTRACT.md \
+            docs/implementation/contracts/phase-04/openapi.yaml \
+            docs/implementation/evidence/PHASE-04_VALIDATION.json; do
+            test -s "$path"
+          done
+          python scripts/implementation/phase04_source_contract.py --check
+          python scripts/implementation/phase04_source_facts.py --check
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source = json.loads(Path('docs/implementation/evidence/PHASE-04_SOURCE_CONTRACT.json').read_text(encoding='utf-8'))
+          facts = json.loads(Path('docs/implementation/evidence/PHASE-04_IAM_SOURCE_FACTS.json').read_text(encoding='utf-8'))
+          validation = json.loads(Path('docs/implementation/evidence/PHASE-04_VALIDATION.json').read_text(encoding='utf-8'))
+          assert source['source_count'] == 11 and source['parse_failures'] == 0
+          assert len(source['process_workbooks']) == 9
+          assert source['privacy']['real_employee_values_in_output'] is False
+          assert source['real_employee_workbook']['row_values_committed'] is False
+          assert facts['real_employee_row_values_included'] is False
+          assert validation['business_pages_implemented'] == 0
+          assert validation['business_processes_implemented'] == 0
+          assert validation['phase05_started'] is False
+          assert validation['construction_ci']['phase04_iam_kernel']['conclusion'] == 'success'
+          PY
+      - name: Verify frozen PHASE-04 candidate did not become business or workflow implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet "$PHASE03_COMPLETE_BASE" "$PHASE04_GATE_HEAD" -- technical-platform/web/src
+          git diff --quiet "$PHASE03_COMPLETE_BASE" "$PHASE04_GATE_HEAD" -- technical-platform/backend/modules/workflow/src/main
+          git diff --quiet "$PHASE03_COMPLETE_BASE" "$PHASE04_GATE_HEAD" -- docs/implementation/MASTER_PAGE_CATALOG.json docs/implementation/MASTER_PROCESS_CATALOG.json
+      - name: Verify deny-by-default HTTP and immutable-audit contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in '/api/v1/auth/login:' '/api/v1/auth/refresh:' '/api/v1/auth/logout:' '/api/v1/session:' '/api/v1/session/switch:' '/api/v1/step-up/tickets:'; do
+            grep -Fq "$path" docs/implementation/contracts/phase-04/openapi.yaml
+          done
+          grep -Fq '.requestMatchers("/api/**").denyAll()' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SecurityConfiguration.java
+          grep -Fq 'exclude = UserDetailsServiceAutoConfiguration.class' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/ApiApplication.java
+          grep -Fq 'sjg_audit_writer' technical-platform/backend/apps/api/src/main/resources/application.yml
+      - name: Scan real implementation for fake completion bypasses and secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/backend/modules/core/src/main technical-platform/backend/modules/org/src/main technical-platform/backend/modules/iam/src/main technical-platform/backend/apps/api/src/main)
+          if grep -R -nE 'TODO|FIXME|@Disabled|@Ignore|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|catch[[:space:]]*\{[[:space:]]*\}|默认密码|测试验证码|临时演示入口|permitAll\(\).*\/api\/\*\*' "${TARGETS[@]}"; then
+            echo 'Forbidden fake-completion or security bypass marker found'
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            echo 'Potential committed token secret found'
+            exit 1
+          fi
+
+  application-regression:
+    name: Java Vue TypeScript build and unit regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - name: Java unit and smoke regression
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
+      - name: Frontend frozen install typecheck unit test and three-portal build
+        working-directory: technical-platform/web
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.0 --activate
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+  security-runtime:
+    name: PostgreSQL Redis Spring Security and immutable audit independent integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - name: Re-run PostgreSQL 16 Flyway RLS audit foundation
+        run: ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase03-integration verify
+      - name: Re-run IAM directory session RBAC ABAC field Step-Up integration
+        run: ./mvnw -B -ntp -pl technical-platform/backend/modules/iam -am -Pphase04-integration verify
+      - name: Build API dependencies without duplicate upstream integration
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -DskipTests install
+      - name: Re-run C6 HTTP 401 403 switch expiry logout audit integration
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api -Pphase04-integration verify
+
+  windows-regression:
+    name: Windows Chinese-path completed-stage script regression
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - name: Copy repository into Chinese path
+        shell: pwsh
+        run: |
+          $target = Join-Path $env:RUNNER_TEMP '中文路径\NEWSTART'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
+          }
+          "PHASE04_GATE_CHINESE_PATH=$target" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Run install verify migrate start stop contracts
+        shell: cmd
+        run: |
+          cd /d "%PHASE04_GATE_CHINESE_PATH%"
+          call scripts\windows\install.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\verify.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\migrate.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\start.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\stop.bat --ci
+          if errorlevel 1 exit /b 1
+
+  formal-gate:
+    name: PHASE-04 formal gate verdict
+    if: always()
+    needs: [gate-preflight, application-regression, security-runtime, windows-regression]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every independent gate job to pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ needs.gate-preflight.result }}' = 'success'
+          test '${{ needs.application-regression.result }}' = 'success'
+          test '${{ needs.security-runtime.result }}' = 'success'
+          test '${{ needs.windows-regression.result }}' = 'success'
+          echo 'PHASE GATE: PASS'

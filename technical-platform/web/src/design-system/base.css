@@ -1,0 +1,59 @@
+html {
+  color: var(--sgj-text-primary);
+  background: var(--sgj-canvas);
+}
+
+body {
+  color: var(--sgj-text-primary);
+  background: var(--sgj-canvas);
+}
+
+:where(button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--sgj-brand-600);
+  outline-offset: 2px;
+  box-shadow: var(--sgj-focus-ring);
+}
+
+:where(button, input, textarea, select):disabled {
+  cursor: not-allowed;
+}
+
+.sgj-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sgj-skip-link {
+  position: fixed;
+  top: var(--sgj-space-3);
+  left: var(--sgj-space-3);
+  z-index: var(--sgj-z-toast);
+  padding: var(--sgj-space-2) var(--sgj-space-4);
+  border-radius: var(--sgj-radius-md);
+  color: var(--sgj-text-on-strong);
+  background: var(--sgj-surface-strong);
+  transform: translateY(-160%);
+  transition: transform var(--sgj-motion-fast) var(--sgj-ease-standard);
+}
+
+.sgj-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

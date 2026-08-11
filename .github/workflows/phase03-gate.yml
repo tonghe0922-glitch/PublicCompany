@@ -1,0 +1,309 @@
+name: Phase 03 Independent Gate
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - ".github/workflows/phase03-gate.yml"
+      - "docs/implementation/phases/PHASE-03/**"
+      - "docs/implementation/evidence/PHASE-03*"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_TRACEABILITY.md"
+      - "docs/implementation/MASTER_PAGE_CATALOG.json"
+      - "docs/implementation/MASTER_PROCESS_CATALOG.json"
+      - "docs/implementation/MASTER_API_CATALOG.md"
+      - "docs/implementation/MASTER_PERMISSION_MATRIX.md"
+      - "docs/implementation/MASTER_DATABASE_MAPPING.md"
+      - "docs/implementation/MASTER_GAPS.md"
+      - "technical-platform/database/**"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/backend/apps/api/pom.xml"
+      - "technical-platform/backend/apps/api/src/main/resources/application.yml"
+      - "technical-platform/backend/apps/worker/pom.xml"
+      - "technical-platform/backend/apps/worker/src/main/resources/application.yml"
+      - "scripts/database/**"
+      - "scripts/implementation/phase03_*.py"
+      - "scripts/windows/**"
+      - "docker/compose/**"
+      - ".env.example"
+      - "pom.xml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase03-independent-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE02_GATE_BASE: 496e57801e5df849638d1f91e4423f251f9489d5
+  PHASE03_GATE_HEAD: dd81f7693a439e45d15099967fa69841d605af99
+
+jobs:
+  quality:
+    name: Independent source boundary and fake-completion gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify repository and frozen PHASE-03 diff whitespace
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "louthison/NEWSTART"
+          git diff --check "$PHASE02_GATE_BASE" "$PHASE03_GATE_HEAD"
+      - name: Verify canonical sources remain unaltered
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet "$PHASE02_GATE_BASE" HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+      - name: Verify frozen PHASE-03 did not cross into business implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, subprocess
+          baseline = os.environ['PHASE02_GATE_BASE']
+          gate_head = os.environ['PHASE03_GATE_HEAD']
+          changed = subprocess.check_output(["git", "diff", "--name-only", baseline, gate_head], text=True).splitlines()
+          allowed_prefixes = (".github/workflows/phase03-", "docs/implementation/", "docker/compose/", "scripts/database/", "scripts/windows/", "technical-platform/database/", "technical-platform/backend/modules/database-baseline/")
+          allowed_exact = {".env.example", "pom.xml", ".github/workflows/phase02-build.yml", "scripts/implementation/phase02_finalize_ledgers.py", "scripts/implementation/phase03_prepare_flyway.py", "scripts/implementation/phase03_flyway_compat.py", "scripts/implementation/phase03_database_baseline_report.py", "scripts/implementation/phase03_finalize_ledgers.py", "technical-platform/backend/apps/api/pom.xml", "technical-platform/backend/apps/api/src/main/resources/application.yml", "technical-platform/backend/apps/worker/pom.xml", "technical-platform/backend/apps/worker/src/main/resources/application.yml"}
+          unexpected = [path for path in changed if path not in allowed_exact and not path.startswith(allowed_prefixes)]
+          if unexpected: raise SystemExit("PHASE-03 scope creep files: " + ", ".join(unexpected))
+          forbidden_business = [path for path in changed if path.startswith("technical-platform/web/src/") or "/controller/" in path.lower() or "/application/" in path.lower() or "/domain/" in path.lower() or "/repository/" in path.lower()]
+          if forbidden_business: raise SystemExit("PHASE-03 business implementation detected: " + ", ".join(forbidden_business))
+          print(f"Frozen PHASE-03 scope boundary verified across {len(changed)} changed paths")
+          PY
+      - name: Scan current executable/config implementation for fake completion and bypasses
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/database technical-platform/backend/modules/database-baseline technical-platform/backend/apps/api/pom.xml technical-platform/backend/apps/api/src/main/resources/application.yml technical-platform/backend/apps/worker/pom.xml technical-platform/backend/apps/worker/src/main/resources/application.yml scripts/database scripts/implementation/phase03_prepare_flyway.py scripts/implementation/phase03_flyway_compat.py scripts/implementation/phase03_database_baseline_report.py scripts/implementation/phase03_finalize_ledgers.py docker/compose scripts/windows/migrate.bat scripts/windows/start.bat scripts/windows/verify.bat .env.example)
+          if grep -R -nE 'TODO|FIXME|@Disabled|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|catch[[:space:]]*\{[[:space:]]*\}|mock[[:space:]_-]*api|fake[[:space:]_-]*api|临时账号|测试验证码|默认密码|临时演示入口' "${TARGETS[@]}"; then echo "Forbidden fake-completion/bypass marker found"; exit 1; fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then echo "Potential committed secret/token found"; exit 1; fi
+      - name: Verify API and Worker cannot own Flyway migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          api_yml = Path('technical-platform/backend/apps/api/src/main/resources/application.yml').read_text(encoding='utf-8')
+          worker_yml = Path('technical-platform/backend/apps/worker/src/main/resources/application.yml').read_text(encoding='utf-8')
+          api_pom = Path('technical-platform/backend/apps/api/pom.xml').read_text(encoding='utf-8')
+          worker_pom = Path('technical-platform/backend/apps/worker/pom.xml').read_text(encoding='utf-8')
+          assert 'SJG_API_DB_USERNAME:sjg_api_runtime' in api_yml
+          assert 'SJG_WORKER_DB_USERNAME:sjg_worker_runtime' in worker_yml
+          assert 'flyway:\n    enabled: false' in api_yml and 'flyway:\n    enabled: false' in worker_yml
+          assert 'flyway-core' not in api_pom and 'flyway-database-postgresql' not in api_pom
+          assert 'flyway-core' not in worker_pom and 'flyway-database-postgresql' not in worker_pom
+          PY
+      - name: Verify current database determinism and frozen PHASE-03 ledger finalizer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/implementation/phase03_flyway_compat.py --check
+          python scripts/implementation/phase03_database_baseline_report.py --check
+          git diff --exit-code
+          FROZEN_DIR="$RUNNER_TEMP/phase03-gate-head"
+          git worktree add --detach "$FROZEN_DIR" "$PHASE03_GATE_HEAD"
+          (cd "$FROZEN_DIR"; python scripts/implementation/phase03_finalize_ledgers.py; git diff --exit-code)
+          git worktree remove --force "$FROZEN_DIR"
+      - name: Verify historical Gate and current phase state are internally consistent
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          progress = Path('docs/implementation/MASTER_PROGRESS.md').read_text(encoding='utf-8')
+          report = Path('docs/implementation/phases/PHASE-03/PHASE_REPORT.md').read_text(encoding='utf-8')
+          gap = Path('docs/implementation/phases/PHASE-03/GAP_MATRIX.md').read_text(encoding='utf-8')
+          validation = json.loads(Path('docs/implementation/evidence/PHASE-03_VALIDATION.json').read_text(encoding='utf-8'))
+          gate_text = Path('docs/implementation/phases/PHASE-03/PHASE_GATE.md').read_text(encoding='utf-8')
+          assert '| PHASE-03 | COMPLETE |' in progress
+          assert any(f'| PHASE-04 | {state} |' in progress for state in ('IN_PROGRESS','READY_FOR_GATE','COMPLETE'))
+          assert any(f'| PHASE-05 | {state} |' in progress for state in ('NOT_STARTED','IN_PROGRESS','READY_FOR_GATE','COMPLETE'))
+          assert 'PHASE-04 = NOT_STARTED' in report and 'PHASE-04 = NOT_STARTED' in gap
+          assert validation['business_processes_implemented'] == 0 and validation['business_pages_marked_implemented'] == 0
+          assert 'PHASE GATE: PASS' in gate_text and 'dd81f7693a439e45d15099967fa69841d605af99' in gate_text and '31177913089' in gate_text
+          def pending(v):
+              if isinstance(v, dict): return any(pending(x) for x in v.values())
+              if isinstance(v, list): return any(pending(x) for x in v)
+              return v == 'PENDING_AT_COMMIT_CREATION'
+          assert not pending(validation)
+          PY
+
+  application-regression:
+    name: Java Vue TypeScript build and unit regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - name: API and Worker Java unit/smoke regression
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
+      - name: Activate pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.0 --activate
+      - name: Frontend frozen install, typecheck, unit test, three-portal build
+        working-directory: technical-platform/web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+  postgres-integration:
+    name: Independent PostgreSQL 16 Flyway RLS audit role integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - name: Run PHASE-03 PostgreSQL Testcontainers suite
+        run: ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase03-integration verify
+
+  runtime-identity:
+    name: Independent bootstrap migration API Worker negative gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - name: Create ephemeral CI environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENV_FILE="$RUNNER_TEMP/phase03-gate-runtime.env"
+          secret() { openssl rand -hex 24; }
+          BOOTSTRAP_PASSWORD=$(secret)
+          cat > "$ENV_FILE" <<EOF
+          POSTGRES_USER=sjg_bootstrap
+          POSTGRES_PASSWORD=$BOOTSTRAP_PASSWORD
+          POSTGRES_DB=postgres
+          POSTGRES_PORT=5432
+          SJG_BOOTSTRAP_DB_URL=jdbc:postgresql://localhost:5432/postgres
+          SJG_BOOTSTRAP_DB_USERNAME=sjg_bootstrap
+          SJG_BOOTSTRAP_DB_PASSWORD=$BOOTSTRAP_PASSWORD
+          SJG_MIGRATION_DB_USERNAME=sjg_migration
+          SJG_MIGRATION_DB_PASSWORD=$(secret)
+          SJG_OMS_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_AUDIT_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_audit
+          SJG_DW_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_dw
+          SJG_API_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_API_DB_USERNAME=sjg_api_runtime
+          SJG_API_DB_PASSWORD=$(secret)
+          SJG_WORKER_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_WORKER_DB_USERNAME=sjg_worker_runtime
+          SJG_WORKER_DB_PASSWORD=$(secret)
+          SJG_AUDIT_WRITER_DB_PASSWORD=$(secret)
+          SJG_AUDITOR_DB_PASSWORD=$(secret)
+          SJG_DW_WRITER_DB_PASSWORD=$(secret)
+          SJG_DW_READER_DB_PASSWORD=$(secret)
+          SJG_TENANT_ID=00000000-0000-0000-0000-000000000001
+          SJG_TENANT_CODE=PHASE03_GATE_CI
+          SJG_TENANT_NAME=PHASE03_Gate_CI_Tenant
+          REDIS_PORT=6379
+          MINIO_ROOT_USER=phase03gate
+          MINIO_ROOT_PASSWORD=$(secret)
+          MINIO_API_PORT=9000
+          MINIO_CONSOLE_PORT=9001
+          RABBITMQ_DEFAULT_USER=phase03gate
+          RABBITMQ_DEFAULT_PASS=$(secret)
+          RABBITMQ_AMQP_PORT=5672
+          RABBITMQ_MANAGEMENT_PORT=15672
+          API_PORT=8080
+          EMPLOYEE_WEB_PORT=5173
+          CENTER_WEB_PORT=5174
+          ADMIN_WEB_PORT=5175
+          EOF
+          chmod 600 "$ENV_FILE"
+          echo "PHASE03_GATE_ENV=$ENV_FILE" >> "$GITHUB_ENV"
+      - name: Start PostgreSQL and run independent migration runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose --env-file "$PHASE03_GATE_ENV" -f docker/compose/docker-compose.dev.yml up -d --wait --wait-timeout 180 postgres
+          export SJG_ENV_FILE="$PHASE03_GATE_ENV"
+          scripts/database/migrate.sh
+      - name: Verify API and Worker runtime identities are real and DDL-denied
+        shell: bash
+        run: |
+          set -euo pipefail
+          set -a; . "$PHASE03_GATE_ENV"; set +a
+          COMPOSE=(docker compose --env-file "$PHASE03_GATE_ENV" -f docker/compose/docker-compose.dev.yml)
+          query_as() { role=$1; password=$2; database=$3; sql=$4; "${COMPOSE[@]}" exec -T -e PGPASSWORD="$password" postgres psql -h 127.0.0.1 -U "$role" -d "$database" -At -v ON_ERROR_STOP=1 -c "$sql"; }
+          test "$(query_as sjg_api_runtime "$SJG_API_DB_PASSWORD" sjg_oms 'select current_user')" = "sjg_api_runtime"
+          test "$(query_as sjg_worker_runtime "$SJG_WORKER_DB_PASSWORD" sjg_oms 'select current_user')" = "sjg_worker_runtime"
+          ! query_as sjg_api_runtime "$SJG_API_DB_PASSWORD" sjg_oms 'CREATE TABLE core.phase03_gate_forbidden_api(id bigint)' >/dev/null 2>&1
+          ! query_as sjg_worker_runtime "$SJG_WORKER_DB_PASSWORD" sjg_oms 'CREATE TABLE workflow.phase03_gate_forbidden_worker(id bigint)' >/dev/null 2>&1
+          OWNER_COUNT=$("${COMPOSE[@]}" exec -T postgres psql -U "$POSTGRES_USER" -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname IN ('sjg_oms','sjg_audit','sjg_dw') AND pg_get_userbyid(datdba)='sjg_owner'")
+          test "$OWNER_COUNT" = "3"
+          BAD_ROLES=$("${COMPOSE[@]}" exec -T postgres psql -U "$POSTGRES_USER" -d postgres -Atc "SELECT count(*) FROM pg_roles WHERE rolname IN ('sjg_migration','sjg_api_runtime','sjg_worker_runtime','sjg_audit_writer','sjg_auditor','sjg_dw_writer','sjg_dw_reader') AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolreplication OR rolbypassrls)")
+          test "$BAD_ROLES" = "0"
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${PHASE03_GATE_ENV:-}" ] && [ -f "$PHASE03_GATE_ENV" ]; then
+            docker compose --env-file "$PHASE03_GATE_ENV" -f docker/compose/docker-compose.dev.yml down -v --remove-orphans || true
+          fi
+
+  windows-gate:
+    name: Independent Windows Chinese-path scripts gate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with: {distribution: temurin, java-version: "21", cache: maven}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - name: Copy repository into Chinese path
+        shell: pwsh
+        run: |
+          $target = Join-Path $env:RUNNER_TEMP '中文路径\NEWSTART'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
+          }
+          "PHASE03_GATE_CHINESE_PATH=$target" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Run completed-stage and PHASE-03 BAT contracts
+        shell: cmd
+        run: |
+          cd /d "%PHASE03_GATE_CHINESE_PATH%"
+          call scripts\windows\install.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\verify.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\migrate.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\start.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\stop.bat --ci
+          if errorlevel 1 exit /b 1
+
+  formal-gate:
+    name: PHASE-03 formal gate verdict
+    runs-on: ubuntu-latest
+    needs: [quality, application-regression, postgres-integration, runtime-identity, windows-gate]
+    if: always()
+    steps:
+      - name: Emit strict verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ needs.quality.result }}' = 'success'
+          test '${{ needs.application-regression.result }}' = 'success'
+          test '${{ needs.postgres-integration.result }}' = 'success'
+          test '${{ needs.runtime-identity.result }}' = 'success'
+          test '${{ needs.windows-gate.result }}' = 'success'
+          echo 'PHASE GATE: PASS'

@@ -1,0 +1,102 @@
+name: Phase 04 IAM Kernel
+
+on:
+  push:
+    branches: [agent/full-build]
+    paths:
+      - "technical-platform/backend/modules/core/**"
+      - "technical-platform/backend/modules/org/**"
+      - "technical-platform/backend/modules/iam/**"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/backend/apps/api/**"
+      - "technical-platform/database/**"
+      - "docs/implementation/phases/PHASE-04/**"
+      - "docs/implementation/contracts/phase-04/**"
+      - "docs/implementation/evidence/PHASE-04*"
+      - "scripts/implementation/phase04_*.py"
+      - ".github/workflows/phase04-iam-kernel.yml"
+      - "pom.xml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: PHASE-04 source boundary and fake-completion gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify phase state and canonical sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '| PHASE-03 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-04 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Eq '\| PHASE-05 \| (NOT_STARTED|IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
+          git diff --quiet 6ac2c3e80c4f699d62c20e736026042dc58eb2c7 HEAD -- AGENT.md DESIGN.md "Knowledge Base"
+          git diff --check 6ac2c3e80c4f699d62c20e736026042dc58eb2c7 HEAD
+      - name: Re-run focused XLSX source contracts
+        run: |
+          python scripts/implementation/phase04_source_contract.py --check
+          python scripts/implementation/phase04_source_facts.py --check
+      - name: Verify C6 HTTP contract and deny-by-default boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/implementation/contracts/phase-04/openapi.yaml
+          for path in \
+            '/api/v1/auth/login:' \
+            '/api/v1/auth/refresh:' \
+            '/api/v1/auth/logout:' \
+            '/api/v1/session:' \
+            '/api/v1/session/switch:' \
+            '/api/v1/step-up/tickets:'; do
+            grep -Fq "$path" docs/implementation/contracts/phase-04/openapi.yaml
+          done
+          grep -Fq '.requestMatchers("/api/**").denyAll()' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SecurityConfiguration.java
+          grep -Fq 'exclude = UserDetailsServiceAutoConfiguration.class' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/ApiApplication.java
+      - name: Reject fake completion and unsafe shortcuts
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/backend/modules/core/src/main technical-platform/backend/modules/org/src/main technical-platform/backend/modules/iam/src/main technical-platform/backend/apps/api/src/main)
+          if grep -R -nE 'TODO|FIXME|@Disabled|@Ignore|@ts-ignore|@ts-nocheck|localStorage|sessionStorage|catch[[:space:]]*\{[[:space:]]*\}|默认密码|测试验证码|临时演示入口|permitAll\(\).*\/api\/\*\*' "${TARGETS[@]}"; then
+            echo 'Forbidden fake-completion/security shortcut found'
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            echo 'Potential committed token secret found'
+            exit 1
+          fi
+
+  iam-integration:
+    name: PostgreSQL 16 and Redis 7.4 IAM directory session authorization step-up integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Compile and run C2-C5 IAM integration
+        run: ./mvnw -B -ntp -pl technical-platform/backend/modules/iam -am -Pphase04-integration verify
+
+  api-security-integration:
+    name: Spring Security HTTP and immutable audit integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Build API dependencies without duplicate upstream tests
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -DskipTests install
+      - name: Run C6 API security integration
+        run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api -Pphase04-integration verify

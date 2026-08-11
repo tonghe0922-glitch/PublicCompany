@@ -1,0 +1,29 @@
+{
+  "phase": "PHASE-09",
+  "status": "C0_FROZEN",
+  "rule": "Every binding below is an explicit source-coordinate selection from PHASE-01 pages.json; no fuzzy runtime matching is allowed.",
+  "bindings": [
+    {"process_code":"P001","portal":"employee","purpose":"MFA setup","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R730:8da12b2433db","route_path":"/employee/13/04/04"},
+    {"process_code":"P001","portal":"employee","purpose":"session management","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R732:0c3182e7ab4d","route_path":"/employee/13/04/06"},
+    {"process_code":"P001","portal":"center","purpose":"server-resolved approval/oversight inbox","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R61:6226a4e13b64","route_path":"/center/02/01/01"},
+    {"process_code":"P001","portal":"tech","purpose":"identity/security monitoring","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R371:eeb84679bfc2","route_path":"/tech/03/01/01"},
+
+    {"process_code":"P002","portal":"employee","purpose":"temporary permission request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R305:db9f11e8c08a","route_path":"/employee/03/07/04"},
+    {"process_code":"P002","portal":"employee","purpose":"project permission request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R306:dd7714002881","route_path":"/employee/03/07/05"},
+    {"process_code":"P002","portal":"center","purpose":"permission review/approval inbox","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R61:6226a4e13b64","route_path":"/center/02/01/01"},
+    {"process_code":"P002","portal":"tech","purpose":"authorization execution/monitoring","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R374:40472d66819b","route_path":"/tech/03/01/04"},
+
+    {"process_code":"P003","portal":"employee","purpose":"profile change application","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R277:36c07f449900","route_path":"/employee/03/03/01"},
+    {"process_code":"P003","portal":"center","purpose":"center employee roster/review context","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R120:008c22ec42d9","route_path":"/center/03/02/01"},
+    {"process_code":"P003","portal":"center","purpose":"profile-change approval inbox","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R61:6226a4e13b64","route_path":"/center/02/01/01"},
+    {"process_code":"P003","portal":"tech","purpose":"authoritative-source monitoring","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R438:4582039afc5c","route_path":"/tech/04/01/01"},
+
+    {"process_code":"P004","portal":"employee","purpose":"generic service request","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R302:94b88619195f","route_path":"/employee/03/07/01"},
+    {"process_code":"P004","portal":"center","purpose":"generic request approval inbox","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R61:6226a4e13b64","route_path":"/center/02/01/01"},
+    {"process_code":"P004","portal":"tech","purpose":"workflow instance monitoring","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P005","portal":"employee","purpose":"policy/notice receipt","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R713:6924d15a177d","route_path":"/employee/13/01/05"},
+    {"process_code":"P005","portal":"center","purpose":"policy approval/publish","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R999:574d1900c320","route_path":"/center/13/01/05"},
+    {"process_code":"P005","portal":"tech","purpose":"workflow/message delivery monitoring","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"}
+  ]
+}

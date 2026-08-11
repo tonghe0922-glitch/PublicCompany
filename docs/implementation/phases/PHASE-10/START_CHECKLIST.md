@@ -1,0 +1,27 @@
+# PHASE-10 START CHECKLIST
+
+- [x] Repository = `louthison/PublicCompany`.
+- [x] Construction branch = `ChatGPT_Version_V0.07`.
+- [x] PHASE-09 = COMPLETE / Gate PASS / current-head CI failures = 0 before PHASE-10 preparation.
+- [x] Latest AGENT.md read.
+- [x] Latest DESIGN.md read.
+- [x] Latest MASTER_PROGRESS.md read.
+- [x] `Construction Master Schedule.csv` read; PHASE-10 = P006–P010.
+- [x] MASTER_PROCESS_CATALOG P006–P010 read.
+- [x] 15/15 authoritative XLSX actually parsed; 90 sheets / 4,745 rows / 0 failures.
+- [x] Current Java/Vue/Flyway inspected; no P006–P010 executable implementation falsely claimed.
+- [x] Canonical V5/V10/V28 primary tables confirmed.
+- [x] PHASE-01 direct process/page binding gap recorded instead of hidden.
+- [x] Explicit C0 page source-key bindings selected and frozen.
+- [x] Engineering HTTP/permission identifiers separated from source business semantics.
+- [x] IMPACT_MATRIX.md created.
+- [x] GAP_MATRIX.md created.
+- [x] SOURCE_CONTRACT.md created.
+- [x] PHASE-10 set to IN_PROGRESS with concrete Chinese scope.
+- [x] PHASE-11 remains NOT_STARTED / BLOCKED.
+- [ ] P006 implementation checkpoint.
+- [ ] P007 implementation checkpoint.
+- [ ] P008 implementation checkpoint.
+- [ ] P009 implementation checkpoint.
+- [ ] P010 implementation checkpoint.
+- [ ] PHASE-10 full validation / PHASE_REPORT / Formal Gate.

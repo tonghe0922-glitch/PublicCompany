@@ -1,0 +1,271 @@
+openapi: 3.1.0
+info:
+  title: Shangjingu Platform IAM Security API
+  version: 0.2.0-phase08-consumer-contract
+  description: >-
+    PHASE-04 engineering HTTP contract, machine-completed for PHASE-08 portal consumption.
+    The Knowledge Base source interface catalog did not define HTTP methods or URL paths;
+    these paths remain an implementation ADR contract rather than a claim about source workbook URLs.
+servers:
+  - url: /
+paths:
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/LoginRequest'}
+      responses:
+        '200':
+          description: Authenticated session issued
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SessionTokenResponse'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+  /api/v1/auth/refresh:
+    post:
+      operationId: refreshSession
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RefreshRequest'}
+      responses:
+        '200':
+          description: Session family rotated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SessionTokenResponse'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      security: [{opaqueBearer: []}]
+      responses:
+        '204': {description: Session revoked}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+  /api/v1/session:
+    get:
+      operationId: currentSession
+      security: [{opaqueBearer: []}]
+      responses:
+        '200':
+          description: Current identity, appointment, permissions, and server-authorized switch candidates
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SessionView'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+  /api/v1/session/switch:
+    post:
+      operationId: switchIdentity
+      security: [{opaqueBearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/SwitchRequest'}
+      responses:
+        '200':
+          description: New session issued for the selected active identity and appointment
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SessionTokenResponse'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+  /api/v1/step-up/tickets:
+    post:
+      operationId: issueStepUpTicket
+      security: [{opaqueBearer: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/StepUpRequest'}
+      responses:
+        '200':
+          description: One-time short-lived Step-Up ticket issued
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/StepUpResponse'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '503': {$ref: '#/components/responses/ServiceUnavailable'}
+components:
+  securitySchemes:
+    opaqueBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+  schemas:
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required: [tenantCode, loginName, password]
+      properties:
+        tenantCode: {type: string, minLength: 1}
+        loginName: {type: string, minLength: 1}
+        password: {type: string, minLength: 1, writeOnly: true}
+        identityId:
+          type: [string, 'null']
+          format: uuid
+    RefreshRequest:
+      type: object
+      additionalProperties: false
+      required: [refreshToken]
+      properties:
+        refreshToken: {type: string, minLength: 1, writeOnly: true}
+    SessionTokenResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - refreshToken
+        - accessExpiresAt
+        - refreshExpiresAt
+        - tenantId
+        - userId
+        - identityId
+        - employeeId
+        - appointmentId
+        - orgId
+        - positionId
+      properties:
+        accessToken: {type: string, minLength: 1, writeOnly: true}
+        refreshToken: {type: string, minLength: 1, writeOnly: true}
+        accessExpiresAt: {type: string, format: date-time}
+        refreshExpiresAt: {type: string, format: date-time}
+        tenantId: {type: string, format: uuid}
+        userId: {type: string, format: uuid}
+        identityId: {type: string, format: uuid}
+        employeeId: {type: string, format: uuid}
+        appointmentId: {type: string, format: uuid}
+        orgId: {type: string, format: uuid}
+        positionId: {type: string, format: uuid}
+    AvailableIdentityView:
+      type: object
+      additionalProperties: false
+      required:
+        - identityId
+        - identityType
+        - identityName
+        - orgId
+        - positionId
+        - primary
+        - effectiveStartAt
+        - effectiveEndAt
+      properties:
+        identityId: {type: string, format: uuid}
+        identityType: {type: string, minLength: 1}
+        identityName: {type: string, minLength: 1}
+        orgId: {type: string, format: uuid}
+        positionId: {type: string, format: uuid}
+        primary: {type: boolean}
+        effectiveStartAt:
+          type: [string, 'null']
+          format: date-time
+        effectiveEndAt:
+          type: [string, 'null']
+          format: date-time
+    SessionView:
+      type: object
+      additionalProperties: false
+      required:
+        - tenantId
+        - userId
+        - identityId
+        - employeeId
+        - appointmentId
+        - orgId
+        - positionId
+        - permissions
+        - availableIdentities
+      properties:
+        tenantId: {type: string, format: uuid}
+        userId: {type: string, format: uuid}
+        identityId: {type: string, format: uuid}
+        employeeId: {type: string, format: uuid}
+        appointmentId: {type: string, format: uuid}
+        orgId: {type: string, format: uuid}
+        positionId: {type: string, format: uuid}
+        permissions:
+          type: array
+          uniqueItems: true
+          items: {type: string, minLength: 1}
+        availableIdentities:
+          type: array
+          items: {$ref: '#/components/schemas/AvailableIdentityView'}
+    SwitchRequest:
+      type: object
+      additionalProperties: false
+      required: [identityId]
+      properties:
+        identityId: {type: string, format: uuid}
+    StepUpRequest:
+      type: object
+      additionalProperties: false
+      required: [purpose, requiredMfaLevel, assertion]
+      properties:
+        purpose: {type: string, minLength: 1}
+        requiredMfaLevel: {type: integer, minimum: 1}
+        assertion: {type: string, minLength: 1, writeOnly: true}
+    StepUpResponse:
+      type: object
+      additionalProperties: false
+      required: [ticket, purpose, requiredMfaLevel, expiresAt]
+      properties:
+        ticket: {type: string, minLength: 1, writeOnly: true}
+        purpose: {type: string, minLength: 1}
+        requiredMfaLevel: {type: integer, minimum: 1}
+        expiresAt: {type: string, format: date-time}
+    ApiProblem:
+      type: object
+      additionalProperties: true
+      required: [status, code, detail, requestId]
+      properties:
+        status: {type: integer, minimum: 400, maximum: 599}
+        code: {type: string, minLength: 1}
+        detail: {type: string, minLength: 1}
+        requestId: {type: string, minLength: 1}
+  responses:
+    BadRequest:
+      description: Request payload rejected
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/ApiProblem'}
+    Unauthorized:
+      description: Authentication/session invalid or expired
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/ApiProblem'}
+    Forbidden:
+      description: Current identity or security level is not authorized
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/ApiProblem'}
+    Conflict:
+      description: Session/process/Step-Up state conflict
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/ApiProblem'}
+    ServiceUnavailable:
+      description: Critical security/audit dependency unavailable
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/ApiProblem'}

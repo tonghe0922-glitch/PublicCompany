@@ -1,0 +1,136 @@
+name: Phase 01 Knowledge Contracts
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - "scripts/knowledge_base/phase01_parse.py"
+      - "scripts/knowledge_base/phase01_fix.py"
+      - "scripts/knowledge_base/phase01_fix_v2.py"
+      - "scripts/knowledge_base/phase01_fix_v3.py"
+      - "scripts/knowledge_base/phase01_debug.py"
+      - "scripts/knowledge_base/requirements-phase01.txt"
+      - ".github/workflows/phase01-kb-contracts.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase01-kb-contracts-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  parse-and-persist:
+    name: Parse full Knowledge Base
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout construction branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/full-build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: scripts/knowledge_base/requirements-phase01.txt
+
+      - name: Install parser dependency
+        run: python -m pip install --disable-pip-version-check -r scripts/knowledge_base/requirements-phase01.txt
+
+      - name: Static parser syntax check
+        run: |
+          python -m py_compile scripts/knowledge_base/phase01_parse.py
+          python -m py_compile scripts/knowledge_base/phase01_fix.py
+          python -m py_compile scripts/knowledge_base/phase01_fix_v2.py
+          python -m py_compile scripts/knowledge_base/phase01_fix_v3.py
+          python -m py_compile scripts/knowledge_base/phase01_debug.py
+
+      - name: Parse Knowledge Base and generate contracts
+        id: parse
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/knowledge_base/phase01_fix_v3.py --repo-root . 2>&1 | tee phase01-parse.log
+
+      - name: Emit parser diagnostics
+        if: always()
+        run: python scripts/knowledge_base/phase01_debug.py --repo-root .
+
+      - name: Validate generated text diff
+        if: always()
+        run: |
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p = Path("docs/implementation/evidence/PHASE-01_VALIDATION.json")
+          if not p.exists():
+              raise SystemExit("PHASE-01 validation evidence was not generated")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          print(json.dumps({
+              "phase_gate": data.get("phase_gate"),
+              "required_checks": data.get("required_checks"),
+              "hard_failures": data.get("hard_failures"),
+          }, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Persist generated PHASE-01 contracts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git status --short
+          git add \
+            docs/implementation/MASTER_PAGE_CATALOG.json \
+            docs/implementation/MASTER_PAGE_CATALOG.md \
+            docs/implementation/MASTER_PROCESS_CATALOG.json \
+            docs/implementation/MASTER_PROCESS_CATALOG.md \
+            docs/implementation/MASTER_TRACEABILITY.md \
+            docs/implementation/MASTER_PERMISSION_MATRIX.md \
+            docs/implementation/MASTER_PERMISSION_MATRIX.json \
+            docs/implementation/MASTER_DATABASE_MAPPING.md \
+            docs/implementation/MASTER_DATABASE_MAPPING.json \
+            docs/implementation/MASTER_API_CATALOG.md \
+            docs/implementation/MASTER_GAPS.md \
+            docs/implementation/MASTER_GAPS.json \
+            docs/implementation/PHASE_02_29_WORKLIST.md \
+            docs/implementation/PHASE_02_29_WORKLIST.json \
+            docs/implementation/MASTER_PROGRESS.md \
+            docs/implementation/contracts/phase-01 \
+            docs/implementation/phases/PHASE-01/PHASE_REPORT.md \
+            docs/implementation/evidence/PHASE-01_VALIDATION.json
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+          else
+            git commit -m "phase-01: generate machine-readable knowledge contracts"
+            git fetch origin agent/full-build
+            git rebase origin/agent/full-build
+            git push origin HEAD:agent/full-build
+          fi
+
+      - name: Enforce PHASE-01 parser gate
+        if: always()
+        shell: bash
+        run: |
+          if [[ "${{ steps.parse.outcome }}" != "success" ]]; then
+            echo "PHASE-01 parser returned non-zero. Generated evidence was persisted for diagnosis."
+            exit 1
+          fi
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          data = json.loads(Path("docs/implementation/evidence/PHASE-01_VALIDATION.json").read_text(encoding="utf-8"))
+          if data.get("phase_gate") != "PASS":
+              raise SystemExit(f"PHASE-01 gate is {data.get('phase_gate')}")
+          print("PHASE-01 machine parser gate: PASS")
+          PY

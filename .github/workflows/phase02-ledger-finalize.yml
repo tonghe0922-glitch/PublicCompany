@@ -1,0 +1,52 @@
+name: Phase 02 Ledger Finalize
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - "scripts/implementation/phase02_finalize_ledgers.py"
+      - ".github/workflows/phase02-ledger-finalize.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-ledgers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch PHASE-02 metadata without mutating business collections
+        run: python scripts/implementation/phase02_finalize_ledgers.py
+      - name: Validate ledger diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --stat
+      - name: Persist ledger metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/implementation/MASTER_PAGE_CATALOG.json \
+            docs/implementation/MASTER_PROCESS_CATALOG.json \
+            docs/implementation/MASTER_GAPS.md \
+            docs/implementation/MASTER_PROGRESS.md \
+            docs/implementation/MASTER_TRACEABILITY.md \
+            docs/implementation/MASTER_API_CATALOG.md \
+            docs/implementation/MASTER_PERMISSION_MATRIX.md \
+            docs/implementation/MASTER_DATABASE_MAPPING.md
+          if git diff --cached --quiet; then
+            echo "PHASE-02 ledger metadata already current"
+          else
+            git commit -m "phase-02: finalize master ledgers"
+            git fetch origin agent/full-build
+            git rebase origin/agent/full-build
+            git push origin HEAD:agent/full-build
+          fi

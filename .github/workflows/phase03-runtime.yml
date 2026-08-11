@@ -1,0 +1,192 @@
+name: Phase 03 Runtime Database Identity
+
+on:
+  push:
+    branches:
+      - agent/full-build
+    paths:
+      - ".env.example"
+      - "docker/compose/**"
+      - "scripts/database/**"
+      - "scripts/windows/migrate.bat"
+      - "scripts/windows/start.bat"
+      - "technical-platform/backend/apps/api/**"
+      - "technical-platform/backend/apps/worker/**"
+      - "technical-platform/backend/modules/database-baseline/**"
+      - "technical-platform/database/**"
+      - "docs/implementation/phases/PHASE-03/**"
+      - "docs/implementation/evidence/PHASE-03*"
+      - ".github/workflows/phase03-runtime.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-identity:
+    name: Bootstrap migration API worker identity separation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Verify application runtime configuration contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          api = Path('technical-platform/backend/apps/api/src/main/resources/application.yml').read_text(encoding='utf-8')
+          worker = Path('technical-platform/backend/apps/worker/src/main/resources/application.yml').read_text(encoding='utf-8')
+          api_pom = Path('technical-platform/backend/apps/api/pom.xml').read_text(encoding='utf-8')
+          worker_pom = Path('technical-platform/backend/apps/worker/pom.xml').read_text(encoding='utf-8')
+          env = Path('.env.example').read_text(encoding='utf-8')
+          assert 'SJG_API_DB_USERNAME:sjg_api_runtime' in api
+          assert 'SJG_WORKER_DB_USERNAME:sjg_worker_runtime' in worker
+          assert 'flyway:\n    enabled: false' in api
+          assert 'flyway:\n    enabled: false' in worker
+          assert 'flyway-core' not in api_pom and 'flyway-database-postgresql' not in api_pom
+          assert 'flyway-core' not in worker_pom and 'flyway-database-postgresql' not in worker_pom
+          assert 'POSTGRES_USER=sjg_bootstrap' in env
+          assert 'SJG_MIGRATION_DB_USERNAME=sjg_migration' in env
+          assert 'SJG_API_DB_USERNAME=sjg_api_runtime' in env
+          assert 'SJG_WORKER_DB_USERNAME=sjg_worker_runtime' in env
+          assert Path('scripts/database/migrate.sh').is_file()
+          assert Path('scripts/windows/migrate.bat').is_file()
+          print('Runtime database identity configuration contract verified')
+          PY
+      - name: Create ephemeral CI environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENV_FILE="$RUNNER_TEMP/phase03-runtime.env"
+          secret() { openssl rand -hex 24; }
+          BOOTSTRAP_PASSWORD=$(secret)
+          cat > "$ENV_FILE" <<EOF
+          POSTGRES_USER=sjg_bootstrap
+          POSTGRES_PASSWORD=$BOOTSTRAP_PASSWORD
+          POSTGRES_DB=postgres
+          POSTGRES_PORT=5432
+          SJG_BOOTSTRAP_DB_URL=jdbc:postgresql://localhost:5432/postgres
+          SJG_BOOTSTRAP_DB_USERNAME=sjg_bootstrap
+          SJG_BOOTSTRAP_DB_PASSWORD=$BOOTSTRAP_PASSWORD
+          SJG_MIGRATION_DB_USERNAME=sjg_migration
+          SJG_MIGRATION_DB_PASSWORD=$(secret)
+          SJG_OMS_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_AUDIT_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_audit
+          SJG_DW_MIGRATION_DB_URL=jdbc:postgresql://localhost:5432/sjg_dw
+          SJG_API_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_API_DB_USERNAME=sjg_api_runtime
+          SJG_API_DB_PASSWORD=$(secret)
+          SJG_WORKER_DB_URL=jdbc:postgresql://localhost:5432/sjg_oms
+          SJG_WORKER_DB_USERNAME=sjg_worker_runtime
+          SJG_WORKER_DB_PASSWORD=$(secret)
+          SJG_AUDIT_WRITER_DB_PASSWORD=$(secret)
+          SJG_AUDITOR_DB_PASSWORD=$(secret)
+          SJG_DW_WRITER_DB_PASSWORD=$(secret)
+          SJG_DW_READER_DB_PASSWORD=$(secret)
+          SJG_TENANT_ID=00000000-0000-0000-0000-000000000001
+          SJG_TENANT_CODE=PHASE03_RUNTIME_CI
+          SJG_TENANT_NAME=PHASE03_Runtime_CI_Tenant
+          REDIS_PORT=6379
+          MINIO_ROOT_USER=phase03ci
+          MINIO_ROOT_PASSWORD=$(secret)
+          MINIO_API_PORT=9000
+          MINIO_CONSOLE_PORT=9001
+          RABBITMQ_DEFAULT_USER=phase03ci
+          RABBITMQ_DEFAULT_PASS=$(secret)
+          RABBITMQ_AMQP_PORT=5672
+          RABBITMQ_MANAGEMENT_PORT=15672
+          API_PORT=8080
+          EMPLOYEE_WEB_PORT=5173
+          CENTER_WEB_PORT=5174
+          ADMIN_WEB_PORT=5175
+          EOF
+          chmod 600 "$ENV_FILE"
+          echo "SJG_CI_ENV_FILE=$ENV_FILE" >> "$GITHUB_ENV"
+      - name: Start isolated PostgreSQL 16 and provision roles
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMPOSE=(docker compose --env-file "$SJG_CI_ENV_FILE" -f docker/compose/docker-compose.dev.yml)
+          "${COMPOSE[@]}" up -d --wait --wait-timeout 180 postgres
+      - name: Run independent migration runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SJG_ENV_FILE="$SJG_CI_ENV_FILE"
+          scripts/database/migrate.sh
+      - name: Verify runtime identities can connect but cannot perform DDL
+        shell: bash
+        run: |
+          set -euo pipefail
+          set -a
+          . "$SJG_CI_ENV_FILE"
+          set +a
+          COMPOSE=(docker compose --env-file "$SJG_CI_ENV_FILE" -f docker/compose/docker-compose.dev.yml)
+
+          query_as() {
+            role=$1; password=$2; database=$3; sql=$4
+            "${COMPOSE[@]}" exec -T -e PGPASSWORD="$password" postgres \
+              psql -h 127.0.0.1 -U "$role" -d "$database" -At -v ON_ERROR_STOP=1 -c "$sql"
+          }
+
+          test "$(query_as sjg_api_runtime "$SJG_API_DB_PASSWORD" sjg_oms 'select current_user')" = "sjg_api_runtime"
+          test "$(query_as sjg_worker_runtime "$SJG_WORKER_DB_PASSWORD" sjg_oms 'select current_user')" = "sjg_worker_runtime"
+
+          if query_as sjg_api_runtime "$SJG_API_DB_PASSWORD" sjg_oms 'CREATE TABLE core.phase03_forbidden_api(id bigint)' >/dev/null 2>&1; then
+            echo 'API runtime unexpectedly created DDL'
+            exit 1
+          fi
+          if query_as sjg_worker_runtime "$SJG_WORKER_DB_PASSWORD" sjg_oms 'CREATE TABLE workflow.phase03_forbidden_worker(id bigint)' >/dev/null 2>&1; then
+            echo 'Worker runtime unexpectedly created DDL'
+            exit 1
+          fi
+
+          OWNER_COUNT=$("${COMPOSE[@]}" exec -T postgres psql -U "$POSTGRES_USER" -d postgres -Atc \
+            "SELECT count(*) FROM pg_database WHERE datname IN ('sjg_oms','sjg_audit','sjg_dw') AND pg_get_userbyid(datdba)='sjg_owner'")
+          test "$OWNER_COUNT" = "3"
+
+          BAD_ROLES=$("${COMPOSE[@]}" exec -T postgres psql -U "$POSTGRES_USER" -d postgres -Atc \
+            "SELECT count(*) FROM pg_roles WHERE rolname IN ('sjg_migration','sjg_api_runtime','sjg_worker_runtime','sjg_audit_writer','sjg_auditor','sjg_dw_writer','sjg_dw_reader') AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolreplication OR rolbypassrls)")
+          test "$BAD_ROLES" = "0"
+          echo 'Runtime identity negative DDL and role privilege checks PASS'
+      - name: Cleanup runtime database
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${SJG_CI_ENV_FILE:-}" ] && [ -f "$SJG_CI_ENV_FILE" ]; then
+            docker compose --env-file "$SJG_CI_ENV_FILE" -f docker/compose/docker-compose.dev.yml down -v --remove-orphans || true
+            rm -f "$SJG_CI_ENV_FILE"
+          fi
+
+  windows-migration-script:
+    name: Windows Chinese-path migration BAT contract
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Copy repository into Chinese path
+        shell: pwsh
+        run: |
+          $target = Join-Path $env:RUNNER_TEMP '中文路径\NEWSTART'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
+          }
+          "SJG_CHINESE_PATH=$target" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Verify migration BAT in Chinese path
+        shell: cmd
+        run: |
+          cd /d "%SJG_CHINESE_PATH%"
+          call scripts\windows\migrate.bat --ci
+          if errorlevel 1 exit /b 1
+          call scripts\windows\start.bat --ci
+          if errorlevel 1 exit /b 1

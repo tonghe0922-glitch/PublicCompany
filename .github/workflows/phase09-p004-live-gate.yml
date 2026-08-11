@@ -1,0 +1,167 @@
+name: PHASE-09 P004 Live Gate
+
+on:
+  push:
+    branches: [ChatGPT_Version_V0.07]
+    paths:
+      - ".github/workflows/phase09-p004-live-gate.yml"
+      - "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase09P004BrowserBackendFixture.java"
+      - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase09/P004GenericRequestController.java"
+      - "technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/GenericRequestService.java"
+      - "technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/JdbcGenericRequestRepository.java"
+      - "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase09P004NotificationHandler.java"
+      - "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase09P002WorkerConfiguration.java"
+      - "technical-platform/database/flyway-overlays/oms/V111__phase09_p004_generic_request.sql"
+      - "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue"
+      - "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.vue"
+      - "technical-platform/web/src/router/portal-router.ts"
+      - "technical-platform/web/e2e/phase09-p004-live.spec.ts"
+      - "technical-platform/web/playwright.phase09-p004-live.config.ts"
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase09-p004-live-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  p004-live-browser:
+    name: P004 real generic request PostgreSQL Redis three-portal E2E
+    runs-on: ubuntu-latest
+    env:
+      PHASE09_P004_TENANT: PHASE09_P004_E2E
+      PHASE09_P004_LOGIN: phase09.p004.applicant
+      SJG_LOCAL_API_PROXY_TARGET: http://127.0.0.1:18084
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - name: Generate ephemeral P004 credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PASSWORD="S09P004_$(openssl rand -hex 18)"
+          echo "::add-mask::$PASSWORD"
+          echo "PHASE09_P004_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      - name: Compile P004 API fixture and notification worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -DskipTests install
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api test-compile
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/worker -am -DskipTests package
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api dependency:build-classpath \
+            -DincludeScope=test \
+            -Dmdep.outputFile="$GITHUB_WORKSPACE/technical-platform/backend/apps/api/target/phase09-p004-classpath.txt"
+      - name: Install P004 browser dependencies
+        working-directory: technical-platform/web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+      - name: Start real P004 Spring Boot PostgreSQL Redis fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_DIR=technical-platform/backend/apps/api
+          CP="$API_DIR/target/test-classes:$API_DIR/target/classes:$(cat "$API_DIR/target/phase09-p004-classpath.txt")"
+          java -cp "$CP" cn.shangjingu.platform.api.Phase09P004BrowserBackendFixture > "$API_DIR/target/phase09-p004-fixture.log" 2>&1 &
+          echo $! > "$API_DIR/target/phase09-p004-fixture.pid"
+          for attempt in $(seq 1 120); do
+            if grep -q 'PHASE09_P004_BROWSER_FIXTURE_READY' "$API_DIR/target/phase09-p004-fixture.log" && curl -sS http://127.0.0.1:18084/actuator/health >/dev/null; then exit 0; fi
+            if ! kill -0 "$(cat "$API_DIR/target/phase09-p004-fixture.pid")" 2>/dev/null; then
+              cat "$API_DIR/target/phase09-p004-fixture.log"; exit 1
+            fi
+            sleep 2
+          done
+          cat "$API_DIR/target/phase09-p004-fixture.log"; exit 1
+      - name: Run P004 separation scope idempotency and three-portal browser E2E
+        working-directory: technical-platform/web
+        run: pnpm exec playwright test --config=playwright.phase09-p004-live.config.ts
+      - name: Verify P004 PostgreSQL workflow form outbox audit and privacy facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          FACTS=technical-platform/backend/apps/api/target/phase09-p004-fixture-runtime.json
+          test -s "$FACTS"
+          PG_CONTAINER=$(jq -r '.postgresContainerId' "$FACTS")
+          REDIS_CONTAINER=$(jq -r '.redisContainerId' "$FACTS")
+          TENANT_ID=$(jq -r '.tenantId' "$FACTS")
+          APPLICANT_EMPLOYEE=$(jq -r '.applicantEmployeeId' "$FACTS")
+          ACTOR1_EMPLOYEE=$(jq -r '.actor1EmployeeId' "$FACTS")
+          ACTOR2_EMPLOYEE=$(jq -r '.actor2EmployeeId' "$FACTS")
+          TECH_EMPLOYEE=$(jq -r '.techEmployeeId' "$FACTS")
+          REQUEST_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select id from workflow.generic_request where tenant_id='$TENANT_ID'::uuid and subject='P004 live generic request lifecycle' and not is_deleted")
+          test -n "$REQUEST_ID"
+          STATUS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select status from workflow.generic_request where id='$REQUEST_ID'::uuid")
+          ACTUAL_AMOUNT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select actual_amount from workflow.generic_request where id='$REQUEST_ID'::uuid")
+          INSTANCE_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select workflow_instance_id from workflow.generic_request where id='$REQUEST_ID'::uuid")
+          WF_STATUS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select status from workflow.wf_instance where id='$INSTANCE_ID'::uuid")
+          WF_START_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and action_code='START' and not is_deleted")
+          WF_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and action_code in ('SUBMIT','ACCEPT','SUBMIT_APPROVAL','APPROVE','CREATE_TASK','SUBMIT_RESULT','ACCEPT_RESULT','COMPLETE','ARCHIVE') and not is_deleted")
+          FORM_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and action_code='FORM_SUBMIT' and not is_deleted")
+          DISTINCT_APPROVAL_ACTORS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(distinct operator_id) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and ((from_status='S04' and action_code='SUBMIT_APPROVAL') or (from_status='S05' and action_code='APPROVE')) and not is_deleted")
+          DISTINCT_EXEC_ACCEPT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(distinct operator_id) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and ((from_status='S07' and action_code='SUBMIT_RESULT') or (from_status='S08' and action_code='ACCEPT_RESULT')) and not is_deleted")
+          APPLICANT_BUSINESS_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and operator_id='$APPLICANT_EMPLOYEE'::uuid and from_status<>'S02' and action_code<>'START' and not is_deleted")
+          TECH_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and operator_id='$TECH_EMPLOYEE'::uuid and action_code<>'START' and not is_deleted")
+          ACTOR1_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and operator_id='$ACTOR1_EMPLOYEE'::uuid and action_code<>'START' and not is_deleted")
+          ACTOR2_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_action_log where instance_id='$INSTANCE_ID'::uuid and operator_id='$ACTOR2_EMPLOYEE'::uuid and action_code<>'START' and not is_deleted")
+          OUTBOX_EVENTS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from core.outbox_event where aggregate_id='$REQUEST_ID'::uuid and event_type='P004_GENERIC_REQUEST_EVENT' and not is_deleted")
+          OUTBOX_PRIVATE_HITS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from core.outbox_event where aggregate_id='$REQUEST_ID'::uuid and payload::text like '%P004-PRIVATE-REASON-ONLY-BUSINESS-ACTORS%' and not is_deleted")
+          SUBMISSION_COUNT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "select count(*) from workflow.wf_submission s join workflow.wf_form_definition f on f.tenant_id=s.tenant_id and f.id=s.form_definition_id where s.instance_id='$INSTANCE_ID'::uuid and f.form_code='EMP-P004-F01' and s.form_version=1 and not s.is_deleted and not f.is_deleted")
+          AUDIT_CREATED=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc "select count(*) from audit.operation_log where tenant_id='$TENANT_ID'::uuid and action='P004_CREATED' and resource_id='$REQUEST_ID'::uuid")
+          AUDIT_ACTIONS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc "select count(*) from audit.operation_log where tenant_id='$TENANT_ID'::uuid and action like 'P004_ACTION_%' and resource_id='$REQUEST_ID'::uuid")
+          PASSWORD_HITS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc "select (select count(*) from audit.operation_log where row_to_json(operation_log)::text like '%$PHASE09_P004_PASSWORD%') + (select count(*) from audit.security_event where row_to_json(security_event)::text like '%$PHASE09_P004_PASSWORD%')")
+          REDIS_KEYS=$(docker exec "$REDIS_CONTAINER" redis-cli DBSIZE | tr -d '\r')
+          printf 'P004_FACTS request=%s status=%s workflow=%s actualAmount=%s start=%s businessActions=%s formActions=%s approvalActors=%s execAccept=%s applicantActions=%s techActions=%s actor1=%s actor2=%s outbox=%s privateHits=%s form=%s auditCreated=%s auditActions=%s passwordHits=%s redis=%s\n' \
+            "$REQUEST_ID" "$STATUS" "$WF_STATUS" "$ACTUAL_AMOUNT" "$WF_START_ACTIONS" "$WF_ACTIONS" "$FORM_ACTIONS" "$DISTINCT_APPROVAL_ACTORS" "$DISTINCT_EXEC_ACCEPT" "$APPLICANT_BUSINESS_ACTIONS" "$TECH_ACTIONS" "$ACTOR1_ACTIONS" "$ACTOR2_ACTIONS" "$OUTBOX_EVENTS" "$OUTBOX_PRIVATE_HITS" "$SUBMISSION_COUNT" "$AUDIT_CREATED" "$AUDIT_ACTIONS" "$PASSWORD_HITS" "$REDIS_KEYS"
+          test "$STATUS" = '已关闭'
+          test "$WF_STATUS" = 'COMPLETED'
+          test "$ACTUAL_AMOUNT" = '111.11'
+          test "$WF_START_ACTIONS" -eq 1
+          test "$WF_ACTIONS" -eq 9
+          test "$FORM_ACTIONS" -eq 1
+          test "$DISTINCT_APPROVAL_ACTORS" -eq 2
+          test "$DISTINCT_EXEC_ACCEPT" -eq 2
+          test "$APPLICANT_BUSINESS_ACTIONS" -eq 0
+          test "$TECH_ACTIONS" -eq 0
+          test "$ACTOR1_ACTIONS" -ge 3
+          test "$ACTOR2_ACTIONS" -ge 4
+          test "$OUTBOX_EVENTS" -eq 9
+          test "$OUTBOX_PRIVATE_HITS" -eq 0
+          test "$SUBMISSION_COUNT" -eq 1
+          test "$AUDIT_CREATED" -eq 1
+          test "$AUDIT_ACTIONS" -ge 9
+          test "$PASSWORD_HITS" -eq 0
+          test "$REDIS_KEYS" -ge 5
+          printf 'request=%s status=%s workflow=%s business_actions=%s form_actions=%s approvalActors=%s execAccept=%s outbox=%s form=%s audit=%s redis=%s\n' "$REQUEST_ID" "$STATUS" "$WF_STATUS" "$WF_ACTIONS" "$FORM_ACTIONS" "$DISTINCT_APPROVAL_ACTORS" "$DISTINCT_EXEC_ACCEPT" "$OUTBOX_EVENTS" "$SUBMISSION_COUNT" "$AUDIT_ACTIONS" "$REDIS_KEYS"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase09-p004-live-${{ github.sha }}
+          path: |
+            technical-platform/web/reports/playwright-phase09-p004-live
+            technical-platform/backend/apps/api/target/phase09-p004-fixture.log
+            technical-platform/backend/apps/api/target/phase09-p004-fixture-runtime.json
+          if-no-files-found: warn
+      - name: Stop P004 live fixture
+        if: always()
+        shell: bash
+        run: |
+          PID_FILE=technical-platform/backend/apps/api/target/phase09-p004-fixture.pid
+          if [ -s "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")" 2>/dev/null || true
+            wait "$(cat "$PID_FILE")" 2>/dev/null || true
+          fi
