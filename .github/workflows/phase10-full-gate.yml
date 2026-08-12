@@ -45,6 +45,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
+      - name: Verify canonical repository identity after migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_REPOSITORY='tonghe0922-glitch/PublicCompany'
+          if [ "$GITHUB_REPOSITORY" != "$EXPECTED_REPOSITORY" ]; then
+            echo "Repository identity mismatch: expected $EXPECTED_REPOSITORY, got $GITHUB_REPOSITORY"
+            exit 1
+          fi
+          OLD_OWNER="$(printf '%s%s' 'louth' 'ison')"
+          mapfile -t STALE_REFS < <(git grep -n -I -i -F "${OLD_OWNER}/PublicCompany" -- . || true)
+          if [ "${#STALE_REFS[@]}" -ne 0 ]; then
+            echo 'Retired repository references remain in the current branch:'
+            printf '%s\n' "${STALE_REFS[@]}"
+            exit 1
+          fi
+          echo "Repository migration identity verified: $EXPECTED_REPOSITORY"
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - name: Verify frozen source contracts and phase boundary
