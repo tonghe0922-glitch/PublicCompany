@@ -22,4 +22,4 @@
 
 ## Migration note
 
-`louthison/PublicCompany` is now the sole construction repository and `ChatGPT_Version_V0.05` is the active construction branch. Legacy `louthison/NEWSTART` SHAs and runs remain historical provenance only; they are not treated as reachable PublicCompany commit identities.
+`tonghe0922-glitch/PublicCompany` is now the sole construction repository and `ChatGPT_Version_V0.05` is the active construction branch. Legacy `louthison/NEWSTART` SHAs and runs remain historical provenance only; they are not treated as reachable PublicCompany commit identities.

@@ -1,6 +1,6 @@
 # PHASE-09 PHASE_REPORT — P001–P005 公共能力 A
 
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Phase state: `COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
 > Scope: `P001–P005`

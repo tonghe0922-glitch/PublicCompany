@@ -1,7 +1,7 @@
 # PHASE-06 PHASE_GATE — Independent Formal Acceptance
 
 > Current Gate state: `PASS`
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Construction branch: `ChatGPT_Version_V0.05`
 > Audited completed HEAD before this report-only commit: `a49c44b6c13e138e3ebe89602b96dca2b90b517f`
 > Exact implementation / READY_FOR_GATE candidate: `d9a953c2da9bb560ed6c284a2adf1451ed09a7a4`
@@ -35,7 +35,7 @@ The current completed-head workflow `31260752191` independently reran source/saf
 
 | Requirement | Expected | Actual | Evidence | PASS/FAIL |
 |---|---|---|---|---|
-| Repository identity | Only `louthison/PublicCompany` | Correct repository | `MASTER_PROGRESS.md`; Actions repository metadata | PASS |
+| Repository identity | Only `tonghe0922-glitch/PublicCompany` | Correct repository | `MASTER_PROGRESS.md`; Actions repository metadata | PASS |
 | Construction branch | Use actual work branch, never assume old branch | `ChatGPT_Version_V0.05` | remote ref / Actions `head_branch` | PASS |
 | Completed remote HEAD | Completed phase report/code pushed and remote HEAD known | audited completed HEAD=`a49c44b6...`; this acceptance report is a report-only follow-up commit | remote ref; run `31260752191` bound to `a49c44b6...` | PASS |
 | Canonical rules reread | Re-read AGENT/DESIGN/current phase/control docs | Re-read; no conflicting later authorization found | `AGENT.md`, `DESIGN.md`, PHASE-06 control docs | PASS |
@@ -135,7 +135,7 @@ The corrected exact candidate `d9a953c2...` then passed both Construction and In
 ```text
 PHASE GATE: PASS
 
-Repository: louthison/PublicCompany
+Repository: tonghe0922-glitch/PublicCompany
 Branch: ChatGPT_Version_V0.05
 Audited implementation / Gate candidate: d9a953c2da9bb560ed6c284a2adf1451ed09a7a4
 Audited completed ledger HEAD: a49c44b6c13e138e3ebe89602b96dca2b90b517f

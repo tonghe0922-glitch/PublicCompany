@@ -1,6 +1,6 @@
 # PHASE-08 正式阶段验收（PHASE_GATE）— Independent Recheck
 
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Recheck Candidate: `48c3b822ed23f20565e331f3590a5209574f865e`
 > Gate Date: `2026-08-09`
@@ -35,7 +35,7 @@
 
 | Requirement | Expected | Actual | Evidence | Result |
 |---|---|---|---|---|
-| Repository / branch / remote candidate | 唯一仓库、非默认施工分支、候选已 push | `louthison/PublicCompany` / `ChatGPT_Version_V0.07` / `48c3b822...` | GitHub remote ref + PR #2 | PASS |
+| Repository / branch / remote candidate | 唯一仓库、非默认施工分支、候选已 push | `tonghe0922-glitch/PublicCompany` / `ChatGPT_Version_V0.07` / `48c3b822...` | GitHub remote ref + PR #2 | PASS |
 | PHASE-09 边界 | 验收期间不得施工 P001–P005 | `PHASE-09 = NOT_STARTED` | MASTER_PROGRESS + source gate | PASS |
 | 三端唯一体系 | employee / center / tech；tech runtime alias=admin；无第四端 | 符合 | portal config + 404 browser regression | PASS |
 | 三端职责差异 | employee/center/tech 工作目标不同 | 分别为 `员工工作入口 / 中心管理工作入口 / 技术运行工作入口` | portal-config + live E2E | PASS |
@@ -150,7 +150,7 @@ PHASE_REPORT、TEST_EVIDENCE、GAP_MATRIX 均记录首次 Gate FAIL、根因、�
 ```text
 PHASE GATE: PASS
 
-Repository: louthison/PublicCompany
+Repository: tonghe0922-glitch/PublicCompany
 Branch: ChatGPT_Version_V0.07
 Accepted implementation candidate: 48c3b822ed23f20565e331f3590a5209574f865e
 Tests: PASS

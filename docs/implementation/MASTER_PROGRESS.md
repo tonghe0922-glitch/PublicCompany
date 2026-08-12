@@ -1,6 +1,6 @@
 # MASTER_PROGRESS
 
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Construction branch: `ChatGPT_Version_V0.07`
 > Target branch: `main`
 > Latest completed phase: `PHASE-09 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`

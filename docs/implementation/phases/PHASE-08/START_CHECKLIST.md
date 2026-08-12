@@ -6,7 +6,7 @@
 
 ## A. Git / Phase 前置
 
-- [x] Repository = `louthison/PublicCompany`
+- [x] Repository = `tonghe0922-glitch/PublicCompany`
 - [x] Branch = `ChatGPT_Version_V0.07`
 - [x] PHASE-07 = `COMPLETE / FORMAL_GATE_PASS`
 - [x] PR #2 remains Draft / unmerged

@@ -8,7 +8,7 @@
 | ID | Capability / gap | Repository truth | Closure evidence | State |
 |---|---|---|---|---|
 | G05-C01 | Phase scope drift | canonical scope corrected; P016–P020 prior Gate retained as historical only | current canonical Gate `31250885752` | EXISTING |
-| G05-C02 | Repository migration metadata | current truth is `louthison/PublicCompany` / `ChatGPT_Version_V0.05`; old NEWSTART refs are provenance only | final ledgers normalized | EXISTING |
+| G05-C02 | Repository migration metadata | current truth is `tonghe0922-glitch/PublicCompany` / `ChatGPT_Version_V0.05`; old NEWSTART refs are provenance only | final ledgers normalized | EXISTING |
 | G05-01 | Workflow physical model | approved V45 + approved overlays reused | source/PG Gate checks | EXISTING |
 | G05-02 | Canonical Java workflow runtime | C1–C8 implemented and validated | candidate CI `31250885714`; Gate `31250885752` | EXISTING |
 | G05-03 | Definition/version publish lifecycle | published versions immutable | C1 + final regression | EXISTING |

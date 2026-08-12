@@ -56,7 +56,7 @@ def phase_state(progress: str) -> str:
 
 def check() -> None:
     progress = (ROOT / "docs/implementation/MASTER_PROGRESS.md").read_text(encoding="utf-8")
-    assert "> Repository: `louthison/PublicCompany`" in progress
+    assert "> Repository: `tonghe0922-glitch/PublicCompany`" in progress
     assert "> Construction branch: `ChatGPT_Version_V0.05`" in progress
     assert "| PHASE-04 | COMPLETE |" in progress
     state = phase_state(progress)

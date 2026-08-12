@@ -1,7 +1,7 @@
 # PHASE-10｜P006–P010 公共能力 B
 
 > 状态：`IN_PROGRESS / C0_SOURCE_CONTRACT_FROZEN`
-> 仓库：`louthison/PublicCompany`
+> 仓库：`tonghe0922-glitch/PublicCompany`
 > 分支：`ChatGPT_Version_V0.07`
 > 上一阶段：`PHASE-09 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
 > 本阶段范围：`P006–P010`
