@@ -2,10 +2,14 @@ name: PHASE-10 Preparation Gate
 
 on:
   push:
-    branches: [ChatGPT_Version_V0.07]
+    branches: [agent/phase-10-public-capabilities-b]
     paths:
       - ".github/workflows/phase10-preparation-gate.yml"
+      - ".github/workflows/phase10-c0.yml"
+      - ".github/workflows/phase10-full-gate.yml"
+      - "README.md"
       - "scripts/implementation/phase10_*.py"
+      - "docs/implementation/CONSTRUCTION_RULES.md"
       - "docs/implementation/phases/PHASE-10/**"
       - "docs/implementation/contracts/phase-10/**"
       - "docs/implementation/MASTER_PROGRESS.md"
@@ -28,15 +32,21 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
+      - name: Verify repository identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-10-public-capabilities-b"
+          python scripts/implementation/phase10_repository_identity.py
       - name: Verify preparation and formal C0 inputs
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
           grep -q '| PHASE-09 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
           grep -Eq '\| PHASE-10 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
           grep -q '| PHASE-11 | NOT_STARTED |' docs/implementation/MASTER_PROGRESS.md
-          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py scripts/implementation/phase10_contract.py
+          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py scripts/implementation/phase10_contract.py scripts/implementation/phase10_repository_identity.py
           python scripts/implementation/phase10_contract.py
           test -s docs/implementation/phases/PHASE-10/IMPACT_MATRIX.md
           test -s docs/implementation/phases/PHASE-10/GAP_MATRIX.md

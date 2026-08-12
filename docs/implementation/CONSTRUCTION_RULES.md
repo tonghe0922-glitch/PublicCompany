@@ -4,13 +4,13 @@
 
 本文件是分阶段施工控制规则，不替代根 `AGENT.md`、根 `DESIGN.md` 或 Knowledge Base。发生冲突时按根 `AGENT.md` 的冲突优先级执行。
 
-## 2. 固定施工协议
+## 2. 当前仓库与分支协议
 
-- Repository：`louthison/NEWSTART`
+- Repository：`tonghe0922-glitch/PublicCompany`
 - Default branch：`main`
-- Construction branch：`agent/full-build`
-- PHASE-00 至 PHASE-35 默认持续在同一施工分支推进。
-- PHASE-35 全量验收通过前，不自动合并到 `main`。
+- Current construction branch：`agent/phase-10-public-capabilities-b`
+- 当前阶段和施工分支必须以 `docs/implementation/MASTER_PROGRESS.md` 为准；不得把历史仓库、历史分支或聊天记忆当作当前施工目标。
+- 当前 PHASE-10 只允许在上述当前施工分支继续；PHASE-11 在 PHASE-10 Gate PASS 前保持 `NOT_STARTED`。
 - 禁止 force push、重写历史隐藏失败或覆盖无关变更。
 
 ## 3. 阶段闸门
@@ -45,6 +45,13 @@ CURRENT_PHASE != PASS
 /docs/implementation/**
 ```
 
+并核对：
+
+```text
+repository = tonghe0922-glitch/PublicCompany
+branch = docs/implementation/MASTER_PROGRESS.md 声明的当前施工分支
+```
+
 不得仅依赖聊天历史、模型记忆、旧摘要或本地旧副本。
 
 开始业务开发前还必须定位：
@@ -63,6 +70,7 @@ CURRENT_PHASE != PASS
 
 ```text
 权威资料读取
+→ 仓库/分支身份核对
 → 追溯与验收条件
 → 测试/验证基线
 → 领域与权限设计
@@ -110,6 +118,7 @@ phase-XX: <简短说明>
 
 每次提交前必须：
 
+- 核对当前远端仓库和施工分支；
 - 核对差异范围；
 - 只包含当前阶段文件；
 - 检查空白/格式错误；
@@ -120,26 +129,18 @@ phase-XX: <简短说明>
 
 ## 9. 当前环境的 GitHub Connector 授权记录
 
-PHASE-00 开始时当前执行环境没有可用的 `gh` CLI。用户于 2026-08-07 明确授权继续操作，因此本阶段及后续在该环境内允许使用已连接的 GitHub Connector 完成与 fetch/read/branch/commit/push/PR/CI 查询等价的远程操作。
+当前执行环境可能没有可用的 `gh` CLI。用户已明确授权使用已连接的 GitHub Connector 完成与 fetch/read/branch/commit/push/PR/CI 查询等价的远程操作。
 
 该授权只豁免“必须使用 `gh` 命令本身”的工具形式，不豁免：
 
-- 固定仓库和分支；
+- 当前仓库和分支核对；
 - 最新事实读取；
 - 非 force push；
 - commit/push/远端 SHA 验证；
-- Draft PR；
-- CI 检查；
+- Draft PR/CI 检查（适用时）；
 - 阶段 DoD；
 - 安全、审计、权限和业务红线。
 
-## 10. PHASE-00 边界
+## 10. PHASE-10 当前边界
 
-PHASE-00 只建立施工控制面，不创建：
-
-- 业务页面；
-- 业务 API；
-- Worker 业务任务；
-- 应用数据库表或 Flyway 业务迁移；
-- 126 个流程实现；
-- 后续阶段业务代码。
+PHASE-10 只施工 `P006–P010 公共能力 B`。P006/P007 已有代码 checkpoint；P008/P009/P010 为剩余施工范围。PHASE-11 及后续流程不得提前引入可执行耦合。

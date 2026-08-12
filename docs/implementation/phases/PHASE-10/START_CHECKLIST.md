@@ -2,6 +2,8 @@
 
 > Status: `IN_PROGRESS`
 > Scope: `P006–P010 公共能力 B`
+> Repository: `tonghe0922-glitch/PublicCompany`
+> Branch: `agent/phase-10-public-capabilities-b`
 
 - [x] 已读取根 `AGENT.md` 与 `DESIGN.md`。
 - [x] 已实际解析 P006–P010 三端 XLSX（15/15 workbooks、90 sheets、4,745 non-empty rows、0 failures）。
@@ -9,10 +11,11 @@
 - [x] 已建立/复核 `IMPACT_MATRIX.md` 与 `GAP_MATRIX.md`。
 - [x] 已冻结 `SOURCE_CONTRACT.md`、`PHASE10_PAGE_BINDINGS.json` 与 HTTP/Permission engineering contract。
 - [x] 已确认 V5/V10/V28 baseline 不修改；PHASE-10 additive migration 从 V115+ 开始。
-- [x] 已确认施工分支 `agent/phase-10-public-capabilities-b`，通过 GitHub connector 执行等价的 fetch/read/commit/push/ref-SHA 验证；不使用 force update。
+- [x] 已确认施工仓库 `tonghe0922-glitch/PublicCompany` 与施工分支 `agent/phase-10-public-capabilities-b`；通过 GitHub connector 执行 fetch/read/commit/push/ref-SHA 验证；不使用 force update。
+- [x] 已修正迁移后残留的仓库/分支身份错误，并建立 `phase10_repository_identity.py` 防回归门禁。
 - [x] P006 已形成远端代码 checkpoint；继续以真实 CI/E2E 作为 CLOSED 门槛。
 - [x] P007 已形成远端代码 checkpoint并完成 frozen HTTP/permission contract 对齐；继续以真实 CI/E2E 作为 CLOSED 门槛。
-- [x] PHASE-10 active full construction gate 已建立；第一轮失败已定位并进入 remediation，不将失败冒充 PASS。
+- [x] PHASE-10 active full construction gate 已建立；失败不得冒充 PASS。
 - [ ] P008 请假与考勤完整闭环。
 - [ ] P009 加班与调休完整闭环。
 - [ ] P010 员工学习、考试与资格完整闭环。

@@ -1,13 +1,15 @@
 # MASTER_PROGRESS
 
 > Repository: `tonghe0922-glitch/PublicCompany`
-> Construction branch: `ChatGPT_Version_V0.07`
+> Construction branch: `agent/phase-10-public-capabilities-b`
 > Target branch: `main`
 > Latest completed phase: `PHASE-09 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction phase: `PHASE-10 = IN_PROGRESS / C0_SOURCE_CONTRACT_FROZEN`
+> Current construction phase: `PHASE-10 = IN_PROGRESS / P006_P007_CODE_CHECKPOINTS_PRESENT`
 > Next phase: `PHASE-11 = NOT_STARTED / BLOCKED_BY_PHASE10_GATE`
 
 根目录 `Construction Master Schedule.csv` 固定 PHASE-10=`P006–P010 公共能力 B`，核心门槛=`5流程三端闭环`。本阶段具体内容：P006会议与行动项、P007排班与班次调整、P008请假与考勤、P009加班与调休、P010员工学习/考试/资格。PHASE-09 保持封板；PHASE-11 不得提前施工。
+
+当前仓库身份以本文件顶部为准。任何自动化、Agent、文档或人工操作若指向其他仓库或历史施工分支，必须先修正仓库身份后再继续施工。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -21,7 +23,7 @@
 | PHASE-07 | COMPLETE | Cycle 3 完整度复核；独立 Formal Gate PASS |
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS；CI 生命周期门禁已全绿 |
-| PHASE-10 | IN_PROGRESS | P006–P010 公共能力 B；C0 source/page/API/permission/database contract frozen；合法下一施工目标=P006 |
+| PHASE-10 | IN_PROGRESS | P006/P007 代码 checkpoint 已存在但尚未据此宣称 CLOSED；P008 为当前下一施工目标；P009/P010 随后；五流程全绿后才能 Formal Gate |
 | PHASE-11 | NOT_STARTED | P011–P016；BLOCKED_BY_PHASE10_GATE |
 | PHASE-12 | NOT_STARTED | P017–P020 |
 | PHASE-13 | NOT_STARTED | P021–P023 |
@@ -78,14 +80,22 @@ Explicit source-coordinate page bindings = FROZEN / PHASE10_PAGE_BINDINGS.json
 Business HTTP source baseline = 0 (historical fact retained)
 Engineering HTTP/permission identifiers = FROZEN / contracts/phase-10
 Canonical primary tables = EXISTING (V5/V10/V28)
-P006-P010 executable implementation = NOT YET CLOSED
-P006 = NEXT / NOT_STARTED_CHECKPOINT
-P007 = NOT_STARTED_CHECKPOINT
-P008 = NOT_STARTED_CHECKPOINT
+P006 = CODE_CHECKPOINT_PRESENT / GATE_PENDING
+P007 = CODE_CHECKPOINT_PRESENT / GATE_PENDING
+P008 = NEXT / NOT_STARTED_CHECKPOINT
 P009 = NOT_STARTED_CHECKPOINT
 P010 = NOT_STARTED_CHECKPOINT
 PHASE-10 = IN_PROGRESS
 PHASE-11 = NOT_STARTED / BLOCKED_BY_PHASE10_GATE
+```
+
+## Repository migration correction
+
+```text
+Canonical repository = tonghe0922-glitch/PublicCompany
+Current PHASE-10 branch = agent/phase-10-public-capabilities-b
+main base SHA = cd4f5c05f259c043fbe3e1288d6addccff6110e9
+Repository identity guard = required in PHASE-10 CI
 ```
 
 ## Completed-phase regression lifecycle

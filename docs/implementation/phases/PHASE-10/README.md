@@ -1,21 +1,23 @@
 # PHASE-10｜P006–P010 公共能力 B
 
-> 状态：`IN_PROGRESS / C0_SOURCE_CONTRACT_FROZEN`
+> 状态：`IN_PROGRESS / P006_P007_CODE_CHECKPOINTS_PRESENT`
 > 仓库：`tonghe0922-glitch/PublicCompany`
-> 分支：`ChatGPT_Version_V0.07`
+> 分支：`agent/phase-10-public-capabilities-b`
+> 目标分支：`main`
 > 上一阶段：`PHASE-09 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
 > 本阶段范围：`P006–P010`
+> 当前下一施工目标：`P008`
 > 下一阶段：`PHASE-11 = NOT_STARTED / BLOCKED_BY_PHASE10_GATE`
 
 ## 1. 本阶段唯一施工范围
 
-| Process | 中文流程 | Canonical 主事实 |
-|---|---|---|
-| P006 | 会议与行动项 | `collaboration.meeting` + `meeting_item` |
-| P007 | 排班与班次调整 | `attendance.shift_change_request` + item |
-| P008 | 请假与考勤 | `attendance.leave_request` + item |
-| P009 | 加班与调休 | `attendance.overtime_request` + item |
-| P010 | 员工学习、考试与资格 | `learning.learning_assignment` |
+| Process | 中文流程 | Canonical 主事实 | 当前状态 |
+|---|---|---|---|
+| P006 | 会议与行动项 | `collaboration.meeting` + `meeting_item` | 代码 checkpoint 已存在；Gate pending |
+| P007 | 排班与班次调整 | `attendance.shift_change_request` + item | 代码 checkpoint 已存在；Gate pending |
+| P008 | 请假与考勤 | `attendance.leave_request` + item | NEXT |
+| P009 | 加班与调休 | `attendance.overtime_request` + item | NOT_STARTED |
+| P010 | 员工学习、考试与资格 | `learning.learning_assignment` | NOT_STARTED |
 
 禁止施工 P011+；禁止为 employee/center/tech 建三份业务真相；禁止复制 Workflow、Audit、Outbox、Notification、IAM、Router、Session 或 API client。
 
@@ -32,20 +34,28 @@
 - 15/15 三端 XLSX 实际解析；90 sheets；4,745 non-empty rows；0 parse failures。
 - PHASE-01 页面 `process_codes` 对 P006–P010 直接追踪为 0，保留为历史事实；不伪造已有绑定。
 - C0 通过 `PHASE10_PAGE_BINDINGS.json` 冻结明确 `source_key + route_path`，不允许运行时模糊匹配。
-- PHASE-01 business API path baseline = 0；工程 HTTP/permission 标识由 `contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md` 明确冻结，但不得改变 XLSX 的角色、data scope、状态与敏感级别语义。
+- PHASE-01 business API path baseline = 0；工程 HTTP/permission 标识由 `docs/implementation/contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md` 明确冻结，但不得改变 XLSX 的角色、data scope、状态与敏感级别语义。
 - V5/V10/V28 已存在五个 canonical 主表；只允许 V115+ additive overlay 修实际缺口，禁止改历史 migration。
 
-## 4. 施工顺序
+## 4. 仓库身份规则
+
+- 所有 PHASE-10 CI、文档、Agent 和提交必须以本文件顶部仓库/分支为准。
+- `main` 当前阶段基线 SHA：`cd4f5c05f259c043fbe3e1288d6addccff6110e9`。
+- 仓库身份错误属于 Gate blocker；先修复身份再判断业务 CI。
+- 禁止 force push 或用错误仓库的 CI 结果冒充当前阶段证据。
+
+## 5. 当前施工顺序
 
 ```text
-P006 → test → checkpoint commit + push
-P007 → test → checkpoint commit + push
+Repository identity correction → CI reactivation
 P008 → test → checkpoint commit + push
 P009 → test → checkpoint commit + push
 P010 → test → checkpoint commit + push
+P006–P010 regression + negative + idempotency + concurrency + 3-portal E2E
 PHASE-10 Full Construction Gate
 PHASE_REPORT
+更新 MASTER 台账
 停止等待独立 Phase Gate
 ```
 
-当前只允许从 **P006** 开始；P007–P010 不得提前伪装为已实现。
+P006/P007 的已有代码 checkpoint 不等于 CLOSED；必须与 P008–P010 一起通过真实门禁后才能封板 PHASE-10。
