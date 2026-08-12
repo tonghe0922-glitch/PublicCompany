@@ -1,0 +1,174 @@
+name: PHASE-10 One-Shot Formal Seal
+
+on:
+  push:
+    branches:
+      - agent/phase-10-public-capabilities-b
+    paths:
+      - ".github/workflows/phase10-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: phase10-one-shot-seal-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  seal:
+    name: Seal PHASE-10 only after exact-head evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify business code, generate seal, and require final full gate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          wait_for_gate() {
+            local sha="$1"
+            local label="$2"
+            local result run_id status conclusion json
+            for attempt in $(seq 1 160); do
+              json=$(gh run list \
+                --repo "$GITHUB_REPOSITORY" \
+                --workflow phase10-full-gate.yml \
+                --branch "$GITHUB_REF_NAME" \
+                --commit "$sha" \
+                --limit 20 \
+                --json databaseId,status,conclusion,headSha)
+              result=$(jq -r --arg sha "$sha" '
+                map(select(.headSha == $sha))
+                | sort_by(.databaseId)
+                | last
+                | if . == null then ""
+                  else [(.databaseId|tostring),.status,(.conclusion // "")] | @tsv
+                  end
+              ' <<<"$json")
+              if [[ -z "$result" ]]; then
+                echo "$label: waiting for a run for $sha (attempt $attempt)" >&2
+                sleep 15
+                continue
+              fi
+              IFS=$'\t' read -r run_id status conclusion <<<"$result"
+              echo "$label: run=$run_id status=$status conclusion=${conclusion:-pending}" >&2
+              if [[ "$status" == "completed" ]]; then
+                if [[ "$conclusion" == "success" ]]; then
+                  printf '%s\n' "$run_id"
+                  return 0
+                fi
+                echo "::$label failed::run $run_id concluded $conclusion" >&2
+                return 2
+              fi
+              sleep 15
+            done
+            echo "::$label timed out::no successful completed run for $sha" >&2
+            return 3
+          }
+
+          CODE_SHA=$(git log -n 1 --format='%H' \
+            --grep='^test(phase10): prove ledger and cross-process hardening on PostgreSQL 16$')
+          if [[ -z "$CODE_SHA" ]]; then
+            echo '::error::PHASE-10 hardening commit not found'
+            exit 1
+          fi
+          CODE_GATE_RUN_ID=$(wait_for_gate "$CODE_SHA" "business-code gate")
+          echo "Verified PHASE-10 business code: $CODE_SHA / run $CODE_GATE_RUN_ID"
+
+          REMOTE_SHA=$(git ls-remote origin "refs/heads/$GITHUB_REF_NAME" | cut -f1)
+          if [[ "$REMOTE_SHA" != "$GITHUB_SHA" ]]; then
+            echo "::error::branch advanced while seal was running: expected $GITHUB_SHA, got $REMOTE_SHA"
+            exit 1
+          fi
+
+          SEALED_CODE_SHA="$CODE_SHA" \
+          SEALED_CODE_GATE_RUN_ID="$CODE_GATE_RUN_ID" \
+            python scripts/implementation/phase10_seal_final.py
+
+          python scripts/implementation/phase10_contract.py
+          git diff --check
+          grep -Eq '^\|[[:space:]]*PHASE-10[[:space:]]*\|[[:space:]]*COMPLETE[[:space:]]*\|' \
+            docs/implementation/MASTER_PROGRESS.md
+          grep -Eq '^\|[[:space:]]*PHASE-11[[:space:]]*\|[[:space:]]*NOT_STARTED[[:space:]]*\|' \
+            docs/implementation/MASTER_PROGRESS.md
+          grep -q 'Status: `PASS / COMPLETE`' \
+            docs/implementation/phases/PHASE-10/PHASE_GATE.md
+          grep -q 'Status: `COMPLETE`' \
+            docs/implementation/phases/PHASE-10/PHASE_REPORT.md
+
+          git rm -f --ignore-unmatch \
+            .github/workflows/phase10-seal-once.yml \
+            scripts/implementation/phase10_seal_once.py \
+            scripts/implementation/phase10_seal_final.py
+          git add \
+            docs/implementation/MASTER_PROGRESS.md \
+            docs/implementation/phases/PHASE-10/README.md \
+            docs/implementation/phases/PHASE-10/GAP_MATRIX.md \
+            docs/implementation/phases/PHASE-10/PHASE_GATE.md \
+            docs/implementation/phases/PHASE-10/PHASE_REPORT.md
+
+          if git diff --cached --name-only | grep -Ei 'PHASE-11|phase11'; then
+            echo '::error::formal seal attempted to modify PHASE-11'
+            exit 1
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs(phase10): seal P006-P010 after full construction gate'
+          SEALED_SHA=$(git rev-parse HEAD)
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+          sleep 5
+          gh workflow run phase10-full-gate.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "$GITHUB_REF_NAME"
+
+          set +e
+          FINAL_GATE_RUN_ID=$(wait_for_gate "$SEALED_SHA" "final-seal gate")
+          FINAL_GATE_RC=$?
+          set -e
+
+          if [[ "$FINAL_GATE_RC" -ne 0 ]]; then
+            echo '::error::final PHASE-10 gate failed; restoring pre-seal documentation state'
+            restore_from_trigger() {
+              local path="$1"
+              if git cat-file -e "$GITHUB_SHA:$path" 2>/dev/null; then
+                git checkout "$GITHUB_SHA" -- "$path"
+              else
+                git rm -f --ignore-unmatch "$path"
+              fi
+            }
+            restore_from_trigger docs/implementation/MASTER_PROGRESS.md
+            restore_from_trigger docs/implementation/phases/PHASE-10/README.md
+            restore_from_trigger docs/implementation/phases/PHASE-10/GAP_MATRIX.md
+            restore_from_trigger docs/implementation/phases/PHASE-10/PHASE_GATE.md
+            restore_from_trigger docs/implementation/phases/PHASE-10/PHASE_REPORT.md
+            git add -A docs/implementation
+            if ! git diff --cached --quiet; then
+              git commit -m 'revert(phase10): reopen after failed final seal gate'
+              git push origin "HEAD:$GITHUB_REF_NAME"
+              sleep 5
+              gh workflow run phase10-full-gate.yml \
+                --repo "$GITHUB_REPOSITORY" \
+                --ref "$GITHUB_REF_NAME" || true
+            fi
+            exit "$FINAL_GATE_RC"
+          fi
+
+          {
+            echo '## PHASE-10 formal seal complete'
+            echo
+            echo "- Business code SHA: \`$CODE_SHA\`"
+            echo "- Business code gate run: \`$CODE_GATE_RUN_ID\`"
+            echo "- Final seal SHA: \`$SEALED_SHA\`"
+            echo "- Final seal gate run: \`$FINAL_GATE_RUN_ID\`"
+            echo '- Final result: `success`'
+            echo '- PHASE-11: `NOT_STARTED`'
+          } >> "$GITHUB_STEP_SUMMARY"
