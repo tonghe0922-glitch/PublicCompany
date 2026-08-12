@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           REWORK_BASE=f26b12ecdcc37400e12808f2df56eff901ef0864
           git merge-base --is-ancestor "$REWORK_BASE" HEAD
           grep -q '| PHASE-07 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
