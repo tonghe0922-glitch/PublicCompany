@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +18,7 @@ PAGE_INDEX = ROOT / "docs/implementation/MASTER_PAGE_CATALOG.json"
 BINDINGS = PHASE / "PHASE10_PAGE_BINDINGS.json"
 CONTRACT = ROOT / "docs/implementation/contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md"
 PROGRESS = ROOT / "docs/implementation/MASTER_PROGRESS.md"
+XLSX = source_extract.xlsx
 
 EXPECTED_STATES = {
     "P006": [("S01","议题征集"),("S02","材料完整性检查"),("S03","会议发布"),("S04","签到与请假"),("S05","会议召开"),("S06","主持人确认纪要"),("S07","行动项生成"),("S08","责任人执行"),("S09","验收与返工"),("S10","逾期升级"),("S11","归档复盘")],
@@ -40,11 +43,41 @@ def source_states(payload: dict[str, Any], code: str) -> list[tuple[str,str]]:
     return result
 
 
+def physical_workbook(path: Path) -> dict[str, dict[int, list[str]]]:
+    result: dict[str, dict[int, list[str]]] = {}
+    with zipfile.ZipFile(path) as archive:
+        strings = XLSX.shared_strings(archive)
+        for sheet_name, target in XLSX.workbook_sheets(archive):
+            root = ET.fromstring(archive.read(target))
+            data = root.find(f"{{{XLSX.NS_MAIN}}}sheetData")
+            physical: dict[int, list[str]] = {}
+            if data is not None:
+                for row in data.findall(f"{{{XLSX.NS_MAIN}}}row"):
+                    row_no_text = row.attrib.get("r")
+                    if not row_no_text:
+                        continue
+                    values: dict[int, str] = {}
+                    max_index = -1
+                    for cell in row.findall(f"{{{XLSX.NS_MAIN}}}c"):
+                        ref = cell.attrib.get("r")
+                        if not ref:
+                            continue
+                        index = XLSX.col_index(ref)
+                        values[index] = XLSX.cell_text(cell, strings).strip()
+                        max_index = max(max_index, index)
+                    if max_index >= 0:
+                        dense = [values.get(i, "") for i in range(max_index + 1)]
+                        if any(dense):
+                            physical[int(row_no_text)] = dense
+            result[sheet_name] = physical
+    return result
+
+
 def row_contains_route(row: list[str], route: str) -> bool:
     return any(str(value).strip() == route for value in row)
 
 
-def validate_binding_source(binding: dict[str, Any], cache: dict[str, dict[str, list[list[str]]]]) -> None:
+def validate_binding_source(binding: dict[str, Any], cache: dict[str, dict[str, dict[int, list[str]]]]) -> None:
     portal = str(binding.get("portal", ""))
     key = str(binding.get("source_key", ""))
     route = str(binding.get("route_path", ""))
@@ -60,23 +93,19 @@ def validate_binding_source(binding: dict[str, Any], cache: dict[str, dict[str, 
     if not path.is_file():
         raise RuntimeError(f"binding IA source missing: {path.relative_to(ROOT)}")
     if source_name not in cache:
-        cache[source_name] = source_extract.xlsx.parse_workbook(path)
+        cache[source_name] = physical_workbook(path)
     workbook = cache[source_name]
     if sheet_name not in workbook:
         raise RuntimeError(f"binding sheet missing: {source_name}/{sheet_name}")
     rows = workbook[sheet_name]
-    candidates: list[list[str]] = []
-    if 1 <= source_row <= len(rows):
-        candidates.append(rows[source_row - 1])
-    nonempty = [row for row in rows if any(str(value).strip() for value in row)]
-    if 1 <= source_row <= len(nonempty):
-        candidates.append(nonempty[source_row - 1])
-    if any(row_contains_route(row, route) for row in candidates):
-        return
-    matching_rows = [index + 1 for index, row in enumerate(rows) if row_contains_route(row, route)]
-    raise RuntimeError(
-        f"binding route/source row drift: {key} expected route={route}; raw matching rows={matching_rows[:5]}"
-    )
+    row = rows.get(source_row)
+    if row is None:
+        raise RuntimeError(f"binding physical Excel row missing: {key}")
+    if not row_contains_route(row, route):
+        matching = [row_no for row_no, values in rows.items() if row_contains_route(values, route)]
+        raise RuntimeError(
+            f"binding route/source row drift: {key} expected route={route}; physical matching rows={matching[:5]}"
+        )
 
 
 def verify_page_index() -> None:
@@ -111,7 +140,7 @@ def verify() -> None:
     if not isinstance(bindings, list) or not bindings:
         raise RuntimeError("PHASE10 page bindings missing")
     covered = {code:set() for code in REQUIRED}
-    cache: dict[str, dict[str, list[list[str]]]] = {}
+    cache: dict[str, dict[str, dict[int, list[str]]]] = {}
     for binding in bindings:
         code = str(binding.get("process_code", "")); portal = str(binding.get("portal", ""))
         if code not in REQUIRED or portal not in REQUIRED[code]:
