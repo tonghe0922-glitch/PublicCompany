@@ -104,7 +104,7 @@ class Phase10DatabaseIntegrationIT {
                 """.formatted(TENANT)));
         assertEquals(1L,scalarLong("""
                 select count(*) from workflow.wf_transition t
-                join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=v.definition_id
+                join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=t.version_id
                 join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id
                 where d.tenant_id='%s' and d.process_code='P010' and v.status='PUBLISHED'
                   and t.from_node_code='S08' and t.action_code='LINK_PERMISSIONS' and t.to_node_code='S09'
