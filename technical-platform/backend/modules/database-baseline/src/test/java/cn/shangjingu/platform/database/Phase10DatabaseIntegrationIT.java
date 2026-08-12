@@ -32,6 +32,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 class Phase10DatabaseIntegrationIT {
     private static final String POSTGRES_IMAGE="postgres:16.14-alpine3.24";
     private static final UUID TENANT=UUID.fromString("00000000-0000-0000-0000-000000001010");
+    private static final UUID CENTER=UUID.fromString("01000000-0000-0000-0000-000000001010");
+    private static final UUID EMPLOYEE=UUID.fromString("02000000-0000-0000-0000-000000001010");
     private static final UUID LEAVE=UUID.fromString("10000000-0000-0000-0000-000000001010");
     private static final UUID LEDGER=UUID.fromString("20000000-0000-0000-0000-000000001010");
     private static final UUID ASSIGNMENT=UUID.fromString("30000000-0000-0000-0000-000000001010");
@@ -102,7 +104,7 @@ class Phase10DatabaseIntegrationIT {
                 """.formatted(TENANT)));
         assertEquals(1L,scalarLong("""
                 select count(*) from workflow.wf_transition t
-                join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=t.version_id
+                join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=v.definition_id
                 join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id
                 where d.tenant_id='%s' and d.process_code='P010' and v.status='PUBLISHED'
                   and t.from_node_code='S08' and t.action_code='LINK_PERMISSIONS' and t.to_node_code='S09'
@@ -119,12 +121,21 @@ class Phase10DatabaseIntegrationIT {
 
     private static void seedAppendOnlyFacts() throws SQLException {
         execute("""
+                insert into org.organization(id,tenant_id,org_code,org_name,org_type,status)
+                values('%s','%s','PHASE10-DB-CENTER','PHASE-10 DB Gate Center','CENTER','ACTIVE')
+                """.formatted(CENTER,TENANT));
+        execute("""
+                insert into org.employee(
+                  id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id)
+                values('%s','%s','PHASE10-DB-EMPLOYEE','PHASE-10 DB Gate Employee','ACTIVE',date '2026-08-12','%s')
+                """.formatted(EMPLOYEE,TENANT,CENTER));
+        execute("""
                 insert into attendance.leave_request(
                   id,tenant_id,business_no,status,version_no,subject,owner_center_id,owner_employee_id,
                   attendance_type,change_action,change_reason,duration_hours,start_at,end_at,quota_account_id,quota_amount)
                 values('%s','%s','P008-DB-TEST','假期额度预占',0,'append-only test','%s','%s',
                   'ANNUAL_LEAVE','CREATE','test',8,now(),now()+interval '8 hours','ANNUAL-2026',1)
-                """.formatted(LEAVE,TENANT,UUID.randomUUID(),UUID.randomUUID()));
+                """.formatted(LEAVE,TENANT,CENTER,EMPLOYEE));
         execute("""
                 insert into attendance.leave_request_item(
                   id,tenant_id,master_id,field_code,item_seq,item_key,item_name,item_value_number,item_value_text)
@@ -137,7 +148,7 @@ class Phase10DatabaseIntegrationIT {
                   phase_node_code,score_1000,qualification_effective_date,qualification_expire_date)
                 values('%s','%s','P010-DB-TEST','员工学习',0,'qualification test','%s','%s',
                   100,'v1','安全培训组','COURSE-001','2026-A','S03',900,date '2026-08-12',date '2027-08-12')
-                """.formatted(ASSIGNMENT,TENANT,UUID.randomUUID(),UUID.randomUUID()));
+                """.formatted(ASSIGNMENT,TENANT,CENTER,EMPLOYEE));
         execute("""
                 insert into learning.learning_assignment_evidence(
                   id,tenant_id,assignment_id,evidence_type,score_1000,completion_rate,evidence_text,evidence_json)
