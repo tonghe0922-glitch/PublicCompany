@@ -5,7 +5,7 @@ on:
     branches:
       - agent/phase-10-public-capabilities-b
     paths:
-      - ".github/workflows/phase10-full-gate.yml"
+      - ".github/workflows/**"
       - "docs/implementation/phases/PHASE-10/**"
       - "docs/implementation/contracts/phase-10/**"
       - "docs/implementation/MASTER_*.md"
@@ -17,7 +17,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - ".github/workflows/phase10-full-gate.yml"
+      - ".github/workflows/**"
       - "docs/implementation/phases/PHASE-10/**"
       - "docs/implementation/contracts/phase-10/**"
       - "docs/implementation/MASTER_*.md"
@@ -40,35 +40,28 @@ env:
 
 jobs:
   contract:
-    name: PHASE-10 scope source and safety contract
+    name: Source, repository and workflow-control contract
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
-      - name: Verify canonical repository identity after migration
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify canonical repository identity
         shell: bash
         run: |
           set -euo pipefail
           EXPECTED_REPOSITORY='tonghe0922-glitch/PublicCompany'
-          if [ "$GITHUB_REPOSITORY" != "$EXPECTED_REPOSITORY" ]; then
-            echo "Repository identity mismatch: expected $EXPECTED_REPOSITORY, got $GITHUB_REPOSITORY"
-            exit 1
-          fi
-          OLD_OWNER="$(printf '%s%s' 'louth' 'ison')"
-          mapfile -t STALE_REFS < <(git grep -n -I -i -F "${OLD_OWNER}/PublicCompany" -- . || true)
-          if [ "${#STALE_REFS[@]}" -ne 0 ]; then
-            echo 'Retired repository references remain in the current branch:'
-            printf '%s\n' "${STALE_REFS[@]}"
-            exit 1
-          fi
-          echo "Repository migration identity verified: $EXPECTED_REPOSITORY"
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - name: Verify frozen source contracts and phase boundary
+          test "$GITHUB_REPOSITORY" = "$EXPECTED_REPOSITORY"
+          echo "Repository identity verified: $EXPECTED_REPOSITORY"
+      - name: Verify active workflow lifecycle
+        run: python scripts/implementation/phase10_workflow_hygiene.py
+      - name: Verify source, page, API, permission and database contracts
+        run: python scripts/implementation/phase10_contract.py
+      - name: Verify phase boundary and repository hygiene
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/implementation/phase10_contract.py
           test -s docs/implementation/phases/PHASE-10/IMPACT_MATRIX.md
           test -s docs/implementation/phases/PHASE-10/GAP_MATRIX.md
           git diff --check "$PHASE10_BASE_SHA"...HEAD
@@ -83,8 +76,8 @@ jobs:
           if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|临时演示入口|bypass login' "${TARGETS[@]}"; then exit 1; fi
           if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
 
-  backend:
-    name: Java21 backend unit and integration regression
+  backend-unit:
+    name: Java 21 P006-P010 executable service behavior
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -93,10 +86,26 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Unit compile and tests
-        shell: bash
+      - name: Run all backend unit tests
         run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
-      - name: PostgreSQL16 API integration regression
+      - name: Require the PHASE-10 production-service gate explicitly
+        run: >-
+          bash ./mvnw -B -ntp
+          -pl technical-platform/backend/modules/workflow -am
+          -Dtest=Phase10WorkflowServiceTest
+          -Dsurefire.failIfNoSpecifiedTests=false test
+
+  api-integration:
+    name: PHASE-04 API security regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: PostgreSQL 16 API integration regression
         shell: bash
         run: |
           set -o pipefail
@@ -106,17 +115,31 @@ jobs:
               echo "===== $report ====="
               tail -n 160 "$report" || true
             done
-            echo '===== Maven/Flyway error summary ====='
             grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException' /tmp/phase10-api-integration.log | tail -n 240 || true
             echo '::endgroup::'
             exit 1
           fi
-      - name: Workflow and platform side-effect database regression
+
+  database:
+    name: PostgreSQL 16 completed-phase and PHASE-10 constraints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Database integration profiles
         shell: bash
         run: |
-          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase05-integration verify
-          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase06-integration verify
-          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase09-integration verify
+          set -euo pipefail
+          MODULE=technical-platform/backend/modules/database-baseline
+          bash ./mvnw -B -ntp -pl "$MODULE" -am -Pphase03-integration verify
+          bash ./mvnw -B -ntp -pl "$MODULE" -am -Pphase05-integration verify
+          bash ./mvnw -B -ntp -pl "$MODULE" -am -Pphase06-integration verify
+          bash ./mvnw -B -ntp -pl "$MODULE" -am -Pphase09-integration verify
+          bash ./mvnw -B -ntp -pl "$MODULE" -am -Pphase10-integration verify
 
   web:
     name: Vue TypeScript lint unit and three-build regression
@@ -141,12 +164,14 @@ jobs:
 
   verdict:
     name: PHASE-10 full gate verdict
-    needs: [contract, backend, web]
+    needs: [contract, backend-unit, api-integration, database, web]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Require every gate green
         run: |
           test '${{ needs.contract.result }}' = 'success'
-          test '${{ needs.backend.result }}' = 'success'
+          test '${{ needs.backend-unit.result }}' = 'success'
+          test '${{ needs.api-integration.result }}' = 'success'
+          test '${{ needs.database.result }}' = 'success'
           test '${{ needs.web.result }}' = 'success'
