@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           grep -q '| PHASE-08 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
           grep -Eq '\| PHASE-09 \| (NOT_STARTED|IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' docs/implementation/MASTER_PROGRESS.md
           python -m py_compile scripts/implementation/phase09_preparation_extract.py scripts/implementation/phase09_page_trace.py
