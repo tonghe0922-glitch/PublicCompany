@@ -38,11 +38,23 @@ class Phase03DatabaseBaselineTest {
   private static final String TEST_TENANT_CODE = "PHASE03_TEST";
   private static final String TEST_TENANT_NAME = "PHASE-03 Test Tenant";
   private static final List<String> DATABASES = List.of("sjg_oms", "sjg_audit", "sjg_dw");
+  private static final Map<String, String> SOURCE_DIR_BY_DATABASE = Map.of(
+      "sjg_oms", "01_sjg_oms",
+      "sjg_audit", "02_sjg_audit",
+      "sjg_dw", "03_sjg_dw");
   private static final List<String> FORMAL_ROLES = List.of(
       "sjg_owner", "sjg_migration", "sjg_api_runtime", "sjg_worker_runtime",
       "sjg_audit_writer", "sjg_auditor", "sjg_dw_writer", "sjg_dw_reader");
   private static final Pattern CREATE_TABLE = Pattern.compile(
       "(?im)^\\s*CREATE\\s+TABLE\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?([a-zA-Z0-9_]+)\\.([a-zA-Z0-9_]+)");
+  private static final Set<String> APPROVED_OVERLAY_CREATE_TABLES = Set.of(
+      "01_sjg_oms:collaboration.notice_receipt_event",
+      "01_sjg_oms:collaboration.notice_recipient",
+      "01_sjg_oms:iam.mfa_credential",
+      "01_sjg_oms:iam.permission_request_grant",
+      "01_sjg_oms:integration.webhook_event",
+      "01_sjg_oms:learning.learning_assignment_evidence",
+      "01_sjg_oms:learning.qualification_permission_binding");
 
   private static PostgreSQLContainer<?> postgres;
   private static Path repoRoot;
@@ -88,24 +100,32 @@ class Phase03DatabaseBaselineTest {
   @Test
   void schemaAndTableCountsMatchInstalledApprovedDdl() throws Exception {
     long schemas = 0;
-    long tables = 0;
     for (String database : DATABASES) {
       try (Connection connection = connection(database)) {
         schemas += scalarLong(connection, """
             SELECT count(*) FROM information_schema.schemata
             WHERE schema_name NOT IN ('public','information_schema') AND schema_name NOT LIKE 'pg_%'
             """);
-        tables += scalarLong(connection, """
-            SELECT count(*) FROM information_schema.tables
-            WHERE table_type='BASE TABLE'
-              AND table_schema NOT IN ('public','information_schema') AND table_schema NOT LIKE 'pg_%'
-            """);
       }
     }
     assertEquals(46, schemas, "physical non-system Schema count must match KB baseline");
-    long approved = approvedCreateTableNames().size();
-    assertEquals(approved, tables, "installed tables must equal unique approved CREATE TABLE statements");
-    assertTrue(approved >= 265, "approved DDL must cover the 265-table catalog; source/catalog diff is reported separately");
+
+    Set<String> approved = approvedCreateTableNames();
+    Set<String> overlay = overlayCreateTableNames();
+    assertEquals(APPROVED_OVERLAY_CREATE_TABLES, overlay,
+        "overlay CREATE TABLE declarations require explicit review before entering the installed baseline");
+
+    Set<String> duplicates = new HashSet<>(approved);
+    duplicates.retainAll(overlay);
+    assertTrue(duplicates.isEmpty(), () -> "overlay tables duplicate approved source DDL: " + duplicates);
+
+    Set<String> expected = new HashSet<>(approved);
+    expected.addAll(overlay);
+    Set<String> installed = installedTableNames();
+    assertEquals(expected, installed,
+        "installed tables must equal approved source DDL plus the explicitly reviewed overlay table set");
+    assertTrue(approved.size() >= 265,
+        "approved DDL must cover the 265-table catalog; source/catalog diff is reported separately");
   }
 
   @Test
@@ -341,15 +361,57 @@ class Phase03DatabaseBaselineTest {
     }
   }
 
+  private static Set<String> installedTableNames() throws SQLException {
+    Set<String> tables = new HashSet<>();
+    for (String database : DATABASES) {
+      String sourceDir = SOURCE_DIR_BY_DATABASE.get(database);
+      try (Connection connection = connection(database);
+           PreparedStatement statement = connection.prepareStatement("""
+               SELECT table_schema,table_name
+               FROM information_schema.tables
+               WHERE table_type='BASE TABLE'
+                 AND table_schema NOT IN ('public','information_schema') AND table_schema NOT LIKE 'pg_%'
+               ORDER BY table_schema,table_name
+               """);
+           ResultSet result = statement.executeQuery()) {
+        while (result.next()) {
+          tables.add(sourceDir + ":" + result.getString(1) + "." + result.getString(2));
+        }
+      }
+    }
+    return tables;
+  }
+
   private static Set<String> approvedCreateTableNames() throws IOException {
     Set<String> tables = new HashSet<>();
-    for (String dir : List.of("01_sjg_oms", "02_sjg_audit", "03_sjg_dw")) {
+    for (String dir : SOURCE_DIR_BY_DATABASE.values()) {
       Path sourceDir = repoRoot.resolve("Knowledge Base/03 数据库需求规则/03_SQL_DDL").resolve(dir);
-      try (var paths = Files.list(sourceDir)) {
-        for (Path sql : paths.filter(path -> path.getFileName().toString().endsWith(".sql")).toList()) {
-          Matcher matcher = CREATE_TABLE.matcher(Files.readString(sql, StandardCharsets.UTF_8));
-          while (matcher.find()) tables.add(dir + ":" + matcher.group(1) + "." + matcher.group(2));
-        }
+      tables.addAll(createTableNames(sourceDir, dir));
+    }
+    return tables;
+  }
+
+  private static Set<String> overlayCreateTableNames() throws IOException {
+    Set<String> tables = new HashSet<>();
+    for (Map.Entry<String, String> entry : SOURCE_DIR_BY_DATABASE.entrySet()) {
+      Path sourceDir = repoRoot.resolve("technical-platform/database/flyway-overlays").resolve(
+          switch (entry.getKey()) {
+            case "sjg_oms" -> "oms";
+            case "sjg_audit" -> "audit";
+            case "sjg_dw" -> "dw";
+            default -> throw new IllegalStateException(entry.getKey());
+          });
+      tables.addAll(createTableNames(sourceDir, entry.getValue()));
+    }
+    return tables;
+  }
+
+  private static Set<String> createTableNames(Path sourceDir, String prefix) throws IOException {
+    Set<String> tables = new HashSet<>();
+    try (var paths = Files.list(sourceDir)) {
+      for (Path sql : paths.filter(path -> path.getFileName().toString().endsWith(".sql")).toList()) {
+        Matcher matcher = CREATE_TABLE.matcher(Files.readString(sql, StandardCharsets.UTF_8));
+        while (matcher.find()) tables.add(prefix + ":" + matcher.group(1) + "." + matcher.group(2));
       }
     }
     return tables;
