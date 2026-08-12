@@ -135,7 +135,6 @@ public final class LearningService {
                     null,
                     null,
                     null,
-                    null,
                     Instant.now());
             repo.insert(
                     record,
@@ -798,13 +797,9 @@ public final class LearningService {
 
     public interface Repository {
         Optional<UUID> workflowVersion(UUID tenantId);
-
         Optional<FormRef> form(UUID tenantId);
-
         List<UUID> permissionCandidates(UUID tenantId, String permission, UUID orgId);
-
         boolean activeEmployeeInCenter(UUID tenantId, UUID employeeId, UUID orgId);
-
         void insert(
                 LearningRecord record,
                 String reason,
@@ -814,13 +809,9 @@ public final class LearningService {
                 Instant plannedStartAt,
                 Instant plannedFinishAt,
                 UUID actor);
-
         Optional<LearningRecord> find(UUID tenantId, UUID id);
-
         List<LearningRecord> list(UUID tenantId);
-
         List<Evidence> evidence(UUID tenantId, UUID id);
-
         int bindWorkflow(
                 UUID tenantId,
                 UUID id,
@@ -829,7 +820,6 @@ public final class LearningService {
                 String node,
                 String status,
                 UUID actor);
-
         int moveNode(
                 UUID tenantId,
                 UUID id,
@@ -838,7 +828,6 @@ public final class LearningService {
                 String status,
                 Instant closed,
                 UUID actor);
-
         void appendEvidence(
                 UUID tenantId,
                 UUID id,
@@ -849,35 +838,22 @@ public final class LearningService {
                 String practical,
                 String text,
                 JsonNode json);
-
         int updateProgress(UUID tenantId, UUID id, BigDecimal progress, UUID actor);
-
         int markLearningCompleted(UUID tenantId, UUID id, UUID actor);
-
         int updateExam(UUID tenantId, UUID id, long score, UUID actor);
-
         int updatePractical(UUID tenantId, UUID id, String result, UUID actor);
-
         int markContentPublished(UUID tenantId, UUID id, UUID actor);
-
         int markRiskAssigned(UUID tenantId, UUID id, UUID actor);
-
         int markCertified(UUID tenantId, UUID id, UUID actor);
-
         int activateQualification(
                 UUID tenantId, UUID id, LocalDate effective, LocalDate expire, UUID actor);
-
         List<UUID> linkPermissions(UUID tenantId, UUID id, UUID actor);
-
         int markPermissionLinked(UUID tenantId, UUID id, UUID actor);
-
         int markRetrainingChecked(UUID tenantId, UUID id, UUID actor);
-
         int markArchived(UUID tenantId, UUID id, UUID actor);
     }
 
     public record FormRef(UUID id, int versionNo) {}
-
     public record CreateCommand(
             String subject,
             String reason,
@@ -891,19 +867,14 @@ public final class LearningService {
             String riskLevel,
             Instant plannedStartAt,
             Instant plannedFinishAt) {}
-
     public record ProgressCommand(BigDecimal completionRate, String note) {}
-
     public record ExamCommand(long score1000, String note) {}
-
     public record PracticalCommand(String result, String note) {}
-
     public record ActionCommand(
             int expectedVersion,
             String note,
             LocalDate effectiveDate,
             LocalDate expireDate) {}
-
     public record LearningRecord(
             UUID id,
             UUID tenantId,
@@ -929,7 +900,6 @@ public final class LearningService {
             Instant permissionLinkedAt,
             Instant archivedAt,
             Instant updatedAt) {}
-
     public record Evidence(
             UUID id,
             String evidenceType,
@@ -940,7 +910,6 @@ public final class LearningService {
             String evidenceText,
             JsonNode evidenceJson,
             Instant createdAt) {}
-
     public record Aggregate(LearningRecord record, List<Evidence> evidence) {
         public Aggregate metadataOnly() {
             LearningRecord source = record;
