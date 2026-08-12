@@ -40,9 +40,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
-          grep -q '> Repository: `louthison/PublicCompany`' docs/implementation/MASTER_PROGRESS.md
+          grep -q '> Repository: `tonghe0922-glitch/PublicCompany`' docs/implementation/MASTER_PROGRESS.md
           grep -q '> Construction branch: `ChatGPT_Version_V0.05`' docs/implementation/MASTER_PROGRESS.md
           grep -q '| PHASE-04 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
           grep -q '| PHASE-05 | READY_FOR_GATE |' docs/implementation/MASTER_PROGRESS.md
