@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JdbcMeetingRepository implements MeetingService.Repository {
+public class JdbcMeetingRepository implements MeetingService.Repository {
     private final JdbcTemplate jdbc;
     public JdbcMeetingRepository(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
