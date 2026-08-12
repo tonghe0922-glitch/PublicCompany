@@ -46,7 +46,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           grep -q '| PHASE-05 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
           grep -q '| PHASE-06 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
           grep -q '| PHASE-07 | NOT_STARTED |' docs/implementation/MASTER_PROGRESS.md
