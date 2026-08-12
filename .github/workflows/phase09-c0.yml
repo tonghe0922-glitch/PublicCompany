@@ -39,7 +39,7 @@ jobs:
           MASTER=docs/implementation/MASTER_PROGRESS.md
           PHASE_DIR=docs/implementation/phases/PHASE-09
 
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           grep -q '| PHASE-08 | COMPLETE |' "$MASTER"
           grep -Eq '\| PHASE-09 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|' "$MASTER"
           grep -q '| PHASE-10 | NOT_STARTED |' "$MASTER"
