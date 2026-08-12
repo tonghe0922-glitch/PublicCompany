@@ -72,7 +72,7 @@ public final class OvertimeService {
                     claim.resourceId(),actor.tenantId(),numbers.next(actor.tenantId(),actor.employeeId(),PROCESS_CODE),
                     null,null,"S01",label("S01"),0,c.subject().trim(),trim(c.reason()),actor.orgId(),actor.employeeId(),
                     c.attendanceType().trim(),c.startAt(),c.endAt(),hours(c.startAt(),c.endAt()),c.emergencyFact(),
-                    null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,Instant.now());
+                    null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,Instant.now());
             repository.insert(record,actor.employeeId());
             ObjectNode context=mapper.createObjectNode();
             context.put("ownerEmployeeId",actor.employeeId().toString());context.put("ownerCenterId",actor.orgId().toString());
