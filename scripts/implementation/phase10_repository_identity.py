@@ -9,7 +9,7 @@ EXPECTED_BRANCH = "agent/phase-10-public-capabilities-b"
 
 # Retired execution identities are built in pieces so this guard does not trip repository-wide
 # literal scanners that intentionally reject obsolete repository names.
-RETIRED_REPOSITORY = "louthison" + "/NEWSTART"
+RETIRED_REPOSITORY = "louth" + "ison/PublicCompany"
 RETIRED_BRANCH = "ChatGPT_" + "Version_V0.07"
 
 ACTIVE_IDENTITY_FILES = (
@@ -18,6 +18,7 @@ ACTIVE_IDENTITY_FILES = (
     "docs/implementation/MASTER_PROGRESS.md",
     "docs/implementation/phases/PHASE-10/README.md",
     ".github/workflows/phase10-preparation-gate.yml",
+    ".github/workflows/phase10-preparation-probe.yml",
     ".github/workflows/phase10-c0.yml",
     ".github/workflows/phase10-full-gate.yml",
 )
@@ -27,6 +28,7 @@ REPOSITORY_FILES = {
     "docs/implementation/MASTER_PROGRESS.md",
     "docs/implementation/phases/PHASE-10/README.md",
     ".github/workflows/phase10-preparation-gate.yml",
+    ".github/workflows/phase10-preparation-probe.yml",
 }
 
 
