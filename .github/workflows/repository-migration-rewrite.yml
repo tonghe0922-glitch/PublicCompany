@@ -18,7 +18,7 @@ jobs:
         with:
           ref: agent/phase-10-public-capabilities-b
           fetch-depth: 0
-      - name: Rewrite retired repository identity
+      - name: Rewrite retired repository identity outside workflows
         shell: bash
         run: |
           set -euo pipefail
@@ -39,6 +39,8 @@ jobs:
               if not raw:
                   continue
               path = Path(raw.decode("utf-8"))
+              if path.as_posix().startswith(".github/workflows/"):
+                  continue
               try:
                   text = path.read_text(encoding="utf-8")
               except (UnicodeDecodeError, OSError):
@@ -46,28 +48,24 @@ jobs:
               count = text.lower().count(old.lower())
               if not count:
                   continue
-              # Repository owner/name is canonicalized exactly; surrounding historical evidence is preserved.
-              updated = text.replace(old, new_repo).replace(old.lower(), new_repo)
-              if updated == text:
-                  # Handle uncommon mixed-case forms without broadening the replacement target.
-                  import re
-                  updated, count = re.subn(re.escape(old), new_repo, text, flags=re.IGNORECASE)
+              import re
+              updated, count = re.subn(re.escape(old), new_repo, text, flags=re.IGNORECASE)
               path.write_text(updated, encoding="utf-8")
               replacements += count
               changed.append(str(path))
           if not changed:
-              raise SystemExit("No retired repository references found; refusing empty migration rewrite")
-          print(f"Rewrote {replacements} retired repository references in {len(changed)} tracked files")
+              raise SystemExit("No retired non-workflow repository references found; refusing empty migration rewrite")
+          print(f"Rewrote {replacements} retired repository references in {len(changed)} non-workflow files")
           for path in changed:
               print(path)
           PY
-          if git grep -n -I -i -F "${OLD_OWNER}/PublicCompany" -- .; then
-            echo 'Retired repository references remain after rewrite'
+          if git grep -n -I -i -F "${OLD_OWNER}/PublicCompany" -- ':!.github/workflows/**'; then
+            echo 'Retired non-workflow repository references remain after rewrite'
             exit 1
           fi
           git diff --check
           git diff --stat
-      - name: Commit exact repository migration rewrite
+      - name: Commit exact non-workflow migration rewrite
         shell: bash
         run: |
           set -euo pipefail
