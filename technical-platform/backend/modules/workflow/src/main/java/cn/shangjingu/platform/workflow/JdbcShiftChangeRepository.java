@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JdbcShiftChangeRepository implements ShiftChangeService.Repository {
+public class JdbcShiftChangeRepository implements ShiftChangeService.Repository {
     private final JdbcTemplate jdbc;
     public JdbcShiftChangeRepository(JdbcTemplate jdbc){this.jdbc=jdbc;}
     @Override public Optional<UUID> workflowVersion(UUID tenantId){return jdbc.query("""
