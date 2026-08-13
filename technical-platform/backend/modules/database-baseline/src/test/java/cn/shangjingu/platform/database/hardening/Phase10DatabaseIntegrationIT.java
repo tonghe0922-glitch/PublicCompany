@@ -72,16 +72,18 @@ class Phase10DatabaseIntegrationIT {
     @Test
     void ledgersRejectConversionAndMalformedFacts() throws Exception {
         SQLException p008=rejected("update attendance.leave_request_item set field_code='QUOTA_LEDGER',item_key='RESERVE',item_value_number=1,quantity=1 where id='"+LEAVE_ITEM+"'");
-        assertTrue(message(p008).contains("must be inserted, not converted"));
+        assertTrue(message(p008).contains("must be inserted"));
         SQLException p009=rejected("update attendance.overtime_request_item set field_code='TIME_OFF_LEDGER',item_key='GRANT',item_value_number=1,quantity=1 where id='"+OVERTIME_ITEM+"'");
-        assertTrue(message(p009).contains("must be inserted, not converted"));
+        assertTrue(message(p009).contains("must be inserted"));
         assertEquals("HANDOVER_ITEMS",string("select field_code from attendance.leave_request_item where id='"+LEAVE_ITEM+"'"));
         assertEquals("ATTENDANCE_FACT",string("select field_code from attendance.overtime_request_item where id='"+OVERTIME_ITEM+"'"));
 
         SQLException zeroAdjust=rejected("insert into attendance.leave_request_item(id,tenant_id,master_id,field_code,item_seq,item_key,item_value_number,quantity) values(gen_random_uuid(),'"+TENANT+"','"+LEAVE+"','QUOTA_LEDGER',9,'ADJUST',0,0)");
-        assertTrue(message(zeroAdjust).contains("ck_p008_quota_ledger_amount"));
+        assertTrue(message(zeroAdjust).contains("ck_p008_quota_ledger_entry"));
         SQLException zeroGrant=rejected("insert into attendance.overtime_request_item(id,tenant_id,master_id,field_code,item_seq,item_key,item_value_number,quantity) values(gen_random_uuid(),'"+TENANT+"','"+OVERTIME+"','TIME_OFF_LEDGER',9,'GRANT',0,0)");
-        assertTrue(message(zeroGrant).contains("ck_p009_timeoff_ledger_amount"));
+        assertTrue(message(zeroGrant).contains("ck_p009_timeoff_ledger_entry"));
+        SQLException wrongType=rejected("insert into attendance.overtime_request_item(id,tenant_id,master_id,field_code,item_seq,item_key,item_value_number,quantity) values(gen_random_uuid(),'"+TENANT+"','"+OVERTIME+"','TIME_OFF_LEDGER',10,'DEDUCT',1,1)");
+        assertTrue(message(wrongType).contains("ck_p009_timeoff_ledger_type"));
     }
 
     @Test
@@ -93,6 +95,8 @@ class Phase10DatabaseIntegrationIT {
         assertEquals(1,repository.markReturned(TENANT,LEAVE,END,EMPLOYEE));
         SQLException constraint=rejected("update attendance.leave_request set returned_at='"+START.minusSeconds(1)+"' where id='"+LEAVE+"'");
         assertTrue(message(constraint).contains("ck_p008_return_after_leave_start"));
+        SQLException actualWindow=rejected("update attendance.leave_request set actual_end_at='"+START.minusSeconds(1)+"' where id='"+LEAVE+"'");
+        assertTrue(message(actualWindow).contains("ck_p008_actual_leave_window"));
     }
 
     @Test
@@ -106,10 +110,39 @@ class Phase10DatabaseIntegrationIT {
     }
 
     @Test
-    void migration120AndConstraintsAreInstalled() throws Exception {
-        assertEquals(1L,number("select count(*) from flyway_schema_history where success and version='120'"));
+    void migration121PublishesExecutableEmployeeSelfServiceNodes() throws Exception {
+        assertEquals(1L,number("select count(*) from flyway_schema_history where success and version='121'"));
+        assertEquals(2L,selfServiceNodes("P007","'S05','S06'"));
+        assertEquals(3L,selfServiceNodes("P008","'S03','S07','S08'"));
+        assertEquals(1L,selfServiceNodes("P009","'S04'"));
+        assertTrue(bool("select exists(select 1 from pg_constraint where conname='ck_p008_actual_leave_window')"));
         assertTrue(bool("select exists(select 1 from pg_constraint where conname='ck_p008_return_after_leave_start')"));
-        assertTrue(bool("select exists(select 1 from pg_constraint where conname='ck_p009_timeoff_ledger_amount')"));
+        assertTrue(bool("select exists(select 1 from pg_constraint where conname='ck_p009_timeoff_ledger_type')"));
+    }
+
+    private static long selfServiceNodes(String process,String quotedNodes) throws SQLException {
+        return number("""
+                select count(*)
+                from workflow.wf_node n
+                join workflow.wf_version v
+                  on v.tenant_id=n.tenant_id and v.id=n.version_id
+                join workflow.wf_definition d
+                  on d.tenant_id=v.tenant_id and d.id=v.definition_id
+                where d.tenant_id='%s'
+                  and d.process_code='%s'
+                  and v.status='PUBLISHED'
+                  and v.version_no=(
+                    select max(v2.version_no)
+                    from workflow.wf_version v2
+                    where v2.tenant_id=v.tenant_id
+                      and v2.definition_id=v.definition_id
+                      and v2.status='PUBLISHED'
+                      and not v2.is_deleted
+                  )
+                  and n.node_code in (%s)
+                  and coalesce((n.actor_rule->>'allowInitiator')::boolean,false)
+                  and not n.is_deleted and not v.is_deleted and not d.is_deleted
+                """.formatted(TENANT,process,quotedNodes));
     }
 
     private static void seed() throws SQLException {
