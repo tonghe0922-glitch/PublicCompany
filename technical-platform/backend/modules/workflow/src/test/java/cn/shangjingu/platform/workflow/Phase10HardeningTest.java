@@ -89,7 +89,8 @@ class Phase10HardeningTest {
         ShiftChangeService.Repository repo=mock(ShiftChangeService.Repository.class);
         when(repo.find(TENANT,REQUEST)).thenReturn(Optional.of(shift("S03",2,"SCHEDULE")));
         when(repo.isActiveEmployeeInOrg(TENANT,CENTER,EMPLOYEE)).thenReturn(true);
-        when(repo.hasOverlappingShift(TENANT,EMPLOYEE,START,END,REQUEST)).thenReturn(true);
+        when(repo.hasOverlappingShift(TENANT,EMPLOYEE,START,END,REQUEST)).thenReturn(false);
+        when(repo.hasAttendanceConflict(TENANT,EMPLOYEE,START,END)).thenReturn(true);
         WorkflowRuntimeService workflow=mock(WorkflowRuntimeService.class);
         ProcessRejectedException error=assertThrows(ProcessRejectedException.class,
                 ()->service(repo,mock(BusinessNumberService.class),workflow).act(ACTOR,REQUEST,
