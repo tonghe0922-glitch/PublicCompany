@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when completed-phase workflow or repository migration wiring reappears."""
+"""Fail closed when retired workflows or stale repository wiring reappear."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -36,11 +36,11 @@ RETIRED = {
     "phase09-p004-live-gate.yml",
     "phase09-p005-live-gate.yml",
     "phase09-preparation-gate.yml",
+    "phase10-seal-once.yml",
     "repository-migration-rewrite.yml",
 }
 
 OLD_OWNER = "louth" + "ison"
-
 FORBIDDEN = {
     "ChatGPT_Version_V0.05": "removed phase-05/06 branch",
     "ChatGPT_Version_V0.07": "removed phase-07/08/09 branch",
@@ -71,15 +71,20 @@ def verify() -> None:
         CURRENT_BRANCH,
         "phase10_workflow_hygiene.py",
         "Phase10WorkflowServiceTest",
-        "-Pphase10-integration verify",
+        "WorkflowCandidateResolverTest",
+        'phase: ["03", "05", "06", "09", "10"]',
+        'PROFILE="phase${{ matrix.phase }}-integration"',
     )
     missing = [token for token in required if token not in text]
     if missing:
         raise RuntimeError(f"PHASE-10 full gate lost executable closure checks: {missing}")
 
-    migration_rewrite = WORKFLOWS / "repository-migration-rewrite.yml"
-    if migration_rewrite.exists():
-        raise RuntimeError("one-shot repository migration workflow must not be active")
+    for one_shot in (
+        "repository-migration-rewrite.yml",
+        "phase10-seal-once.yml",
+    ):
+        if (WORKFLOWS / one_shot).exists():
+            raise RuntimeError(f"one-shot workflow must not be active: {one_shot}")
 
 
 def main() -> None:
