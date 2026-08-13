@@ -44,6 +44,11 @@ public class GuardedShiftChangeRepository implements ShiftChangeService.Reposito
         return Boolean.TRUE.equals(conflict);
     }
 
+    @Override
+    public boolean hasAttendanceConflict(UUID tenantId,UUID employeeId,Instant start,Instant end) {
+        return delegate.hasAttendanceConflict(tenantId,employeeId,start,end);
+    }
+
     @Override public void insert(ShiftChangeService.ShiftRecord record,UUID actor) { delegate.insert(record,actor); }
     @Override public int bindAndMove(UUID tenantId,UUID id,int version,UUID workflowId,String status,UUID actor) { return required(delegate.bindAndMove(tenantId,id,version,workflowId,status,actor),"workflow binding"); }
     @Override public int moveStatus(UUID tenantId,UUID id,int version,String status,Instant closedAt,UUID actor) { return required(delegate.moveStatus(tenantId,id,version,status,closedAt,actor),"workflow projection transition"); }
