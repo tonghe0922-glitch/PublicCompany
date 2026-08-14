@@ -14,14 +14,14 @@
 - [x] PHASE-12/P017+ 保持 NOT_STARTED/LOCKED。
 - [x] Preparation Gate run `31821929837` / SUCCESS；artifact `9227280256`；报告封板 SHA 继续执行同一门禁复验。
 
-## C0 not yet completed
+## C0 completed
 
-- [ ] 处理来源澄清登记 C0-01～C0-08。
-- [ ] 冻结 P011 页面物理 source coordinates 与 route。
-- [ ] 冻结 P011 HTTP、permission、data scope、field projection。
-- [ ] 冻结 P011 workflow version、nodes、actions、forms、SLA。
-- [ ] 冻结 P011 additive database overlay、RLS、constraints、indexes。
-- [ ] 形成 P011 验收测试矩阵和失败回滚策略。
+- [x] 处理来源澄清登记 C0-01～C0-08。
+- [x] 冻结 P011 页面物理 source coordinates 与 route。
+- [x] 冻结 P011 HTTP、permission、data scope、field projection。
+- [x] 冻结 P011 workflow version、nodes、actions、forms、SLA。
+- [x] 冻结 P011 additive database overlay、RLS、constraints、indexes。
+- [x] 形成 P011 验收测试矩阵和失败回滚策略。
 
 ## Construction not started
 
@@ -34,4 +34,4 @@
 - [ ] Six-process three-portal Live E2E。
 - [ ] PHASE_REPORT / final full gate / independent Phase Gate。
 
-准备门禁通过后必须停止在 P011 C0 前；不得把本清单的“准备完成”理解为 PHASE-11 或任何业务流程完成。
+C0 已冻结；下一合法动作仅为 P011 可执行小闭环。P012–P016 仍按 checkpoint 顺序施工，P017+ 保持锁定。

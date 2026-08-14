@@ -4,8 +4,8 @@
 > Construction branch: `agent/phase-11-performance-growth-welfare`
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction state: `PHASE-11 = IN_PROGRESS / PREPARATION_GATE_PASS`
-> Current legal checkpoint: `P011 = NEXT / C0_NOT_FROZEN`
+> Current construction state: `PHASE-11 = IN_PROGRESS / C0_FROZEN_CANDIDATE`
+> Current legal checkpoint: `P011 = NEXT / C0_GATE_PENDING`
 > Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
 根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。本轮只完成来源解析、影响矩阵、差距矩阵、页面候选、既有实现探针和准备门禁；没有开始 P011–P016 产品代码，也没有启动 P017+。
@@ -23,7 +23,7 @@
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS |
 | PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；封板后质量整改 HEAD `79edc420...` CI SUCCESS |
-| PHASE-11 | IN_PROGRESS | P011–P016；`PREPARATION_GATE_PASS`；当前停在 P011 C0 前 |
+| PHASE-11 | IN_PROGRESS | P011–P016；`C0_FROZEN_CANDIDATE`；等待 C0 Gate 后施工 P011 |
 | PHASE-12 | NOT_STARTED | P017–P020；LOCKED |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
@@ -107,7 +107,7 @@ Preparation Gate artifact SHA256 = 786f6a5f19a4720066829fef65dc21ddae0be43d2743a
 ## PHASE-11 process ledger
 
 ```text
-P011 = NEXT / C0_NOT_FROZEN / NOT_IMPLEMENTED
+P011 = NEXT / C0_GATE_PENDING / NOT_IMPLEMENTED
 P012 = NOT_STARTED_CHECKPOINT
 P013 = NOT_STARTED_CHECKPOINT
 P014 = NOT_STARTED_CHECKPOINT
@@ -128,3 +128,16 @@ Force push = FORBIDDEN
 ## Completed-phase regression lifecycle
 
 已完成阶段必须在后续施工期间继续保持可执行。PHASE-11 不得降低 PHASE-03/04/05/06/09/10 数据库、API、安全、前端质量或真实三端 E2E 门槛；任何回归失败必须先修复，再继续新流程施工。
+
+## PHASE-11 C0 candidate
+
+```text
+C0 decisions = C0-01..C0-08 RESOLVED
+Page bindings = 18 / PHYSICAL IA XLSX COORDINATES
+HTTP/permission = FROZEN ENGINEERING CONTRACT
+Workflow nodes/actions = FROZEN / P011-P016
+Database overlays = V122-V127 RESERVED
+Test matrix = FROZEN
+Production implementation changed at C0 = 0
+P011 implementation = NOT_STARTED
+```

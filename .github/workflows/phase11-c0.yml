@@ -1,0 +1,79 @@
+name: PHASE-11 C0 Contract Freeze
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-c0.yml"
+      - "scripts/implementation/phase11_c0_contract.py"
+      - "docs/implementation/contracts/phase-11/**"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "Knowledge Base/01 完整的页面架构/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-c0-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE11_PREPARATION_SHA: 0900a8a126fda2b729e4edb62b79a3207de0e882
+
+jobs:
+  contract:
+    name: PHASE-11 source page API permission workflow DB and test contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify repository, branch and preparation prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
+          grep -q '| PHASE-10 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -q '| PHASE-12 | NOT_STARTED |' docs/implementation/MASTER_PROGRESS.md
+          python scripts/implementation/phase11_repository_identity.py
+      - name: Verify deterministic C0 contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_c0_contract.py
+          git diff --check
+      - name: Reject product implementation and later-phase drift during C0
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/web/e2e technical-platform/database)
+          test -z "$(git diff --name-only "$PHASE11_PREPARATION_SHA"...HEAD -- "${TARGETS[@]}")"
+          ADDED=$(git diff -U0 "$PHASE11_PREPARATION_SHA"...HEAD -- . ':!docs/**' ':!scripts/implementation/phase11_*' ':!.github/workflows/phase11-*' | grep '^+' | grep -v '^+++' || true)
+          if printf '%s\n' "$ADDED" | grep -Eq '\bP0(17|18|19|20)\b|\bPHASE-12\b'; then
+            echo 'PHASE-11 C0 introduced later-phase executable coupling'
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase11-c0-${{ github.sha }}
+          path: |
+            docs/implementation/contracts/phase-11/
+            docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json
+            docs/implementation/phases/PHASE-11/PHASE11_HTTP_PERMISSION_CONTRACT.json
+            docs/implementation/phases/PHASE-11/PHASE11_WORKFLOW_CONTRACT.json
+            docs/implementation/phases/PHASE-11/DATABASE_CONTRACT.md
+            docs/implementation/phases/PHASE-11/TEST_MATRIX.md
+          if-no-files-found: error
+          retention-days: 30
+
+  verdict:
+    name: PHASE-11 C0 verdict
+    needs: [contract]
+    runs-on: ubuntu-latest
+    steps:
+      - run: test '${{ needs.contract.result }}' = 'success'

@@ -1,10 +1,10 @@
 # PHASE-11｜绩效成长福利（P011–P016）
 
-> Repository: `tonghe0922-glitch/PublicCompany`  
-> Construction branch: `agent/phase-11-performance-growth-welfare`  
-> Baseline: `79edc420802bfb9d2e47a0976b6198a67e80c4c2`  
-> Status: **IN_PROGRESS / PREPARATION_GATE_PASS**  
-> Current legal checkpoint: **P011 C0 contract freeze**  
+> Repository: `tonghe0922-glitch/PublicCompany`
+> Construction branch: `agent/phase-11-performance-growth-welfare`
+> Baseline: `79edc420802bfb9d2e47a0976b6198a67e80c4c2`
+> Status: **IN_PROGRESS / C0_FROZEN_CANDIDATE**
+> Current legal checkpoint: **P011 executable implementation (after C0 gate)**
 > PHASE-12: **NOT_STARTED / LOCKED**
 
 ## 1. 阶段边界
@@ -53,6 +53,15 @@ Preparation Gate
 → independent Phase Gate
 ```
 
-当前停止点：**Preparation Gate 已通过；只允许进入 P011 C0，不自动开始 P011 产品代码，更不自动开始 P012–P016 或 PHASE-12。**
+当前停止点：**C0 工程合同已冻结候选；等待 C0 Gate 通过后，只允许开始 P011 产品小闭环。P012–P016 与 PHASE-12 不得并行抢跑。**
 
 准备证据候选：`2f3bc41ebb0571d34ac9a75cbef8bedbf19a85ec`；Preparation Gate run `31821929837` / SUCCESS；artifact `9227280256` / `sha256:786f6a5f19a4720066829fef65dc21ddae0be43d2743ad7787a222565d59dacb`。
+
+## 5. C0 frozen evidence
+
+- `PHASE11_PAGE_BINDINGS.json`
+- `PHASE11_HTTP_PERMISSION_CONTRACT.json`
+- `PHASE11_WORKFLOW_CONTRACT.json`
+- `DATABASE_CONTRACT.md`
+- `TEST_MATRIX.md`
+- `docs/implementation/contracts/phase-11/C0_DECISION_LOG.md`

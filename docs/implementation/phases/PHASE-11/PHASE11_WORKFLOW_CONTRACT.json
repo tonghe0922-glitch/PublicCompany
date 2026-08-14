@@ -1,0 +1,433 @@
+{
+  "phase": "PHASE-11",
+  "state": "C0_FROZEN",
+  "source": "P011_P016_SOURCE_CONTRACT + accepted decisions",
+  "processes": {
+    "P011": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "SET_TARGETS",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "CONFIRM_TARGETS",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "RECORD_COACHING",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "COLLECT_FACTS",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "SUBMIT_REVIEWS",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "CALCULATE_SCORE",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "CALIBRATE",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "SUBMIT_APPEAL_DECISION",
+          "to": "S09"
+        },
+        {
+          "from": "S09",
+          "action": "RESOLVE_APPEAL",
+          "to": "S10"
+        },
+        {
+          "from": "S10",
+          "action": "EXECUTE_IMPACT",
+          "to": "S11"
+        },
+        {
+          "from": "S11",
+          "action": "ARCHIVE",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "CTR-P011-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    },
+    "P012": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "SUBMIT_NOMINATION",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "PASS_ELIGIBILITY",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "SUBMIT_ASSESSMENT",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "VERIFY_POSITION_BUDGET",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "COMPLETE_REVIEW",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "APPROVE_PROMOTION",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "COMPLETE_NOTICE",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "CONFIRM_APPOINTMENT",
+          "to": "S09"
+        },
+        {
+          "from": "S09",
+          "action": "COMPLETE_VALIDATION",
+          "to": "S10"
+        },
+        {
+          "from": "S10",
+          "action": "ACTIVATE_APPOINTMENT",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "EMP-P012-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    },
+    "P013": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "REGISTER_CONTRIBUTION",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "VERIFY_EVIDENCE",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "RECOMMEND_REWARD",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "APPROVE_REWARD",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "CHECK_DUPLICATE_IMPACT",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "EXECUTE_REWARD",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "NOTIFY_EMPLOYEE",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "RECORD_RECEIPTS",
+          "to": "S09"
+        },
+        {
+          "from": "S09",
+          "action": "ARCHIVE",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "CTR-P013-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    },
+    "P014": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "REGISTER_LEAD",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "APPLY_SAFETY_MEASURE",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "COMPLETE_INVESTIGATION",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "SUBMIT_DEFENSE",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "COMPLETE_RESPONSIBILITY_REVIEW",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "APPROVE_DECISION",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "ACKNOWLEDGE_SERVICE",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "EXECUTE_IMPACTS",
+          "to": "S09"
+        },
+        {
+          "from": "S09",
+          "action": "RESOLVE_APPEAL",
+          "to": "S10"
+        },
+        {
+          "from": "S10",
+          "action": "CLOSE_CORE_CASE",
+          "to": "S11"
+        },
+        {
+          "from": "S11",
+          "action": "COMPLETE_OBSERVATION",
+          "to": "S12"
+        },
+        {
+          "from": "S12",
+          "action": "ARCHIVE",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "CTR-P014-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    },
+    "P015": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "REGISTER_EVENT",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "VALIDATE_SOURCE",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "CHECK_DUPLICATE",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "MATCH_RULE_VERSION",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "CALCULATE_POINTS",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "CLASSIFY_RISK",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "POST_OR_REVIEW",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "NOTIFY_EMPLOYEE",
+          "to": "S09"
+        },
+        {
+          "from": "S09",
+          "action": "ADJUST_OR_REVERSE",
+          "to": "S10"
+        },
+        {
+          "from": "S10",
+          "action": "RECALCULATE_BALANCE",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "CTR-P015-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    },
+    "P016": {
+      "nodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "END"
+      ],
+      "transitions": [
+        {
+          "from": "S01",
+          "action": "REGISTER_CARE_CASE",
+          "to": "S02"
+        },
+        {
+          "from": "S02",
+          "action": "VERIFY_ELIGIBILITY",
+          "to": "S03"
+        },
+        {
+          "from": "S03",
+          "action": "AUTHORIZE_PRIVACY",
+          "to": "S04"
+        },
+        {
+          "from": "S04",
+          "action": "APPROVE_CARE",
+          "to": "S05"
+        },
+        {
+          "from": "S05",
+          "action": "EXECUTE_BENEFIT",
+          "to": "S06"
+        },
+        {
+          "from": "S06",
+          "action": "CONFIRM_RECEIPT",
+          "to": "S07"
+        },
+        {
+          "from": "S07",
+          "action": "RECONCILE",
+          "to": "S08"
+        },
+        {
+          "from": "S08",
+          "action": "ARCHIVE",
+          "to": "END"
+        }
+      ],
+      "form_codes": {
+        "initial": "EMP-P016-F01"
+      },
+      "rollback_policy": "explicit source-backed return actions only; physical status overwrite forbidden"
+    }
+  }
+}
