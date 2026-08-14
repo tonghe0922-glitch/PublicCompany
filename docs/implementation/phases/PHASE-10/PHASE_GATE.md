@@ -1,183 +1,128 @@
 # PHASE-10｜Formal Phase Gate
 
-> Result: **PHASE GATE: FAIL**
+> Result: **PHASE GATE: PASS**
 > Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `agent/phase-10-public-capabilities-b`
 > Base: `main@cd4f5c05f259c043fbe3e1288d6addccff6110e9`
-> Evaluated remote code SHA: `382c8e8ebece3b63019880aedbef25ca5fe540ee`
+> Accepted implementation candidate: `43eda5911038be3837b66bfb487838f32dc6d3a8`
 > Pull request: `#1`
-> Independent rerun: `PHASE-10 Full Construction Gate / run 31622967620 / attempt 2 / FAILURE`
-> Verification date: `2026-08-13`
-> Next phase: `PHASE-11 = NOT_STARTED / FORBIDDEN_UNTIL_PHASE10_PASS`
+> Full Construction Gate: `run 31803920306 / run #147 / SUCCESS`
+> Verification date: `2026-08-14`
+> Next phase: `PHASE-11 = NOT_STARTED / UNLOCKED_ONLY`
 
 ## 1. Gate verdict
 
-当前远端 HEAD 不能编译，当前提交的后端单元、API 集成、PostgreSQL/Flyway 集成和最终 verdict 均失败。除此之外，P007/P008/P009 的员工自办节点候选规则仍可能排除发起人，P008–P010 的 19 条业务路由仍复用同一个通用页面，仓库不存在 PHASE-10 Playwright Live E2E，`PHASE_REPORT.md` 缺失，阶段台账仍与代码脱节。
+PHASE-10 的 P006–P010 已形成可执行的服务端、canonical PostgreSQL、员工端、中心端、技术端和真实基础设施闭环。验收不是“能编译”或“页面可访问”，而是在 GitHub Actions 中启动真实 Spring Boot、PostgreSQL 16、Redis 和 Chromium，按三端权限完成五个流程，并继续核对数据库、工作流、额度账本、学习证据、资格授权、Outbox、Audit、凭据泄漏和 Redis 会话事实。
 
-因此 PHASE-10 不满足正式关闭条件，禁止进入 PHASE-11。
+最终 Full Construction Gate 的全部 required jobs 与 verdict 均为 `SUCCESS`，因此本 Gate 判定 `PASS`。包含本文件的文档收口提交仍须在同一分支再次执行同一 Full Gate；该要求防止“产品 SHA 绿、文档 SHA 红”仍被误报封板。
 
 ## 2. Requirement / Expected / Actual / Evidence
 
 | Requirement | Expected | Actual | Evidence | Result |
 |---|---|---|---|---|
-| Repository identity | `tonghe0922-glitch/PublicCompany` | 仓库身份正确 | PR #1；contract job `94322041244` | PASS |
-| Construction branch and remote SHA | 分支已 push，远端 SHA 可追溯 | 分支为 `agent/phase-10-public-capabilities-b`；验收代码 SHA=`382c8e8e...` | PR #1 head | PASS |
-| PHASE-11 isolation | 不施工 P011+ | 未发现 PHASE-11 业务实现进入本阶段 | contract job | PASS |
-| Source / page / API / permission contract | 来源、页面绑定、HTTP、权限、DB 契约检查成功 | 当前静态 contract 检查成功 | job `94322041244` | PASS |
-| Fake-completion static scan | 无 TODO/FIXME/ts-ignore/临时演示入口/凭据 | 当前 contract 静态扫描成功 | job `94322041244` | PASS |
-| Vue TypeScript | `vue-tsc` 和 Node TS 通过 | 通过 | job `94322040941` | PASS |
-| Frontend lint | ESLint 0 warning | 通过 | job `94322040941` | PASS |
-| Frontend unit tests | Vitest 通过 | 通过 | job `94322040941` | PASS |
-| Employee / Center / Tech builds | 三端正式构建通过 | 通过 | job `94322040941` | PASS |
-| Java 21 compile | 全后端可编译 | `GuardedShiftChangeRepository` 未实现 `ShiftChangeService.Repository.hasAttendanceConflict(...)` | rerun job `94322040354` | **FAIL** |
-| Backend unit and production-service tests | P006–P010 全部执行并通过 | 在 `platform-workflow` 编译阶段停止；显式 production-service gate 被跳过 | job `94322040354` | **FAIL** |
-| API integration | Spring 全量上下文 + PostgreSQL 16 API 回归通过 | 同一 Java 编译错误阻断，API 集成未执行到业务断言 | job `94322040434` | **FAIL** |
-| PostgreSQL / Flyway integration | PHASE-03/05/06/09/10 profiles 全部通过 | 同一 Java 编译错误阻断，当前 SHA 无有效数据库集成结论 | job `94322040315` | **FAIL** |
-| Permission negative path | employee 调 center API、跨中心、访问他人业务、tech 审批均被拒绝 | 当前 HEAD 无法编译，不能形成当前提交的可执行证据 | backend/API/database jobs | **FAIL** |
-| Idempotency / stale version / concurrency | 重复点击与旧 version 均有当前提交的可执行证据 | 当前 HEAD 无法编译，相关测试未完整执行 | backend job | **FAIL** |
-| Normal complete business loop | 发起→审批→执行→验收→回写→归档可实际走通 | 当前 HEAD 无法启动；不能证明 P006–P010 完整闭环 | backend/API/database jobs | **FAIL** |
-| P007 employee self-service workflow | 员工本人可完成确认和换班任务 | Service 允许本人创建 `SHIFT_CHANGE`，但 S05/S06 的 `targetEmployeeIds` actor rule 没有 `allowInitiator:true`；resolver 默认排除发起人 | `WorkflowCandidateResolver` + V116 | **FAIL** |
-| P008 employee leave workflow | 员工本人可确认交接、开始休假、销假/返岗 | S03/S07/S08 的 `targetEmployeeIds` actor rule 没有 `allowInitiator:true`；员工为流程发起人时会被候选解析排除 | `WorkflowCandidateResolver` + V117 | **FAIL** |
-| P009 actual labor fact | 员工本人可登记实际加班事实 | S04 的 `targetEmployeeIds` actor rule没有 `allowInitiator:true`；员工为流程发起人时会被候选解析排除 | `WorkflowCandidateResolver` + V118 | **FAIL** |
-| Real P008–P010 business pages | IA 中不同页面具备各自字段、视图、动作和权限语义 | P008–P010 的 19 条 employee/center 路由全部复用 `Phase10OperationsPage.vue` | `portal-router.ts` | **FAIL** |
-| PHASE-10 Live E2E | P006–P010 至少有正常、权限负向、幂等/并发的 Playwright Live 验证 | `web/e2e` 只有 PHASE-08/09；Full Gate 也未执行 `pnpm test:e2e` | `web/e2e` + `phase10-full-gate.yml` | **FAIL** |
-| Three-portal canonical fact consistency | employee/center/tech 共享同一 business ID/no/workflow/status，并有运行验证 | 代码设计引用同一后端事实，但当前 HEAD 无法运行，且无 PHASE-10 Live E2E 证明 | API/Repository/Router review | **FAIL** |
-| Audit / Outbox / Worker / Notification | 关键动作有当前提交的可执行审计与副作用证据 | 编译失败导致完整运行证据缺失；不能用静态调用替代闭环验证 | backend/API jobs | **FAIL** |
-| Phase report | `PHASE_REPORT.md` 已创建且与事实一致 | 文件不存在 | GitHub contents lookup | **FAIL** |
-| Master progress | 台账与代码、SHA、测试证据一致 | 仍写 P008 为 NEXT、P009/P010 NOT_STARTED，明显落后于当前代码 | `MASTER_PROGRESS.md` | **FAIL** |
-| PHASE-10 README / GAP matrix | 当前实现与剩余缺口如实更新 | README 仍写 P008 为下一目标；GAP_MATRIX 仍写五流程后端与页面均 MISSING | README / GAP_MATRIX | **FAIL** |
-| Seal control plane | Formal Gate 由独立验收产生；一次性写工作流退出活动控制面 | `phase10-seal-once.yml` 仍驻留，具有 `contents:write` 与 `actions:write`，并可自行生成 PASS 文档 | `.github/workflows/phase10-seal-once.yml` | **FAIL** |
-| Current-head GitHub Actions | 当前提交全部 required jobs 绿色 | contract/web 绿色；backend/API/database/verdict 红色 | run `31622967620`, attempt 2 | **FAIL** |
+| Repository identity | 唯一仓库和分支正确 | `tonghe0922-glitch/PublicCompany` / `agent/phase-10-public-capabilities-b` | contract job `94778126921` | PASS |
+| Phase boundary | 不施工 P011+ | 未发现后续阶段可执行耦合 | contract job `94778126921` | PASS |
+| Source/page/API/permission/DB contract | 来源和工程补充边界可追溯 | 15/15 XLSX、冻结路由、HTTP/permission、canonical schema 检查通过 | contract job `94778126921` | PASS |
+| Workflow control hygiene | 无活动自封板/写权限绕过 | 自写 PASS 控制面已退役，工作流只读内容权限 | workflow hygiene step | PASS |
+| Fake-completion and credential scan | 无绕过标记或密钥 | 静态扫描通过；live audit credential hits=0 | contract + E2E facts | PASS |
+| Java 21 compile and unit behavior | P006–P010 服务可编译执行 | 全量后端单测和显式 Phase-10 行为测试通过 | job `94778126975` | PASS |
+| API security regression | 既有 IAM/API 安全不回归 | PHASE-04 PostgreSQL16 API profile 通过 | job `94778126980` | PASS |
+| PostgreSQL/Flyway regression | 已完成阶段与本阶段全部通过 | PHASE-03/05/06/09/10 matrix 全绿 | jobs `94778127148/94778127131/94778127171/94778127091/94778127044` | PASS |
+| Vue TypeScript | 严格类型检查通过 | `pnpm typecheck` 成功 | job `94778127039` | PASS |
+| Frontend lint and unit | ESLint/Vitest 通过 | 0 门禁失败 | job `94778127039` | PASS |
+| Duplicate and dead-code gates | jscpd/knip 必须执行 | 两项均成功 | job `94778127039` | PASS |
+| Employee/Center/Tech builds | 三端生产构建通过 | 三端构建成功 | job `94778127039` | PASS |
+| Semantic P008–P010 pages | 不复用旧通用业务页 | 19 条语义路由一对一绑定独立组件 | frontend contract step | PASS |
+| Real tech monitoring | 非 raw JSON，且路由间不串数据 | 设计系统监控页；route props 变更会清空并重载投影 | frontend contract + live E2E | PASS |
+| Normal five-process loop | 五流程进入 END/已关闭 | closed=5；completed workflows=5 | E2E job `94778127040` | PASS |
+| Three-portal scope | 三端共用同一事实且职责分离 | employee/center/tech 路由、数据范围和 metadata-only 监控通过 | Playwright + API | PASS |
+| Permission negative paths | 跨中心、他人数据、tech 业务动作被拒绝 | 自动化负向路径通过 | E2E/backend suites | PASS |
+| P010 separation of duties | 发布人不得自认证 | 发布人自认证返回 403；独立专业认证人完成 S06 | E2E job `94778127040` | PASS |
+| Idempotency/version/order | 重复、旧版本、非法顺序 fail-closed | live 与后端行为测试通过 | jobs `94778126975/94778127040` | PASS |
+| P008 append-only quota facts | 额度链形成且不可随意改写 | live ledger=3；数据库回归通过 | E2E + PHASE-10 DB job | PASS |
+| P010 evidence and qualification | 学习证据与资格授权实际落库 | evidence=7；qualification grant=1 | E2E facts | PASS |
+| Outbox/Audit facts | 关键动作形成平台事实 | outbox=50；audit=156 | E2E facts | PASS |
+| Redis session | 真实会话进入 Redis | redis keys=29 | E2E facts | PASS |
+| Phase ledgers | README/GAP/GATE/REPORT/MASTER 同步 | 收口文件已创建或重写 | 本次文档收口 | PASS |
+| Final verdict | 每个 required gate 都为 success | verdict job 成功 | job `94778697853` | PASS |
 
-## 3. Independent rerun evidence
-
-对当前远端代码 SHA `382c8e8ebece3b63019880aedbef25ca5fe540ee` 重新执行失败作业，结果：
+## 3. Real infrastructure evidence
 
 ```text
-Source, repository and workflow-control contract
-job 94322041244 = SUCCESS
+Workflow = PHASE-10 Full Construction Gate
+Run ID = 31803920306
+Run number = 147
+Head SHA = 43eda5911038be3837b66bfb487838f32dc6d3a8
+Conclusion = SUCCESS
 
-Vue TypeScript lint unit and three-build regression
-job 94322040941 = SUCCESS
+Playwright = 1 passed
+E2E job = 94778127040 / SUCCESS
+Artifact = 9220411386
+Artifact SHA256 = fca4b61a827493811d39efe29070f2ae7af5af8deba904a59119e54e47d49617
 
-Java 21 P006-P010 executable service behavior
-job 94322040354 = FAILURE
-
-PHASE-04 API security regression
-job 94322040434 = FAILURE
-
-PostgreSQL 16 completed-phase and PHASE-10 constraints
-job 94322040315 = FAILURE
-
-PHASE-10 full gate verdict
-job 94322107357 = FAILURE
+PHASE10_FACTS
+closed = 5
+workflows = 5
+leave ledger = 3
+learning evidence = 7
+qualification grant = 1
+outbox = 50
+audit = 156
+credential hits = 0
+redis keys = 29
 ```
 
-确定性编译错误：
+## 4. Five-process closure
+
+### P006 — 会议与行动项
+
+会议、出席、纪要、行动项、执行、验收/返工、逾期和归档通过同一 canonical meeting/item 与发布工作流闭环。状态进入 `END / 已关闭`。
+
+### P007 — 排班与班次调整
+
+排班发布、员工确认、换班/替班、审批、考勤冲突和日结闭环。员工自办节点保留合法 initiator 候选，审批人职责仍分离。状态进入 `END / 已关闭`。
+
+### P008 — 请假与考勤
+
+申请、额度预占、交接、审批、扣减、考勤、实际休假、返岗、差额调整和日结闭环。交接引用统一 canonical 长度；实际返岗时间与流程关闭时间不再混用；额度账本保持 append-only。状态进入 `END / 已关闭`。
+
+### P009 — 加班与调休
+
+申请/紧急事实、必要性、审批、实际劳动、成果验收、人事复核、工资/调休方案、薪酬回执和归档保持独立业务事实。状态进入 `END / 已关闭`。
+
+### P010 — 学习、考试与资格
+
+内容发布、风险指派、学习、考试、实操、独立专业认证、资格生效、权限联动、复训检查和归档闭环。修复 assignment INSERT、content version 约束对齐和认证候选；发布人自认证明确 fail-closed。状态进入 `END / 已关闭`。
+
+## 5. Previous blockers and disposition
+
+| Previous blocker | Final disposition |
+|---|---|
+| Java repository interface compilation failure | 已修复；全量后端和 API/DB profiles 通过 |
+| P007/P008/P009 initiator candidate dead end | 已通过新的发布工作流规则和候选测试修复 |
+| P008–P010 通用页面复用 | 旧通用页已退役，19 条业务路由使用独立组件 |
+| Tech monitor raw JSON / route data leakage | 改为设计系统监控视图，并随 route props 响应式重载 |
+| PHASE-10 缺少真实 E2E | 已接入 required Full Gate，真实 PG16+Redis+Spring+Chromium 执行成功 |
+| P010 无独立认证人 | 增加同中心专业认证角色；自认证 403；独立认证成功 |
+| 业务异常被错误映射为 401 | `WorkflowApiExceptionHandler` 全局处理，保留真实业务状态码 |
+| `PHASE_REPORT.md` 缺失和台账脱节 | 已补齐并同步 README/GAP/GATE/MASTER |
+| 自封板工作流 | 已退役；当前 Full Gate `contents: read`，不能自行写 PASS |
+| 旧 FAIL Gate 指向过期 SHA | 本文件以 `43eda591...` 和 run `31803920306` 重新验收 |
+
+## 6. Scope limits
+
+本 Gate 只封板 PHASE-10。它不宣称 PHASE-32 全系统测试、PHASE-33 部署监控、PHASE-34 性能/备份恢复或 PHASE-35 最终 UAT 已完成。PHASE-11 仅被解除前序阻塞，仍为 `NOT_STARTED`。
+
+## 7. Final result
 
 ```text
-GuardedShiftChangeRepository is not abstract and does not override
-hasAttendanceConflict(UUID, UUID, Instant, Instant)
-in ShiftChangeService.Repository
-```
-
-这不是偶发运行器问题；独立 rerun 在相同源码点再次失败。
-
-## 4. Business path sampling
-
-### 4.1 正常完整闭环
-
-**FAIL**。当前 HEAD 在 Java 编译阶段停止，无法启动后端，也无法实际走通：
-
-```text
-发起 → 审批 → 执行 → 验收 → 回写 → 归档
-```
-
-### 4.2 权限负向
-
-**FAIL / NOT EXECUTED ON CURRENT HEAD**。当前提交没有可执行的 API/数据库结果来证明：
-
-- employee 不能调用 center 动作；
-- 跨 center 被拒绝；
-- 员工不能访问他人业务；
-- tech monitor 不能直接审批、认证或联动岗位权限。
-
-### 4.3 重复与并发
-
-**FAIL / NOT EXECUTED ON CURRENT HEAD**。旧 version、重复 Idempotency-Key、重复 callback 和并发状态迁移未在当前 SHA 完整执行。
-
-### 4.4 异步与补偿
-
-**FAIL / NOT EXECUTED ON CURRENT HEAD**。Outbox、Worker、Notification、retry、DLQ/补偿无法在当前不可编译提交上形成闭环证据。
-
-## 5. Additional structural blockers
-
-### 5.1 Employee task candidate dead ends
-
-`WorkflowCandidateResolver` 对 `CONTEXT_EMPLOYEE_IDS` 默认排除 initiator，只有 actor rule 明确设置：
-
-```json
-{"allowInitiator": true}
-```
-
-才允许发起人领取任务。
-
-当前发布定义存在以下矛盾：
-
-- P007 Service 已允许员工本人创建换班流程，但 S05/S06 员工节点没有 `allowInitiator:true`；
-- P008 由员工本人发起，但 S03/S07/S08 员工节点没有 `allowInitiator:true`；
-- P009 由员工本人发起，但 S04 实际劳动事实节点没有 `allowInitiator:true`。
-
-因此，即使修复当前编译错误，这些流程仍可能在正式任务候选解析时 fail-closed，不能判定闭环完成。
-
-### 5.2 Generic page reuse is not IA-complete implementation
-
-P008、P009、P010 的 19 条员工端和中心端路由只改变 route name、process 和 mode，实际均指向同一个 `Phase10OperationsPage.vue`。它没有按 IA 将申请、额度账本、销假、审批、HR 复核、薪资依据、考试、实操认证、资格与权限联动拆成各自正式页面。
-
-路由可达和按钮可点击不能替代页面级业务实现验收。
-
-### 5.3 No PHASE-10 Live E2E
-
-虽然 `package.json` 定义了 `pnpm test:e2e`，当前 Full Construction Gate 没有调用该命令；`web/e2e` 目录也不存在 `phase10-*` Playwright spec。当前绿色的前端 job 仅证明 typecheck、lint、Vitest 和静态构建成功。
-
-## 6. Failed items
-
-1. 当前 HEAD Java 编译失败。
-2. Backend、API integration、PostgreSQL/Flyway integration 和 final verdict 失败。
-3. P007/P008/P009 员工自办节点候选规则存在发起人被排除的死路。
-4. P008–P010 19 条路由仍是通用页面复用，不符合 IA 逐页闭环要求。
-5. PHASE-10 没有 Playwright Live E2E，也未进入 Full Gate。
-6. 权限负向、幂等、并发、完整闭环和异步补偿没有当前 HEAD 的有效执行证据。
-7. `PHASE_REPORT.md` 缺失。
-8. MASTER_PROGRESS、README、GAP_MATRIX 与实际代码脱节。
-9. 写权限的一次性 seal workflow 仍驻留活动控制面。
-10. 当前提交 GitHub Actions 为 FAILURE。
-
-## 7. Required repairs before re-gate
-
-1. 统一 `ShiftChangeService.Repository` 与所有实现类接口，修复 `hasAttendanceConflict(...)` 编译错误。
-2. 修复后重新执行全部 backend unit、PHASE-04 API integration、PHASE-03/05/06/09/10 PostgreSQL/Flyway profiles。
-3. 为 P007 S05/S06、P008 S03/S07/S08、P009 S04 建立合法的后继 workflow version，明确 `allowInitiator:true`；不得直接篡改已发布版本或历史 migration。
-4. 增加任务候选解析的真实数据库/工作流集成测试，证明员工本人可以领取这些自办任务，同时审批人仍禁止自批。
-5. 按 `PHASE10_PAGE_BINDINGS.json` 和 IA 拆分 P008–P010 正式页面，至少保证页面字段、列表、详情、权限与动作语义独立。
-6. 为 P006–P010 增加 Playwright Live E2E，覆盖正常闭环、employee→center 越权、跨中心、他人数据、tech 直接审批、重复点击、旧 version、重试与补偿。
-7. 将 `pnpm test:e2e` 或等效 live gate 接入 PHASE-10 required CI。
-8. 创建并如实更新 `PHASE_REPORT.md`、README、GAP_MATRIX、MASTER_PROGRESS；只在最终同一 SHA 全绿后标记 COMPLETE。
-9. 移除或正式 retire `phase10-seal-once.yml` 及相关自写 PASS 脚本，Formal Gate 结果必须来自独立验收。
-10. 对修复后的最终远端 HEAD 重新执行本 Phase Gate。
-
-## 8. Final result
-
-```text
-PHASE GATE: FAIL
-
-禁止进入下一阶段。
+PHASE GATE: PASS
 
 Repository: tonghe0922-glitch/PublicCompany
 Branch: agent/phase-10-public-capabilities-b
-Evaluated Commit: 382c8e8ebece3b63019880aedbef25ca5fe540ee
-Remote SHA: 382c8e8ebece3b63019880aedbef25ca5fe540ee
-Tests: CONTRACT/WEB PASS; BACKEND/API/POSTGRESQL/FLYWAY/E2E FAIL
-CI: PHASE-10 Full Construction Gate run 31622967620 / attempt 2 / FAILURE
-PHASE-11: NOT_STARTED
+Accepted implementation candidate: 43eda5911038be3837b66bfb487838f32dc6d3a8
+Full Construction Gate: 31803920306 / SUCCESS
+P006-P010: CHECKPOINT_PASS / CLOSED
+PHASE-10: COMPLETE / FULL_CONSTRUCTION_GATE_PASS
+PHASE-11: NOT_STARTED / UNLOCKED_ONLY
 ```
