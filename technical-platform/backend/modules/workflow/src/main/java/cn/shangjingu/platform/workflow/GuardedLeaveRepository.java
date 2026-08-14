@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,18 @@ import org.springframework.stereotype.Repository;
 public class GuardedLeaveRepository implements LeaveService.Repository {
     private static final Set<String> LEDGER_TYPES=Set.of("RESERVE","DEDUCT","RELEASE","ADJUST");
     private final JdbcLeaveRepository delegate;
-    public GuardedLeaveRepository(JdbcLeaveRepository delegate){this.delegate=delegate;}
+    private final P008LeaveStatusProjectionWriter statusWriter;
+
+    public GuardedLeaveRepository(JdbcLeaveRepository delegate) {
+        this(delegate, null);
+    }
+
+    @Autowired
+    public GuardedLeaveRepository(
+            JdbcLeaveRepository delegate, P008LeaveStatusProjectionWriter statusWriter) {
+        this.delegate = delegate;
+        this.statusWriter = statusWriter;
+    }
 
     @Override public Optional<UUID> workflowVersion(UUID tenantId){return delegate.workflowVersion(tenantId);}
     @Override public Optional<LeaveService.FormRef> form(UUID tenantId){return delegate.form(tenantId);}
@@ -27,7 +39,14 @@ public class GuardedLeaveRepository implements LeaveService.Repository {
         delegate.insert(withCanonicalHandoverAgent(record), actor);
     }
     @Override public int bindAndMove(UUID tenantId,UUID id,int version,UUID workflowId,String status,UUID actor){return required(delegate.bindAndMove(tenantId,id,version,workflowId,status,actor),"workflow binding");}
-    @Override public int moveStatus(UUID tenantId,UUID id,int version,String status,Instant closedAt,UUID actor){return required(delegate.moveStatus(tenantId,id,version,status,closedAt,actor),"workflow projection transition");}
+    @Override
+    public int moveStatus(
+            UUID tenantId, UUID id, int version, String status, Instant closedAt, UUID actor) {
+        int updated = statusWriter == null
+                ? delegate.moveStatus(tenantId, id, version, status, closedAt, actor)
+                : statusWriter.moveStatus(tenantId, id, version, status, closedAt, actor);
+        return required(updated, "workflow projection transition");
+    }
     @Override public int markQuotaReserved(UUID tenantId,UUID id,UUID actor){return required(delegate.markQuotaReserved(tenantId,id,actor),"quota reservation fact");}
     @Override public int markHandover(UUID tenantId,UUID id,UUID actor){return required(delegate.markHandover(tenantId,id,actor),"handover confirmation fact");}
     @Override public int markDecision(UUID tenantId,UUID id,String decision,UUID actor){return required(delegate.markDecision(tenantId,id,decision,actor),"approval decision fact");}
