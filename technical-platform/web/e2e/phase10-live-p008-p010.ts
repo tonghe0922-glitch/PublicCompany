@@ -12,6 +12,7 @@ import {
   privateLeave,
   privateOvertime,
   recordAction,
+  rejectedPost,
   verifyCrossCenterIsolation,
   type LearningAggregate,
   type RecordAggregate,
@@ -27,6 +28,7 @@ export async function runWorkforceFlows(
   request: APIRequestContext,
   employeeToken: string,
   managerToken: string,
+  certifierToken: string,
   outToken: string,
 ): Promise<WorkforceFlows> {
   let leave = await postJson<RecordAggregate>(
@@ -227,7 +229,14 @@ export async function runWorkforceFlows(
     `/api/v1/processes/P010/assignments/${learning.record.id}/practical`,
     { result: '通过', note: 'P010 practical passed' },
   )
-  learning = await learningAction(request, managerToken, learning, 'CERTIFY')
+  await rejectedPost(
+    request,
+    managerToken,
+    `/api/v1/processes/P010/assignments/${learning.record.id}/actions/CERTIFY`,
+    { expectedVersion: learning.record.versionNo, note: 'P010 self-certification must fail closed' },
+    403,
+  )
+  learning = await learningAction(request, certifierToken, learning, 'CERTIFY')
   learning = await learningAction(request, managerToken, learning, 'ACTIVATE_QUALIFICATION', {
     effectiveDate: '2031-05-10',
     expireDate: '2032-05-09',

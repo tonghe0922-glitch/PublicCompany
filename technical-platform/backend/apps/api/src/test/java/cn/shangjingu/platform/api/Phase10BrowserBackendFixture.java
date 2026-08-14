@@ -108,6 +108,7 @@ public final class Phase10BrowserBackendFixture {
                 .load()
                 .migrate();
         Phase10FixtureData.seed(postgres, employeeLogin, password);
+        Phase10ProfessionalCertifierData.seed(postgres, password);
     }
 
     private static void writeRuntimeFacts(

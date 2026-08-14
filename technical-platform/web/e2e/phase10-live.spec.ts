@@ -24,6 +24,7 @@ test('P006-P010 real PostgreSQL workflows close with three-portal scope, idempot
 }) => {
   const employeeToken = await apiLogin(request, employeeLogin)
   const managerToken = await apiLogin(request, managerLogin)
+  const certifierToken = await apiLogin(request, 'phase10.certifier')
   const techToken = await apiLogin(request, techLogin)
   const outToken = await apiLogin(request, outLogin)
 
@@ -38,7 +39,7 @@ test('P006-P010 real PostgreSQL workflows close with three-portal scope, idempot
     request, employeeToken, managerToken, outToken,
   )
   const { leave, overtime, learning } = await runWorkforceFlows(
-    request, employeeToken, managerToken, outToken,
+    request, employeeToken, managerToken, certifierToken, outToken,
   )
   await verifyTechProjection(request, techToken, meeting, leave, overtime, learning)
   await verifyTechUi(page, meeting, shift, leave, overtime, learning)
