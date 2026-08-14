@@ -3,8 +3,6 @@ import type { StatusTone } from '../../design-system'
 import type { usePortalSessionStore } from '../../session'
 
 export type PortalSessionStore = ReturnType<typeof usePortalSessionStore>
-export type Phase10Mode = 'employee' | 'center'
-
 export interface Phase10Record {
   id: string
   businessNo: string
