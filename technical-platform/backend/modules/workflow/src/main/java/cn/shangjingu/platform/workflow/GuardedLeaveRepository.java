@@ -22,7 +22,10 @@ public class GuardedLeaveRepository implements LeaveService.Repository {
     @Override public Optional<LeaveService.FormRef> form(UUID tenantId){return delegate.form(tenantId);}
     @Override public List<UUID> permissionCandidates(UUID tenantId,String permission,UUID orgId){return delegate.permissionCandidates(tenantId,permission,orgId);}
     @Override public boolean hasTimeConflict(UUID tenantId,UUID employeeId,Instant start,Instant end){return delegate.hasTimeConflict(tenantId,employeeId,start,end);}
-    @Override public void insert(LeaveService.LeaveRecord record,UUID actor){delegate.insert(record,actor);}
+    @Override
+    public void insert(LeaveService.LeaveRecord record, UUID actor) {
+        delegate.insert(withCanonicalHandoverAgent(record), actor);
+    }
     @Override public int bindAndMove(UUID tenantId,UUID id,int version,UUID workflowId,String status,UUID actor){return required(delegate.bindAndMove(tenantId,id,version,workflowId,status,actor),"workflow binding");}
     @Override public int moveStatus(UUID tenantId,UUID id,int version,String status,Instant closedAt,UUID actor){return required(delegate.moveStatus(tenantId,id,version,status,closedAt,actor),"workflow projection transition");}
     @Override public int markQuotaReserved(UUID tenantId,UUID id,UUID actor){return required(delegate.markQuotaReserved(tenantId,id,actor),"quota reservation fact");}
@@ -54,6 +57,38 @@ public class GuardedLeaveRepository implements LeaveService.Repository {
     @Override public List<LeaveService.LeaveRecord> list(UUID tenantId){return delegate.list(tenantId);}
     @Override public List<LeaveService.LedgerEntry> ledger(UUID tenantId){return delegate.ledger(tenantId);}
 
+    static String canonicalHandoverAgentId(String value) {
+        if (value == null || value.isBlank()) return null;
+        String trimmed = value.trim();
+        try {
+            return UUID.fromString(trimmed).toString().replace("-", "");
+        } catch (IllegalArgumentException ignored) {
+            if (trimmed.length() > 32) {
+                throw new ProcessRejectedException(
+                        "P008 handover agent reference exceeds the canonical varchar(32) contract");
+            }
+            return trimmed;
+        }
+    }
+
+    private static LeaveService.LeaveRecord withCanonicalHandoverAgent(
+            LeaveService.LeaveRecord record) {
+        return new LeaveService.LeaveRecord(
+                record.id(), record.tenantId(), record.businessNo(),
+                record.workflowInstanceId(), record.workflowInstanceNo(),
+                record.currentNodeCode(), record.status(), record.versionNo(),
+                record.subject(), record.reason(), record.ownerCenterId(),
+                record.ownerEmployeeId(), record.attendanceType(), record.startAt(),
+                record.endAt(), record.durationHours(), record.quotaAccountId(),
+                record.quotaAmount(), canonicalHandoverAgentId(record.handoverAgentId()),
+                record.knownImpact(), record.quotaReservedAt(),
+                record.handoverConfirmedAt(), record.decision(), record.approvedAt(),
+                record.rejectedAt(), record.quotaSettledAt(),
+                record.attendanceMarkedAt(), record.leaveStartedAt(),
+                record.returnedAt(), record.quotaAdjustedAt(), record.dayClosedAt(),
+                record.closedAt(), record.updatedAt());
+    }
+
     private static void validateLedger(String entryType,BigDecimal amount){
         if(!LEDGER_TYPES.contains(entryType))throw new ProcessRejectedException("P008 quota ledger entry type is invalid");
         if(amount==null)throw new ProcessRejectedException("P008 quota ledger amount is required");
@@ -65,7 +100,7 @@ public class GuardedLeaveRepository implements LeaveService.Repository {
     }
 
     private static int required(int updated,String operation){
-        if(updated!=1)throw new ProcessRejectedException("P008 "+operation+" failed closed");
+        if(updated!=1)throw new ProcessRejectedException("P008 "+operation"+" failed closed");
         return updated;
     }
 }
