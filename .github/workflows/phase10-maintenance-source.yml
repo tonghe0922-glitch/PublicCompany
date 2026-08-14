@@ -1,0 +1,29 @@
+name: PHASE-10 Maintenance Source
+
+on:
+  push:
+    branches:
+      - agent/phase-10-public-capabilities-b
+    paths:
+      - .github/workflows/phase10-maintenance-source.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    name: Export audited branch source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create deterministic source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git archive --format=zip --output=PublicCompany-phase10-maintenance-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PublicCompany-phase10-maintenance-source
+          path: PublicCompany-phase10-maintenance-source.zip
+          if-no-files-found: error
+          retention-days: 1
