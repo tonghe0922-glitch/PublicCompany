@@ -1,0 +1,38 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P011PerformancePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P011PerformancePage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/02/03/06", "/employee/08/03/06", "/center/10/02/01", "/center/10/02/04", "/center/10/02/05", "/tech/06/05/01", "/tech/05/03/01"],
+  "process_codes": ["P011"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p011.performance.read", "p011.performance.manage", "p011.performance.evaluate", "p011.performance.calibrate", "p011.performance.execute", "p011.performance.monitor"],
+    "data_scope": "SELF for employee, CENTER for management, metadata-only for tech; backend remains authoritative",
+    "states": ["S01-S11", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["CONFIRM_TARGETS", "SUBMIT_SELF_REVIEW", "SUBMIT_MANAGER_REVIEW", "CALIBRATE", "NOTIFY_RESULT", "SUBMIT_APPEAL", "REVIEW_APPEAL", "EXECUTE_RESULT", "CONFIRM_RESULT", "ARCHIVE"]
+  },
+  "field_component_map": [
+    {"field": "subject|ownerEmployeeId|periodNo|score1000|resultSummary", "component_id": "ui.input", "reason": "Typed scalar facts retain server field identity"},
+    {"field": "reason|evidence|selfReview|managerReview", "component_id": "ui.textarea", "reason": "Multiline evidence stays explicit"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server record/version is immutable UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Per-resource and per-action typed state"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "Expected-version conflict requires explicit refresh"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Retry help preserves trace metadata"}
+  ],
+  "action_component_map": [
+    {"action": "typed P011 lifecycle action", "component_id": "platform.process-action-panel", "permission": "UX narrows visibility; backend re-authorizes", "reason": "Caller idempotency and expectedVersion are preserved"}
+  ],
+  "responsive_projection": {"desktop": "Form, records and action states remain separate regions", "mobile": "The same server record projects as stacked cards without changing authority"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and process feature mount", "403, empty, error and 409 state projection", "resource abort and last-request-wins", "tech masking keeps sensitive values out of DOM"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}

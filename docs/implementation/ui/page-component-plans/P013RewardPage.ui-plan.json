@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P013RewardPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P013RewardPage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/08/10/05", "/center/10/10/03", "/center/10/10/04", "/tech/06/06/01", "/tech/05/03/01"],
+  "process_codes": ["P013"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p013.reward.read", "p013.reward.manage", "p013.reward.review", "p013.reward.approve", "p013.reward.execute", "p013.reward.monitor"],
+    "data_scope": "SELF for employee, CENTER for management, metadata-only for tech; backend remains authoritative",
+    "states": ["S01-S08", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["SUBMIT_REWARD", "VERIFY_FACT", "ASSESS_IMPACT", "REVIEW_REWARD", "APPROVE_REWARD", "EXECUTE_REWARD", "CONFIRM_NOTICE", "ARCHIVE"]
+  },
+  "field_component_map": [
+    {"field": "subject|ownerEmployeeId|sourceFactKey|rewardLevel|requestedPoints|approvedAmount", "component_id": "ui.input", "reason": "Typed reward and impact facts"},
+    {"field": "factOccurredAt|externalOccurredAt", "component_id": "ui.datetime", "reason": "Registered date-time facts"},
+    {"field": "reason|factSummary|evidence|resultSummary", "component_id": "ui.textarea", "reason": "Immutable evidence summaries"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server record/version is UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Typed resource and action state"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "Explicit stale-version projection"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Retry help preserves trace"}
+  ],
+  "action_component_map": [
+    {"action": "typed P013 lifecycle action", "component_id": "platform.process-action-panel", "permission": "Backend re-authorizes", "reason": "No direct payment or point execution is fabricated"}
+  ],
+  "responsive_projection": {"desktop": "Facts, evidence, records and actions remain separate", "mobile": "Stacked record cards preserve status and version"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "duplicate source remains backend 409", "tech projection masks contribution and receipts"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}

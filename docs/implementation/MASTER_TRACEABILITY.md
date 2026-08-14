@@ -101,4 +101,4 @@ The paragraph above is the sealed PHASE-08 historical boundary. PHASE-09 later c
 - Explicit binding ledger: `phases/PHASE-11/PHASE11_PAGE_BINDINGS.json`; full-gate revalidation proves 31/31 source keys and 31/31 current router paths, with employee/center/tech coverage for every P011-P016 process.
 - Runtime chain: source states/roles/rules → V120-V125 published workflow/form → server authorization/data scope → engineering API → canonical table plus append-only facts → audit/outbox/Worker → employee/center/metadata-only tech projections.
 - Evidence chain: `P011_CHECKPOINT.md` through `P016_CHECKPOINT.md`, then `FULL_GATE_REPORT.md` and `.runlogs/phase11-full-*`.
-- State: `CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING`; no independent PASS is asserted and PHASE-12 remains blocked.
+- State: `COMPLETE / INDEPENDENT_GATE_PASS`; PHASE-12 is authorized to start in sequence. Authority: `phases/PHASE-11/PHASE_GATE.md` (2026-08-14).

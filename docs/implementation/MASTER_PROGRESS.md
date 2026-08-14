@@ -3,11 +3,11 @@
 > Sole local construction directory: `I:\PublicCompany_source_codex`
 > Local source-control fact: `.git` is absent; old repository/branch/CI identifiers below are historical only and are not current acceptance evidence
 > Historical target branch: `main` (not applicable to the current no-`.git` local evidence set)
-> Latest completed phase: `PHASE-10 = COMPLETE / INDEPENDENT_GATE_PASS`
-> Current construction phase: `PHASE-11 = CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING`
-> Next phase: `PHASE-12 = NOT_STARTED / BLOCKED_BY_PHASE11_GATE`
+> Latest completed phase: `PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS`
+> Current construction phase: `PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START`
+> Next phase: `PHASE-12 = NOT_STARTED / AUTHORIZED_BY_PHASE11_GATE`
 
-根据 `Construction Master Schedule.csv`，当前 PHASE-11 固定为 P011–P016：绩效管理、晋升与任职发展、奖励、纪律责任与申诉、成长/荣誉积分、员工福利与关怀。施工必须按 P011→P016 顺序逐项完成三端闭环；PHASE-10 保持封板，PHASE-12 不得提前施工。
+根据 `Construction Master Schedule.csv`，PHASE-11 固定为 P011–P016：绩效管理、晋升与任职发展、奖励、纪律责任与申诉、成长/荣誉积分、员工福利与关怀。P011→P016 三端闭环已通过独立 Gate；PHASE-10 与 PHASE-11 保持封板，PHASE-12 可按既定顺序启动。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -22,8 +22,8 @@
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS；CI 生命周期门禁已全绿 |
 | PHASE-10 | COMPLETE | P006-P010 closed; independent DB/Worker 22 tests, API 5 lifecycles, web 20 files/91 tests/build/Knip/lint and real Chromium passed after focused lint remediation |
-| PHASE-11 | INDEPENDENT_GATE_PENDING | P011-P016 local CHECKPOINT_PASS/CLOSED；首轮独立 FAIL 整改与稳定快照复验完成，待独立复审；PHASE-12 继续阻塞 |
-| PHASE-12 | NOT_STARTED | P017–P020 |
+| PHASE-11 | COMPLETE | P011-P016 independent source/DB/Worker/API/web/static and six fresh Chromium gates PASS；40-file remediation SHA set frozen |
+| PHASE-12 | NOT_STARTED | P017–P020；authorized to start in sequence by PHASE-11 independent PASS |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
 | PHASE-15 | NOT_STARTED | P028–P030 |
@@ -104,8 +104,8 @@ P013 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P014 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P015 = CHECKPOINT_PASS / CLOSED
 P016 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
-PHASE-11 = CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING / INDEPENDENT_PASS_NOT_YET_GRANTED
-PHASE-12 = NOT_STARTED / BLOCKED_BY_PHASE11_GATE
+PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS
+PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START
 ```
 
 ## PHASE-11 full construction gate
@@ -119,8 +119,8 @@ Static negative scan = PASS / 0 findings
 Real Browser = PASS / P011-P016 each desktop-chromium 1/1 / exact containers ABSENT / processes 0
 Remediation Browser evidence = .runlogs/phase11-remediation-stable-p011..p016-* / final Ryuk + workspace gate process + ports = 0
 Construction report = phases/PHASE-11/FULL_GATE_REPORT.md
-PHASE-11 = CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING
-PHASE-12 = NOT_STARTED / BLOCKED_BY_PHASE11_GATE
+PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS
+PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START
 ```
 
 ## Completed-phase regression lifecycle

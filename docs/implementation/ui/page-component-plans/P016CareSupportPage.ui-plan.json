@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P016CareSupportPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P016CareSupportPage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/03/06/01", "/employee/03/06/05", "/center/06/03/09", "/center/08/08/05", "/tech/05/03/01"],
+  "process_codes": ["P016"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p016.welfare.read", "p016.welfare.manage", "p016.welfare.approve", "p016.welfare.execute", "p016.welfare.reconcile", "p016.welfare.monitor"],
+    "data_scope": "Affected employee SELF, CENTER separated eligibility/approval/execution/reconciliation, metadata-only tech; backend remains authoritative",
+    "states": ["S01-S08", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["SUBMIT_APPLICATION", "CONFIRM_ELIGIBILITY", "REJECT_ELIGIBILITY", "AUTHORIZE_PRIVACY", "APPROVE_CARE", "REJECT_CARE", "RECORD_EXECUTION", "CONFIRM_RECEIPT", "RECONCILE", "ARCHIVE"]
+  },
+  "field_component_map": [
+    {"field": "subject|affectedEmployeeId|sourceFactKey|requestedAmount|authorityReference|externalReference|executedAmount", "component_id": "ui.input", "reason": "Typed care, authority and external receipt facts"},
+    {"field": "careType|executionKind|confirmationOutcome|reconciliationOutcome", "component_id": "ui.select", "reason": "Registered controlled-value choices"},
+    {"field": "reason|factSummary|evidence|resultSummary", "component_id": "ui.textarea", "reason": "Privacy-sensitive evidence remains explicit and server filtered"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server record/version is UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Typed resource and action state"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend data-scope denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "Expected-version conflict is explicit"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Retry help preserves trace without private facts"}
+  ],
+  "action_component_map": [
+    {"action": "typed P016 lifecycle action", "component_id": "platform.process-action-panel", "permission": "Backend enforces qualification, approval, execution and self-action separation", "reason": "Platform records authorization and receipts but never initiates payment"}
+  ],
+  "responsive_projection": {"desktop": "Application facts, privacy authority, receipts and actions are distinct", "mobile": "Stacked cards preserve separation and masked values"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "scope dispose cancels active load", "tech projection hides employee, amount, material, invoice and evidence"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}

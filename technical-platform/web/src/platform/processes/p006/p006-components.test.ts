@@ -35,8 +35,10 @@ describe('P006 process components', () => {
     await wrapper.get('[data-field="reason"] textarea').setValue('根据服务端业务事实发起会议')
     await wrapper.get('[data-field="official-subject"] input').setValue('月度运营协调')
     await wrapper.get('[data-field="official-content"] textarea').setValue('会议权威正文')
-    await wrapper.get('[data-field="start-at"] input').setValue('2026-08-14T09:00')
-    await wrapper.get('[data-submit-create]').trigger('click')
+    await wrapper.get('[data-field="start-at"] input').setValue('2099-08-14T09:00')
+    const submit = wrapper.get('[data-submit-create]')
+    expect(submit.attributes('disabled')).toBeUndefined()
+    await submit.trigger('click')
     expect(wrapper.emitted('submit')?.[0]?.[0]).toMatchObject({
       subject: '月度运营协调会', officialSubject: '月度运营协调', officialContent: '会议权威正文',
     })

@@ -1,0 +1,42 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P015PointLedgerPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P015PointLedgerPage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/08/06/04", "/employee/08/06/06", "/center/10/09/01", "/center/10/09/06", "/tech/06/06/09"],
+  "process_codes": ["P015"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p015.points.read", "p015.points.manage", "p015.points.review", "p015.points.adjust", "p015.points.monitor"],
+    "data_scope": "SELF for employee, CENTER for management/review, metadata-only for tech; backend remains authoritative",
+    "states": ["S01-S10", "idle", "loading", "success", "empty", "partial", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["REGISTER_EVENT", "VALIDATE_SOURCE", "CHECK_DUPLICATE", "MATCH_RULE", "CALCULATE_CAP", "CLASSIFY_RISK", "POST_LEDGER", "CONFIRM_NOTICE", "SUBMIT_ADJUSTMENT", "REVIEW_ADJUSTMENT", "RECALCULATE_BALANCE"]
+  },
+  "field_component_map": [
+    {"field": "subject|affectedEmployeeId|sourceFactKey|quantity|ruleCode|ruleVersionNo|adjustmentPoints", "component_id": "ui.input", "reason": "Typed ledger and rule facts"},
+    {"field": "pointKind", "component_id": "ui.select", "reason": "Registered point-kind selection"},
+    {"field": "adjustmentRequested|adjustmentApproved", "component_id": "ui.checkbox", "reason": "Explicit human adjustment choices"},
+    {"field": "effectiveFrom|effectiveTo", "component_id": "ui.datetime", "reason": "Version effective window"},
+    {"field": "reason|factSummary|evidence|resultSummary", "component_id": "ui.textarea", "reason": "Immutable source and adjustment evidence"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server ledger record/version is UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Transactions and rules retain independent keyed state"},
+    {"state": "transactions-success/rules-error|transactions-error/rules-success", "component_id": "ui.partial-failure", "reason": "Partial appears only when exactly one real resource succeeds"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "No stale ledger write replay"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Retry help preserves trace"}
+  ],
+  "action_component_map": [
+    {"action": "typed P015 lifecycle or rule publish action", "component_id": "platform.process-action-panel", "permission": "Backend re-authorizes ledger/rule writes", "reason": "Append-only facts, caller idempotency and expectedVersion are retained"}
+  ],
+  "responsive_projection": {"desktop": "Rule resource, transaction resource and action states are separate", "mobile": "Stacked cards preserve immutable ledger and partial-resource truth"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and feature mount", "real two-resource partial branch", "empty, 403, error and conflict projection", "append-only and tech masking contracts remain visible"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}

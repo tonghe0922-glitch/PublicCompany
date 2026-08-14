@@ -1,28 +1,221 @@
-import { randomUUID } from 'node:crypto'
-import { expect, test, type APIRequestContext, type Page } from '@playwright/test'
-
-const tenantCode=required('PHASE11_P015_TENANT'),managerLogin=required('PHASE11_P015_LOGIN'),password=required('PHASE11_P015_PASSWORD')
-const affectedLogin='phase11.p015.affected',reviewerLogin='phase11.p015.reviewer',adjusterLogin='phase11.p015.adjuster',techLogin='phase11.p015.tech',outsiderLogin='phase11.p015.out'
-const api='http://127.0.0.1:18090',employeeBase='http://127.0.0.1:5350/employee.html',centerBase='http://127.0.0.1:5351/center.html',techBase='http://127.0.0.1:5352/admin.html',affectedId='30000000-0000-0000-0000-000000003625'
-interface PointTransaction{id:string;businessNo:string;currentNodeCode:string;versionNo:number;affectedEmployeeId:string|null;sourceFactKey:string|null;calculatedPoints:number;cappedPoints:number;events:unknown[];posting:{postedPoints:number}|null;balance:{effectiveBalance:number;rankCode:string}|null}
-function required(name:string){const value=process.env[name];if(!value)throw new Error(`required E2E environment missing: ${name}`);return value}function headers(token:string){return{Authorization:`Bearer ${token}`}}function evidence(note:string){return{note,recordedAt:new Date().toISOString()}}
-async function apiLogin(request:APIRequestContext,name:string){const response=await request.post(`${api}/api/v1/auth/login`,{data:{tenantCode,loginName:name,password}});expect(response.status()).toBe(200);return((await response.json())as{accessToken:string}).accessToken}
-async function login(page:Page,base:string,name:string){await page.goto(base);await page.evaluate(()=>sessionStorage.clear());await page.reload();await page.goto(`${base}#/login`);await page.locator('input[name="tenantCode"]').fill(tenantCode);await page.locator('input[name="username"]').fill(name);await page.locator('input[name="password"]').fill(password);await page.locator('form button[type="submit"]').click();await expect(page).not.toHaveURL(/#\/login/u)}
-async function getPoint(request:APIRequestContext,token:string,id:string){const response=await request.get(`${api}/api/v1/processes/P015/point-transactions/${id}`,{headers:headers(token)});expect(response.status()).toBe(200);return(await response.json())as PointTransaction}
-async function act(request:APIRequestContext,token:string,id:string,code:string,version:number,data:Record<string,unknown>={}){const response=await request.post(`${api}/api/v1/processes/P015/point-transactions/${id}/actions/${code}`,{headers:{...headers(token),'Idempotency-Key':`p015-${code}-${randomUUID()}`},data:{expectedVersion:version,adjustmentRequested:null,adjustmentPoints:null,adjustmentReason:null,adjustmentApproved:null,resultSummary:'browser verified',evidence:evidence(code),...data}});return{status:response.status(),body:response.ok()?((await response.json())as PointTransaction):undefined}}
-async function move(request:APIRequestContext,token:string,id:string,code:string,version:number,data:Record<string,unknown>={}){const result=await act(request,token,id,code,version,data);expect(result.status).toBe(200);if(!result.body)throw new Error(`${code} response body missing`);return result.body}
-
-test('P015 real browser preserves versioned rules, immutable posting, correction and technical masking',async({page,request})=>{
-  const manager=await apiLogin(request,managerLogin),affected=await apiLogin(request,affectedLogin),reviewer=await apiLogin(request,reviewerLogin),adjuster=await apiLogin(request,adjusterLogin),tech=await apiLogin(request,techLogin),outsider=await apiLogin(request,outsiderLogin)
-await login(page,techBase,techLogin);await page.goto(`${techBase}#/tech/06/06/09`);const techRouteHeading=page.getByRole('heading',{name:'操作审计',level:1});await expect(techRouteHeading).toHaveCount(1);await expect(techRouteHeading).toBeVisible();const techBusinessHeading=page.getByRole('heading',{name:'积分规则与流程监控',level:2});await expect(techBusinessHeading).toHaveCount(1);await expect(techBusinessHeading).toBeVisible();await page.getByPlaceholder('规则编码').fill('P015_BROWSER_SERVICE');await page.getByPlaceholder('业务事件类型').fill('SERVICE');await page.getByLabel('单位积分').fill('10');await page.getByLabel('单次最低积分').fill('-1000');await page.getByLabel('单次最高积分').fill('1000');await page.getByLabel('人工复核阈值').fill('500');await page.getByPlaceholder('等级编码').fill('BASE');await page.getByLabel('等级最低余额').fill('-1000');await page.getByLabel('等级最高余额').fill('1000');await page.getByRole('button',{name:'保存规则草稿'}).click();const rule=page.locator('article.record').filter({hasText:'P015_BROWSER_SERVICE'});await expect(rule).toContainText('DRAFT');await rule.getByRole('button',{name:'发布规则版本'}).click();await expect(rule).toContainText('PUBLISHED')
-  const techCreate=await request.post(`${api}/api/v1/processes/P015/point-transactions`,{headers:{...headers(tech),'Idempotency-Key':`tech-denied-${randomUUID()}`},data:createBody('P015-BROWSER-TECH-DENIED')});expect(techCreate.status()).toBe(403)
-await login(page,centerBase,managerLogin);await page.goto(`${centerBase}#/center/10/09/01`);const centerRouteHeading=page.getByRole('heading',{name:'成长积分分布',level:1});await expect(centerRouteHeading).toHaveCount(1);await expect(centerRouteHeading).toBeVisible();const centerBusinessHeading=page.getByRole('heading',{name:'成长积分与荣誉积分不可变账本',level:2});await expect(centerBusinessHeading).toHaveCount(1);await expect(centerBusinessHeading).toBeVisible();await page.getByPlaceholder('积分业务主题').fill('P015 浏览器真实积分闭环');await page.getByPlaceholder('受影响员工 ID').fill(affectedId);await page.getByPlaceholder('唯一来源事实编号').fill('P015-BROWSER-SOURCE-001');await page.getByLabel('事实数量').fill('10');await page.getByPlaceholder('业务对象编号').fill('SERVICE-P015-BROWSER-001');await page.getByPlaceholder('业务对象名称').fill('真实服务事项');await page.getByPlaceholder('业务事件类型').fill('SERVICE');await page.getByPlaceholder('可核验事实摘要').fill('真实来源服务事件已由中心核验');await page.getByPlaceholder('积分登记说明').fill('已发布规则计算并保留不可变证据');await page.getByPlaceholder('不可变来源证据').fill('浏览器来源证据包');await page.getByRole('button',{name:'创建积分业务'}).click();const record=page.locator('article.record').filter({hasText:'P015 浏览器真实积分闭环'});await expect(record).toContainText('S01');const id=await record.getAttribute('data-point-id');expect(id).toBeTruthy();if(!id)throw new Error('point transaction id missing')
-  await page.goto(`${centerBase}#/center/10/09/06`);await expect(page.locator(`article[data-point-id="${id}"]`)).toBeVisible();const duplicate=await request.post(`${api}/api/v1/processes/P015/point-transactions`,{headers:{...headers(manager),'Idempotency-Key':`duplicate-${randomUUID()}`},data:createBody('P015-BROWSER-SOURCE-001')});expect(duplicate.status()).toBe(409);expect(await(await request.get(`${api}/api/v1/processes/P015/point-transactions`,{headers:headers(outsider)})).json()).toEqual([]);expect((await request.get(`${api}/api/v1/processes/P015/point-transactions/${id}`,{headers:headers(outsider)})).status()).toBe(403)
-  let masked=await getPoint(request,tech,id);expect(masked.affectedEmployeeId).toBeNull();expect(masked.sourceFactKey).toBeNull();expect(masked.calculatedPoints).toBe(0);expect(masked.events).toEqual([])
-  let current=await getPoint(request,manager,id);expect((await act(request,manager,id,'REGISTER_EVENT',current.versionNo-1)).status).toBe(409);current=await move(request,manager,id,'REGISTER_EVENT',current.versionNo);current=await move(request,manager,id,'VALIDATE_SOURCE',current.versionNo);current=await move(request,manager,id,'CHECK_DUPLICATE',current.versionNo);current=await move(request,manager,id,'MATCH_RULE',current.versionNo);current=await move(request,manager,id,'CALCULATE_CAP',current.versionNo);current=await move(request,reviewer,id,'CLASSIFY_RISK',current.versionNo);expect((await act(request,affected,id,'POST_LEDGER',current.versionNo)).status).toBe(409);current=await move(request,reviewer,id,'POST_LEDGER',current.versionNo);expect(current.posting?.postedPoints).toBe(100)
-  await login(page,employeeBase,affectedLogin);await page.goto(`${employeeBase}#/employee/08/06/04`);const employeeRecord=page.locator(`article[data-point-id="${id}"]`);await expect(employeeRecord).toContainText('S08');await page.getByPlaceholder('节点不可变证据').fill('员工已接收积分通知');await employeeRecord.getByRole('button',{name:'确认积分通知'}).click();await expect(employeeRecord).toContainText('S09');await page.getByRole('checkbox',{name:'申请调整或冲销'}).check();await page.getByPlaceholder('调整积分').fill('-10');await page.getByPlaceholder('调整理由').fill('来源事实复核后调整');await page.getByPlaceholder('节点不可变证据').fill('员工提交不可变调整理由');await employeeRecord.getByRole('button',{name:'提交调整选择'}).click();await expect(employeeRecord).toContainText('v10')
-  current=await getPoint(request,adjuster,id);expect((await act(request,affected,id,'REVIEW_ADJUSTMENT',current.versionNo,{adjustmentApproved:true})).status).toBe(409);current=await move(request,adjuster,id,'REVIEW_ADJUSTMENT',current.versionNo,{adjustmentApproved:true});current=await move(request,manager,id,'RECALCULATE_BALANCE',current.versionNo);expect(current.currentNodeCode).toBe('END');expect(current.balance?.effectiveBalance).toBe(90);expect(current.balance?.rankCode).toBe('BASE')
-  await login(page,techBase,techLogin);await page.goto(`${techBase}#/tech/06/06/09`);const techRecord=page.locator(`article[data-point-id="${id}"]`);await expect(techRecord).toContainText('END');await expect(techRecord).toContainText('员工、来源、积分值、等级和证据已隐藏');await expect(techRecord.getByRole('button')).toHaveCount(0);await expect(techRecord).not.toContainText('90');masked=await getPoint(request,tech,id);expect(masked.events).toEqual([]);expect(masked.cappedPoints).toBe(0)
-})
-
-function createBody(source:string){return{businessDate:new Date().toISOString().slice(0,10),subject:'P015 duplicate or forbidden source',reason:'Source-backed service event requires versioned calculation',affectedEmployeeId:affectedId,sourceFactKey:source,pointKind:'GROWTH',quantity:10,businessObjectType:'SERVICE_CASE',businessObjectNo:`SERVICE-${randomUUID()}`,businessObjectName:'Verified service case',employeeEventType:'SERVICE',factOccurredAt:new Date().toISOString(),factSummary:'Verified service event retained as immutable source',expiresAt:null,evidence:evidence('source package')}}
+import { randomUUID } from 'node:crypto';
+import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
+const tenantCode = required('PHASE11_P015_TENANT'), managerLogin = required('PHASE11_P015_LOGIN'), password = required('PHASE11_P015_PASSWORD');
+const affectedLogin = 'phase11.p015.affected', reviewerLogin = 'phase11.p015.reviewer', adjusterLogin = 'phase11.p015.adjuster', techLogin = 'phase11.p015.tech', outsiderLogin = 'phase11.p015.out';
+const api = 'http://127.0.0.1:18090', employeeBase = 'http://127.0.0.1:5350/employee.html', centerBase = 'http://127.0.0.1:5351/center.html', techBase = 'http://127.0.0.1:5352/admin.html', affectedId = '30000000-0000-0000-0000-000000003625';
+interface PointTransaction {
+    id: string;
+    businessNo: string;
+    currentNodeCode: string;
+    versionNo: number;
+    affectedEmployeeId: string | null;
+    sourceFactKey: string | null;
+    calculatedPoints: number;
+    cappedPoints: number;
+    events: unknown[];
+    posting: {
+        postedPoints: number;
+    } | null;
+    balance: {
+        effectiveBalance: number;
+        rankCode: string;
+    } | null;
+}
+interface ScenarioContext {
+    page: Page;
+    request: APIRequestContext;
+    manager: string;
+    affected: string;
+    reviewer: string;
+    adjuster: string;
+    tech: string;
+    outsider: string;
+}
+function required(name: string) {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`required E2E environment missing: ${name}`);
+    }
+    return value;
+}
+function headers(token: string) {
+    return { Authorization: `Bearer ${token}` };
+}
+function evidence(note: string) {
+    return { note, recordedAt: new Date().toISOString() };
+}
+async function apiLogin(request: APIRequestContext, name: string) {
+    const response = await request.post(`${api}/api/v1/auth/login`, {
+        data: { tenantCode, loginName: name, password },
+    });
+    expect(response.status()).toBe(200);
+    return ((await response.json()) as { accessToken: string }).accessToken;
+}
+async function login(page: Page, base: string, name: string) {
+    await page.goto(base);
+    await page.evaluate(() => sessionStorage.clear());
+    await page.reload();
+    await page.goto(`${base}#/login`);
+    await page.locator('input[name="tenantCode"]').fill(tenantCode);
+    await page.locator('input[name="username"]').fill(name);
+    await page.locator('input[name="password"]').fill(password);
+    await page.locator('form button[type="submit"]').click();
+    await expect(page).not.toHaveURL(/#\/login/u);
+}
+async function getPoint(request: APIRequestContext, token: string, id: string) {
+    const response = await request.get(`${api}/api/v1/processes/P015/point-transactions/${id}`, {
+        headers: headers(token),
+    });
+    expect(response.status()).toBe(200);
+    return (await response.json()) as PointTransaction;
+}
+async function act(request: APIRequestContext, token: string, id: string, code: string, version: number, data: Record<string, unknown> = {}) {
+    const response = await request.post(`${api}/api/v1/processes/P015/point-transactions/${id}/actions/${code}`, {
+        headers: { ...headers(token), 'Idempotency-Key': `p015-${code}-${randomUUID()}` },
+        data: { expectedVersion: version, adjustmentRequested: null, adjustmentPoints: null, adjustmentReason: null, adjustmentApproved: null, resultSummary: 'browser verified', evidence: evidence(code), ...data },
+    });
+    return { status: response.status(), body: response.ok() ? ((await response.json()) as PointTransaction) : undefined };
+}
+async function move(request: APIRequestContext, token: string, id: string, code: string, version: number, data: Record<string, unknown> = {}) {
+    const result = await act(request, token, id, code, version, data);
+    expect(result.status).toBe(200);
+    if (!result.body) {
+        throw new Error(`${code} response body missing`);
+    }
+    return result.body;
+}
+async function publishRule(context: ScenarioContext): Promise<void> {
+    const { page, request, tech } = context;
+    await login(page, techBase, techLogin);
+    await page.goto(`${techBase}#/tech/06/06/09`);
+    const techRouteHeading = page.getByRole('heading', { name: '操作审计', level: 1 });
+    await expect(techRouteHeading).toHaveCount(1);
+    await expect(techRouteHeading).toBeVisible();
+    const techBusinessHeading = page.getByRole('heading', { name: '积分规则与流程监控', level: 2 });
+    await expect(techBusinessHeading).toHaveCount(1);
+    await expect(techBusinessHeading).toBeVisible();
+    await page.getByPlaceholder('规则编码').fill('P015_BROWSER_SERVICE');
+    await page.getByPlaceholder('业务事件类型').fill('SERVICE');
+    await page.getByLabel('单位积分').fill('10');
+    await page.getByLabel('单次最低积分').fill('-1000');
+    await page.getByLabel('单次最高积分').fill('1000');
+    await page.getByLabel('人工复核阈值').fill('500');
+    await page.getByPlaceholder('等级编码').fill('BASE');
+    await page.getByLabel('等级最低余额').fill('-1000');
+    await page.getByLabel('等级最高余额').fill('1000');
+    await page.getByRole('button', { name: '保存规则草稿' }).click();
+    const rule = page.locator('article.record').filter({ hasText: 'P015_BROWSER_SERVICE' });
+    await expect(rule).toContainText('DRAFT');
+    await rule.getByRole('button', { name: '发布规则版本' }).click();
+    await expect(rule).toContainText('PUBLISHED');
+    const techCreate = await request.post(`${api}/api/v1/processes/P015/point-transactions`, { headers: { ...headers(tech), 'Idempotency-Key': `tech-denied-${randomUUID()}` }, data: createBody('P015-BROWSER-TECH-DENIED') });
+    expect(techCreate.status()).toBe(403);
+}
+async function createTransaction(context: ScenarioContext): Promise<string> {
+    const { page } = context;
+    await login(page, centerBase, managerLogin);
+    await page.goto(`${centerBase}#/center/10/09/01`);
+    const centerRouteHeading = page.getByRole('heading', { name: '成长积分分布', level: 1 });
+    await expect(centerRouteHeading).toHaveCount(1);
+    await expect(centerRouteHeading).toBeVisible();
+    const centerBusinessHeading = page.getByRole('heading', { name: '成长积分与荣誉积分不可变账本', level: 2 });
+    await expect(centerBusinessHeading).toHaveCount(1);
+    await expect(centerBusinessHeading).toBeVisible();
+    await page.getByPlaceholder('积分业务主题').fill('P015 浏览器真实积分闭环');
+    await page.getByPlaceholder('受影响员工 ID').fill(affectedId);
+    await page.getByPlaceholder('唯一来源事实编号').fill('P015-BROWSER-SOURCE-001');
+    await page.getByLabel('事实数量').fill('10');
+    await page.getByPlaceholder('业务对象编号').fill('SERVICE-P015-BROWSER-001');
+    await page.getByPlaceholder('业务对象名称').fill('真实服务事项');
+    await page.getByPlaceholder('业务事件类型').fill('SERVICE');
+    await page.getByPlaceholder('可核验事实摘要').fill('真实来源服务事件已由中心核验');
+    await page.getByPlaceholder('积分登记说明').fill('已发布规则计算并保留不可变证据');
+    await page.getByPlaceholder('不可变来源证据').fill('浏览器来源证据包');
+    await page.getByRole('button', { name: '创建积分业务' }).click();
+    const record = page.locator('article.record').filter({ hasText: 'P015 浏览器真实积分闭环' });
+    await expect(record).toContainText('S01');
+    const id = await record.getAttribute('data-point-id');
+    expect(id).toBeTruthy();
+    if (!id) {
+        throw new Error('point transaction id missing');
+    }
+    return id;
+}
+async function verifyIsolation(context: ScenarioContext, id: string): Promise<void> {
+    const { page, request, manager, tech, outsider } = context;
+    await page.goto(`${centerBase}#/center/10/09/06`);
+    await expect(page.locator(`article[data-point-id="${id}"]`)).toBeVisible();
+    const duplicate = await request.post(`${api}/api/v1/processes/P015/point-transactions`, { headers: { ...headers(manager), 'Idempotency-Key': `duplicate-${randomUUID()}` }, data: createBody('P015-BROWSER-SOURCE-001') });
+    expect(duplicate.status()).toBe(409);
+    expect(await (await request.get(`${api}/api/v1/processes/P015/point-transactions`, { headers: headers(outsider) })).json()).toEqual([]);
+    expect((await request.get(`${api}/api/v1/processes/P015/point-transactions/${id}`, { headers: headers(outsider) })).status()).toBe(403);
+    const masked = await getPoint(request, tech, id);
+    expect(masked.affectedEmployeeId).toBeNull();
+    expect(masked.sourceFactKey).toBeNull();
+    expect(masked.calculatedPoints).toBe(0);
+    expect(masked.events).toEqual([]);
+}
+async function processLedger(context: ScenarioContext, id: string): Promise<void> {
+    const { page, request, manager, affected, reviewer } = context;
+    let current = await getPoint(request, manager, id);
+    expect((await act(request, manager, id, 'REGISTER_EVENT', current.versionNo - 1)).status).toBe(409);
+    current = await move(request, manager, id, 'REGISTER_EVENT', current.versionNo);
+    current = await move(request, manager, id, 'VALIDATE_SOURCE', current.versionNo);
+    current = await move(request, manager, id, 'CHECK_DUPLICATE', current.versionNo);
+    current = await move(request, manager, id, 'MATCH_RULE', current.versionNo);
+    current = await move(request, manager, id, 'CALCULATE_CAP', current.versionNo);
+    current = await move(request, reviewer, id, 'CLASSIFY_RISK', current.versionNo);
+    expect((await act(request, affected, id, 'POST_LEDGER', current.versionNo)).status).toBe(409);
+    current = await move(request, reviewer, id, 'POST_LEDGER', current.versionNo);
+    expect(current.posting?.postedPoints).toBe(100);
+    await login(page, employeeBase, affectedLogin);
+    await page.goto(`${employeeBase}#/employee/08/06/04`);
+    const employeeRecord = page.locator(`article[data-point-id="${id}"]`);
+    await expect(employeeRecord).toContainText('S08');
+    await page.getByPlaceholder('节点不可变证据').fill('员工已接收积分通知');
+    await employeeRecord.getByRole('button', { name: '确认积分通知' }).click();
+    await expect(employeeRecord).toContainText('S09');
+    await page.getByRole('checkbox', { name: '申请调整或冲销' }).check();
+    await page.getByPlaceholder('调整积分').fill('-10');
+    await page.getByPlaceholder('调整理由').fill('来源事实复核后调整');
+    await page.getByPlaceholder('节点不可变证据').fill('员工提交不可变调整理由');
+    await employeeRecord.getByRole('button', { name: '提交调整选择' }).click();
+    await expect(employeeRecord).toContainText('v10');
+}
+async function finishAndVerify(context: ScenarioContext, id: string): Promise<void> {
+    const { page, request, manager, affected, adjuster, tech } = context;
+    let current = await getPoint(request, adjuster, id);
+    expect((await act(request, affected, id, 'REVIEW_ADJUSTMENT', current.versionNo, { adjustmentApproved: true })).status).toBe(409);
+    current = await move(request, adjuster, id, 'REVIEW_ADJUSTMENT', current.versionNo, { adjustmentApproved: true });
+    current = await move(request, manager, id, 'RECALCULATE_BALANCE', current.versionNo);
+    expect(current.currentNodeCode).toBe('END');
+    expect(current.balance?.effectiveBalance).toBe(90);
+    expect(current.balance?.rankCode).toBe('BASE');
+    await login(page, techBase, techLogin);
+    await page.goto(`${techBase}#/tech/06/06/09`);
+    const techRecord = page.locator(`article[data-point-id="${id}"]`);
+    await expect(techRecord).toContainText('END');
+    await expect(techRecord).toContainText('员工、来源、积分值、等级和证据已隐藏');
+    await expect(techRecord.getByRole('button')).toHaveCount(0);
+    await expect(techRecord).not.toContainText('90');
+    const masked = await getPoint(request, tech, id);
+    expect(masked.events).toEqual([]);
+    expect(masked.cappedPoints).toBe(0);
+}
+test('P015 real browser preserves versioned rules, immutable posting, correction and technical masking', async ({ page, request }) => {
+    const manager = await apiLogin(request, managerLogin);
+    const affected = await apiLogin(request, affectedLogin);
+    const reviewer = await apiLogin(request, reviewerLogin);
+    const adjuster = await apiLogin(request, adjusterLogin);
+    const tech = await apiLogin(request, techLogin);
+    const outsider = await apiLogin(request, outsiderLogin);
+    const context: ScenarioContext = { page, request, manager, affected, reviewer, adjuster, tech, outsider };
+    await publishRule(context);
+    const id = await createTransaction(context);
+    await verifyIsolation(context, id);
+    await processLedger(context, id);
+    await finishAndVerify(context, id);
+});
+function createBody(source: string) {
+    return { businessDate: new Date().toISOString().slice(0, 10), subject: 'P015 duplicate or forbidden source', reason: 'Source-backed service event requires versioned calculation', affectedEmployeeId: affectedId, sourceFactKey: source, pointKind: 'GROWTH', quantity: 10, businessObjectType: 'SERVICE_CASE', businessObjectNo: `SERVICE-${randomUUID()}`, businessObjectName: 'Verified service case', employeeEventType: 'SERVICE', factOccurredAt: new Date().toISOString(), factSummary: 'Verified service event retained as immutable source', expiresAt: null, evidence: evidence('source package') };
+}

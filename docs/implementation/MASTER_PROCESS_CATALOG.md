@@ -149,4 +149,4 @@
 | P015 | CHECKPOINT_PASS / CLOSED | V124 / S01-S10 + END | `reward.point_transaction` + append-only posting/balance/event facts |
 | P016 | CHECKPOINT_PASS / CLOSED | V125 / S01-S08 + END | `welfare.care_case` + eligibility/privacy/approval/execution/confirmation/reconciliation facts |
 
-Full construction evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`. PHASE-11 is `CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING`; P017+ remains outside the active phase.
+Full construction evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`; authoritative review: `phases/PHASE-11/PHASE_GATE.md`. PHASE-11 is `COMPLETE / INDEPENDENT_GATE_PASS`; P017-P020 may begin only as PHASE-12 work.

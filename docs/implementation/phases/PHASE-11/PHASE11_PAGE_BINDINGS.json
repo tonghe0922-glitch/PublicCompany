@@ -1,0 +1,51 @@
+{
+  "phase": "PHASE-11",
+  "status": "P011_P016_LOCAL_CLOSED_FULL_GATE_PENDING",
+  "checkpoint_status": {
+    "P011": "CHECKPOINT_PASS_CLOSED",
+    "P012": "CHECKPOINT_PASS_CLOSED",
+    "P013": "CHECKPOINT_PASS_CLOSED",
+    "P014": "CHECKPOINT_PASS_CLOSED",
+    "P015": "CHECKPOINT_PASS_CLOSED",
+    "P016": "CHECKPOINT_PASS_CLOSED"
+  },
+  "rule": "Explicit source-coordinate selections from PHASE-01 pages.json. No fuzzy runtime matching. Shared tech monitors provide support only and do not grant business approval authority.",
+  "bindings": [
+    {"process_code":"P011","portal":"employee","purpose":"performance target evaluation calibration appeal and improvement","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R54:26ae01dab661","route_path":"/employee/02/03/06"},
+    {"process_code":"P011","portal":"employee","purpose":"performance feedback confirmation","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R474:6520d246413d","route_path":"/employee/08/03/06"},
+    {"process_code":"P011","portal":"center","purpose":"employee self evaluation","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R775:6192e7a1962f","route_path":"/center/10/02/01"},
+    {"process_code":"P011","portal":"center","purpose":"supervisor evaluation and 1000 point calculation","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R778:daa388afb9ec","route_path":"/center/10/02/04"},
+    {"process_code":"P011","portal":"center","purpose":"calibration meeting","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R779:85957a3c7555","route_path":"/center/10/02/05"},
+    {"process_code":"P011","portal":"tech","purpose":"performance rule configuration","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R612:694b6d469619","route_path":"/tech/06/05/01"},
+    {"process_code":"P011","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P012","portal":"employee","purpose":"promotion application","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R281:144a8451edb8","route_path":"/employee/03/03/05"},
+    {"process_code":"P012","portal":"employee","purpose":"promotion progress","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R503:73cb0d4f0e1d","route_path":"/employee/08/09/03"},
+    {"process_code":"P012","portal":"center","purpose":"promotion review","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R174:41e1db1a5c77","route_path":"/center/03/08/05"},
+    {"process_code":"P012","portal":"center","purpose":"appointment execution","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R175:8673aadbd351","route_path":"/center/03/08/06"},
+    {"process_code":"P012","portal":"tech","purpose":"workflow and organization synchronization monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P013","portal":"employee","purpose":"reward execution state","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R510:ab21523581cd","route_path":"/employee/08/10/05"},
+    {"process_code":"P013","portal":"center","purpose":"honor point execution","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R833:724ed8dce0d1","route_path":"/center/10/10/03"},
+    {"process_code":"P013","portal":"center","purpose":"bonus execution receipt","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R834:ee375aad7a49","route_path":"/center/10/10/04"},
+    {"process_code":"P013","portal":"tech","purpose":"reward and point rule configuration","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R621:b2228e7834fe","route_path":"/tech/06/06/01"},
+    {"process_code":"P013","portal":"tech","purpose":"workflow instance monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P014","portal":"employee","purpose":"discipline responsibility and appeal","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R57:4a07377b8864","route_path":"/employee/02/03/09"},
+    {"process_code":"P014","portal":"center","purpose":"case responsibility review","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R84:3a10ef829f5c","route_path":"/center/02/04/04"},
+    {"process_code":"P014","portal":"center","purpose":"reward discipline care data quality supervision","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R338:15e6269002de","route_path":"/center/06/03/09"},
+    {"process_code":"P014","portal":"tech","purpose":"workflow and private-case audit monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"},
+
+    {"process_code":"P015","portal":"employee","purpose":"immutable point ledger","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R488:1fe1a0ffc270","route_path":"/employee/08/06/04"},
+    {"process_code":"P015","portal":"employee","purpose":"point appeal","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R490:0ef7502b5752","route_path":"/employee/08/06/06"},
+    {"process_code":"P015","portal":"center","purpose":"point distribution and source ledger","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R824:bf65401cf9e8","route_path":"/center/10/09/01"},
+    {"process_code":"P015","portal":"center","purpose":"appeal reversal","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R829:4675d264a088","route_path":"/center/10/09/06"},
+    {"process_code":"P015","portal":"tech","purpose":"point rule version and audit","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R629:96151802d421","route_path":"/tech/06/06/09"},
+
+    {"process_code":"P016","portal":"employee","purpose":"marriage and childbirth care","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R297:b5755f4db77c","route_path":"/employee/03/06/01"},
+    {"process_code":"P016","portal":"employee","purpose":"hardship care","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R301:46e16ea7a932","route_path":"/employee/03/06/05"},
+    {"process_code":"P016","portal":"center","purpose":"care eligibility approval execution and reconciliation","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R338:15e6269002de","route_path":"/center/06/03/09"},
+    {"process_code":"P016","portal":"center","purpose":"external payment receipt state","source_key":"2-2中心全层级页面.xlsx:三级页面明细:R674:b99543492094","route_path":"/center/08/08/05"},
+    {"process_code":"P016","portal":"tech","purpose":"workflow integration privacy and audit monitor only","source_key":"3-2技术-全层级页面.xlsx:三级页面明细:R526:8cd8ca46110c","route_path":"/tech/05/03/01"}
+  ]
+}

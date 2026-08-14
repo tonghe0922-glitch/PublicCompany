@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P014DisciplinePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P014DisciplinePage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/02/03/09", "/center/02/04/04", "/center/06/03/09", "/tech/05/03/01"],
+  "process_codes": ["P014"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p014.discipline.read", "p014.discipline.manage", "p014.discipline.investigate", "p014.discipline.decide", "p014.discipline.appeal", "p014.discipline.monitor"],
+    "data_scope": "Affected employee SELF, CENTER investigators/deciders with separation, metadata-only tech; backend remains authoritative",
+    "states": ["S01-S10", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["OPEN_CASE", "VERIFY_SOURCE", "ASSIGN_INVESTIGATOR", "SUBMIT_STATEMENT", "COMPLETE_INVESTIGATION", "DECIDE", "CONFIRM_DELIVERY", "SUBMIT_APPEAL", "REVIEW_APPEAL", "ARCHIVE"]
+  },
+  "field_component_map": [
+    {"field": "subject|affectedEmployeeId|sourceFactKey|businessObjectNo|authorityReference", "component_id": "ui.input", "reason": "Typed case identifiers and authority facts"},
+    {"field": "decidedAt|externalOccurredAt", "component_id": "ui.datetime", "reason": "Registered decision and receipt dates"},
+    {"field": "reason|factSummary|evidence|statement|resultSummary", "component_id": "ui.textarea", "reason": "Evidence and human statements remain explicit"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server record/version is UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Typed resource and action state"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "No stale decision replay"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Retry help preserves trace"}
+  ],
+  "action_component_map": [
+    {"action": "typed P014 lifecycle action", "component_id": "platform.process-action-panel", "permission": "Backend enforces recusal and role separation", "reason": "Client visibility never substitutes final authorization"}
+  ],
+  "responsive_projection": {"desktop": "Case facts, evidence and actions remain separate", "mobile": "Stacked records preserve recusal, version and evidence boundaries"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "self-action filtering cannot bypass backend", "tech projection masks person, evidence and decisions"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}

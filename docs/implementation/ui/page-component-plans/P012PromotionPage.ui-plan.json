@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P012PromotionPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P012PromotionPage.vue",
+  "portal_codes": ["employee", "center", "tech"],
+  "route_paths": ["/employee/03/03/05", "/employee/08/09/03", "/center/03/08/05", "/center/03/08/06", "/tech/05/03/01"],
+  "process_codes": ["P012"],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": ["p012.promotion.read", "p012.promotion.manage", "p012.promotion.review", "p012.promotion.approve", "p012.promotion.execute", "p012.promotion.monitor"],
+    "data_scope": "SELF for employee, CENTER for management, metadata-only for tech; backend remains authoritative",
+    "states": ["S01-S09", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
+    "actions": ["SUBMIT_APPLICATION", "VERIFY_ELIGIBILITY", "CONFIRM_VACANCY", "REVIEW", "APPROVE", "CONFIRM_SALARY", "EXECUTE_APPOINTMENT", "EMPLOYEE_CONFIRM", "ARCHIVE"]
+  },
+  "field_component_map": [
+    {"field": "subject|ownerEmployeeId|headcountNo|batchNo|targetPositionCode|score1000", "component_id": "ui.input", "reason": "Typed promotion facts retain server identity"},
+    {"field": "plannedEffectiveDate|actualEffectiveDate", "component_id": "ui.datetime", "reason": "Effective dates use registered date controls"},
+    {"field": "reason|evidence|resultSummary", "component_id": "ui.textarea", "reason": "Review evidence remains explicit"},
+    {"field": "businessNo|status|currentNodeCode|versionNo", "component_id": "platform.process-record-meta", "reason": "Server record/version is UI truth"}
+  ],
+  "state_component_map": [
+    {"state": "idle|loading|success|empty|error|cancelled", "component_id": "platform.async-state-boundary", "reason": "Typed per-key state"},
+    {"state": "403|permission-denied", "component_id": "platform.permission-gate", "reason": "Backend denial is final"},
+    {"state": "409|conflict", "component_id": "platform.version-conflict-panel", "reason": "No blind action replay"},
+    {"state": "timeout|error", "component_id": "platform.api-error-notice", "reason": "Stable retry and trace projection"}
+  ],
+  "action_component_map": [
+    {"action": "typed P012 lifecycle action", "component_id": "platform.process-action-panel", "permission": "Backend re-authorizes every write", "reason": "Idempotency and expectedVersion remain unchanged"}
+  ],
+  "responsive_projection": {"desktop": "Request facts, records and actions remain distinct", "mobile": "Stacked cards preserve the same record and action keys"},
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "resource cancellation and LWW", "tech projection masks score, salary and execution evidence"],
+  "updated_at": "2026-08-14T00:00:00+08:00"
+}
