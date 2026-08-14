@@ -72,6 +72,7 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
     @Override
     public List<AuthorizationGrant> findAuthorizationGrants(UUID tenantId, UUID userId, UUID identityId) {
         return jdbc.query("""
+                select permission_code,risk_level,data_scope_code,data_scope_rule_json,condition_json from (
                 select p.permission_code,p.risk_level,r.data_scope_code,
                        ds.rule_expr::text as data_scope_rule_json,
                        rp.condition_expr::text as condition_json
@@ -86,11 +87,20 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
                   and (ur.identity_id is null or ur.identity_id=?)
                   and ur.effective_start_at <= now()
                   and (ur.effective_end_at is null or ur.effective_end_at > now())
-                order by p.permission_code,r.role_code
+                union all
+                select p.permission_code,p.risk_level,g.data_scope_code,
+                       ds.rule_expr::text as data_scope_rule_json,null::text as condition_json
+                from learning.qualification_permission_grant g
+                join iam.permission p on p.tenant_id=g.tenant_id and p.id=g.permission_id and not p.is_deleted
+                left join iam.data_scope_rule ds on ds.tenant_id=g.tenant_id and ds.scope_code=g.data_scope_code
+                  and not ds.is_deleted and ds.enabled
+                where g.tenant_id=? and g.user_id=? and g.identity_id=? and g.execution_status='ACTIVE'
+                  and g.effective_start_date<=current_date and g.effective_end_date>=current_date
+                ) grants order by permission_code,data_scope_code
                 """, (rs, n) -> new AuthorizationGrant(
                         rs.getString("permission_code"), rs.getString("risk_level"), rs.getString("data_scope_code"),
                         rs.getString("data_scope_rule_json"), rs.getString("condition_json")),
-                tenantId, userId, identityId);
+                tenantId, userId, identityId, tenantId, userId, identityId);
     }
 
     @Override

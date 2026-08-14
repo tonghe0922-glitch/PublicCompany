@@ -1,6 +1,7 @@
 {
   "entry": [
     "src/portals/*/main.ts",
+    "src/showcase/main.ts",
     "src/design-system/index.ts",
     "src/api/index.ts",
     "src/contracts/index.ts",
@@ -12,6 +13,18 @@
     "playwright.phase09-p002-live.config.ts",
     "playwright.phase09-p003-live.config.ts",
     "playwright.phase09-p004-live.config.ts",
+    "playwright.phase10-p006-live.config.ts",
+    "playwright.phase10-p007-live.config.ts",
+    "playwright.phase10-p008-live.config.ts",
+    "playwright.phase10-p009-live.config.ts",
+    "playwright.phase10-p010-live.config.ts",
+    "playwright.phase10-tech-monitor-live.config.ts",
+    "playwright.phase11-p011-live.config.ts",
+    "playwright.phase11-p012-live.config.ts",
+    "playwright.phase11-p013-live.config.ts",
+    "playwright.phase11-p014-live.config.ts",
+    "playwright.phase11-p015-live.config.ts",
+    "playwright.phase11-p016-live.config.ts",
     "playwright.phase09-p005-live.config.ts"
   ],
   "project": [

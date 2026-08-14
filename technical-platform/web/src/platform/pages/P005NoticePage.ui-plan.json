@@ -1,0 +1,111 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P005NoticePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+  "portal_codes": [
+    "employee",
+    "center",
+    "tech"
+  ],
+  "route_paths": [
+    "/employee/13/01/05",
+    "/center/13/01/05",
+    "/tech/05/03/01"
+  ],
+  "process_codes": [
+    "P005"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": [
+      "p005.notice.publish",
+      "p005.notice.read",
+      "p005.notice.receipt",
+      "p005.notice.manage",
+      "p005.notice.monitor"
+    ],
+    "data_scope": "SELF/CENTER; tech metadata monitor only",
+    "sensitive_level": "P1-内部; notice receipt details remain server scoped",
+    "states": [
+      "loading",
+      "empty",
+      "error",
+      "permission-denied",
+      "conflict",
+      "ready"
+    ],
+    "actions": [
+      "publish",
+      "receipt",
+      "manage",
+      "monitor"
+    ]
+  },
+  "field_component_map": [
+    {
+      "field": "notice-content|effective-period",
+      "component_id": "ui.textarea",
+      "reason": "Existing notice facts; no data contract change",
+      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+    },
+    {
+      "field": "notice-records",
+      "component_id": "ui.list",
+      "reason": "Existing notice list",
+      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "loading|empty|error|permission-denied|conflict|ready",
+      "component_id": "ui.error",
+      "reason": "Reuse the current public feedback/state projection; landmark work does not replace async or authorization contracts"
+    },
+    {
+      "state": "permission-denied",
+      "component_id": "ui.no-permission",
+      "reason": "Backend remains authoritative; route/session checks only improve UX"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "publish|receipt|manage",
+      "component_id": "ui.button",
+      "confirmation": "existing-contract",
+      "permission": "server/session-authorized existing contract",
+      "reason": "Existing backend authorization retained"
+    },
+    {
+      "action": "monitor",
+      "component_id": "ui.list",
+      "confirmation": "existing-contract",
+      "permission": "server/session-authorized existing contract",
+      "reason": "Tech route remains read-only monitor"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Authenticated PortalShell owns the only main landmark and primary h1; page content is a section below the route title",
+    "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
+    "limited_actions": []
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P005NoticePage-LANDMARK-SCOPE",
+      "classification": "deferred-existing-debt",
+      "status": "not-expanded",
+      "reason": "P005 componentization remains future debt; P10-COMP-02 changes only landmarks/title."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "reuse-only",
+  "registry_updates": [],
+  "tests": [
+    "exactly one rendered main under authenticated shell",
+    "exactly one accessible h1 sourced from route metadata",
+    "desktop and mobile route title semantics",
+    "existing permission/action/data-scope behavior remains unchanged"
+  ],
+  "updated_at": "2026-08-13T00:00:00+08:00"
+}

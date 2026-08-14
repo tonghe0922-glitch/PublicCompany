@@ -5,6 +5,7 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import type { NavigationSourceEntry } from './navigation-source'
+import { PORTAL_IA_NAVIGATION } from './navigation-source'
 import { projectActiveNavigation, projectPortalTaxonomy, splitMobileNavigation } from './navigation-projection'
 import PortalNavigation from './PortalNavigation.vue'
 
@@ -29,6 +30,34 @@ function entry(overrides: Partial<NavigationSourceEntry> = {}): NavigationSource
 }
 
 describe('PHASE-08 navigation projection', () => {
+  it('exposes the implemented P001-P005 menu entries for the three demo permission sets', () => {
+    const implementedRoutePaths = new Set([
+      '/employee/13/04/04', '/employee/13/04/06', '/employee/03/07/04', '/employee/03/07/05',
+      '/employee/03/03/01', '/employee/03/07/01', '/employee/13/01/05',
+      '/center/02/01/01', '/center/03/02/01', '/center/13/01/05',
+      '/tech/03/01/01', '/tech/03/01/04', '/tech/04/01/01', '/tech/05/03/01',
+    ])
+    const employee = projectActiveNavigation(PORTAL_IA_NAVIGATION, {
+      portalCode: 'employee', implementedRoutePaths, mobile: false,
+      permissions: new Set(['p002.request.submit', 'p003.change.submit', 'p004.request.submit', 'p005.notice.read']),
+    })
+    const center = projectActiveNavigation(PORTAL_IA_NAVIGATION, {
+      portalCode: 'center', implementedRoutePaths, mobile: false,
+      permissions: new Set(['p003.change.review', 'p004.request.act', 'p005.notice.publish']),
+    })
+    const tech = projectActiveNavigation(PORTAL_IA_NAVIGATION, {
+      portalCode: 'tech', implementedRoutePaths, mobile: false,
+      permissions: new Set(['p001.session.monitor', 'p002.request.execute', 'p003.change.apply', 'p005.notice.monitor']),
+    })
+
+    expect(employee.map((item) => item.label)).toEqual(expect.arrayContaining([
+      '账号安全 · MFA', '临时权限申请', '个人资料变更', '通用申请与审批', '制度通知与执行回执',
+    ]))
+    expect(employee).toHaveLength(7)
+    expect(center).toHaveLength(3)
+    expect(tech).toHaveLength(4)
+  })
+
   it('never activates a planned business page even when the suggested route exists', () => {
     const items = projectActiveNavigation([entry()], {
       portalCode: 'employee', permissions: new Set(), implementedRoutePaths: new Set(['/records']), mobile: false,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { ApiClientError } from '../api'
 import { SgjPortalShell, SgjStatusChip } from '../design-system'
@@ -15,6 +15,9 @@ const route = useRoute()
 const router = useRouter()
 const sessionNotice = ref('')
 const sessionRequestId = ref<string | undefined>()
+const pageTitle = computed(() => typeof route.meta.title === 'string' && route.meta.title.trim()
+  ? route.meta.title
+  : props.portal.homeTitle)
 
 function showSessionFailure(cause: unknown): void {
   sessionNotice.value = '会话操作未完成，请检查网络或权限后重试。'
@@ -55,7 +58,7 @@ watch(
 </script>
 
 <template>
-  <SgjPortalShell :portal-label="portal.title" :page-title="portal.homeTitle">
+  <SgjPortalShell :portal-label="portal.title" :page-title="pageTitle">
     <template #header>
       <PortalSessionHeader
         v-if="session.session"

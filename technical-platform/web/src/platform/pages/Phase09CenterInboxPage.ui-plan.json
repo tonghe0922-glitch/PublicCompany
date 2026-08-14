@@ -1,0 +1,93 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "Phase09CenterInboxPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.vue",
+  "portal_codes": [
+    "center"
+  ],
+  "route_paths": [
+    "/center/02/01/01"
+  ],
+  "process_codes": [
+    "P001",
+    "P002",
+    "P003",
+    "P004"
+  ],
+  "page_type": "dashboard",
+  "page_template": "ui.template.dashboard-page",
+  "source_facts": {
+    "permissions": [
+      "p001.session.monitor",
+      "p002.request.read",
+      "p002.request.review",
+      "p003.change.read",
+      "p003.change.review",
+      "p004.request.read",
+      "p004.request.act"
+    ],
+    "data_scope": "CENTER projections provided by nested process pages",
+    "sensitive_level": "P1-内部",
+    "states": [
+      "ready",
+      "permission-denied",
+      "empty"
+    ],
+    "actions": [
+      "navigate/filter authorized process panels"
+    ]
+  },
+  "field_component_map": [
+    {
+      "field": "authorized-process-panels",
+      "component_id": "ui.card",
+      "reason": "Composes existing P001-P004 pages without duplicating business data",
+      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "ready|permission-denied|empty",
+      "component_id": "ui.error",
+      "reason": "Reuse the current public feedback/state projection; landmark work does not replace async or authorization contracts"
+    },
+    {
+      "state": "permission-denied",
+      "component_id": "ui.no-permission",
+      "reason": "Backend remains authoritative; route/session checks only improve UX"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "view authorized process panel",
+      "component_id": "ui.layout.portal-shell",
+      "confirmation": "existing-contract",
+      "permission": "server/session-authorized existing contract",
+      "reason": "Visibility is session-assisted UX; backend remains authoritative"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Authenticated PortalShell owns the only main landmark and primary h1; page content is a section below the route title",
+    "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
+    "limited_actions": []
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-Phase09CenterInboxPage-LANDMARK-SCOPE",
+      "classification": "deferred-existing-debt",
+      "status": "not-expanded",
+      "reason": "Nested full-page landmarks are removed in this task; no process behavior is changed."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "reuse-only",
+  "registry_updates": [],
+  "tests": [
+    "exactly one rendered main under authenticated shell",
+    "exactly one accessible h1 sourced from route metadata",
+    "desktop and mobile route title semantics",
+    "existing permission/action/data-scope behavior remains unchanged"
+  ],
+  "updated_at": "2026-08-13T00:00:00+08:00"
+}

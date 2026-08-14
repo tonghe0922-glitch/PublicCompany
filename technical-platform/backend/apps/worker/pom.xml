@@ -15,6 +15,7 @@
     <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><scope>runtime</scope></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-core</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-workflow</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-learning</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-notification</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-integration</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-audit</artifactId><version>${project.version}</version></dependency>

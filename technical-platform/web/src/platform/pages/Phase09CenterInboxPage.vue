@@ -16,10 +16,10 @@ const showP004 = computed(() => session.can('p004.request.read') || session.can(
 </script>
 
 <template>
-  <main class="phase09-center-inbox" data-testid="phase09-center-inbox">
+  <section class="phase09-center-inbox" data-testid="phase09-center-inbox">
     <header>
       <p class="phase09-kicker">PHASE-09 · 共享审批/监督入口</p>
-      <h1>中心管理端审批与监督</h1>
+      <h2>中心管理端审批与监督</h2>
       <p>同一路由按当前服务端权限投影对应业务能力；隐藏区块不是授权边界，所有 API 仍由后端重新鉴权。</p>
     </header>
     <P001IdentityPage v-if="showP001" :portal="props.portal" />
@@ -29,7 +29,7 @@ const showP004 = computed(() => session.can('p004.request.read') || session.can(
     <section v-if="!showP001 && !showP002 && !showP003 && !showP004" class="phase09-empty">
       当前身份没有此共享入口下已施工流程的读取或处理权限。
     </section>
-  </main>
+  </section>
 </template>
 
 <style scoped>

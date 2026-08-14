@@ -21,7 +21,12 @@
     <module>technical-platform/backend/modules/iam</module>
     <module>technical-platform/backend/modules/org</module>
     <module>technical-platform/backend/modules/workflow</module>
+    <module>technical-platform/backend/modules/collaboration</module>
+    <module>technical-platform/backend/modules/attendance</module>
+    <module>technical-platform/backend/modules/learning</module>
+    <module>technical-platform/backend/modules/performance</module>
     <module>technical-platform/backend/modules/hr</module>
+    <module>technical-platform/backend/modules/reward</module>
     <module>technical-platform/backend/modules/document</module>
     <module>technical-platform/backend/modules/notification</module>
     <module>technical-platform/backend/modules/integration</module>

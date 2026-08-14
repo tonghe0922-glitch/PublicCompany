@@ -4,11 +4,15 @@
 
 本文件是分阶段施工控制规则，不替代根 `AGENT.md`、根 `DESIGN.md` 或 Knowledge Base。发生冲突时按根 `AGENT.md` 的冲突优先级执行。
 
-## 2. 固定施工协议
+### 当前本地执行覆盖（2026-08-12）
 
-- Repository：`louthison/NEWSTART`
-- Default branch：`main`
-- Construction branch：`agent/full-build`
+最新用户指令将唯一施工与审查目录固定为 `I:\PublicCompany_source_codex`。该目录当前不存在 `.git`，因此本文件后续出现的旧仓库、分支、commit、push、PR 或远端 CI 要求只保留为历史背景，不能作为当前阶段验收事实，也不得为满足旧文字而 clone/pull/push。当前阶段以本地磁盘代码、Knowledge Base、可复现命令、`.runlogs` 与独立审查结论为准；阶段顺序、Definition of Done、安全和质量门禁仍然有效。
+
+## 2. 历史固定施工协议（被当前本地执行覆盖）
+
+- Historical repository：`louthison/NEWSTART`
+- Historical default branch：`main`
+- Historical construction branch：`agent/full-build`
 - PHASE-00 至 PHASE-35 默认持续在同一施工分支推进。
 - PHASE-35 全量验收通过前，不自动合并到 `main`。
 - 禁止 force push、重写历史隐藏失败或覆盖无关变更。

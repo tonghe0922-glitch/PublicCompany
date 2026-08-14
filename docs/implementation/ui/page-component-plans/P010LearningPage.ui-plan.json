@@ -1,0 +1,183 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P010LearningPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+  "portal_codes": [
+    "employee",
+    "center",
+    "tech"
+  ],
+  "route_paths": [
+    "/employee/07/01/01",
+    "/employee/07/04/02",
+    "/employee/07/05/01",
+    "/employee/07/06/01",
+    "/center/06/03/07",
+    "/center/10/08/03",
+    "/center/10/08/07",
+    "/tech/03/03/09"
+  ],
+  "process_codes": [
+    "P010"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": [
+      "p010.learning.read",
+      "p010.learning.complete",
+      "p010.learning.exam",
+      "p010.learning.manage",
+      "p010.learning.certify",
+      "p010.learning.link",
+      "p010.learning.monitor"
+    ],
+    "data_scope": "SELF for employee; CENTER for management; tech receives metadata-only server projection",
+    "sensitive_level": "P2-个人 for score, practical result and qualification facts; masked by default and server filtered",
+    "states": [
+      "S01-S10",
+      "idle",
+      "loading",
+      "success",
+      "empty",
+      "partial",
+      "error",
+      "cancelled",
+      "permission-denied",
+      "conflict"
+    ],
+    "actions": [
+      "PUBLISH",
+      "ASSIGN",
+      "COMPLETE_LEARNING",
+      "SUBMIT_EXAM",
+      "RECORD_PRACTICAL",
+      "CERTIFY",
+      "ACTIVATE",
+      "LINK_PERMISSION",
+      "SCHEDULE_RECERTIFICATION",
+      "ARCHIVE"
+    ],
+    "service_contract": "GET/POST /api/v1/processes/P010/learning-assignments, GET /learning-assignments/{id}, POST /learning-assignments/{id}/actions/{actionCode}; URL and method remain process-service-owned",
+    "directory_contract": "Create requires ownerEmployeeId, but no authoritative scoped person directory search contract exists",
+    "reveal_contract": "No authoritative frontend session wrapper proves per-view step-up for score, practical or qualification facts"
+  },
+  "field_component_map": [
+    {
+      "field": "subject|courseVersionId|contentVersion|courseTeamName|periodOrCourseNo",
+      "component_id": "ui.input",
+      "reason": "Registered text controls preserve typed course and assignment facts",
+      "editable_when": "The relevant action material is available; create remains blocked until owner directory authority exists"
+    },
+    {
+      "field": "reason|learnerProfile|resultSummary|evidence",
+      "component_id": "ui.textarea",
+      "reason": "Registered multiline controls preserve typed reason and evidence summaries",
+      "editable_when": "The corresponding node action is an UX candidate"
+    },
+    {
+      "field": "businessDate|qualificationEffectiveDate|qualificationExpireDate|recertificationDate",
+      "component_id": "ui.datetime",
+      "reason": "Registered date controls preserve explicit assignment and qualification facts",
+      "editable_when": "The corresponding typed action exposes the field"
+    },
+    {
+      "field": "score1000|practicalResult|qualificationEffectiveDate|qualificationExpireDate",
+      "component_id": "ui.masked-value",
+      "reason": "Score, practical and qualification projections are masked by default and raw values never enter DOM text or attributes",
+      "editable_when": "never; action inputs remain separate typed fields and backend controls returned visibility"
+    },
+    {
+      "field": "learning-records",
+      "component_id": "platform.data-table",
+      "reason": "Server-sourced assignments use one responsive record truth",
+      "editable_when": "read or monitor projection is allowed"
+    },
+    {
+      "field": "businessNo|status|currentNodeCode|versionNo",
+      "component_id": "platform.process-record-meta",
+      "reason": "Business number, workflow state and version remain server-sourced",
+      "editable_when": "never"
+    },
+    {
+      "field": "learning-events",
+      "component_id": "platform.process-timeline",
+      "reason": "Server event order is projected without exposing evidence values",
+      "editable_when": "never"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "Assignment resource, create and action state remain independent typed AsyncState projections"
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "Caller/backend denial is projected for UX only; backend is final"
+    },
+    {
+      "state": "409|conflict",
+      "component_id": "platform.version-conflict-panel",
+      "reason": "Stale expectedVersion is fail-closed and refreshed explicitly"
+    },
+    {
+      "state": "timeout|error|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable typed failure projection never exposes detail, stack, score or evidence values"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "typed P010 existing-assignment action UX candidate",
+      "component_id": "platform.process-action-panel",
+      "confirmation": "contract-defined risk projection",
+      "permission": "typed node plus caller permission narrows visibility; backend 403/409 is final",
+      "reason": "Current responses do not provide server allowedActions; the client does not fabricate authority"
+    },
+    {
+      "action": "certify, activate, link permission, schedule recertification or archive candidate",
+      "component_id": "platform.high-risk-confirm-dialog",
+      "confirmation": "caller-supplied authoritative step-up result and reason only when a contract exists",
+      "permission": "backend re-authorizes every command",
+      "reason": "The dialog never captures credentials and cannot reveal protected learning facts"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Blocked create explanation, server assignment table, selected detail, timeline and action panel remain separate regions below the route h1",
+    "mobile": "The same selected assignment and masked facts project as readable cards with identical version and action state",
+    "limited_actions": [
+      "ownerEmployeeId create is visibly blocked; no UUID input, static option, submit emission or create request exists",
+      "score, practical and qualification reveal remain unavailable without an authoritative session-level step-up contract",
+      "existing server-created assignments remain readable and actionable under backend authorization"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P010-OWNER-DIRECTORY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "ownerEmployeeId is required by the create contract and requires an authoritative directory search API with pagination, data-scope enforcement, and a minimal active-employee projection. No such contract exists. Create is visibly blocked, emits no submit event, never calls the service, and never uses an empty UUID, manually typed UUID, static option, or cached local truth."
+    },
+    {
+      "id": "UI-GAP-P010-SENSITIVE-REVEAL-AUTHORITY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "The frontend has no authoritative session-level reveal contract for score, practical result or qualification facts. These values remain masked, no reveal control is exported, and no local permission, token, cached flag, or fabricated stepUpSatisfied value can reveal them."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": [
+    "blocked ownerEmployeeId create exposes no UUID input, emits no submit and makes zero create requests",
+    "existing server-created assignments can complete the typed lifecycle with caller-owned idempotency and expectedVersion",
+    "score, practical and qualification raw values are absent from text, HTML and attributes in every portal and viewport",
+    "backend 403 and 409 remain final even when node and caller permission form an UX candidate",
+    "timeout retry keeps the same action-lifecycle key while deterministic rejection never blindly replays",
+    "refresh and last-request-wins preserve server businessNo, status, node, version and event ordering"
+  ],
+  "updated_at": "2026-08-13T23:10:00+08:00"
+}

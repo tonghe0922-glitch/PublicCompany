@@ -1,0 +1,204 @@
+export type RoutePermissionCode = typeof ROUTE_PERMISSIONS[keyof typeof ROUTE_PERMISSIONS]
+export type RoutePermission = RoutePermissionCode
+
+export type RouteProcessCode =
+  | 'P001' | 'P002' | 'P003' | 'P004' | 'P005' | 'P006' | 'P007' | 'P008'
+  | 'P009' | 'P010' | 'P011' | 'P012' | 'P013' | 'P014' | 'P015' | 'P016'
+  | 'PHASE-09' | 'PHASE-10' | 'PORTAL'
+  | 'SESSION' | 'HOME' | 'ACCESS' | 'NOT_FOUND'
+
+export const ROUTE_PERMISSIONS = {
+  P001_SESSION_MONITOR: 'p001.session.monitor',
+  P002_REQUEST_EXECUTE: 'p002.request.execute',
+  P002_REQUEST_READ: 'p002.request.read',
+  P002_REQUEST_REVIEW: 'p002.request.review',
+  P002_REQUEST_REVOKE: 'p002.request.revoke',
+  P002_REQUEST_SUBMIT: 'p002.request.submit',
+  P003_CHANGE_APPLY: 'p003.change.apply',
+  P003_CHANGE_READ: 'p003.change.read',
+  P003_CHANGE_REVIEW: 'p003.change.review',
+  P003_CHANGE_SUBMIT: 'p003.change.submit',
+  P004_REQUEST_ACT: 'p004.request.act',
+  P004_REQUEST_READ: 'p004.request.read',
+  P004_REQUEST_SUBMIT: 'p004.request.submit',
+  P005_NOTICE_MANAGE: 'p005.notice.manage',
+  P005_NOTICE_MONITOR: 'p005.notice.monitor',
+  P005_NOTICE_PUBLISH: 'p005.notice.publish',
+  P005_NOTICE_READ: 'p005.notice.read',
+  P005_NOTICE_RECEIPT: 'p005.notice.receipt',
+  P006_MEETING_ACCEPT: 'p006.meeting.accept',
+  P006_MEETING_ACTION: 'p006.meeting.action',
+  P006_MEETING_CREATE: 'p006.meeting.create',
+  P006_MEETING_MANAGE: 'p006.meeting.manage',
+  P006_MEETING_MONITOR: 'p006.meeting.monitor',
+  P006_MEETING_READ: 'p006.meeting.read',
+  P007_SCHEDULE_CHANGE: 'p007.schedule.change',
+  P007_SCHEDULE_MANAGE: 'p007.schedule.manage',
+  P007_SCHEDULE_MONITOR: 'p007.schedule.monitor',
+  P007_SCHEDULE_READ: 'p007.schedule.read',
+  P007_SCHEDULE_REVIEW: 'p007.schedule.review',
+  P008_LEAVE_MANAGE: 'p008.leave.manage',
+  P008_LEAVE_MONITOR: 'p008.leave.monitor',
+  P008_LEAVE_READ: 'p008.leave.read',
+  P008_LEAVE_REVIEW: 'p008.leave.review',
+  P008_LEAVE_SUBMIT: 'p008.leave.submit',
+  P009_OVERTIME_HR: 'p009.overtime.hr',
+  P009_OVERTIME_MANAGE: 'p009.overtime.manage',
+  P009_OVERTIME_MONITOR: 'p009.overtime.monitor',
+  P009_OVERTIME_READ: 'p009.overtime.read',
+  P009_OVERTIME_REVIEW: 'p009.overtime.review',
+  P009_OVERTIME_SUBMIT: 'p009.overtime.submit',
+  P010_LEARNING_CERTIFY: 'p010.learning.certify',
+  P010_LEARNING_COMPLETE: 'p010.learning.complete',
+  P010_LEARNING_EXAM: 'p010.learning.exam',
+  P010_LEARNING_LINK: 'p010.learning.link',
+  P010_LEARNING_MANAGE: 'p010.learning.manage',
+  P010_LEARNING_MONITOR: 'p010.learning.monitor',
+  P010_LEARNING_READ: 'p010.learning.read',
+  P011_PERFORMANCE_APPEAL: 'p011.performance.appeal',
+  P011_PERFORMANCE_CALIBRATE: 'p011.performance.calibrate',
+  P011_PERFORMANCE_EVALUATE: 'p011.performance.evaluate',
+  P011_PERFORMANCE_MANAGE: 'p011.performance.manage',
+  P011_PERFORMANCE_MONITOR: 'p011.performance.monitor',
+  P011_PERFORMANCE_READ: 'p011.performance.read',
+  P012_PROMOTION_APPOINT: 'p012.promotion.appoint',
+  P012_PROMOTION_APPROVE: 'p012.promotion.approve',
+  P012_PROMOTION_MANAGE: 'p012.promotion.manage',
+  P012_PROMOTION_MONITOR: 'p012.promotion.monitor',
+  P012_PROMOTION_READ: 'p012.promotion.read',
+  P012_PROMOTION_REVIEW: 'p012.promotion.review',
+  P013_REWARD_APPROVE: 'p013.reward.approve',
+  P013_REWARD_EXECUTE: 'p013.reward.execute',
+  P013_REWARD_MANAGE: 'p013.reward.manage',
+  P013_REWARD_MONITOR: 'p013.reward.monitor',
+  P013_REWARD_READ: 'p013.reward.read',
+  P013_REWARD_REVIEW: 'p013.reward.review',
+  P014_DISCIPLINE_APPEAL: 'p014.discipline.appeal',
+  P014_DISCIPLINE_DECIDE: 'p014.discipline.decide',
+  P014_DISCIPLINE_INVESTIGATE: 'p014.discipline.investigate',
+  P014_DISCIPLINE_MANAGE: 'p014.discipline.manage',
+  P014_DISCIPLINE_MONITOR: 'p014.discipline.monitor',
+  P014_DISCIPLINE_READ: 'p014.discipline.read',
+  P015_POINTS_ADJUST: 'p015.points.adjust',
+  P015_POINTS_MANAGE: 'p015.points.manage',
+  P015_POINTS_MONITOR: 'p015.points.monitor',
+  P015_POINTS_READ: 'p015.points.read',
+  P015_POINTS_REVIEW: 'p015.points.review',
+  P016_WELFARE_APPROVE: 'p016.welfare.approve',
+  P016_WELFARE_EXECUTE: 'p016.welfare.execute',
+  P016_WELFARE_MANAGE: 'p016.welfare.manage',
+  P016_WELFARE_MONITOR: 'p016.welfare.monitor',
+  P016_WELFARE_READ: 'p016.welfare.read',
+  P016_WELFARE_RECONCILE: 'p016.welfare.reconcile',
+} as const
+
+export interface RouteGuardMeta {
+  readonly permission?: RoutePermission
+  readonly permissionsAny?: readonly RoutePermission[]
+}
+
+const ROUTE_GUARDS: Readonly<Record<string, RouteGuardMeta>> = {
+  'p002-temporary-permission-request': { permissionsAny: [ROUTE_PERMISSIONS.P002_REQUEST_SUBMIT, ROUTE_PERMISSIONS.P002_REQUEST_READ] },
+  'p002-project-permission-request': { permissionsAny: [ROUTE_PERMISSIONS.P002_REQUEST_SUBMIT, ROUTE_PERMISSIONS.P002_REQUEST_READ] },
+  'p003-profile-change': { permissionsAny: [ROUTE_PERMISSIONS.P003_CHANGE_SUBMIT, ROUTE_PERMISSIONS.P003_CHANGE_READ] },
+  'p004-generic-request': { permissionsAny: [ROUTE_PERMISSIONS.P004_REQUEST_SUBMIT, ROUTE_PERMISSIONS.P004_REQUEST_READ] },
+  'p005-notice-receipt': { permissionsAny: [ROUTE_PERMISSIONS.P005_NOTICE_READ, ROUTE_PERMISSIONS.P005_NOTICE_RECEIPT] },
+  'p006-meeting-detail': { permissionsAny: [ROUTE_PERMISSIONS.P006_MEETING_CREATE, ROUTE_PERMISSIONS.P006_MEETING_READ, ROUTE_PERMISSIONS.P006_MEETING_ACTION] },
+  'p006-action-items': { permissionsAny: [ROUTE_PERMISSIONS.P006_MEETING_READ, ROUTE_PERMISSIONS.P006_MEETING_ACTION] },
+  'p007-my-schedule': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_CHANGE] },
+  'p007-shift-change': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_CHANGE] },
+  'p007-substitution': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_CHANGE] },
+  'p008-leave-request': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_SUBMIT, ROUTE_PERMISSIONS.P008_LEAVE_READ] },
+  'p008-leave-records': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_SUBMIT, ROUTE_PERMISSIONS.P008_LEAVE_READ] },
+  'p008-leave-change': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_SUBMIT, ROUTE_PERMISSIONS.P008_LEAVE_READ] },
+  'p009-overtime-request': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_SUBMIT, ROUTE_PERMISSIONS.P009_OVERTIME_READ] },
+  'p009-time-off-request': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_SUBMIT, ROUTE_PERMISSIONS.P009_OVERTIME_READ] },
+  'p009-overtime-records': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_SUBMIT, ROUTE_PERMISSIONS.P009_OVERTIME_READ] },
+  'p010-my-learning': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_COMPLETE] },
+  'p010-online-exam': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_EXAM] },
+  'p010-practical-task': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_COMPLETE] },
+  'p010-current-qualifications': { permission: ROUTE_PERMISSIONS.P010_LEARNING_READ },
+  'p011-performance-cycle': { permissionsAny: [ROUTE_PERMISSIONS.P011_PERFORMANCE_READ, ROUTE_PERMISSIONS.P011_PERFORMANCE_EVALUATE, ROUTE_PERMISSIONS.P011_PERFORMANCE_APPEAL] },
+  'p011-performance-feedback': { permission: ROUTE_PERMISSIONS.P011_PERFORMANCE_READ },
+  'p012-promotion-application': { permission: ROUTE_PERMISSIONS.P012_PROMOTION_READ },
+  'p012-appointment-confirmation': { permission: ROUTE_PERMISSIONS.P012_PROMOTION_READ },
+  'p013-my-rewards': { permission: ROUTE_PERMISSIONS.P013_REWARD_READ },
+  'p014-my-discipline-case': { permissionsAny: [ROUTE_PERMISSIONS.P014_DISCIPLINE_READ, ROUTE_PERMISSIONS.P014_DISCIPLINE_APPEAL] },
+  'p015-my-growth-points': { permissionsAny: [ROUTE_PERMISSIONS.P015_POINTS_READ, ROUTE_PERMISSIONS.P015_POINTS_ADJUST] },
+  'p015-my-honor-points': { permissionsAny: [ROUTE_PERMISSIONS.P015_POINTS_READ, ROUTE_PERMISSIONS.P015_POINTS_ADJUST] },
+  'p016-marriage-birth-care': { permission: ROUTE_PERMISSIONS.P016_WELFARE_READ },
+  'p016-hardship-care': { permission: ROUTE_PERMISSIONS.P016_WELFARE_READ },
+  'p003-profile-roster': { permissionsAny: [ROUTE_PERMISSIONS.P003_CHANGE_READ, ROUTE_PERMISSIONS.P003_CHANGE_REVIEW] },
+  'p005-notice-publish': { permissionsAny: [ROUTE_PERMISSIONS.P005_NOTICE_PUBLISH, ROUTE_PERMISSIONS.P005_NOTICE_MANAGE] },
+  'phase09-center-inbox': { permissionsAny: [ROUTE_PERMISSIONS.P001_SESSION_MONITOR, ROUTE_PERMISSIONS.P002_REQUEST_READ, ROUTE_PERMISSIONS.P002_REQUEST_REVIEW, ROUTE_PERMISSIONS.P003_CHANGE_READ, ROUTE_PERMISSIONS.P003_CHANGE_REVIEW, ROUTE_PERMISSIONS.P004_REQUEST_READ, ROUTE_PERMISSIONS.P004_REQUEST_ACT] },
+  'p006-meeting-management': { permissionsAny: [ROUTE_PERMISSIONS.P006_MEETING_READ, ROUTE_PERMISSIONS.P006_MEETING_MANAGE, ROUTE_PERMISSIONS.P006_MEETING_ACCEPT] },
+  'p006-action-ledger': { permissionsAny: [ROUTE_PERMISSIONS.P006_MEETING_READ, ROUTE_PERMISSIONS.P006_MEETING_MANAGE, ROUTE_PERMISSIONS.P006_MEETING_ACCEPT] },
+  'p007-schedule-plan': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_MANAGE] },
+  'p007-shift-review': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_REVIEW] },
+  'p007-qualification-check': { permissionsAny: [ROUTE_PERMISSIONS.P007_SCHEDULE_READ, ROUTE_PERMISSIONS.P007_SCHEDULE_MANAGE] },
+  'p008-leave-management': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_READ, ROUTE_PERMISSIONS.P008_LEAVE_MANAGE] },
+  'p008-leave-review': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_READ, ROUTE_PERMISSIONS.P008_LEAVE_REVIEW] },
+  'p008-attendance-close': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_READ, ROUTE_PERMISSIONS.P008_LEAVE_MANAGE] },
+  'p009-overtime-management': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_READ, ROUTE_PERMISSIONS.P009_OVERTIME_MANAGE, ROUTE_PERMISSIONS.P009_OVERTIME_REVIEW] },
+  'p009-overtime-hr-review': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_READ, ROUTE_PERMISSIONS.P009_OVERTIME_HR] },
+  'p009-overtime-payroll-basis': { permissionsAny: [ROUTE_PERMISSIONS.P009_OVERTIME_READ, ROUTE_PERMISSIONS.P009_OVERTIME_HR] },
+  'p010-learning-management': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_MANAGE, ROUTE_PERMISSIONS.P010_LEARNING_CERTIFY] },
+  'p010-practical-certification': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_CERTIFY] },
+  'p010-risk-permission-link': { permissionsAny: [ROUTE_PERMISSIONS.P010_LEARNING_READ, ROUTE_PERMISSIONS.P010_LEARNING_LINK] },
+  'p011-self-evaluation': { permissionsAny: [ROUTE_PERMISSIONS.P011_PERFORMANCE_READ, ROUTE_PERMISSIONS.P011_PERFORMANCE_EVALUATE] },
+  'p011-score-calculation': { permissionsAny: [ROUTE_PERMISSIONS.P011_PERFORMANCE_MANAGE, ROUTE_PERMISSIONS.P011_PERFORMANCE_EVALUATE] },
+  'p011-calibration': { permission: ROUTE_PERMISSIONS.P011_PERFORMANCE_CALIBRATE },
+  'p012-promotion-review': { permissionsAny: [ROUTE_PERMISSIONS.P012_PROMOTION_MANAGE, ROUTE_PERMISSIONS.P012_PROMOTION_REVIEW, ROUTE_PERMISSIONS.P012_PROMOTION_APPROVE] },
+  'p012-promotion-appointment': { permission: ROUTE_PERMISSIONS.P012_PROMOTION_APPOINT },
+  'p013-reward-review': { permissionsAny: [ROUTE_PERMISSIONS.P013_REWARD_READ, ROUTE_PERMISSIONS.P013_REWARD_MANAGE, ROUTE_PERMISSIONS.P013_REWARD_REVIEW, ROUTE_PERMISSIONS.P013_REWARD_APPROVE, ROUTE_PERMISSIONS.P013_REWARD_EXECUTE] },
+  'p013-reward-execution': { permissionsAny: [ROUTE_PERMISSIONS.P013_REWARD_READ, ROUTE_PERMISSIONS.P013_REWARD_EXECUTE] },
+  'p014-discipline-review': { permissionsAny: [ROUTE_PERMISSIONS.P014_DISCIPLINE_READ, ROUTE_PERMISSIONS.P014_DISCIPLINE_MANAGE, ROUTE_PERMISSIONS.P014_DISCIPLINE_INVESTIGATE, ROUTE_PERMISSIONS.P014_DISCIPLINE_DECIDE, ROUTE_PERMISSIONS.P014_DISCIPLINE_APPEAL] },
+  'p014-discipline-supervision': { permissionsAny: [ROUTE_PERMISSIONS.P014_DISCIPLINE_READ, ROUTE_PERMISSIONS.P014_DISCIPLINE_MANAGE, ROUTE_PERMISSIONS.P014_DISCIPLINE_INVESTIGATE, ROUTE_PERMISSIONS.P014_DISCIPLINE_DECIDE, ROUTE_PERMISSIONS.P014_DISCIPLINE_APPEAL, ROUTE_PERMISSIONS.P016_WELFARE_READ, ROUTE_PERMISSIONS.P016_WELFARE_MANAGE, ROUTE_PERMISSIONS.P016_WELFARE_APPROVE, ROUTE_PERMISSIONS.P016_WELFARE_EXECUTE, ROUTE_PERMISSIONS.P016_WELFARE_RECONCILE] },
+  'p015-point-source-management': { permissionsAny: [ROUTE_PERMISSIONS.P015_POINTS_READ, ROUTE_PERMISSIONS.P015_POINTS_MANAGE, ROUTE_PERMISSIONS.P015_POINTS_REVIEW, ROUTE_PERMISSIONS.P015_POINTS_ADJUST] },
+  'p015-point-adjustment-review': { permissionsAny: [ROUTE_PERMISSIONS.P015_POINTS_READ, ROUTE_PERMISSIONS.P015_POINTS_REVIEW, ROUTE_PERMISSIONS.P015_POINTS_ADJUST] },
+  'p016-external-execution-receipt': { permissionsAny: [ROUTE_PERMISSIONS.P016_WELFARE_READ, ROUTE_PERMISSIONS.P016_WELFARE_MANAGE, ROUTE_PERMISSIONS.P016_WELFARE_APPROVE, ROUTE_PERMISSIONS.P016_WELFARE_EXECUTE, ROUTE_PERMISSIONS.P016_WELFARE_RECONCILE] },
+  'p001-security-monitor': { permission: ROUTE_PERMISSIONS.P001_SESSION_MONITOR },
+  'p002-permission-execution': { permissionsAny: [ROUTE_PERMISSIONS.P002_REQUEST_READ, ROUTE_PERMISSIONS.P002_REQUEST_EXECUTE, ROUTE_PERMISSIONS.P002_REQUEST_REVOKE] },
+  'p003-profile-sync-monitor': { permissionsAny: [ROUTE_PERMISSIONS.P003_CHANGE_READ, ROUTE_PERMISSIONS.P003_CHANGE_APPLY] },
+  'p004-workflow-instance-monitor': { permissionsAny: [ROUTE_PERMISSIONS.P004_REQUEST_READ, ROUTE_PERMISSIONS.P005_NOTICE_MONITOR, ROUTE_PERMISSIONS.P006_MEETING_MONITOR, ROUTE_PERMISSIONS.P007_SCHEDULE_MONITOR, ROUTE_PERMISSIONS.P008_LEAVE_MONITOR, ROUTE_PERMISSIONS.P010_LEARNING_MONITOR, ROUTE_PERMISSIONS.P011_PERFORMANCE_MONITOR, ROUTE_PERMISSIONS.P012_PROMOTION_MONITOR, ROUTE_PERMISSIONS.P013_REWARD_MONITOR, ROUTE_PERMISSIONS.P014_DISCIPLINE_MONITOR, ROUTE_PERMISSIONS.P016_WELFARE_MONITOR] },
+  'p009-overtime-monitor': { permission: ROUTE_PERMISSIONS.P009_OVERTIME_MONITOR },
+  'phase10-attendance-monitor': { permissionsAny: [ROUTE_PERMISSIONS.P008_LEAVE_MONITOR, ROUTE_PERMISSIONS.P009_OVERTIME_MONITOR] },
+  'p010-role-action-audit': { permission: ROUTE_PERMISSIONS.P010_LEARNING_MONITOR },
+  'p011-performance-rules': { permission: ROUTE_PERMISSIONS.P011_PERFORMANCE_MONITOR },
+  'p013-reward-monitor': { permission: ROUTE_PERMISSIONS.P013_REWARD_MONITOR },
+  'p015-point-rule-monitor': { permissionsAny: [ROUTE_PERMISSIONS.P015_POINTS_MANAGE, ROUTE_PERMISSIONS.P015_POINTS_MONITOR] },
+}
+
+export function guardMetaForRouteName(routeName: string): RouteGuardMeta {
+  return ROUTE_GUARDS[routeName] ?? {}
+}
+
+export const CORE_ROUTE_META = {
+  login: { processCode: 'SESSION', dataScope: null },
+  home: { processCode: 'HOME', dataScope: null },
+  forbidden: { processCode: 'ACCESS', dataScope: null },
+  notFound: { processCode: 'NOT_FOUND', dataScope: null },
+  authenticatedLayout: { dataScope: null },
+} as const satisfies Readonly<Record<string, {
+  readonly processCode?: RouteProcessCode
+  readonly dataScope: null
+}>>
+
+const ROUTE_PROCESS_CODES = {
+  '001': 'P001', '002': 'P002', '003': 'P003', '004': 'P004',
+  '005': 'P005', '006': 'P006', '007': 'P007', '008': 'P008',
+  '009': 'P009', '010': 'P010', '011': 'P011', '012': 'P012',
+  '013': 'P013', '014': 'P014', '015': 'P015', '016': 'P016',
+} as const satisfies Readonly<Record<string, RouteProcessCode>>
+
+function isRouteProcessDigits(value: string): value is keyof typeof ROUTE_PROCESS_CODES {
+  return value in ROUTE_PROCESS_CODES
+}
+
+export function processCodeForRouteName(routeName: string): RouteProcessCode {
+  const digits = routeName.match(/p(\d{3})/i)?.[1]
+  if (digits && isRouteProcessDigits(digits)) return ROUTE_PROCESS_CODES[digits]
+  if (routeName.startsWith('phase09-')) return 'PHASE-09'
+  if (routeName.startsWith('phase10-')) return 'PHASE-10'
+  return 'PORTAL'
+}

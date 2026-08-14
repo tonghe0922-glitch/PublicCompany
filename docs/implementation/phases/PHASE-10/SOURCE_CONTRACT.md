@@ -35,7 +35,7 @@ PHASE-01 `process_codes` 对 P006–P010 为 0 是保留事实。正式 C0 通�
 
 ## 5. HTTP / Permission
 
-PHASE-01 没有业务 HTTP path。XLSX `04_规则与接口` 给出能力、幂等、重试、补偿、审计和角色规则，而非 REST 地址。因此工程标识冻结于 `contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md`；不得反向声称这些字符串来自业务源。
+PHASE-01 没有业务 HTTP path。XLSX `04_规则与接口` 给出能力、幂等、重试、补偿、审计和角色规则，而非 REST 地址。因此工程标识由本文件、各 P006–P010 checkpoint、V115–V119 migrations、控制器及路由共同冻结；仓库当前不存在旧说明曾引用的 `contracts/phase-10` 路径，不得虚构该路径或反向声称工程字符串来自业务源。
 
 ## 6. Shared runtime contract
 

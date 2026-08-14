@@ -1,0 +1,174 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P008LeavePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+  "portal_codes": [
+    "employee",
+    "center"
+  ],
+  "route_paths": [
+    "/employee/03/01/01",
+    "/employee/04/03/02",
+    "/employee/03/01/02",
+    "/center/04/04/01",
+    "/center/04/04/03",
+    "/center/04/04/06"
+  ],
+  "process_codes": [
+    "P008"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.form-page",
+  "source_facts": {
+    "permissions": [
+      "p008.leave.submit",
+      "p008.leave.read",
+      "p008.leave.manage",
+      "p008.leave.review"
+    ],
+    "data_scope": "SELF for employee; CENTER for management; backend remains authoritative",
+    "sensitive_level": "P1-内部; handover and quota facts are server filtered",
+    "states": [
+      "S01-S10",
+      "idle",
+      "loading",
+      "success",
+      "empty",
+      "partial",
+      "error",
+      "cancelled",
+      "permission-denied",
+      "conflict"
+    ],
+    "actions": [
+      "SUBMIT",
+      "WITHDRAW",
+      "RESERVE",
+      "RETURN",
+      "CONFIRM_HANDOVER",
+      "APPROVE",
+      "REJECT",
+      "DEDUCT",
+      "RELEASE",
+      "MARK_ATTENDANCE",
+      "START_LEAVE",
+      "EARLY_RETURN",
+      "CHANGE",
+      "ADJUST",
+      "CLOSE_DAY"
+    ],
+    "service_contract": "GET/POST /api/v1/processes/P008/leaves, GET /leaves/{id}, POST /leaves/{id}/actions/{actionCode}, GET /quota-ledger; URL and method remain process-service-owned",
+    "directory_contract": "No authoritative scoped person directory search contract exists for handoverAgentId; create remains valid with handoverAgentId=null"
+  },
+  "field_component_map": [
+    {
+      "field": "subject|quotaAccountId",
+      "component_id": "ui.input",
+      "reason": "Registered text inputs preserve typed leave and quota-account facts",
+      "editable_when": "The create contract is available and caller permission forms an UX candidate"
+    },
+    {
+      "field": "attendanceType",
+      "component_id": "ui.select",
+      "reason": "Only contract-defined attendance values are rendered",
+      "editable_when": "The employee create projection is available"
+    },
+    {
+      "field": "businessDate|actualEndAt",
+      "component_id": "ui.datetime",
+      "reason": "Registered date controls preserve explicit business and return facts",
+      "editable_when": "The typed create or return/change action exposes the field"
+    },
+    {
+      "field": "startAt|endAt",
+      "component_id": "platform.datetime-range-field",
+      "reason": "The leave interval is validated and emitted as one typed range",
+      "editable_when": "The employee create projection is available"
+    },
+    {
+      "field": "reason|actionReason|handoverItems|actualAttendanceSummary|resultSummary|evidence",
+      "component_id": "ui.textarea",
+      "reason": "Registered multiline controls preserve typed reasons and evidence summaries without backend detail",
+      "editable_when": "The corresponding create or node action is an UX candidate"
+    },
+    {
+      "field": "leave-records|quota-ledger",
+      "component_id": "platform.data-table",
+      "reason": "Server-sourced leave and quota rows use controlled responsive projections",
+      "editable_when": "read or management projection is allowed"
+    },
+    {
+      "field": "businessNo|status|currentNodeCode|versionNo",
+      "component_id": "platform.process-record-meta",
+      "reason": "Business number, workflow state and version remain server-sourced",
+      "editable_when": "never"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "Leave records, quota ledger and action state remain independent typed AsyncState projections"
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "Caller/backend denial is projected for UX only; backend is final"
+    },
+    {
+      "state": "409|conflict",
+      "component_id": "platform.version-conflict-panel",
+      "reason": "Stale expectedVersion is fail-closed and refreshed explicitly"
+    },
+    {
+      "state": "timeout|error|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable typed failure projection never exposes detail, stack or raw transport values"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "typed P008 node action UX candidate",
+      "component_id": "platform.process-action-panel",
+      "confirmation": "contract-defined risk projection",
+      "permission": "typed node plus caller permission narrows visibility; backend 403/409 is final",
+      "reason": "Current responses do not provide server allowedActions; the client does not fabricate authority"
+    },
+    {
+      "action": "reject, deduct, release, adjust or close-day candidate",
+      "component_id": "platform.high-risk-confirm-dialog",
+      "confirmation": "caller-supplied authoritative step-up result and reason only when a contract exists",
+      "permission": "backend re-authorizes every command",
+      "reason": "The dialog never captures credentials and cannot mutate workflow state"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Form, server record table and quota ledger remain separate regions below the route h1; selecting a record owns the action context",
+    "mobile": "The same server facts project as readable cards with the same selected record, version and action state",
+    "limited_actions": [
+      "handoverAgentId selection is visibly blocked; no picker, UUID input or submit payload is emitted",
+      "create remains available with handoverAgentId=null when all personnel-independent fields are valid"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P008-HANDOVER-AGENT-DIRECTORY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "handoverAgentId requires an authoritative directory search API with pagination, data-scope enforcement, and a minimal active-employee projection. No such contract exists. The optional agent entry is visibly blocked, emits no identifier, never calls a directory service, and never uses an empty UUID, manually typed UUID, static option, or cached local truth. The personnel-independent create path explicitly sends null."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": [
+    "blocked handoverAgentId entry exposes no UUID input, emits no identifier and never calls a directory service",
+    "valid personnel-independent create sends handoverAgentId null with one caller-owned idempotency key",
+    "backend 403 and 409 remain final even when node and caller permission form an UX candidate",
+    "timeout retry keeps the same action-lifecycle key while deterministic rejection never blindly replays",
+    "refresh and last-request-wins preserve server businessNo, status, node, quota and version facts",
+    "desktop table and mobile cards project the same selected server record without leaking handover or quota detail"
+  ],
+  "updated_at": "2026-08-13T23:10:00+08:00"
+}

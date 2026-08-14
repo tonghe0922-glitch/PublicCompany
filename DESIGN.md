@@ -27,6 +27,13 @@ language: zh-CN
 
 ## 0. V2.0 统一整改结论
 
+### UI 组件唯一接入（PHASE-10）
+
+- canonical 组件注册表、复用规则、页面计划 schema、原生元素例外和页面计划统一位于 `docs/implementation/ui/`。
+- 公共组件只允许从 `@sgj/ui` 或 `@sgj/platform-ui` 导入；禁止深层导入组件、模板、布局或平台共享内部路径，禁止引入第二套 UI/CSS 体系。
+- 页面施工前必须先完成组件使用计划并通过项目 UI component access Gate。
+- Design System 不得调用业务 API，也不得持有流程、权限、人员或组织业务真值。
+
 ### 0.1 本版本解决的问题
 
 旧版 `DESIGN.md` 存在以下会直接误导 AI 编码的问题：

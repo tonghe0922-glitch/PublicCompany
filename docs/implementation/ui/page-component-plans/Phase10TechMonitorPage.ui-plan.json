@@ -1,0 +1,143 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "Phase10TechMonitorPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+  "portal_codes": [
+    "tech"
+  ],
+  "route_paths": [
+    "/tech/05/03/01"
+  ],
+  "process_codes": [
+    "P004",
+    "P005",
+    "P006",
+    "P007",
+    "P010",
+    "P011",
+    "P012",
+    "P013",
+    "P014"
+  ],
+  "page_type": "dashboard",
+  "page_template": "ui.template.dashboard-page",
+  "source_facts": {
+    "route_contract": "The existing /tech/05/03/01 route name p004-workflow-instance-monitor and shared route heading/test id remain stable while the component changes from the Phase09 wrapper to Phase10TechMonitorPage.",
+    "p004_authority": {
+      "permission": "p004.request.read",
+      "endpoint": "GET /api/v1/processes/P004/monitor-projections",
+      "boundary": "P004 has no new monitor permission and no act permission; read plus backend record data-scope is the only authority."
+    },
+    "p005_authority": {
+      "permission": "p005.notice.monitor",
+      "endpoint": "GET /api/v1/processes/P005/monitor-projections",
+      "boundary": "P005 monitor plus backend record data-scope is authoritative."
+    },
+    "allowlist_fields": [
+      "recordId as a typed selection key only",
+      "businessNo",
+      "processCode",
+      "currentNodeCode",
+      "status",
+      "versionNo",
+      "updatedAt",
+      "approvedCount for P005 only"
+    ],
+    "forbidden_projection": "No subject, content, reason, resultSummary, amount, actualAmount, ownerEmployeeId, recipient, evidence, detail, stack, unknown DTO field, raw object, or JSON.stringify output reaches page text, HTML, or attributes.",
+    "other_monitor_projection_boundary": {
+      "preserved_processes": [
+        "P006",
+        "P007",
+        "P010",
+        "P011",
+        "P012",
+        "P013",
+        "P014"
+      ],
+      "rule": "The old shared page actually rendered P006, P007 and P010-P014; those permission-gated metadata projections remain present without embedding the P004/P005 business pages. P004/P005 use only MonitorPanel. P008 and P016 exist in shared-route meta but had no old-page projection, while P009 uses an independent technical monitor route; none is silently added to this page."
+    },
+    "mutation_boundary": "The technical page performs only projection GET and technical refresh. It provides no create, act, approve, accept, certify, execute, mutation URL, business action, or fabricated allowedActions authority.",
+    "layer_status": "MonitorPanel and MonitorStatusTable raise L2 inventory to 15/18 ready with 3 BLOCKED_BY_CONTRACT; this plan does not declare an L2, L4, L5, or other LAYER PASS."
+  },
+  "field_component_map": [
+    {
+      "field": "P004 and P005 typed monitoring allowlist",
+      "component_id": "platform.monitor-panel",
+      "reason": "The public composite consumes only typed allowlist DTOs and owns responsive table projection; internal MonitorStatusTable is deliberately absent from the page component map.",
+      "editable_when": "never; monitoring facts are read-only"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "P004 and P005 parallel GET resources project one typed monitoring state without global busy or business action state."
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "The caller/backend denial projection is experience-only; backend permission and record data-scope remain final."
+    },
+    {
+      "state": "timeout|transport|server|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable failures and partial resources are visible without rendering raw response detail or stack."
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "refresh typed P004/P005 monitor projections",
+      "component_id": "platform.monitor-panel",
+      "confirmation": "none; read-only technical refresh",
+      "permission": "P004 p004.request.read and P005 p005.notice.monitor are independently enforced by backend endpoints and data-scope",
+      "reason": "The only page action is refresh; no business mutation is exposed."
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "MonitorPanel renders the P004 and P005 typed allowlist as separate accessible desktop tables and keeps the old shared page's actual P006, P007 and P010-P014 metadata-monitor regions under their established permission gates.",
+    "mobile": "The same state.data facts render as mobile rows; no alternative records prop, raw DTO, or duplicated page truth exists.",
+    "limited_actions": [
+      "refresh is the only P004/P005 control",
+      "P004 read never implies act or a fabricated monitor permission",
+      "P005 monitor never implies a business mutation permission",
+      "all technical roles have zero create, approve, accept, certify, or execute controls"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-PHASE10-MONITOR-P006-P007-P010-P014-TYPED-AGGREGATION",
+      "classification": "DEFERRED_TO_EXISTING_PROCESS_CONTRACTS",
+      "status": "partial",
+      "reason": "The old shared page's actual P006, P007 and P010-P014 metadata-monitor projections and route behavior are preserved, but this task does not invent a cross-process unknown DTO or broaden their backend contracts. Each remains governed by its existing typed page/service and permission boundary."
+    },
+    {
+      "id": "UI-GAP-SHARED-ROUTE-META-DISPLAY-ASYMMETRY",
+      "classification": "DEFERRED_TO_P10_COMP_07_READ_ONLY_RECONCILIATION",
+      "status": "partial",
+      "reason": "The /tech/05/03/01 route meta includes P008 leave monitor and P016 welfare monitor permissions, but the old shared page rendered neither process. This task preserves that factual boundary and does not add either projection; P10-COMP-07 must reconcile the route-meta/display asymmetry against authoritative contracts. P009 already has an independent technical monitor route and is not migrated into this shared page."
+    },
+    {
+      "id": "UI-GAP-L2-BLOCKED-COMPOSITES",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "DirectoryPersonPickerAdapter, DirectoryOrganizationPickerAdapter, and ManagedUpload remain blocked by missing authoritative directory/upload contracts; this monitor page neither implements nor exports them. L2 remains 15/18 ready with no LAYER PASS."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-platform-composite",
+  "registry_updates": [
+    "platform.monitor-panel",
+    "platform.monitor-status-table"
+  ],
+  "tests": [
+    "P004 request read and P005 notice monitor endpoints independently enforce permission and record data-scope",
+    "MonitorPanel renders only the fixed allowlist and P004 never renders approvedCount",
+    "subject, content, reason, resultSummary, amount, actualAmount, owner, recipient, evidence, detail, stack and test secrets are absent from text, HTML and all attributes",
+    "technical refresh uses only GET and no create, act, approve, accept, certify or execute request is possible",
+    "idle, loading, empty, partial, error, success and responsive desktop/mobile projections share one state.data truth",
+    "the old shared page's actual P006, P007 and P010-P014 metadata monitor projections remain available without embedding P004/P005 business pages",
+    "P008/P016 shared-route meta asymmetry remains explicitly deferred and P009 remains on its independent monitor route"
+  ],
+  "updated_at": "2026-08-14T02:40:00+08:00"
+}

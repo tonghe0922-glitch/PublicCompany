@@ -48,8 +48,8 @@ def verify_phase_boundary(stage: str) -> None:
         '| PHASE-09 | READY_FOR_GATE |', '| PHASE-09 | COMPLETE |',
     )):
         raise SystemExit('PHASE-09 lifecycle state is invalid')
-    if '| PHASE-10 | NOT_STARTED |' not in progress:
-        raise SystemExit('PHASE-10 boundary violated')
+    if '| PHASE-10 | COMPLETE |' not in progress:
+        raise SystemExit('PHASE-10 must remain COMPLETE during later-phase regression')
     if '| PHASE-07 | COMPLETE |' not in progress:
         raise SystemExit('PHASE-07 must remain COMPLETE')
 
@@ -69,8 +69,10 @@ def verify_c2() -> None:
 
 def verify_c3() -> None:
     require_fragments('router/portal-router.ts', (
-        'createPortalRouter', "path: '/login'", "name: 'portal-home'", "name: 'forbidden'", "name: 'not-found'",
-        'rotateNavigationAbortSignal', 'router.onError',
+        'createPortalRouter', 'rotateNavigationAbortSignal', 'router.onError',
+    ))
+    require_fragments('router/core-routes.ts', (
+        "path: '/login'", "name: 'portal-home'", "name: 'forbidden'", "name: 'not-found'",
     ))
     require_fragments('platform/create-portal-app.ts', ('usePortalSessionStore', 'createPortalRouter', 'PortalRuntimeRoot'))
 
@@ -96,9 +98,10 @@ def verify_c5() -> None:
     ))
     require_fragments('platform/AuthenticatedPortalLayout.vue', (
         'PortalSessionHeader', '@switch-identity', '@logout', 'session.switchIdentity',
-        'PortalNavigation', 'RouterView', ':page-title="portal.homeTitle"',
+        'PortalNavigation', 'RouterView', ':page-title="pageTitle"',
+        'const pageTitle = computed', 'route.meta.title', 'props.portal.homeTitle',
     ))
-    require_fragments('router/portal-router.ts', ('AuthenticatedPortalLayout', 'children:',))
+    require_fragments('router/core-routes.ts', ('AuthenticatedPortalLayout', 'children:',))
     require_fragments('platform/pages/LoginPage.vue', ('会话已过期', 'logout-unconfirmed', '本地会话已清除'))
     require_fragments('session/portal-session-runtime.ts', ('previousSession', "this.phase = previousSession ? 'authenticated' : 'error'"))
 
@@ -116,7 +119,8 @@ def verify_home_fact_source() -> None:
         '业务状态、待办、消息、搜索与 KPI 只有在存在真实服务端 read model 时才展示',
     ))
     require_fragments('platform/AuthenticatedPortalLayout.vue', (
-        ':page-title="portal.homeTitle"', 'PortalSessionHeader', 'PortalNavigation',
+        ':page-title="pageTitle"', 'const pageTitle = computed', 'route.meta.title', 'props.portal.homeTitle',
+        'PortalSessionHeader', 'PortalNavigation',
     ))
     require_repo_fragments('technical-platform/web/e2e/phase08-live-session.spec.ts', (
         'expectNoEngineeringEvidence', '员工工作入口', '中心管理工作入口', '技术运行工作入口',

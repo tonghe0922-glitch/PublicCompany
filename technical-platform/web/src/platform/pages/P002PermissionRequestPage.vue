@@ -222,10 +222,10 @@ onMounted(() => { void run(load) })
 </script>
 
 <template>
-  <main class="phase09-page" data-testid="p002-page">
+  <section class="phase09-page" data-testid="p002-page">
     <header>
       <p class="phase09-kicker">PHASE-09 · P002</p>
-      <h1>{{ heading }}</h1>
+      <h2>{{ heading }}</h2>
       <p>业务单、流程状态、授权与回收事实全部来自服务端 IAM / Workflow；浏览器不保存第二套业务状态。</p>
     </header>
 
@@ -289,7 +289,7 @@ onMounted(() => { void run(load) })
     </section>
 
     <p v-if="feedback" role="status">{{ feedback }}</p>
-  </main>
+  </section>
 </template>
 
 <style scoped>

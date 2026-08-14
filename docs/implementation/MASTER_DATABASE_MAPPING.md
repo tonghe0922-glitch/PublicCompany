@@ -182,3 +182,32 @@ Redis7.4 session regression: PASS
 Live browser -> Spring -> PostgreSQL/Redis -> Audit: PASS
 Workflow: 31287803627
 ```
+
+## PHASE-10 P006 runtime database closure
+
+- Canonical business facts remain `collaboration.meeting` and `collaboration.meeting_item`; no parallel P006 truth table was introduced.
+- Additive overlay `V115__phase10_p006_meeting_action.sql` installs the P006 business-number sequence, six IAM permissions, published form/workflow (S01–S11 + END, 18 transitions) and append-only evidence trigger.
+- PostgreSQL 16 migration/validate/rerun and runtime-role behavior are verified by `Phase10P006DatabaseIT`; evidence updates/deletes fail with SQLSTATE `55000` and optimistic stale writes fail.
+- Durable lifecycle events are stored in `core.outbox_event`; Worker notification effects are stored in `notification.template/message`, while operation audit stays in the separate audit database.
+- Evidence: `phases/PHASE-10/P006_CHECKPOINT.md` and `.runlogs/phase10-p006-database-worker-it.log`.
+
+## PHASE-10 P007 runtime database closure
+
+- Canonical business facts remain `attendance.shift_change_request` and `attendance.shift_change_request_item`; qualification reads `learning.learning_assignment` and no parallel truth table was added.
+- Additive `V116__phase10_p007_shift_change.sql` installs the P007 business sequence, five permissions, published form/workflow (S01–S09 + END, 15 transitions) and append-only item guard.
+- PostgreSQL 16 migration/validate/rerun and runtime lifecycle prove server-calculated hours, qualification/overlap checks, immutable before/after/handover/integration facts and optimistic concurrency.
+- Durable events are stored in `core.outbox_event`; sanitized rendered messages are stored in `notification.template/message`; operation audit remains in the separate audit database.
+- Evidence: `phases/PHASE-10/P007_CHECKPOINT.md`, `.runlogs/phase10-p007-database-it.log`, and `.runlogs/phase10-p007-notification-database-it.log`.
+
+## PHASE-11 P011-P016 runtime database closure
+
+| Process | Canonical table | Additive overlay | Immutable/derived facts |
+|---|---|---|---|
+| P011 | `performance.performance_cycle` | `V120__phase11_p011_performance_cycle.sql` | score, cycle event and effect execution facts |
+| P012 | `hr.promotion_request` | `V121__phase11_p012_promotion_appointment.sql` | request events and appointment execution facts |
+| P013 | `reward.reward_case` | `V122__phase11_p013_reward_lifecycle.sql` | reward events and impact instruction/receipt facts |
+| P014 | `reward.discipline_case` | `V123__phase11_p014_discipline_lifecycle.sql` | case events, decision and impact instruction/receipt facts |
+| P015 | `reward.point_transaction` | `V124__phase11_p015_point_ledger.sql` | append-only transaction/event/posting/balance and versioned rule facts |
+| P016 | `welfare.care_case` | `V125__phase11_p016_welfare_care.sql` | eligibility, privacy consent, approval, external receipt, employee confirmation and reconciliation facts |
+
+No shadow process truth table is introduced. V120-V125 are additive overlays on canonical facts with tenant/RLS/linkage/append-only constraints, audit and Transactional Outbox/Worker notification. Full-gate PostgreSQL 16.14 empty-database migration to V125, validate/no-op and 12 specified DB/notification IT classes passed 35/35 tests. Evidence: `phases/PHASE-11/FULL_GATE_REPORT.md` and `.runlogs/phase11-full-db-worker-it-1.log`.

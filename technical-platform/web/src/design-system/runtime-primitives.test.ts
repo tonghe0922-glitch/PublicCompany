@@ -92,6 +92,7 @@ describe('PHASE-07 mounted primitives and data components', () => {
     expect(textUpdates).toEqual(['补充说明'])
 
     const selectUpdates: string[] = []
+    const selectChanges: string[] = []
     const selectMount = mountRuntime(Select, {
       label: '类型',
       modelValue: '',
@@ -100,10 +101,12 @@ describe('PHASE-07 mounted primitives and data components', () => {
         { label: 'B 类', value: 'B', disabled: true },
       ],
       'onUpdate:modelValue': (value: unknown) => selectUpdates.push(String(value)),
+      onChange: (value: unknown) => selectChanges.push(String(value)),
     })
     const select = findByTag(selectMount.root, 'select')
     triggerRuntimeEvent(select, 'change', { target: { value: 'A' } } as unknown as Event)
     expect(selectUpdates).toEqual(['A'])
+    expect(selectChanges).toEqual(['A'])
     expect(selectMount.root.textContent).toContain('A 类')
   })
 

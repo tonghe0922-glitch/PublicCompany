@@ -61,3 +61,41 @@ Live browser integration job: 93179694059 PASS
 AUTHORIZATION_DENIED events verified: 1
 Credential material found in audit: 0
 ```
+
+## PHASE-10 P006 permission runtime
+
+| Permission | Server use | Data/field boundary |
+|---|---|---|
+| `p006.meeting.create` | create and owner S01 action | SELF creation/ownership |
+| `p006.meeting.read` | business list/detail | authoritative org data scope |
+| `p006.meeting.manage` | material, publish, convene, minutes, action generation, overdue, archive | workflow candidate + expected version |
+| `p006.meeting.action` | attendance and action-owner execution | S08 persisted owner required |
+| `p006.meeting.accept` | independent accept/rework | last executor excluded |
+| `p006.meeting.monitor` | technical runtime metadata | body/reason/result/evidence masked; no business actions |
+
+The browser only hides unavailable controls; `P006MeetingController`, authorization service, workflow candidate resolution and PostgreSQL tenant context are the final authorities. Real negative tests prove cross-center denial, unauthorized execution and self-acceptance denial.
+
+## PHASE-10 P007 permission runtime
+
+| Permission | Server use | Data/field boundary |
+|---|---|---|
+| `p007.schedule.read` | schedule/shift list and detail | SELF or authoritative CENTER scope |
+| `p007.schedule.manage` | demand, template, validation, publish, link, day close | CENTER + node candidate |
+| `p007.schedule.change` | employee confirm/change/no-change | persisted owner employee only |
+| `p007.schedule.review` | independent approve/reject | requesting employee excluded |
+| `p007.schedule.monitor` | technical workflow metadata | reason/change/handover/snapshot/attendance masked; no actions |
+
+The controller/application authorization and PostgreSQL tenant context remain final authorities; the Vue control filter is only presentation. Negative integration and Chromium evidence is recorded in `phases/PHASE-10/P007_CHECKPOINT.md`.
+
+## PHASE-11 P011-P016 permission runtime
+
+| Process | Permission codes | Critical separation |
+|---|---|---|
+| P011 | `read`, `manage`, `evaluate`, `calibrate`, `appeal`, `execute`, `monitor` | employee/supervisor/calibrator/appeal/executor separated; no self-calibration |
+| P012 | `read`, `manage`, `review`, `approve`, `appoint`, `monitor` | review/approval/appointment separated; approval is not effect |
+| P013 | `read`, `manage`, `review`, `approve`, `execute`, `monitor` | reviewer/approver/executor separated; duplicate source/impact denied |
+| P014 | `read`, `manage`, `investigate`, `decide`, `appeal`, `monitor` | investigator/decider/appeal reviewer separated; recusal and private masking enforced |
+| P015 | `read`, `manage`, `review`, `adjust`, `monitor` | posting/review/adjustment separated; all correction is new append-only fact |
+| P016 | `read`, `manage`, `approve`, `execute`, `reconcile`, `monitor` | eligibility/approval/external execution/reconciliation separated; affected employee alone authorizes privacy and confirms receipt |
+
+Each code is prefixed by its process namespace (`p011.performance`, `p012.promotion`, `p013.reward`, `p014.discipline`, `p015.points`, `p016.welfare`). Server controller/service authorization, workflow candidates, authoritative data scope and PostgreSQL tenant context are final. The browser is presentation only; tech monitor remains masked and cannot execute business actions. Evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`.

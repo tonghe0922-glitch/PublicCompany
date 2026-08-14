@@ -7130,3 +7130,29 @@
 | tech | 技术服务台与开发者控制台 | 测试诊断、状态公告、值班培训与服务质量 |  | 用户确认/验收 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#完整页面树!R1498 |
 | tech | 技术服务台与开发者控制台 | 测试诊断、状态公告、值班培训与服务质量 |  | 知识关联 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#完整页面树!R1499 |
 | tech | 技术服务台与开发者控制台 | 测试诊断、状态公告、值班培训与服务质量 |  | 统计分析 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#完整页面树!R1500 |
+
+## PHASE-10 P006 explicit runtime bindings
+
+The PHASE-01 `process_codes` cells remain an unchanged historical zero for P006. The approved explicit source-coordinate ledger `phases/PHASE-10/PHASE10_PAGE_BINDINGS.json` now marks P006 `IMPLEMENTED_LOCAL_VERIFIED` after real Router/API/permission/E2E closure:
+
+- employee `/employee/05/01/03` and `/employee/05/07/02`;
+- center `/center/06/09/03` and `/center/05/02/02`;
+- tech `/tech/05/03/01` shared workflow monitor, metadata-only and without business authority.
+
+P008–P010 entries in that ledger remain PLANNED. Evidence: `phases/PHASE-10/P006_CHECKPOINT.md`.
+
+## PHASE-10 P007 explicit runtime bindings
+
+The explicit source-coordinate ledger marks P007 `IMPLEMENTED_LOCAL_VERIFIED` after Router/API/permission/Chromium closure:
+
+- employee `/employee/04/01/01`, `/employee/03/01/09`, `/employee/03/01/10`;
+- center `/center/04/01/01`, `/center/04/07/04`, `/center/04/07/05`;
+- tech `/tech/05/03/01`, metadata-only without approval authority.
+
+P008–P010 remain PLANNED. Evidence: `phases/PHASE-10/P007_CHECKPOINT.md`.
+
+## PHASE-11 P011-P016 explicit runtime bindings
+
+The PHASE-01 page catalog remains unchanged at 7,126 source records. `phases/PHASE-11/PHASE11_PAGE_BINDINGS.json` is the explicit, non-fuzzy implementation ledger: 31 bindings, 31/31 source keys present and 31/31 route paths present in the current router. Every P011-P016 process has employee, center and tech coverage; shared tech routes are monitoring/configuration projections only and grant no business approval authority.
+
+All six processes are `IMPLEMENTED_LOCAL_VERIFIED`. Evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`. Phase state is `INDEPENDENT_GATE_PENDING`.

@@ -1,7 +1,7 @@
 # PHASE-10 START CHECKLIST
 
-- [x] Repository = `louthison/PublicCompany`.
-- [x] Construction branch = `ChatGPT_Version_V0.07`.
+- [x] Sole local construction directory = `I:\PublicCompany_source_codex` (`Get-Location` verified).
+- [x] Current local directory contains no `.git`; no clone/pull/push or remote CI fact is used as current acceptance evidence.
 - [x] PHASE-09 = COMPLETE / Gate PASS / current-head CI failures = 0 before PHASE-10 preparation.
 - [x] Latest AGENT.md read.
 - [x] Latest DESIGN.md read.
@@ -19,9 +19,9 @@
 - [x] SOURCE_CONTRACT.md created.
 - [x] PHASE-10 set to IN_PROGRESS with concrete Chinese scope.
 - [x] PHASE-11 remains NOT_STARTED / BLOCKED.
-- [ ] P006 implementation checkpoint.
-- [ ] P007 implementation checkpoint.
-- [ ] P008 implementation checkpoint.
-- [ ] P009 implementation checkpoint.
-- [ ] P010 implementation checkpoint.
-- [ ] PHASE-10 full validation / PHASE_REPORT / Formal Gate.
+- [x] P006 implementation checkpoint (`P006_CHECKPOINT.md`; local Java/PG16/Redis/Chromium gates PASS).
+- [x] P007 implementation checkpoint (`P007_CHECKPOINT.md`; local Java/PG16/Redis/Chromium gates PASS).
+- [x] P008 implementation checkpoint (`P008_CHECKPOINT.md`; local Java/PG16/Redis/Chromium gates PASS).
+- [x] P009 implementation checkpoint (`P009_CHECKPOINT.md`; local Java/PG16/Redis/Chromium gates PASS).
+- [x] P010 implementation checkpoint (`P010_CHECKPOINT.md`; local Java/PG16/Redis/Chromium gates PASS).
+- [x] PHASE-10 local full validation, `PHASE_REPORT.md` and independent Formal Gate PASS (`PHASE_GATE.md`, 2026-08-12).

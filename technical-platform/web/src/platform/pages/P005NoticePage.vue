@@ -247,10 +247,10 @@ onMounted(() => { void run(load) })
 </script>
 
 <template>
-  <main class="phase09-page" data-testid="p005-page">
+  <section class="phase09-page" data-testid="p005-page">
     <header>
       <p class="phase09-kicker">PHASE-09 · P005</p>
-      <h1>{{ heading }}</h1>
+      <h2>{{ heading }}</h2>
       <p v-if="isTech">技术端仅查看流程、版本、范围、计数和送达运行元数据；制度正文与人员回执明细不向技术监控暴露。</p>
       <p v-else>阅读不等于确认；收件范围由服务端按组织/岗位解析，流程节点只能由服务端合法迁移。</p>
     </header>
@@ -337,7 +337,7 @@ onMounted(() => { void run(load) })
       <p v-else-if="canList">当前没有可见的制度通知。</p>
     </section>
     <p v-if="feedback" role="status" class="phase09-feedback">{{ feedback }}</p>
-  </main>
+  </section>
 </template>
 
 <style scoped>

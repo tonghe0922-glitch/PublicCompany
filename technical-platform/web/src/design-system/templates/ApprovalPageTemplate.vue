@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import PageTemplateFrame from './PageTemplateFrame.vue'
-defineProps<{ title: string; description?: string }>()
+defineProps<{ title: string; description?: string; headingLevel?: 1 | 2 | 3 }>()
 </script>
 <template>
-  <PageTemplateFrame :title="title" :description="description">
+  <PageTemplateFrame :title="title" :description="description" :heading-level="headingLevel">
     <div class="sgj-page-template__split">
       <div class="sgj-page-template__stack">
         <div v-if="$slots.context" class="sgj-page-template__surface"><slot name="context" /></div>

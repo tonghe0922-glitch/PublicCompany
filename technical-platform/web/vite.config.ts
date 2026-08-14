@@ -10,6 +10,11 @@ const portalBuilds = {
 
 const localApiProxyTarget = process.env.SJG_LOCAL_API_PROXY_TARGET ?? 'http://127.0.0.1:8080'
 
+const publicComponentAliases = {
+  '@sgj/ui': resolve(import.meta.dirname, 'src/design-system/index.ts'),
+  '@sgj/platform-ui': resolve(import.meta.dirname, 'src/platform/processes/shared/index.ts'),
+} as const
+
 type PortalMode = keyof typeof portalBuilds
 
 function isPortalMode(mode: string): mode is PortalMode {
@@ -65,13 +70,17 @@ function portalServer(port: number) {
 }
 
 function analysisConfig() {
-  return { plugins: [vue()] }
+  return {
+    plugins: [vue()],
+    resolve: { alias: publicComponentAliases },
+  }
 }
 
 export default defineConfig(({ mode }) => {
   if (mode === 'test') {
     return {
       plugins: [vueClientTestPlugin()],
+      resolve: { alias: publicComponentAliases },
     }
   }
 
@@ -87,6 +96,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: './',
     plugins: [vue()],
+    resolve: { alias: publicComponentAliases },
     server: portalServer(portal.port),
     build: {
       outDir: portal.outDir,

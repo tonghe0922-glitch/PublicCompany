@@ -9,21 +9,21 @@ Status: `EXISTING / PARTIAL / MISSING / CONFLICT / BLOCKED`.
 | PHASE-01 `process_codes` page binding | MISSING | MISSING | MISSING | MISSING | MISSING | retain 0 as historical fact; C0 explicit source-key bindings frozen |
 | Explicit route coordinates | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | `PHASE10_PAGE_BINDINGS.json`; no fuzzy runtime matching |
 | Business HTTP paths from PHASE-01 | MISSING | MISSING | MISSING | MISSING | MISSING | engineering identifiers explicitly frozen in phase-10 contract |
-| Backend process controller/service/repository | MISSING | MISSING | MISSING | MISSING | MISSING | current code has no PHASE-10 implementation package; build sequentially |
-| Real Vue business page | MISSING | MISSING | MISSING | MISSING | MISSING | current platform pages stop at P005; selected IA remains PLANNED until checkpoint |
-| Server permission enforcement | MISSING | MISSING | MISSING | MISSING | MISSING | exact permission strings frozen; assignment by sourced role/data scope only |
-| Published process workflow/form/task | MISSING | MISSING | MISSING | MISSING | MISSING | reuse PHASE-05 kernel; source states must be exact |
-| Audit/Outbox/Notification kernel | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | reuse PHASE-04/06; process event wiring missing |
+| Backend process controller/service/repository | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | P006–P010 are server-backed and locally closed |
+| Real Vue business page | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | exact employee/center/tech routes are Chromium verified |
+| Server permission enforcement | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | action, data scope, separation and tech masking verified |
+| Published process workflow/form/task | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | P006–P010 published workflows/forms verified in PG16 |
+| Audit/Outbox/Notification kernel | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | PHASE-04/06 kernel reused; P006–P010 event wiring, replay, sanitization and rollback tests complete |
 | Redis/session/IAM | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | reuse; never business source of truth |
-| Time-overlap validator | PARTIAL | MISSING | MISSING | MISSING | n/a | source R11 for P006–P009 requires active leave/schedule/overtime conflict check; implement one shared server validator where applicable |
-| Append-only quota ledger | PARTIAL | PARTIAL | MISSING | PARTIAL | n/a | source R12 applies P006–P009; baseline master fields contain quota IDs/amounts but no equivalent ledger found; P008 must close ledger gap before checkpoint |
-| P006 meeting/action-item acceptance/rework/overdue | MISSING | n/a | n/a | n/a | n/a | implement over canonical meeting/item + shared workflow |
-| P007 qualification/continuous-work/schedule publish linkage | n/a | MISSING | n/a | n/a | n/a | no frontend-only schedule changes |
-| P008 reserve→deduct/release→delta adjustment | n/a | n/a | MISSING | n/a | n/a | append-only facts + exact conservation tests |
-| P009 attendance fact→result acceptance→HR→payroll/timeoff receipt | n/a | n/a | n/a | MISSING | n/a | stages must remain independent evidence |
-| P010 1000 score/practical/certification/qualification | n/a | n/a | n/a | n/a | PARTIAL | canonical fields exist; service/workflow/history/permission-link behavior missing |
-| Real PG16+Redis+3-portal E2E | MISSING | MISSING | MISSING | MISSING | MISSING | each checkpoint must close normal+negative+idempotency+scope+privacy evidence |
+| Time-overlap validator | n/a | EXISTING | EXISTING | EXISTING | n/a | P007–P009 effective interval conflicts are rejected server-side |
+| Append-only quota ledger | n/a | PARTIAL | EXISTING | PARTIAL | n/a | P008 reservation/deduction/release/delta ledger is append-only; P009 does not mutate leave quota |
+| P006 meeting/action-item acceptance/rework/overdue | EXISTING | n/a | n/a | n/a | n/a | canonical meeting/item + shared workflow; immutable evidence, rework and overdue path PG16/E2E verified |
+| P007 qualification/continuous-work/schedule publish linkage | n/a | EXISTING | n/a | n/a | n/a | qualification, 12-hour cap, overlap, employee confirmation and integration receipt verified |
+| P008 reserve→deduct/release→delta adjustment | n/a | n/a | EXISTING | n/a | n/a | append-only facts + exact conservation tests |
+| P009 attendance fact→result acceptance→HR→payroll/timeoff receipt | n/a | n/a | n/a | EXISTING | n/a | independent immutable facts; no payroll calculation/payment initiation |
+| P010 1000 score/practical/certification/qualification | n/a | n/a | n/a | n/a | EXISTING | separate facts, independent certifier, dated qualification and approved-policy permission linkage |
+| Real PG16+Redis+3-portal E2E | EXISTING | EXISTING | EXISTING | EXISTING | EXISTING | all five checkpoints have local Testcontainers + Chromium evidence |
 
 ## Legal next target
 
-`P006` only. P007–P010 remain NOT_STARTED within PHASE-10 until the preceding checkpoint is closed. PHASE-11 remains blocked until all five are CLOSED and PHASE-10 Formal Gate passes.
+P006–P010 are `CHECKPOINT_PASS / CLOSED`; the independent PHASE-10 review returned PASS on 2026-08-12. PHASE-11 is authorized to start in sequence; see `PHASE_GATE.md`.

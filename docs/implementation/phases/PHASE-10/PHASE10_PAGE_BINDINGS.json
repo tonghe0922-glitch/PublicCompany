@@ -1,6 +1,7 @@
 {
   "phase": "PHASE-10",
   "status": "C0_FROZEN",
+  "checkpoint_status": {"P006":"IMPLEMENTED_LOCAL_VERIFIED","P007":"IMPLEMENTED_LOCAL_VERIFIED","P008":"IMPLEMENTED_LOCAL_VERIFIED","P009":"IMPLEMENTED_LOCAL_VERIFIED","P010":"IMPLEMENTED_LOCAL_VERIFIED"},
   "rule": "Explicit source-coordinate selections from PHASE-01 pages.json. No fuzzy runtime matching. A shared tech monitor route may serve multiple processes without granting business approval authority.",
   "bindings": [
     {"process_code":"P006","portal":"employee","purpose":"meeting detail and materials","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R342:be2cc5d93d00","route_path":"/employee/05/01/03"},

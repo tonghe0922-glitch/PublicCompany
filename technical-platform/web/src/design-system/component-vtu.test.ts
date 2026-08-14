@@ -11,14 +11,18 @@ import Drawer from './components/Drawer.vue'
 import Input from './components/Input.vue'
 import KpiCard from './components/KpiCard.vue'
 import OrganizationPicker from './components/OrganizationPicker.vue'
+import PartialFailure from './components/PartialFailure.vue'
 import PersonPicker from './components/PersonPicker.vue'
 import PersonRow from './components/PersonRow.vue'
 import RadioGroup from './components/RadioGroup.vue'
 import RecordCard from './components/RecordCard.vue'
+import Select from './components/Select.vue'
 import StepUpReveal from './components/StepUpReveal.vue'
+import StatePanel from './components/StatePanel.vue'
 import Switch from './components/Switch.vue'
 import ToastRegion from './components/ToastRegion.vue'
 import Upload from './components/Upload.vue'
+import FieldFrame from './components/FieldFrame.vue'
 
 describe('PHASE-07 Vue Test Utils component behavior', () => {
   it('connects Input label, hint, error and model update in the DOM', async () => {
@@ -76,20 +80,39 @@ describe('PHASE-07 Vue Test Utils component behavior', () => {
     opener.remove()
   })
 
-  it('runs Drawer keyboard semantics with a real DOM mount', async () => {
+  it('runs Drawer backdrop, keyboard and focus-restore semantics with a real DOM mount', async () => {
+    const opener = document.createElement('button')
+    document.body.append(opener)
+    opener.focus()
     const wrapper = mount(Drawer, {
-      props: { open: true, title: '详情', side: 'right' },
+      props: { open: false, title: '详情', side: 'right', closeOnBackdrop: false },
       slots: { default: '<button id="drawer-action">处理</button>' },
       attachTo: document.body,
     })
+    await wrapper.setProps({ open: true })
+    await nextTick()
     await nextTick()
     const panel = wrapper.get('.sgj-drawer')
+    const overlay = wrapper.get('.sgj-overlay')
     expect(panel.attributes('role')).toBe('dialog')
     expect(panel.attributes('aria-modal')).toBe('true')
     expect(document.activeElement).toBe(wrapper.get('.sgj-overlay__close').element)
-    await panel.trigger('keydown', { key: 'Escape' })
+    await overlay.trigger('click')
+    expect(wrapper.emitted('close')).toBeUndefined()
+    await wrapper.get('.sgj-overlay__close').trigger('click')
     expect(wrapper.emitted('close')).toHaveLength(1)
+    await panel.trigger('keydown', { key: 'Escape' })
+    expect(wrapper.emitted('close')).toHaveLength(2)
+    await wrapper.setProps({ open: false })
+    await nextTick()
+    expect(document.activeElement).toBe(opener)
     wrapper.unmount()
+    opener.remove()
+
+    const defaultDrawer = mount(Drawer, { props: { open: true, title: '默认抽屉' } })
+    await defaultDrawer.get('.sgj-overlay').trigger('click')
+    expect(defaultDrawer.emitted('close')).toHaveLength(1)
+    defaultDrawer.unmount()
   })
 
   it('keeps StepUpReveal fail-closed until the external prop authorizes reveal', async () => {
@@ -109,6 +132,34 @@ describe('PHASE-07 Vue Test Utils component behavior', () => {
     expect(wrapper.find('#secret-salary').exists()).toBe(true)
     await wrapper.get('button').trigger('click')
     expect(wrapper.emitted('conceal')).toHaveLength(1)
+  })
+
+  it('emits typed Select changes and passes them through both picker contracts', async () => {
+    const sequence: string[] = []
+    const select = mount(Select, {
+      props: {
+        label: '类型',
+        modelValue: '',
+        options: [{ value: 'A', label: 'A 类' }],
+        'onUpdate:modelValue': (value: string) => sequence.push(`update:${value}`),
+        onChange: (value: string) => sequence.push(`change:${value}`),
+      },
+    })
+    await select.get('select').setValue('A')
+    expect(select.emitted('update:modelValue')?.at(-1)).toEqual(['A'])
+    expect(select.emitted('change')?.at(-1)).toEqual(['A'])
+    expect(sequence).toEqual(['update:A', 'change:A'])
+
+    const people = [{ value: 'employee-1', label: '员工甲' }]
+    const person = mount(PersonPicker, { props: { label: '负责人', modelValue: '', options: people } })
+    await person.get('select').setValue('employee-1')
+    expect(person.emitted('update:modelValue')?.at(-1)).toEqual(['employee-1'])
+    expect(person.emitted('change')?.at(-1)).toEqual(['employee-1'])
+
+    const org = mount(OrganizationPicker, { props: { label: '所属组织', modelValue: '', options: [{ value: 'org-1', label: '组织甲' }] } })
+    await org.get('select').setValue('org-1')
+    expect(org.emitted('update:modelValue')?.at(-1)).toEqual(['org-1'])
+    expect(org.emitted('change')?.at(-1)).toEqual(['org-1'])
   })
 
   it('covers the DESIGN 11.2 form family with controlled UI contracts', async () => {
@@ -145,14 +196,6 @@ describe('PHASE-07 Vue Test Utils component behavior', () => {
     await cascader.get('select').setValue('a')
     expect(cascader.emitted('update:modelValue')?.at(-1)).toEqual([['a']])
 
-    const people = [{ value: 'employee-1', label: '员工甲' }]
-    const person = mount(PersonPicker, { props: { label: '负责人', modelValue: '', options: people } })
-    await person.get('select').setValue('employee-1')
-    expect(person.emitted('update:modelValue')?.at(-1)).toEqual(['employee-1'])
-
-    const org = mount(OrganizationPicker, { props: { label: '所属组织', modelValue: '', options: [{ value: 'org-1', label: '组织甲' }] } })
-    await org.get('select').setValue('org-1')
-    expect(org.emitted('update:modelValue')?.at(-1)).toEqual(['org-1'])
   })
 
   it('covers shared RecordCard, PersonRow, Avatar, KPI and global ToastRegion regressions', async () => {
@@ -184,5 +227,33 @@ describe('PHASE-07 Vue Test Utils component behavior', () => {
     if (!firstClose) throw new Error('ToastRegion must render a dismiss button')
     await firstClose.trigger('click')
     expect(region.emitted('dismiss')?.at(-1)).toEqual(['one'])
+  })
+
+  it('directly covers PartialFailure and both internal framing components', () => {
+    const field = mount(FieldFrame, {
+      props: {
+        label: '事项名称',
+        controlId: 'matter-name',
+        hint: '请填写完整名称',
+        error: '名称不能为空',
+        hintId: 'matter-name-hint',
+        errorId: 'matter-name-error',
+      },
+      slots: { default: '<input id="matter-name" />' },
+    })
+    expect(field.get('label').attributes('for')).toBe('matter-name')
+    expect(field.get('[role="alert"]').text()).toBe('名称不能为空')
+
+    const state = mount(StatePanel, {
+      props: { title: '处理中', description: '请稍候', busy: true },
+    })
+    expect(state.get('section').attributes('aria-busy')).toBe('true')
+    expect(state.text()).toContain('请稍候')
+
+    const partial = mount(PartialFailure, {
+      slots: { details: '失败明细', actions: '<button>重试</button>' },
+    })
+    expect(partial.get('[role="alert"]').text()).toContain('部分操作未完成')
+    expect(partial.text()).toContain('失败明细')
   })
 })

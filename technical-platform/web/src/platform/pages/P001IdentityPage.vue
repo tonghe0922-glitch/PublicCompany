@@ -162,10 +162,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="phase09-page">
+  <section class="phase09-page">
     <header>
       <p class="phase09-kicker">PHASE-09 · P001</p>
-      <h1>{{ title }}</h1>
+      <h2>{{ title }}</h2>
       <p>所有身份、会话与 MFA 事实来自服务端 IAM；本页不在浏览器保存第二套认证事实。</p>
     </header>
 
@@ -210,7 +210,7 @@ onMounted(() => {
     </section>
 
     <p v-if="feedback" role="status">{{ feedback }}</p>
-  </main>
+  </section>
 </template>
 
 <style scoped>

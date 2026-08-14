@@ -51,8 +51,15 @@ def verify() -> None:
     source = source_extract.build_payload()
     if source["process_codes"] != ["P006","P007","P008","P009","P010"]:
         raise RuntimeError("P006-P010 source scope drifted")
-    if source["workbook_count"] != 15 or source["sheet_count"] != 90 or source["nonempty_row_count"] != 4745 or source["parse_failures"] != 0:
-        raise RuntimeError("authoritative 15-XLSX parse facts drifted")
+    if source["workbook_count"] != 15 or source["sheet_count"] != 90 or source["parse_failures"] != 0:
+        raise RuntimeError("authoritative 15-workbook source facts drifted")
+    evidence_counts = (source["raw_workbook_count"], source["cached_workbook_count"])
+    if evidence_counts == (15, 0) and source["nonempty_row_count"] != 4745:
+        raise RuntimeError("raw XLSX source row count drifted")
+    if evidence_counts == (0, 15) and source["nonempty_row_count"] != 4218:
+        raise RuntimeError("PHASE-01 cached source row count drifted")
+    if evidence_counts not in {(15, 0), (0, 15)}:
+        raise RuntimeError(f"mixed or incomplete source evidence is not accepted: {evidence_counts}")
     for code, expected in EXPECTED_STATES.items():
         if source_states(source, code) != expected:
             raise RuntimeError(f"source state machine drifted: {code}")

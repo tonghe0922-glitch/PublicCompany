@@ -1,0 +1,3274 @@
+{
+  "schema_version": "1.0",
+  "title": "上金谷平台 UI Component Registry",
+  "workspace_root": "I:\\PublicCompany_source_codex",
+  "canonical_repository_target": "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+  "local_rescan_required": false,
+  "local_rescan": {
+    "completed_at": "2026-08-13T08:42:00+08:00",
+    "design_system_vue_count": 42,
+    "registered_design_system_vue_count": 42,
+    "unregistered_count": 0,
+    "stale_registration_count": 0,
+    "public_export_count": 39,
+    "internal_component_count": 3
+  },
+  "historical_audit_head": "885dbadeedea3d6485dc644fa859dab97346fcec",
+  "public_import_contract": {
+    "design_system": "@sgj/ui",
+    "platform_composites": "@sgj/platform-ui",
+    "migration_fallback": "只允许从各层 index.ts barrel 导入，禁止深层导入"
+  },
+  "status_enum": [
+    "existing-stable",
+    "existing-needs-fix",
+    "planned",
+    "blocked-by-contract",
+    "deprecated",
+    "internal"
+  ],
+  "layer_order": [
+    "token",
+    "design-system",
+    "platform-composite",
+    "domain-feature",
+    "template",
+    "layout",
+    "page"
+  ],
+  "selection_order": [
+    "exact-existing",
+    "compose-existing",
+    "platform-composite",
+    "domain-feature",
+    "new-design-system",
+    "blocked-by-contract"
+  ],
+  "components": [
+    {
+      "id": "ui.button",
+      "name": "SgjButton",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Button.vue",
+      "export_name": "SgjButton",
+      "category": "action",
+      "keywords_zh": [
+        "按钮",
+        "提交",
+        "取消",
+        "主要操作",
+        "危险操作"
+      ],
+      "keywords_en": [
+        "action",
+        "Button"
+      ],
+      "replaces_native": [
+        "button"
+      ],
+      "use_when": [
+        "执行普通或危险操作；通过 variant 表达语义"
+      ],
+      "do_not_use_for": [
+        "权限裁决",
+        "流程状态迁移",
+        "直接发起 API"
+      ],
+      "required_states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.card",
+      "name": "SgjCard",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Card.vue",
+      "export_name": "SgjCard",
+      "category": "layout",
+      "keywords_zh": [
+        "卡片",
+        "容器",
+        "摘要块"
+      ],
+      "keywords_en": [
+        "layout",
+        "Card"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "承载单一主题内容"
+      ],
+      "do_not_use_for": [
+        "复杂业务状态机",
+        "把整页塞入一张卡"
+      ],
+      "required_states": [
+        "default",
+        "muted",
+        "spotlight"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.status-chip",
+      "name": "SgjStatusChip",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/StatusChip.vue",
+      "export_name": "SgjStatusChip",
+      "category": "feedback",
+      "keywords_zh": [
+        "状态",
+        "标签",
+        "徽标",
+        "chip"
+      ],
+      "keywords_en": [
+        "feedback",
+        "StatusChip"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "显示来自服务端或状态目录的短状态"
+      ],
+      "do_not_use_for": [
+        "在组件内猜状态含义"
+      ],
+      "required_states": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.input",
+      "name": "SgjInput",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Input.vue",
+      "export_name": "SgjInput",
+      "category": "input",
+      "keywords_zh": [
+        "输入框",
+        "文本",
+        "数字",
+        "搜索",
+        "日期输入"
+      ],
+      "keywords_en": [
+        "input",
+        "Input"
+      ],
+      "replaces_native": [
+        "input"
+      ],
+      "use_when": [
+        "单行文本、数字及受支持的原生输入类型"
+      ],
+      "do_not_use_for": [
+        "服务端身份字段裁决",
+        "复杂范围输入"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "readonly",
+        "required",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.textarea",
+      "name": "SgjTextarea",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Textarea.vue",
+      "export_name": "SgjTextarea",
+      "category": "input",
+      "keywords_zh": [
+        "多行输入",
+        "原因",
+        "意见",
+        "说明"
+      ],
+      "keywords_en": [
+        "input",
+        "Textarea"
+      ],
+      "replaces_native": [
+        "textarea"
+      ],
+      "use_when": [
+        "多行文本"
+      ],
+      "do_not_use_for": [
+        "自动保存业务草稿",
+        "流程审批决定"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "readonly",
+        "required",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.select",
+      "name": "SgjSelect",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Select.vue",
+      "export_name": "SgjSelect",
+      "category": "input",
+      "keywords_zh": [
+        "下拉",
+        "枚举",
+        "选择"
+      ],
+      "keywords_en": [
+        "input",
+        "Select"
+      ],
+      "replaces_native": [
+        "select"
+      ],
+      "use_when": [
+        "本地静态/已加载 options 的单选"
+      ],
+      "do_not_use_for": [
+        "直接访问目录 API",
+        "服务端分页目录"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "required",
+        "error",
+        "empty-options"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.datetime",
+      "name": "SgjDateTime",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/DateTime.vue",
+      "export_name": "SgjDateTime",
+      "category": "input",
+      "keywords_zh": [
+        "日期",
+        "时间",
+        "日期时间"
+      ],
+      "keywords_en": [
+        "input",
+        "DateTime"
+      ],
+      "replaces_native": [
+        "input[type=date]",
+        "input[type=time]",
+        "input[type=datetime-local]"
+      ],
+      "use_when": [
+        "单个日期、时间或日期时间值"
+      ],
+      "do_not_use_for": [
+        "业务日历计算",
+        "开始结束范围规则"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "readonly",
+        "required",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.checkbox",
+      "name": "SgjCheckbox",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Checkbox.vue",
+      "export_name": "SgjCheckbox",
+      "category": "input",
+      "keywords_zh": [
+        "复选框",
+        "确认勾选",
+        "多选"
+      ],
+      "keywords_en": [
+        "input",
+        "Checkbox"
+      ],
+      "replaces_native": [
+        "input[type=checkbox]"
+      ],
+      "use_when": [
+        "布尔确认或独立复选项"
+      ],
+      "do_not_use_for": [
+        "开关型立即设置",
+        "业务审批"
+      ],
+      "required_states": [
+        "checked",
+        "unchecked",
+        "focus",
+        "disabled",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.radio-group",
+      "name": "SgjRadioGroup",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/RadioGroup.vue",
+      "export_name": "SgjRadioGroup",
+      "category": "input",
+      "keywords_zh": [
+        "单选",
+        "radio",
+        "互斥选择"
+      ],
+      "keywords_en": [
+        "input",
+        "RadioGroup"
+      ],
+      "replaces_native": [
+        "input[type=radio]"
+      ],
+      "use_when": [
+        "少量互斥选项"
+      ],
+      "do_not_use_for": [
+        "大量可搜索选项"
+      ],
+      "required_states": [
+        "default",
+        "selected",
+        "focus",
+        "disabled",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.switch",
+      "name": "SgjSwitch",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Switch.vue",
+      "export_name": "SgjSwitch",
+      "category": "input",
+      "keywords_zh": [
+        "开关",
+        "启用",
+        "禁用",
+        "toggle"
+      ],
+      "keywords_en": [
+        "input",
+        "Switch"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "即时布尔设置"
+      ],
+      "do_not_use_for": [
+        "需要明确确认的高风险动作"
+      ],
+      "required_states": [
+        "on",
+        "off",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.upload",
+      "name": "SgjUpload",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Upload.vue",
+      "export_name": "SgjUpload",
+      "category": "input",
+      "keywords_zh": [
+        "文件选择",
+        "上传入口",
+        "附件"
+      ],
+      "keywords_en": [
+        "input",
+        "Upload"
+      ],
+      "replaces_native": [
+        "input[type=file]"
+      ],
+      "use_when": [
+        "选择本地 File 并向上层 emit"
+      ],
+      "do_not_use_for": [
+        "正式上传成功事实",
+        "对象存储",
+        "病毒扫描",
+        "附件审计"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "required",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.cascader",
+      "name": "SgjCascader",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Cascader.vue",
+      "export_name": "SgjCascader",
+      "category": "input",
+      "keywords_zh": [
+        "级联",
+        "层级选择",
+        "区域选择"
+      ],
+      "keywords_en": [
+        "input",
+        "Cascader"
+      ],
+      "replaces_native": [
+        "select"
+      ],
+      "use_when": [
+        "已加载的层级候选项"
+      ],
+      "do_not_use_for": [
+        "远端组织真值",
+        "无限树"
+      ],
+      "required_states": [
+        "default",
+        "focus",
+        "disabled",
+        "required",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.person-picker",
+      "name": "SgjPersonPicker",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/PersonPicker.vue",
+      "export_name": "SgjPersonPicker",
+      "category": "input",
+      "keywords_zh": [
+        "人员选择",
+        "员工选择",
+        "负责人"
+      ],
+      "keywords_en": [
+        "input",
+        "PersonPicker"
+      ],
+      "replaces_native": [
+        "select"
+      ],
+      "use_when": [
+        "调用方已提供的最小人员候选项"
+      ],
+      "do_not_use_for": [
+        "直接调用员工目录 API",
+        "缓存完整员工档案"
+      ],
+      "required_states": [
+        "default",
+        "loading-projected",
+        "empty-projected",
+        "disabled",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.organization-picker",
+      "name": "SgjOrganizationPicker",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/OrganizationPicker.vue",
+      "export_name": "SgjOrganizationPicker",
+      "category": "input",
+      "keywords_zh": [
+        "组织选择",
+        "部门选择",
+        "中心选择"
+      ],
+      "keywords_en": [
+        "input",
+        "OrganizationPicker"
+      ],
+      "replaces_native": [
+        "select"
+      ],
+      "use_when": [
+        "调用方已提供的组织候选项"
+      ],
+      "do_not_use_for": [
+        "直接调用组织目录 API"
+      ],
+      "required_states": [
+        "default",
+        "loading-projected",
+        "empty-projected",
+        "disabled",
+        "error"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.dialog",
+      "name": "SgjDialog",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Dialog.vue",
+      "export_name": "SgjDialog",
+      "category": "overlay",
+      "keywords_zh": [
+        "弹窗",
+        "对话框",
+        "modal"
+      ],
+      "keywords_en": [
+        "overlay",
+        "Dialog"
+      ],
+      "replaces_native": [
+        "dialog"
+      ],
+      "use_when": [
+        "普通模态内容和简单确认容器"
+      ],
+      "do_not_use_for": [
+        "直接执行领域命令",
+        "高风险确认逻辑"
+      ],
+      "required_states": [
+        "open",
+        "closed",
+        "focus-trap",
+        "escape",
+        "backdrop"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.drawer",
+      "name": "SgjDrawer",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Drawer.vue",
+      "export_name": "SgjDrawer",
+      "category": "overlay",
+      "keywords_zh": [
+        "抽屉",
+        "侧栏",
+        "底部面板",
+        "sheet"
+      ],
+      "keywords_en": [
+        "overlay",
+        "Drawer"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "复杂详情或表单容器"
+      ],
+      "do_not_use_for": [
+        "高风险操作默认背景关闭",
+        "领域请求"
+      ],
+      "required_states": [
+        "open",
+        "closed",
+        "left",
+        "right",
+        "bottom",
+        "focus-trap",
+        "mobile-fullscreen"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.toast",
+      "name": "SgjToast",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Toast.vue",
+      "export_name": "SgjToast",
+      "category": "feedback",
+      "keywords_zh": [
+        "提示",
+        "toast",
+        "轻提示"
+      ],
+      "keywords_en": [
+        "feedback",
+        "Toast"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "单条短反馈展示"
+      ],
+      "do_not_use_for": [
+        "业务完成事实",
+        "长错误详情"
+      ],
+      "required_states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "dismissible"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.toast-region",
+      "name": "SgjToastRegion",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/ToastRegion.vue",
+      "export_name": "SgjToastRegion",
+      "category": "feedback",
+      "keywords_zh": [
+        "提示队列",
+        "toast区域"
+      ],
+      "keywords_en": [
+        "feedback",
+        "ToastRegion"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "承载和去重提示项"
+      ],
+      "do_not_use_for": [
+        "全局业务状态存储"
+      ],
+      "required_states": [
+        "empty",
+        "multiple",
+        "live-region"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.table",
+      "name": "SgjTable",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Table.vue",
+      "export_name": "SgjTable",
+      "category": "data-display",
+      "keywords_zh": [
+        "表格",
+        "数据表",
+        "table"
+      ],
+      "keywords_en": [
+        "data-display",
+        "Table"
+      ],
+      "replaces_native": [
+        "table"
+      ],
+      "use_when": [
+        "原生 table 语义壳、caption、空态、横向滚动"
+      ],
+      "do_not_use_for": [
+        "自行访问 API",
+        "业务分页",
+        "导出权限"
+      ],
+      "required_states": [
+        "default",
+        "empty",
+        "scrollable",
+        "sortable-semantics"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.list",
+      "name": "SgjList",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/List.vue",
+      "export_name": "SgjList",
+      "category": "data-display",
+      "keywords_zh": [
+        "列表",
+        "list"
+      ],
+      "keywords_en": [
+        "data-display",
+        "List"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "简单语义列表容器"
+      ],
+      "do_not_use_for": [
+        "大数据无界加载"
+      ],
+      "required_states": [
+        "default",
+        "empty"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.empty",
+      "name": "SgjEmpty",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Empty.vue",
+      "export_name": "SgjEmpty",
+      "category": "state",
+      "keywords_zh": [
+        "空状态",
+        "无数据"
+      ],
+      "keywords_en": [
+        "state",
+        "Empty"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "显示无数据及下一步"
+      ],
+      "do_not_use_for": [
+        "掩盖加载失败"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.loading",
+      "name": "SgjLoading",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Loading.vue",
+      "export_name": "SgjLoading",
+      "category": "state",
+      "keywords_zh": [
+        "加载",
+        "loading",
+        "骨架"
+      ],
+      "keywords_en": [
+        "state",
+        "Loading"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "局部加载状态"
+      ],
+      "do_not_use_for": [
+        "多个请求共享一个全局 busy"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.error",
+      "name": "SgjError",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Error.vue",
+      "export_name": "SgjError",
+      "category": "state",
+      "keywords_zh": [
+        "错误",
+        "失败",
+        "重试"
+      ],
+      "keywords_en": [
+        "state",
+        "Error"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "安全展示稳定错误、编号和下一步"
+      ],
+      "do_not_use_for": [
+        "渲染 stack/SQL/内部路径"
+      ],
+      "required_states": [
+        "error",
+        "retryable",
+        "non-retryable"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.partial-failure",
+      "name": "SgjPartialFailure",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/PartialFailure.vue",
+      "export_name": "SgjPartialFailure",
+      "category": "state",
+      "keywords_zh": [
+        "部分失败",
+        "部分数据"
+      ],
+      "keywords_en": [
+        "state",
+        "PartialFailure"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "显示部分资源成功、部分失败"
+      ],
+      "do_not_use_for": [
+        "把关键依赖失败说成成功"
+      ],
+      "required_states": [
+        "partial"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.no-permission",
+      "name": "SgjNoPermission",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/NoPermission.vue",
+      "export_name": "SgjNoPermission",
+      "category": "state",
+      "keywords_zh": [
+        "无权限",
+        "403"
+      ],
+      "keywords_en": [
+        "state",
+        "NoPermission"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "无权限说明"
+      ],
+      "do_not_use_for": [
+        "替代后端鉴权"
+      ],
+      "required_states": [
+        "denied"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.conflict",
+      "name": "SgjConflict",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Conflict.vue",
+      "export_name": "SgjConflict",
+      "category": "state",
+      "keywords_zh": [
+        "冲突",
+        "409",
+        "版本冲突"
+      ],
+      "keywords_en": [
+        "state",
+        "Conflict"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "基础冲突提示"
+      ],
+      "do_not_use_for": [
+        "静默覆盖用户输入"
+      ],
+      "required_states": [
+        "conflict"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-primitives.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.masked-value",
+      "name": "SgjMaskedValue",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/MaskedValue.vue",
+      "export_name": "SgjMaskedValue",
+      "category": "security",
+      "keywords_zh": [
+        "脱敏",
+        "掩码",
+        "敏感值"
+      ],
+      "keywords_en": [
+        "security",
+        "MaskedValue"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "显示最小化脱敏值"
+      ],
+      "do_not_use_for": [
+        "决定谁有权限查看明文"
+      ],
+      "required_states": [
+        "masked"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-overlays-security.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.step-up-reveal",
+      "name": "SgjStepUpReveal",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/StepUpReveal.vue",
+      "export_name": "SgjStepUpReveal",
+      "category": "security",
+      "keywords_zh": [
+        "二次认证",
+        "敏感信息查看",
+        "step-up"
+      ],
+      "keywords_en": [
+        "security",
+        "StepUpReveal"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "fail-closed 的显示/请求事件契约"
+      ],
+      "do_not_use_for": [
+        "前端自行认证",
+        "永久缓存明文"
+      ],
+      "required_states": [
+        "masked",
+        "verifying",
+        "revealed"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.avatar",
+      "name": "SgjAvatar",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Avatar.vue",
+      "export_name": "SgjAvatar",
+      "category": "data-display",
+      "keywords_zh": [
+        "头像",
+        "人员头像"
+      ],
+      "keywords_en": [
+        "data-display",
+        "Avatar"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "头像或姓名占位"
+      ],
+      "do_not_use_for": [
+        "随机第三方头像",
+        "完整人员档案"
+      ],
+      "required_states": [
+        "sm",
+        "md",
+        "lg",
+        "fallback"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.person-row",
+      "name": "SgjPersonRow",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/PersonRow.vue",
+      "export_name": "SgjPersonRow",
+      "category": "data-display",
+      "keywords_zh": [
+        "人员行",
+        "员工摘要"
+      ],
+      "keywords_en": [
+        "data-display",
+        "PersonRow"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "最小人员摘要行"
+      ],
+      "do_not_use_for": [
+        "展示超出权限的档案"
+      ],
+      "required_states": [
+        "default",
+        "with-actions"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.record-card",
+      "name": "SgjRecordCard",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/RecordCard.vue",
+      "export_name": "SgjRecordCard",
+      "category": "data-display",
+      "keywords_zh": [
+        "记录卡",
+        "业务记录",
+        "移动卡片"
+      ],
+      "keywords_en": [
+        "data-display",
+        "RecordCard"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "业务记录结构壳"
+      ],
+      "do_not_use_for": [
+        "流程动作规则",
+        "直接加载数据"
+      ],
+      "required_states": [
+        "default",
+        "with-status",
+        "with-actions"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.kpi-card",
+      "name": "SgjKpiCard",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/KpiCard.vue",
+      "export_name": "SgjKpiCard",
+      "category": "data-display",
+      "keywords_zh": [
+        "KPI",
+        "指标卡",
+        "统计"
+      ],
+      "keywords_en": [
+        "data-display",
+        "KpiCard"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "显示指标名、值、单位和口径"
+      ],
+      "do_not_use_for": [
+        "客户端伪算正式指标"
+      ],
+      "required_states": [
+        "neutral",
+        "danger"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.layout.portal-shell",
+      "name": "SgjPortalShell",
+      "layer": "layout",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/layout/PortalShell.vue",
+      "export_name": "SgjPortalShell",
+      "category": "layout",
+      "keywords_zh": [
+        "应用壳",
+        "门户布局",
+        "侧栏",
+        "底部导航"
+      ],
+      "keywords_en": [
+        "layout",
+        "PortalShell"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "唯一应用 landmark、导航和全局区域"
+      ],
+      "do_not_use_for": [
+        "领域规则",
+        "重复 main/h1"
+      ],
+      "required_states": [
+        "desktop",
+        "mobile",
+        "sidebar-collapsed",
+        "no-sidebar"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.list-page",
+      "name": "SgjListPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/ListPageTemplate.vue",
+      "export_name": "SgjListPageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "列表页模板",
+        "list page"
+      ],
+      "keywords_en": [
+        "template",
+        "ListPageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "列表页结构"
+      ],
+      "do_not_use_for": [
+        "业务查询"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.detail-page",
+      "name": "SgjDetailPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/DetailPageTemplate.vue",
+      "export_name": "SgjDetailPageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "详情页模板",
+        "detail page"
+      ],
+      "keywords_en": [
+        "template",
+        "DetailPageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "详情页结构"
+      ],
+      "do_not_use_for": [
+        "业务动作"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.form-page",
+      "name": "SgjFormPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/FormPageTemplate.vue",
+      "export_name": "SgjFormPageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "表单页模板",
+        "form page"
+      ],
+      "keywords_en": [
+        "template",
+        "FormPageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "表单页结构"
+      ],
+      "do_not_use_for": [
+        "字段业务规则"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.approval-page",
+      "name": "SgjApprovalPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/ApprovalPageTemplate.vue",
+      "export_name": "SgjApprovalPageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "审批页模板",
+        "处理页模板"
+      ],
+      "keywords_en": [
+        "template",
+        "ApprovalPageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "审批/处理页结构"
+      ],
+      "do_not_use_for": [
+        "批准权限和状态机"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.timeline-page",
+      "name": "SgjTimelinePageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/TimelinePageTemplate.vue",
+      "export_name": "SgjTimelinePageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "时间线页模板",
+        "timeline page"
+      ],
+      "keywords_en": [
+        "template",
+        "TimelinePageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "时间线页结构"
+      ],
+      "do_not_use_for": [
+        "事件真值"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.template.dashboard-page",
+      "name": "SgjDashboardPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/DashboardPageTemplate.vue",
+      "export_name": "SgjDashboardPageTemplate",
+      "category": "template",
+      "keywords_zh": [
+        "驾驶舱模板",
+        "dashboard page"
+      ],
+      "keywords_en": [
+        "template",
+        "DashboardPageTemplate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "KPI/监控页结构"
+      ],
+      "do_not_use_for": [
+        "指标计算"
+      ],
+      "required_states": [
+        "default"
+      ],
+      "accessibility": [
+        "键盘可用",
+        "可见焦点",
+        "必要 ARIA",
+        "不只靠颜色",
+        "44px 触控目标（适用时）"
+      ],
+      "security_boundary": [
+        "不访问 API",
+        "不识别流程码",
+        "不进行最终权限裁决"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/runtime-shell-templates.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.internal.field-frame",
+      "name": "FieldFrame",
+      "layer": "internal",
+      "status": "internal",
+      "public": false,
+      "public_import": null,
+      "implementation_path": "technical-platform/web/src/design-system/components/FieldFrame.vue",
+      "export_name": null,
+      "category": "internal",
+      "keywords_zh": [],
+      "keywords_en": [],
+      "replaces_native": [],
+      "use_when": [
+        "仅供 Design System 内部组合"
+      ],
+      "do_not_use_for": [
+        "业务页面直接导入"
+      ],
+      "required_states": [],
+      "accessibility": [],
+      "security_boundary": [
+        "不得被页面深层导入"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.internal.state-panel",
+      "name": "StatePanel",
+      "layer": "internal",
+      "status": "internal",
+      "public": false,
+      "public_import": null,
+      "implementation_path": "technical-platform/web/src/design-system/components/StatePanel.vue",
+      "export_name": null,
+      "category": "internal",
+      "keywords_zh": [],
+      "keywords_en": [],
+      "replaces_native": [],
+      "use_when": [
+        "仅供 Design System 内部组合"
+      ],
+      "do_not_use_for": [
+        "业务页面直接导入"
+      ],
+      "required_states": [],
+      "accessibility": [],
+      "security_boundary": [
+        "不得被页面深层导入"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-vtu.test.ts"
+      ],
+      "examples": [],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+      "id": "ui.internal.page-template-frame",
+      "name": "PageTemplateFrame",
+      "layer": "internal",
+      "status": "internal",
+      "public": false,
+      "public_import": null,
+      "implementation_path": "technical-platform/web/src/design-system/templates/PageTemplateFrame.vue",
+      "export_name": null,
+      "category": "internal",
+      "keywords_zh": [],
+      "keywords_en": [],
+      "replaces_native": [],
+      "use_when": [
+        "仅供 Design System 内部组合"
+      ],
+      "do_not_use_for": [
+        "业务页面直接导入"
+      ],
+      "required_states": [],
+      "accessibility": [],
+      "security_boundary": [
+        "不得被页面深层导入"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/design-system/templates/PageTemplateFrame.test.ts"
+      ],
+      "examples": [],
+      "owner": "frontend-platform",
+      "version": "1.0.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.async-state-boundary",
+      "name": "AsyncStateBoundary",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/async/AsyncStateBoundary.vue",
+      "export_name": "AsyncStateBoundary",
+      "category": "async",
+      "keywords_zh": [
+        "异步状态",
+        "加载边界",
+        "partial",
+        "cancelled"
+      ],
+      "keywords_en": [
+        "async",
+        "AsyncStateBoundary"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.api-error-notice",
+      "name": "ApiErrorNotice",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/errors/ApiErrorNotice.vue",
+      "export_name": "ApiErrorNotice",
+      "category": "feedback",
+      "keywords_zh": [
+        "API错误",
+        "requestId",
+        "错误映射"
+      ],
+      "keywords_en": [
+        "feedback",
+        "ApiErrorNotice"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.form-error-summary",
+      "name": "FormErrorSummary",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/errors/FormErrorSummary.vue",
+      "export_name": "FormErrorSummary",
+      "category": "feedback",
+      "keywords_zh": [
+        "表单错误摘要",
+        "字段错误"
+      ],
+      "keywords_en": [
+        "feedback",
+        "FormErrorSummary"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.permission-gate",
+      "name": "PermissionGate",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/security/PermissionGate.vue",
+      "export_name": "PermissionGate",
+      "category": "security",
+      "keywords_zh": [
+        "权限展示",
+        "无权限解释"
+      ],
+      "keywords_en": [
+        "security",
+        "PermissionGate"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/security/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.confirm-dialog",
+      "name": "ConfirmDialog",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/actions/ConfirmDialog.vue",
+      "export_name": "ConfirmDialog",
+      "category": "overlay",
+      "keywords_zh": [
+        "确认操作",
+        "普通确认"
+      ],
+      "keywords_en": [
+        "overlay",
+        "ConfirmDialog"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.high-risk-confirm-dialog",
+      "name": "HighRiskConfirmDialog",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/actions/HighRiskConfirmDialog.vue",
+      "export_name": "HighRiskConfirmDialog",
+      "category": "overlay",
+      "keywords_zh": [
+        "高风险确认",
+        "二次凭证",
+        "原因"
+      ],
+      "keywords_en": [
+        "overlay",
+        "HighRiskConfirmDialog"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.process-record-meta",
+      "name": "ProcessRecordMeta",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/records/ProcessRecordMeta.vue",
+      "export_name": "ProcessRecordMeta",
+      "category": "data-display",
+      "keywords_zh": [
+        "业务编号",
+        "节点",
+        "版本",
+        "数据时间"
+      ],
+      "keywords_en": [
+        "data-display",
+        "ProcessRecordMeta"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.process-action-panel",
+      "name": "ProcessActionPanel",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/actions/ProcessActionPanel.vue",
+      "export_name": "ProcessActionPanel",
+      "category": "action",
+      "keywords_zh": [
+        "允许动作",
+        "动作面板",
+        "独立loading"
+      ],
+      "keywords_en": [
+        "action",
+        "ProcessActionPanel"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.version-conflict-panel",
+      "name": "VersionConflictPanel",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/errors/VersionConflictPanel.vue",
+      "export_name": "VersionConflictPanel",
+      "category": "feedback",
+      "keywords_zh": [
+        "409",
+        "版本冲突",
+        "刷新对比"
+      ],
+      "keywords_en": [
+        "feedback",
+        "VersionConflictPanel"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.datetime-range-field",
+      "name": "DateTimeRangeField",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/forms/DateTimeRangeField.vue",
+      "export_name": "DateTimeRangeField",
+      "category": "input",
+      "keywords_zh": [
+        "时间范围",
+        "开始结束"
+      ],
+      "keywords_en": [
+        "input",
+        "DateTimeRangeField"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/forms/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.directory-person-picker-adapter",
+      "name": "DirectoryPersonPickerAdapter",
+      "layer": "platform-composite",
+      "status": "blocked-by-contract",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/identity/DirectoryPersonPickerAdapter.vue",
+      "export_name": "DirectoryPersonPickerAdapter",
+      "category": "input",
+      "keywords_zh": [
+        "人员目录",
+        "远端人员搜索",
+        "数据范围"
+      ],
+      "keywords_en": [
+        "input",
+        "DirectoryPersonPickerAdapter"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [
+        "缺少人员目录查询 API、权限与数据范围权威合同；禁止缓存或伪造人员真值"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/identity/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.directory-organization-picker-adapter",
+      "name": "DirectoryOrganizationPickerAdapter",
+      "layer": "platform-composite",
+      "status": "blocked-by-contract",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/identity/DirectoryOrganizationPickerAdapter.vue",
+      "export_name": "DirectoryOrganizationPickerAdapter",
+      "category": "input",
+      "keywords_zh": [
+        "组织目录",
+        "远端组织搜索"
+      ],
+      "keywords_en": [
+        "input",
+        "DirectoryOrganizationPickerAdapter"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [
+        "缺少组织目录查询 API、权限与数据范围权威合同；禁止缓存或伪造组织真值"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/identity/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.data-table",
+      "name": "DataTable",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+      "export_name": "DataTable",
+      "category": "data-display",
+      "keywords_zh": [
+        "服务端分页表格",
+        "排序",
+        "筛选",
+        "移动卡片"
+      ],
+      "keywords_en": [
+        "data-display",
+        "DataTable"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [
+        "真实 API/权限/数据范围合同"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.description-list",
+      "name": "DescriptionList",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/records/DescriptionList.vue",
+      "export_name": "DescriptionList",
+      "category": "data-display",
+      "keywords_zh": [
+        "描述列表",
+        "字段详情"
+      ],
+      "keywords_en": [
+        "data-display",
+        "DescriptionList"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+  "id": "platform.process-timeline",
+      "name": "ProcessTimeline",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/records/ProcessTimeline.vue",
+      "export_name": "ProcessTimeline",
+      "category": "data-display",
+      "keywords_zh": [
+        "流程时间线",
+        "状态历史"
+      ],
+      "keywords_en": [
+        "data-display",
+        "ProcessTimeline"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+      "id": "platform.monitor-panel",
+      "name": "MonitorPanel",
+      "layer": "platform-composite",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/monitoring/MonitorPanel.vue",
+      "export_name": "MonitorPanel",
+      "category": "data-display",
+      "keywords_zh": [
+        "技术监控",
+        "流程聚合",
+        "最小投影"
+      ],
+      "keywords_en": [
+        "monitoring",
+        "MonitorPanel"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "聚合展示 P004 与 P005 的服务端最小监控投影"
+      ],
+      "do_not_use_for": [
+        "业务动作、创建、审批或服务端授权判断"
+      ],
+      "required_states": [
+        "idle",
+        "loading",
+        "empty",
+        "partial",
+        "error",
+        "success"
+      ],
+      "accessibility": [
+        "技术刷新使用可访问按钮",
+        "桌面与移动投影来自同一服务端事实"
+      ],
+      "security_boundary": [
+        "只展示固定字段白名单",
+        "不展示业务正文或敏感详情",
+        "不提供业务 mutation"
+      ],
+      "contract_requirements": [
+        "P004 read 与 P005 monitor 权限及逐记录 data-scope"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/monitoring/monitor-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+      "id": "platform.monitor-status-table",
+      "name": "MonitorStatusTable",
+      "layer": "internal",
+      "status": "internal",
+      "public": false,
+      "public_import": null,
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/monitoring/MonitorStatusTable.vue",
+      "export_name": null,
+      "category": "internal",
+      "keywords_zh": [
+        "监控表格",
+        "内部投影"
+      ],
+      "keywords_en": [
+        "monitoring",
+        "internal"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "仅供 MonitorPanel 内部渲染固定字段白名单"
+      ],
+      "do_not_use_for": [
+        "页面深层导入或公共入口导出"
+      ],
+      "required_states": [
+        "idle",
+        "loading",
+        "empty",
+        "partial",
+        "error",
+        "success"
+      ],
+      "accessibility": [
+        "复用公共异步状态与数据表格语义"
+      ],
+      "security_boundary": [
+        "仅从 AsyncState.data 读取事实",
+        "禁止正文、证据、金额与详情泄漏"
+      ],
+      "contract_requirements": [],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/monitoring/monitor-components.test.ts"
+      ],
+      "examples": [],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    },
+    {
+      "id": "platform.managed-upload",
+      "name": "ManagedUpload",
+      "layer": "platform-composite",
+      "status": "blocked-by-contract",
+      "public": true,
+      "public_import": "@sgj/platform-ui",
+      "implementation_path": "technical-platform/web/src/platform/processes/shared/forms/ManagedUpload.vue",
+      "export_name": "ManagedUpload",
+      "category": "input",
+      "keywords_zh": [
+        "正式上传",
+        "附件状态",
+        "病毒扫描"
+      ],
+      "keywords_en": [
+        "input",
+        "ManagedUpload"
+      ],
+      "replaces_native": [],
+      "use_when": [
+        "多个页面共享的平台行为或组合模式"
+      ],
+      "do_not_use_for": [
+        "具体 P006-P126 状态机",
+        "服务端最终权限裁决"
+      ],
+      "required_states": [
+        "default",
+        "loading",
+        "error",
+        "disabled（适用时）"
+      ],
+      "accessibility": [
+        "组合后仍保持标签、焦点、键盘与 ARIA 合同"
+      ],
+      "security_boundary": [
+        "只消费服务端最小投影",
+        "fail-closed",
+        "不伪造合同"
+      ],
+      "contract_requirements": [
+        "缺少上传会话、病毒扫描、附件状态、权限与审计权威合同；禁止本地假上传"
+      ],
+      "required_tests": [
+        "technical-platform/web/src/platform/processes/shared/forms/shared-components.test.ts"
+      ],
+      "examples": [
+        "11_AI页面组件接入与组装模板.md"
+      ],
+      "owner": "frontend-platform",
+      "version": "0.1.0",
+      "replacement": null
+    }
+  ],
+  "page_patterns": [
+    {
+      "id": "pattern.list",
+      "name": "列表页",
+      "template": "ui.template.list-page",
+      "components": [
+        "platform.async-state-boundary",
+        "platform.data-table",
+        "platform.process-action-panel"
+      ]
+    },
+    {
+      "id": "pattern.form",
+      "name": "表单页",
+      "template": "ui.template.form-page",
+      "components": [
+        "platform.form-error-summary",
+        "ui.input",
+        "ui.select",
+        "ui.button"
+      ]
+    },
+    {
+      "id": "pattern.detail",
+      "name": "详情页",
+      "template": "ui.template.detail-page",
+      "components": [
+        "platform.process-record-meta",
+        "platform.description-list",
+        "platform.process-timeline"
+      ]
+    },
+    {
+      "id": "pattern.approval",
+      "name": "审批/处理页",
+      "template": "ui.template.approval-page",
+      "components": [
+        "platform.process-record-meta",
+        "platform.process-action-panel",
+        "platform.high-risk-confirm-dialog"
+      ]
+    },
+    {
+      "id": "pattern.dashboard",
+      "name": "驾驶舱/监控页",
+      "template": "ui.template.dashboard-page",
+      "components": [
+        "ui.kpi-card",
+        "platform.async-state-boundary",
+        "platform.data-table"
+      ]
+    }
+  ],
+  "governance": {
+    "registry_update_required_for_new_public_component": true,
+    "public_export_required": true,
+    "test_required": true,
+    "page_usage_plan_required": true,
+    "raw_interactive_elements_forbidden_outside_approved_layers": true,
+    "deep_imports_forbidden": true
+  }
+}

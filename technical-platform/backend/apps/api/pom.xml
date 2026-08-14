@@ -19,7 +19,12 @@
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-iam</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-org</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-workflow</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-collaboration</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-attendance</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-learning</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-performance</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-hr</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-reward</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-document</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-notification</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-integration</artifactId><version>${project.version}</version></dependency>

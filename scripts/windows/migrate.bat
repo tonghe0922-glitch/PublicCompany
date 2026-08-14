@@ -32,7 +32,13 @@ if not defined SJG_BOOTSTRAP_DB_URL set "SJG_BOOTSTRAP_DB_URL=jdbc:postgresql://
 if not defined SJG_BOOTSTRAP_DB_USERNAME set "SJG_BOOTSTRAP_DB_USERNAME=%POSTGRES_USER%"
 if not defined SJG_BOOTSTRAP_DB_PASSWORD set "SJG_BOOTSTRAP_DB_PASSWORD=%POSTGRES_PASSWORD%"
 
-call "%ROOT%\mvnw.cmd" -q -ntp -pl technical-platform/backend/modules/database-baseline -DskipTests compile org.codehaus.mojo:exec-maven-plugin:3.5.0:java -Dexec.mainClass=cn.shangjingu.platform.database.Phase03DatabaseMigrator -Dexec.classpathScope=runtime
+rem Fork a real JVM so Flyway stays on the application classpath. Running the
+rem main class inside Maven's plugin classloader conflicts with Flyway 11.
+set "DB_MODULE=%ROOT%\technical-platform\backend\modules\database-baseline"
+call "%ROOT%\mvnw.cmd" -q -ntp -pl technical-platform/backend/modules/database-baseline -DskipTests compile dependency:build-classpath "-Dmdep.outputFile=%DB_MODULE%\target\runtime-classpath.txt" -Dmdep.includeScope=runtime
+if errorlevel 1 goto :error
+set /p "RUNTIME_CP="<"%DB_MODULE%\target\runtime-classpath.txt"
+java -cp "%DB_MODULE%\target\classes;%RUNTIME_CP%" cn.shangjingu.platform.database.Phase03DatabaseMigrator
 if errorlevel 1 goto :error
 
 echo 三库 Flyway migrate/validate/repeatability 已完成。

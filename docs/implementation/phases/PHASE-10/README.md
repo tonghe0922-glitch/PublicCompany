@@ -1,11 +1,11 @@
 # PHASE-10｜P006–P010 公共能力 B
 
-> 状态：`IN_PROGRESS / C0_SOURCE_CONTRACT_FROZEN`
-> 仓库：`louthison/PublicCompany`
-> 分支：`ChatGPT_Version_V0.07`
+> 状态：`COMPLETE / P006_P010_CHECKPOINTS_CLOSED / INDEPENDENT_GATE_PASS`
+> 唯一施工目录：`I:\PublicCompany_source_codex`
+> 版本控制事实：当前目录无 `.git`；不得把旧仓库、分支或远端 CI 编号作为本地验收结果
 > 上一阶段：`PHASE-09 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
 > 本阶段范围：`P006–P010`
-> 下一阶段：`PHASE-11 = NOT_STARTED / BLOCKED_BY_PHASE10_GATE`
+> 下一阶段：`PHASE-11 = NOT_STARTED / AUTHORIZED_TO_START`
 
 ## 1. 本阶段唯一施工范围
 
@@ -32,20 +32,20 @@
 - 15/15 三端 XLSX 实际解析；90 sheets；4,745 non-empty rows；0 parse failures。
 - PHASE-01 页面 `process_codes` 对 P006–P010 直接追踪为 0，保留为历史事实；不伪造已有绑定。
 - C0 通过 `PHASE10_PAGE_BINDINGS.json` 冻结明确 `source_key + route_path`，不允许运行时模糊匹配。
-- PHASE-01 business API path baseline = 0；工程 HTTP/permission 标识由 `contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md` 明确冻结，但不得改变 XLSX 的角色、data scope、状态与敏感级别语义。
+- PHASE-01 business API path baseline = 0；工程 HTTP/permission 标识由 `SOURCE_CONTRACT.md`、各 checkpoint、V115–V119、控制器和路由共同冻结。当前仓库不存在旧引用的 `contracts/phase-10` 路径，不得虚构该路径，也不得改变 XLSX 的角色、data scope、状态与敏感级别语义。
 - V5/V10/V28 已存在五个 canonical 主表；只允许 V115+ additive overlay 修实际缺口，禁止改历史 migration。
 
 ## 4. 施工顺序
 
 ```text
-P006 → test → checkpoint commit + push
-P007 → test → checkpoint commit + push
-P008 → test → checkpoint commit + push
-P009 → test → checkpoint commit + push
-P010 → test → checkpoint commit + push
+P006 → local reproducible test → checkpoint（CLOSED）
+P007 → local reproducible test → checkpoint（CLOSED）
+P008 → local reproducible test → checkpoint（CLOSED）
+P009 → local reproducible test → checkpoint（CLOSED）
+P010 → local reproducible test → checkpoint（CLOSED）
 PHASE-10 Full Construction Gate
 PHASE_REPORT
 停止等待独立 Phase Gate
 ```
 
-当前只允许从 **P006** 开始；P007–P010 不得提前伪装为已实现。
+P006–P010 已由本地可复现门禁逐项关闭，详见各 `P*_CHECKPOINT.md` 与 `PHASE_REPORT.md`。独立 PHASE-10 复验尚未 PASS，因此 PHASE-11 继续阻塞。

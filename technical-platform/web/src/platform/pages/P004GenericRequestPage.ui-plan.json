@@ -1,0 +1,100 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P004GenericRequestPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+  "portal_codes": [
+    "employee",
+    "center",
+    "tech"
+  ],
+  "route_paths": [
+    "/employee/03/07/01",
+    "/center/02/01/01",
+    "/tech/05/03/01"
+  ],
+  "process_codes": [
+    "P004"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.form-page",
+  "source_facts": {
+    "permissions": [
+      "p004.request.submit",
+      "p004.request.read",
+      "p004.request.act"
+    ],
+    "data_scope": "SELF/CENTER and monitor projection as authorized by server",
+    "sensitive_level": "P1-内部",
+    "states": [
+      "loading",
+      "empty",
+      "error",
+      "permission-denied",
+      "conflict",
+      "ready"
+    ],
+    "actions": [
+      "submit",
+      "act"
+    ]
+  },
+  "field_component_map": [
+    {
+      "field": "request-subject|request-reason",
+      "component_id": "ui.input",
+      "reason": "Existing request facts; unchanged in landmark task",
+      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+    },
+    {
+      "field": "request-records",
+      "component_id": "ui.list",
+      "reason": "Existing request list",
+      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "loading|empty|error|permission-denied|conflict|ready",
+      "component_id": "ui.error",
+      "reason": "Reuse the current public feedback/state projection; landmark work does not replace async or authorization contracts"
+    },
+    {
+      "state": "permission-denied",
+      "component_id": "ui.no-permission",
+      "reason": "Backend remains authoritative; route/session checks only improve UX"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "submit|act",
+      "component_id": "ui.button",
+      "confirmation": "existing-contract",
+      "permission": "server/session-authorized existing contract",
+      "reason": "Existing action contract and backend authorization preserved"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Authenticated PortalShell owns the only main landmark and primary h1; page content is a section below the route title",
+    "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
+    "limited_actions": []
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P004GenericRequestPage-LANDMARK-SCOPE",
+      "classification": "deferred-existing-debt",
+      "status": "not-expanded",
+      "reason": "P004 raw form/action debt is not widened; component migration is outside P10-COMP-02."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "reuse-only",
+  "registry_updates": [],
+  "tests": [
+    "exactly one rendered main under authenticated shell",
+    "exactly one accessible h1 sourced from route metadata",
+    "desktop and mobile route title semantics",
+    "existing permission/action/data-scope behavior remains unchanged"
+  ],
+  "updated_at": "2026-08-13T00:00:00+08:00"
+}

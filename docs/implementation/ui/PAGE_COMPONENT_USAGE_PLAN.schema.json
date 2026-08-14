@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:shangjingu:page-component-usage-plan:1.0",
+  "title": "Page Component Usage Plan",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "page",
+    "implementation_path",
+    "portal_codes",
+    "route_paths",
+    "process_codes",
+    "page_type",
+    "page_template",
+    "source_facts",
+    "field_component_map",
+    "state_component_map",
+    "action_component_map",
+    "responsive_projection",
+    "gaps",
+    "native_element_exceptions",
+    "decision",
+    "tests",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "page": { "type": "string", "minLength": 1 },
+    "implementation_path": { "type": "string", "minLength": 1 },
+    "portal_codes": {
+      "type": "array",
+      "items": { "enum": ["employee", "center", "tech"] },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "route_paths": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "process_codes": { "type": "array", "items": { "type": "string" } },
+    "page_type": {
+      "enum": ["list", "detail", "form", "approval", "timeline", "dashboard", "mixed"]
+    },
+    "page_template": { "type": "string", "minLength": 1 },
+    "source_facts": { "type": "object" },
+    "field_component_map": { "type": "array", "items": { "$ref": "#/$defs/componentMap" } },
+    "state_component_map": { "type": "array", "items": { "$ref": "#/$defs/componentMap" } },
+    "action_component_map": { "type": "array", "items": { "$ref": "#/$defs/componentMap" } },
+    "responsive_projection": { "type": "object" },
+    "gaps": { "type": "array", "items": { "type": "object" } },
+    "native_element_exceptions": { "type": "array", "items": { "type": "object" } },
+    "decision": {
+      "enum": [
+        "reuse-only",
+        "extend-existing",
+        "new-platform-composite",
+        "new-domain-feature",
+        "blocked-by-contract"
+      ]
+    },
+    "registry_updates": { "type": "array", "items": { "type": "string" } },
+    "tests": { "type": "array", "items": { "type": "string" } },
+    "updated_at": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "componentMap": {
+      "type": "object",
+      "required": ["component_id"],
+      "properties": {
+        "field": { "type": "string" },
+        "state": { "type": "string" },
+        "action": { "type": "string" },
+        "component_id": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string" },
+        "editable_when": { "type": "string" },
+        "confirmation": { "type": "string" },
+        "permission": { "type": "string" }
+      }
+    }
+  }
+}

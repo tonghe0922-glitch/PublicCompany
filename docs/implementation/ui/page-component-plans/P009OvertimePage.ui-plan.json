@@ -1,0 +1,189 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P009OvertimePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+  "portal_codes": [
+    "employee",
+    "center",
+    "tech"
+  ],
+  "route_paths": [
+    "/employee/03/01/06",
+    "/employee/03/01/07",
+    "/employee/04/04/02",
+    "/center/04/05/01",
+    "/center/04/05/05",
+    "/center/04/05/06",
+    "/tech/07/09/01"
+  ],
+  "process_codes": [
+    "P009"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.form-page",
+  "source_facts": {
+    "permissions": [
+      "p009.overtime.submit",
+      "p009.overtime.read",
+      "p009.overtime.manage",
+      "p009.overtime.review",
+      "p009.overtime.hr",
+      "p009.overtime.monitor"
+    ],
+    "data_scope": "SELF for employee; CENTER for management; tech receives metadata-only server projection",
+    "sensitive_level": "P1-内部; amount and receipt are masked by default and never revealed without an authoritative session contract",
+    "states": [
+      "S01-S09",
+      "idle",
+      "loading",
+      "success",
+      "empty",
+      "partial",
+      "error",
+      "cancelled",
+      "permission-denied",
+      "conflict"
+    ],
+    "actions": [
+      "SUBMIT",
+      "WITHDRAW",
+      "VALIDATE",
+      "RETURN",
+      "APPROVE",
+      "REJECT",
+      "RECORD_FACT",
+      "ACCEPT_RESULT",
+      "REWORK",
+      "HR_CONFIRM",
+      "HR_RETURN",
+      "CONFIRM_SCHEME",
+      "RECORD_RECEIPT",
+      "ARCHIVE"
+    ],
+    "service_contract": "GET/POST /api/v1/processes/P009/overtime-requests, GET /overtime-requests/{id}, POST /overtime-requests/{id}/actions/{actionCode}; URL and method remain process-service-owned",
+    "reveal_contract": "No authoritative frontend session wrapper proves per-view step-up for amount or receipt; a local flag or fabricated stepUpSatisfied value is forbidden"
+  },
+  "field_component_map": [
+    {
+      "field": "subject|externalReference",
+      "component_id": "ui.input",
+      "reason": "Registered text inputs preserve typed overtime and external receipt references",
+      "editable_when": "The relevant create or RECORD_RECEIPT candidate is visible"
+    },
+    {
+      "field": "attendanceType|schemeType",
+      "component_id": "ui.select",
+      "reason": "Only contract-defined attendance and compensation values are rendered",
+      "editable_when": "The create or compensation candidate is visible"
+    },
+    {
+      "field": "emergency",
+      "component_id": "ui.checkbox",
+      "reason": "Emergency fact registration is an explicit boolean accompanied by evidence",
+      "editable_when": "The employee create projection is available"
+    },
+    {
+      "field": "businessDate|actualStartAt|actualEndAt",
+      "component_id": "ui.datetime",
+      "reason": "Registered date/time controls preserve explicit business and execution facts",
+      "editable_when": "The corresponding typed create or RECORD_FACT action exposes the field"
+    },
+    {
+      "field": "startAt|endAt",
+      "component_id": "platform.datetime-range-field",
+      "reason": "The planned overtime interval is validated and emitted as one typed range",
+      "editable_when": "The employee create projection is available"
+    },
+    {
+      "field": "reason|emergencyEvidence|actionReason|actualAttendanceSummary|resultSummary|evidence",
+      "component_id": "ui.textarea",
+      "reason": "Registered multiline controls preserve typed reasons, facts and evidence summaries",
+      "editable_when": "The corresponding create or node action is an UX candidate"
+    },
+    {
+      "field": "receiptReference|actualAmount",
+      "component_id": "ui.masked-value",
+      "reason": "Receipt and amount projections are masked by default and raw values never enter DOM text or attributes",
+      "editable_when": "never; action inputs remain separate typed fields and backend controls returned visibility"
+    },
+    {
+      "field": "overtime-records",
+      "component_id": "platform.data-table",
+      "reason": "Server-sourced overtime rows use one responsive record truth",
+      "editable_when": "read or monitor projection is allowed"
+    },
+    {
+      "field": "businessNo|status|currentNodeCode|versionNo",
+      "component_id": "platform.process-record-meta",
+      "reason": "Business number, workflow state and version remain server-sourced",
+      "editable_when": "never"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "Record resource, create and action state remain independent typed AsyncState projections"
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "Caller/backend denial is projected for UX only; backend is final"
+    },
+    {
+      "state": "409|conflict",
+      "component_id": "platform.version-conflict-panel",
+      "reason": "Stale expectedVersion is fail-closed and refreshed explicitly"
+    },
+    {
+      "state": "timeout|error|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable typed failure projection never exposes detail, stack or sensitive receipt data"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "typed P009 node action UX candidate",
+      "component_id": "platform.process-action-panel",
+      "confirmation": "contract-defined risk projection",
+      "permission": "typed node plus caller permission narrows visibility; backend 403/409 is final",
+      "reason": "Current responses do not provide server allowedActions; the client does not fabricate authority"
+    },
+    {
+      "action": "approve, reject, confirm scheme, record receipt or archive candidate",
+      "component_id": "platform.high-risk-confirm-dialog",
+      "confirmation": "caller-supplied authoritative step-up result and reason only when a contract exists",
+      "permission": "backend re-authorizes every command",
+      "reason": "No password, OTP, token or raw credential is collected or cached"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Create, action material and server record table remain separate regions below the route h1; selected record owns action and error state",
+    "mobile": "The same server facts project as readable cards; masked amount and receipt remain masked in every viewport",
+    "limited_actions": [
+      "amount and receipt reveal are unavailable without an authoritative session-level step-up contract",
+      "tech remains metadata-only and receives no business action controls"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P009-SENSITIVE-REVEAL-AUTHORITY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "The backend Step-Up ticket capability is not connected to a P009 read/action field-visibility contract and the frontend session exposes no authoritative reveal wrapper. Amount and receipt therefore remain masked, no reveal control is exported, and no local permission, token, cached flag, or fabricated stepUpSatisfied value can reveal them."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": [
+    "amount and receipt raw values are absent from text, HTML and attributes in employee, center and tech projections",
+    "no reveal control or fabricated step-up state exists without the authoritative session contract",
+    "backend 403 and 409 remain final even when node and caller permission form an UX candidate",
+    "timeout retry keeps the same action-lifecycle idempotency key while deterministic rejection never blindly replays",
+    "refresh and last-request-wins preserve server businessNo, status, node, version and compensation facts",
+    "desktop table and mobile cards project the same selected server record and tech remains metadata-only"
+  ],
+  "updated_at": "2026-08-13T23:10:00+08:00"
+}

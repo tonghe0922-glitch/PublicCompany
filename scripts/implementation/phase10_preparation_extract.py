@@ -10,11 +10,25 @@ from typing import Any
 import phase04_source_contract as xlsx
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT_DIR = ROOT / "docs" / "implementation" / "phases" / "PHASE-10"
-OUT_JSON = OUT_DIR / "P006_P010_SOURCE_SNAPSHOT.json"
-OUT_MD = OUT_DIR / "P006_P010_SOURCE_SNAPSHOT.md"
+PHASE_CODE = "PHASE-10"
+RANGE_LABEL = "P006–P010"
+RANGE_FILE_LABEL = "P006_P010"
+SCOPE_LABEL = "P006-P010 公共能力 B"
+NEXT_PROCESS_BOUNDARY = "P011 and later processes remain out of scope."
+OUT_DIR = ROOT / "docs" / "implementation" / "phases" / PHASE_CODE
+OUT_JSON = OUT_DIR / f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.json"
+OUT_MD = OUT_DIR / f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.md"
 PROCESS_CATALOG = ROOT / "docs" / "implementation" / "MASTER_PROCESS_CATALOG.json"
 API_RECORDS = ROOT / "docs" / "implementation" / "contracts" / "phase-01" / "api_records.jsonl"
+PHASE01_CONTRACTS = ROOT / "docs" / "implementation" / "contracts" / "phase-01"
+WORKBOOK_CACHE = PHASE01_CONTRACTS / "process_workbook_sheets.jsonl"
+CACHE_ROWS = {
+    "01_表单清单": PHASE01_CONTRACTS / "forms.jsonl",
+    "02_字段字典": None,
+    "03_状态与审批": PHASE01_CONTRACTS / "states_approvals.jsonl",
+    "04_规则与接口": PHASE01_CONTRACTS / "rules_interfaces.jsonl",
+    "05_三端联动": PHASE01_CONTRACTS / "three_endpoint_linkage.jsonl",
+}
 TARGET_CODES = ("P006", "P007", "P008", "P009", "P010")
 PORTALS = ("employee", "center", "tech")
 SECTION_ORDER = ("overview", "forms", "fields", "states", "rules", "linkage")
@@ -64,10 +78,87 @@ def load_processes() -> dict[str, dict[str, Any]]:
     return index
 
 
-def parse_source(source_file: str, expected_sheets: list[str]) -> dict[str, Any]:
-    path = ROOT / source_file
+def load_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         raise FileNotFoundError(path)
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def cached_workbook(process_code: str, portal: str) -> dict[str, Any]:
+    records = load_jsonl(WORKBOOK_CACHE)
+    matches = [
+        item for item in records
+        if item.get("process_code") == process_code and item.get("portal_code") == portal
+    ]
+    if len(matches) != 1:
+        raise RuntimeError(f"cached workbook contract is not unique: {process_code}/{portal}")
+    return matches[0]
+
+
+def cached_sheet_rows(process_code: str, portal: str, sheet_name: str) -> list[dict[str, Any]]:
+    source = CACHE_ROWS.get(sheet_name)
+    if source is None:
+        return []
+    records = load_jsonl(source)
+    result: list[dict[str, Any]] = []
+    for item in records:
+        if (item.get("process_code"), item.get("portal_code"), item.get("source_sheet")) != (
+                process_code, portal, sheet_name):
+            continue
+        data = item.get("data")
+        if not isinstance(data, dict):
+            raise RuntimeError(f"cached source row is malformed: {process_code}/{portal}/{sheet_name}")
+        result.append({
+            "source_row_1_based": item.get("source_row"),
+            "values": ["" if value is None else str(value) for value in data.values()],
+            "data": data,
+        })
+    return result
+
+
+def parse_cached_source(process_code: str, portal: str, expected_sheets: list[str]) -> dict[str, Any]:
+    cached = cached_workbook(process_code, portal)
+    sheet_index = {item.get("sheet"): item for item in cached.get("sheets", [])}
+    missing = [name for name in expected_sheets if name not in sheet_index]
+    if missing:
+        raise RuntimeError(f"cached {process_code}/{portal}: missing expected sheets {missing}")
+    sheet_records: list[dict[str, Any]] = []
+    for sheet_name in expected_sheets:
+        metadata = sheet_index[sheet_name]
+        sheet_records.append({
+            "sheet": sheet_name,
+            "nonempty_row_count": int(metadata.get("rows") or 0),
+            "max_columns": len(metadata.get("headers") or []),
+            "header_candidate_row_1_based": metadata.get("header_row"),
+            "header_candidate_values": metadata.get("headers") or [],
+            "rows": cached_sheet_rows(process_code, portal, sheet_name),
+            "row_contract_available": sheet_name in CACHE_ROWS and CACHE_ROWS[sheet_name] is not None,
+        })
+    return {
+        "source_file": cached.get("source_file"),
+        "source_file_present": False,
+        "source_sha256": None,
+        "evidence_mode": "PHASE01_MACHINE_CONTRACT_CACHE",
+        "sheet_names": expected_sheets,
+        "sheet_count": len(sheet_records),
+        "nonempty_row_count": sum(item["nonempty_row_count"] for item in sheet_records),
+        "expected_sheets": expected_sheets,
+        "missing_expected_sheets": [],
+        "sheets": sheet_records,
+    }
+
+
+def parse_source(
+        process_code: str, portal: str, source_file: str, expected_sheets: list[str]) -> dict[str, Any]:
+    path = ROOT / source_file
+    if not path.is_file():
+        cached = cached_workbook(process_code, portal)
+        canonical_source_file = str(cached.get("source_file") or "")
+        canonical_path = ROOT / canonical_source_file
+        if not canonical_path.is_file():
+            return parse_cached_source(process_code, portal, expected_sheets)
+        source_file = canonical_source_file
+        path = canonical_path
     parsed = xlsx.parse_workbook(path)
     missing = [name for name in expected_sheets if name not in parsed]
     if missing:
@@ -91,7 +182,9 @@ def parse_source(source_file: str, expected_sheets: list[str]) -> dict[str, Any]
 
     return {
         "source_file": source_file,
-        "sha256": sha256(path),
+        "source_file_present": True,
+        "source_sha256": sha256(path),
+        "evidence_mode": "RAW_XLSX",
         "sheet_names": list(parsed),
         "sheet_count": len(parsed),
         "nonempty_row_count": sum(item["nonempty_row_count"] for item in sheet_records),
@@ -128,7 +221,7 @@ def build_payload() -> dict[str, Any]:
                     raise RuntimeError(f"{code}/{portal}: section {section} is missing")
                 expected_sheets.extend(str(name) for name in names)
             source_file = str(portal_source.get("source_file") or "")
-            record = parse_source(source_file, expected_sheets)
+            record = parse_source(code, portal, source_file, expected_sheets)
             record["sections"] = sections
             portal_records[portal] = record
             workbook_count += 1
@@ -142,15 +235,16 @@ def build_payload() -> dict[str, Any]:
             "portals": portal_records,
         })
 
-    if workbook_count != 15:
-        raise RuntimeError(f"expected 15 workbooks, got {workbook_count}")
+    expected_workbook_count = len(TARGET_CODES) * len(PORTALS)
+    if workbook_count != expected_workbook_count:
+        raise RuntimeError(f"expected {expected_workbook_count} workbooks, got {workbook_count}")
     if API_RECORDS.stat().st_size != 0:
         raise RuntimeError("PHASE-01 api_records.jsonl is no longer empty; preparation contract must be revisited")
 
     return {
-        "phase": "PHASE-10",
-        "state": "PREPARATION_ONLY_NOT_STARTED",
-        "scope": "P006-P010 公共能力 B",
+        "phase": PHASE_CODE,
+        "state": "CONSTRUCTION_SOURCE_BASELINE",
+        "scope": SCOPE_LABEL,
         "parser": "phase04_source_contract.parse_workbook/python-stdlib-zipfile-xml",
         "process_codes": list(TARGET_CODES),
         "process_count": len(TARGET_CODES),
@@ -160,6 +254,14 @@ def build_payload() -> dict[str, Any]:
         "sheet_count": sheet_count,
         "nonempty_row_count": row_count,
         "business_api_records": 0,
+        "raw_workbook_count": sum(
+            1 for process in process_records for item in process["portals"].values()
+            if item["source_file_present"]
+        ),
+        "cached_workbook_count": sum(
+            1 for process in process_records for item in process["portals"].values()
+            if not item["source_file_present"]
+        ),
         "api_contract_rule": "DO_NOT_INFER_HTTP_PATHS_FROM_PROCESS_NAMES_OR_SHEET_TEXT",
         "processes": process_records,
         "rules": {
@@ -180,16 +282,18 @@ def md_escape(value: object) -> str:
 
 def build_markdown(payload: dict[str, Any]) -> str:
     lines = [
-        "# PHASE-10 P006–P010 XLSX ACTUAL PARSE SNAPSHOT",
+        f"# {PHASE_CODE} {RANGE_LABEL} XLSX ACTUAL PARSE SNAPSHOT",
         "",
-        "> 15 份三端业务流程 XLSX 由仓库内解析器在当前 GitHub checkout 上实际读取，不按文件名猜业务。",
-        "> 本文件只做开工前来源冻结；在 IMPACT/GAP 与 C0 完成前，不代表任何业务流程已实现。",
+        "> 优先读取当前仓库中的原始 XLSX；原件缺失时只使用 PHASE-01 已落盘、逐行且带来源坐标的机器合同缓存。",
+        "> 缓存模式不会伪称重新解析原始 XLSX；本文件只冻结施工来源，不代表业务流程已实现。",
         "",
         "## Result",
         "",
-        f"- Processes: **{payload['process_count']} / 5**",
+        f"- Processes: **{payload['process_count']} / {len(TARGET_CODES)}**",
         f"- Portals: **{payload['portal_count']} / 3**",
-        f"- XLSX workbooks parsed: **{payload['workbook_count']} / 15**",
+        f"- XLSX workbooks parsed: **{payload['workbook_count']} / {len(TARGET_CODES) * len(PORTALS)}**",
+        f"- Raw XLSX currently present: **{payload['raw_workbook_count']} / {len(TARGET_CODES) * len(PORTALS)}**",
+        f"- PHASE-01 machine-contract cache used: **{payload['cached_workbook_count']} / {len(TARGET_CODES) * len(PORTALS)}**",
         f"- Parse failures: **{payload['parse_failures']}**",
         f"- Parsed sheets: **{payload['sheet_count']}**",
         f"- Non-empty source rows: **{payload['nonempty_row_count']}**",
@@ -209,9 +313,9 @@ def build_markdown(payload: dict[str, Any]) -> str:
         portals = process["portals"]
         lines.append(
             f"| {process['process_code']} | {md_escape(process['canonical_name'])} | `{md_escape(mappings)}` | "
-            f"{portals['employee']['sheet_count']} sheets / {portals['employee']['nonempty_row_count']} rows | "
-            f"{portals['center']['sheet_count']} sheets / {portals['center']['nonempty_row_count']} rows | "
-            f"{portals['tech']['sheet_count']} sheets / {portals['tech']['nonempty_row_count']} rows |"
+            f"{portals['employee']['sheet_count']} sheets / {portals['employee']['nonempty_row_count']} rows / {portals['employee']['evidence_mode']} | "
+            f"{portals['center']['sheet_count']} sheets / {portals['center']['nonempty_row_count']} rows / {portals['center']['evidence_mode']} | "
+            f"{portals['tech']['sheet_count']} sheets / {portals['tech']['nonempty_row_count']} rows / {portals['tech']['evidence_mode']} |"
         )
 
     lines.extend([
@@ -224,9 +328,10 @@ def build_markdown(payload: dict[str, Any]) -> str:
         "## Preparation boundary",
         "",
         "- This snapshot does not invent REST paths, permission codes, route paths, states, approvers, or data scopes.",
-        "- P006–P010 must be converted into formal SOURCE_CONTRACT / IMPACT_MATRIX / GAP_MATRIX only after this snapshot is reviewed with current code and master ledgers.",
-        "- P011 and later processes remain out of scope.",
-        "- Machine evidence: `docs/implementation/phases/PHASE-10/P006_P010_SOURCE_SNAPSHOT.json`.",
+        "- Current checkout may not contain the original XLSX files. In that case the exact PHASE-01 row contracts and workbook metadata are the only accepted fallback, and the absence remains explicit.",
+        f"- {RANGE_LABEL} must be converted into formal SOURCE_CONTRACT / IMPACT_MATRIX / GAP_MATRIX only after this snapshot is reviewed with current code and master ledgers.",
+        f"- {NEXT_PROCESS_BOUNDARY}",
+        f"- Machine evidence: `docs/implementation/phases/{PHASE_CODE}/{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.json`.",
     ])
     return "\n".join(lines) + "\n"
 
@@ -241,12 +346,12 @@ def write_outputs() -> None:
 def check_outputs() -> None:
     expected = build_payload()
     if not OUT_JSON.is_file() or not OUT_MD.is_file():
-        raise RuntimeError("PHASE-10 source snapshot is missing")
+        raise RuntimeError(f"{PHASE_CODE} source snapshot is missing")
     actual = json.loads(OUT_JSON.read_text(encoding="utf-8"))
     if actual != expected:
-        raise RuntimeError("P006_P010_SOURCE_SNAPSHOT.json is stale")
+        raise RuntimeError(f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.json is stale")
     if OUT_MD.read_text(encoding="utf-8") != build_markdown(expected):
-        raise RuntimeError("P006_P010_SOURCE_SNAPSHOT.md is stale")
+        raise RuntimeError(f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.md is stale")
 
 
 def main() -> None:
@@ -255,10 +360,10 @@ def main() -> None:
     args = parser.parse_args()
     if args.check:
         check_outputs()
-        print("PHASE-10 P006-P010 XLSX snapshot is deterministic and current")
+        print(f"{PHASE_CODE} {RANGE_LABEL} XLSX snapshot is deterministic and current")
         return
     write_outputs()
-    print("PHASE-10 P006-P010: 15 XLSX workbooks parsed and preparation snapshot generated")
+    print(f"{PHASE_CODE} {RANGE_LABEL}: {len(TARGET_CODES) * len(PORTALS)} XLSX workbooks parsed and preparation snapshot generated")
 
 
 if __name__ == "__main__":

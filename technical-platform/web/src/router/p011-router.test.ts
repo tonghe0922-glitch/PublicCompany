@@ -1,0 +1,6 @@
+import {describe,expect,it} from 'vitest'
+import {createMemoryHistory} from 'vue-router'
+import {PORTALS,type PortalCode} from '../platform/portal-config'
+import {createPortalRouter} from './portal-router'
+async function route(portal:PortalCode,path:string,permissions:string[]){const r=createPortalRouter(PORTALS[portal],{authenticated:true,restore:()=>Promise.resolve(true),can:p=>permissions.includes(p)},createMemoryHistory());await r.push(path);await r.isReady();return r.currentRoute.value}
+describe('P011 exact source routes',()=>{it('binds employee and fails closed',async()=>{expect((await route('employee','/employee/02/03/06',['p011.performance.read'])).name).toBe('p011-performance-cycle');expect((await route('employee','/employee/08/03/06',[])).name).toBe('forbidden')});it('binds center evaluation and calibration',async()=>{expect((await route('center','/center/10/02/04',['p011.performance.manage'])).name).toBe('p011-score-calculation');expect((await route('center','/center/10/02/05',['p011.performance.calibrate'])).name).toBe('p011-calibration')});it('tech has monitor only',async()=>{expect((await route('tech','/tech/06/05/01',['p011.performance.monitor'])).name).toBe('p011-performance-rules');expect((await route('tech','/tech/06/05/01',['p011.performance.calibrate'])).name).toBe('forbidden')})})

@@ -98,10 +98,10 @@ onMounted(() => { void run(load) })
 </script>
 
 <template>
-  <main class="phase09-page" data-testid="p003-page">
+  <section class="phase09-page" data-testid="p003-page">
     <header>
       <p class="phase09-kicker">PHASE-09 · P003</p>
-      <h1>{{ heading }}</h1>
+      <h2>{{ heading }}</h2>
       <p>变更值由服务端按字段敏感级别加密保存；列表只返回脱敏值，权威主档更新与投影同步由后端工作流执行。</p>
     </header>
 
@@ -145,7 +145,7 @@ onMounted(() => { void run(load) })
       <p v-else-if="canRead">当前没有可见的资料变更记录。</p>
     </section>
     <p v-if="feedback" role="status" class="phase09-feedback">{{ feedback }}</p>
-  </main>
+  </section>
 </template>
 
 <style scoped>

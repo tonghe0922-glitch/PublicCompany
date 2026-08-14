@@ -130,3 +130,23 @@
 | P124 | 采购资产财务闭环 | YES | YES | YES | workflow.workflow.wf_orchestration_instance |
 | P125 | 内容生产发布闭环 | YES | YES | YES | workflow.workflow.wf_orchestration_instance |
 | P126 | 事件与整改闭环 | YES | YES | YES | workflow.workflow.wf_orchestration_instance |
+
+## Runtime implementation status (local PHASE-10 checkpoint)
+
+- `P006 = CHECKPOINT_PASS / CLOSED`: published S01–S11 + END workflow, real form/task/action history, canonical meeting/item projection, API, audit and Outbox/Worker notification verified.
+- `P007 = CHECKPOINT_PASS / CLOSED`: published S01–S09 + END workflow, qualification/hours/overlap checks, employee confirmation, independent change review, integration/day-close facts, API, audit and Outbox/Worker notification verified.
+- `P008 = NEXT / NOT_STARTED`; P009–P010 remain NOT_STARTED; P011+ is outside the active phase.
+- Source catalog rows above remain unchanged; runtime status is evidence-backed in `phases/PHASE-10/P006_CHECKPOINT.md` and `phases/PHASE-10/P007_CHECKPOINT.md`.
+
+## Runtime implementation status (local PHASE-11 construction closeout)
+
+| Process | Local runtime status | Published workflow | Canonical projection |
+|---|---|---|---|
+| P011 | CHECKPOINT_PASS / CLOSED | V120 / S01-S11 + END | `performance.performance_cycle` + immutable score/event/effect facts |
+| P012 | CHECKPOINT_PASS / CLOSED | V121 / S01-S10 + END | `hr.promotion_request` + appointment execution facts |
+| P013 | CHECKPOINT_PASS / CLOSED | V122 / S01-S09 + END | `reward.reward_case` + impact instruction/receipt facts |
+| P014 | CHECKPOINT_PASS / CLOSED | V123 / S01-S12 + END | `reward.discipline_case` + decision/impact facts |
+| P015 | CHECKPOINT_PASS / CLOSED | V124 / S01-S10 + END | `reward.point_transaction` + append-only posting/balance/event facts |
+| P016 | CHECKPOINT_PASS / CLOSED | V125 / S01-S08 + END | `welfare.care_case` + eligibility/privacy/approval/execution/confirmation/reconciliation facts |
+
+Full construction evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`. PHASE-11 is `CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING`; P017+ remains outside the active phase.

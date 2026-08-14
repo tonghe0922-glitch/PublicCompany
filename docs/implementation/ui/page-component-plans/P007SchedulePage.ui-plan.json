@@ -1,0 +1,163 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P007SchedulePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+  "portal_codes": [
+    "employee",
+    "center"
+  ],
+  "route_paths": [
+    "/employee/04/01/01",
+    "/employee/03/01/09",
+    "/employee/03/01/10",
+    "/center/04/01/01",
+    "/center/04/07/04",
+    "/center/04/07/05"
+  ],
+  "process_codes": [
+    "P007"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.list-page",
+  "source_facts": {
+    "permissions": [
+      "p007.schedule.read",
+      "p007.schedule.change",
+      "p007.schedule.manage",
+      "p007.schedule.review"
+    ],
+    "data_scope": "SELF for employee; CENTER for management",
+    "sensitive_level": "P1-内部",
+    "states": [
+      "S01-S09",
+      "loading",
+      "empty",
+      "error",
+      "permission-denied",
+      "conflict"
+    ],
+    "actions": [
+      "SUBMIT_DEMAND",
+      "WITHDRAW",
+      "MATCH_TEMPLATE",
+      "RETURN",
+      "VALIDATE",
+      "PUBLISH",
+      "CONFIRM",
+      "REQUEST_CHANGE",
+      "NO_CHANGE",
+      "APPROVE",
+      "REJECT",
+      "LINK",
+      "CLOSE_DAY"
+    ]
+  },
+  "field_component_map": [
+    {
+      "field": "subject|contentVersion|periodOrCourseNo",
+      "component_id": "ui.input",
+      "reason": "Registered text controls preserve server-defined schedule facts",
+      "editable_when": "Typed P007 node and caller permission form an UX candidate; backend remains authoritative"
+    },
+    {
+      "field": "reason|changeReason|handoverItems|evidence|actualAttendanceSummary|resultSummary",
+      "component_id": "ui.textarea",
+      "reason": "Registered multiline controls preserve typed schedule material and evidence",
+      "editable_when": "The process contract exposes the field for the current typed action candidate"
+    },
+    {
+      "field": "attendanceType|changeAction",
+      "component_id": "ui.select",
+      "reason": "Only contract-defined option values are rendered",
+      "editable_when": "Create is available and personnel-independent payload is valid"
+    },
+    {
+      "field": "businessDate|startAt|endAt|proposedStartAt|proposedEndAt",
+      "component_id": "ui.datetime",
+      "reason": "Registered date/time projection with caller-owned typed values",
+      "editable_when": "The relevant create or change candidate is visible"
+    },
+    {
+      "field": "schedule-records",
+      "component_id": "platform.data-table",
+      "reason": "Server-sourced schedules use the shared responsive record projection",
+      "editable_when": "read or monitor projection is allowed"
+    },
+    {
+      "field": "businessNo|status|currentNodeCode|versionNo",
+      "component_id": "platform.process-record-meta",
+      "reason": "Business number and status remain server-sourced",
+      "editable_when": "never"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "Resource and action state remain independent typed AsyncState projections"
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "Caller/backend denial is projected for UX only; backend remains authoritative"
+    },
+    {
+      "state": "409|conflict",
+      "component_id": "platform.version-conflict-panel",
+      "reason": "Stale expectedVersion is fail-closed and refreshed by an explicit caller action"
+    },
+    {
+      "state": "timeout|error|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable typed error projection without exposing backend detail"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "typed P007 node action UX candidate",
+      "component_id": "platform.process-action-panel",
+      "confirmation": "contract-defined risk projection",
+      "permission": "caller permission narrows visibility; backend 403/409 is final",
+      "reason": "Current responses do not contain allowedActions; no server action authority is fabricated in the client"
+    },
+    {
+      "action": "irreversible publish, confirm, link, reject or close candidate",
+      "component_id": "platform.high-risk-confirm-dialog",
+      "confirmation": "caller-supplied step-up result and reason only",
+      "permission": "backend re-authorizes every command",
+      "reason": "The dialog never captures credentials and does not alter workflow state"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Authenticated PortalShell owns the only main landmark and primary h1; page content is a section below the route title",
+    "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
+    "limited_actions": []
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P007-OWNER-DIRECTORY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "ownerEmployeeId requires an authoritative directory search API with pagination, data-scope enforcement, and a minimal active-employee projection. No such contract exists. The create entry is visibly blocked, submit emission is disabled, the service is not called, and no empty UUID, typed UUID, static option, or cached local truth is sent."
+    },
+    {
+      "id": "UI-GAP-P007-SUBSTITUTE-DIRECTORY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "substituteEmployeeId requires the same authoritative scoped directory contract plus active-duty eligibility. REQUEST_CHANGE remains visibly blocked, emits no action, never calls the service, and never sends an empty or fabricated identifier."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": [
+    "blocked ownerEmployeeId and substituteEmployeeId entries emit no create or change action and never call the service",
+    "backend 403 and 409 remain final even when node and caller permission form an UX candidate",
+    "timeout and partial failures preserve a retryable typed projection without backend detail",
+    "repeat click invokes one command with the caller-owned idempotency key for that action lifecycle",
+    "refresh replaces records with server businessNo, status, node and version facts",
+    "desktop table and mobile record cards project the same server-sourced schedules"
+  ],
+  "updated_at": "2026-08-13T20:10:00+08:00"
+}

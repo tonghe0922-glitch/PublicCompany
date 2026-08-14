@@ -105,4 +105,78 @@ public class Phase09P002WorkerConfiguration {
             NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
         return new Phase09P005NotificationHandler(notifications, jdbc, mapper);
     }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase10P006NotificationHandler phase10P006NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase10P006NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase10P007NotificationHandler phase10P007NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase10P007NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase10P008NotificationHandler phase10P008NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase10P008NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase10P009NotificationHandler phase10P009NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase10P009NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase10P010NotificationHandler phase10P010NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase10P010NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase11P011NotificationHandler phase11P011NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P011NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase11P012NotificationHandler phase11P012NotificationHandler(
+            NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P012NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "platform.notification.worker", name = "enabled", havingValue = "true")
+    Phase11P013NotificationHandler phase11P013NotificationHandler(
+        NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P013NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    Phase11P014NotificationHandler phase11P014NotificationHandler(
+        NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P014NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    Phase11P015NotificationHandler phase11P015NotificationHandler(
+        NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P015NotificationHandler(notifications, jdbc, mapper);
+    }
+
+    @Bean
+    Phase11P016NotificationHandler phase11P016NotificationHandler(
+        NotificationService notifications, JdbcTemplate jdbc, ObjectMapper mapper) {
+        return new Phase11P016NotificationHandler(notifications, jdbc, mapper);
+    }
 }

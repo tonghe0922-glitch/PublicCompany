@@ -87,7 +87,7 @@ const taxonomy = computed(() => projectPortalTaxonomy(PORTAL_IA_NAVIGATION, prop
 .portal-navigation__more { position: relative; }
 .portal-navigation__more summary { cursor: pointer; list-style: none; }
 .portal-navigation__more summary::-webkit-details-marker { display: none; }
-.portal-navigation__more-menu { position: absolute; right: 0; bottom: calc(100% + var(--sgj-space-2)); z-index: 20; display: grid; min-width: min(280px, 84vw); gap: var(--sgj-space-1); padding: var(--sgj-space-2) !important; border: 1px solid var(--sgj-border); border-radius: var(--sgj-radius-lg); background: var(--sgj-surface); box-shadow: var(--sgj-shadow-lg); }
+.portal-navigation__more-menu { position: absolute; right: 0; bottom: calc(100% + var(--sgj-space-2)); z-index: 20; display: grid; min-width: min(280px, 84vw); gap: var(--sgj-space-1); padding: var(--sgj-space-2) !important; border: 1px solid var(--sgj-border); border-radius: var(--sgj-radius-lg); background: var(--sgj-surface); box-shadow: var(--sgj-shadow-overlay); }
 .portal-navigation__more-menu a { justify-content: flex-start; }
 .portal-navigation--mobile .portal-navigation__links { grid-auto-flow: column; grid-auto-columns: minmax(72px, 1fr); overflow: visible; }
 .portal-navigation--mobile .portal-navigation__links > li > a,

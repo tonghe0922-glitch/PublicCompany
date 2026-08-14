@@ -4,6 +4,11 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@sgj/ui": ["src/design-system/index.ts"],
+      "@sgj/platform-ui": ["src/platform/processes/shared/index.ts"]
+    },
     "strict": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,

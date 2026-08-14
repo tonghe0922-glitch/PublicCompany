@@ -175,10 +175,10 @@ onMounted(() => { void run(load) })
 </script>
 
 <template>
-  <main class="phase09-page" data-testid="p004-page">
+  <section class="phase09-page" data-testid="p004-page">
     <header>
       <p class="phase09-kicker">PHASE-09 · P004</p>
-      <h1>{{ heading }}</h1>
+      <h2>{{ heading }}</h2>
       <p v-if="isTech">技术端仅查看流程实例、节点和版本等运行元数据，不拥有业务审批权。</p>
       <p v-else>流程状态只能由服务端工作流合法迁移；申请人不得自批，关键复核与执行/验收按人员分离规则处理。</p>
     </header>
@@ -251,7 +251,7 @@ onMounted(() => { void run(load) })
       <p v-else-if="canRead">当前没有可见的通用申请记录。</p>
     </section>
     <p v-if="feedback" role="status" class="phase09-feedback">{{ feedback }}</p>
-  </main>
+  </section>
 </template>
 
 <style scoped>

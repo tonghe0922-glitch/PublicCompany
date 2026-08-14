@@ -9,10 +9,12 @@ const props = withDefaults(defineProps<{
   description?: string
   side?: DrawerSide
   closeLabel?: string
+  closeOnBackdrop?: boolean
 }>(), {
   description: undefined,
   side: 'right',
   closeLabel: '关闭抽屉',
+  closeOnBackdrop: true,
 })
 
 const emit = defineEmits<{ close: [] }>()
@@ -29,10 +31,14 @@ function handleKeydown(event: KeyboardEvent): void {
   }
   trapFocus(event)
 }
+
+function handleBackdropClick(): void {
+  if (props.closeOnBackdrop) emit('close')
+}
 </script>
 
 <template>
-  <div v-if="open" class="sgj-overlay sgj-overlay--drawer" @click.self="emit('close')">
+  <div v-if="open" class="sgj-overlay sgj-overlay--drawer" @click.self="handleBackdropClick">
     <aside
       ref="panelRef"
       class="sgj-drawer"

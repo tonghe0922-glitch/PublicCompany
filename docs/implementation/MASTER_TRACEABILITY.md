@@ -78,4 +78,27 @@ C0 31271339605 PASS
 → PHASE-08 COMPLETE / FORMAL_GATE_PASS
 ```
 
-PHASE-09 remains `NOT_STARTED`; P001–P005 are not implemented by this trace update and require a separate start instruction.
+The paragraph above is the sealed PHASE-08 historical boundary. PHASE-09 later closed P001–P005.
+
+## PHASE-10 P006 local implementation trace
+
+- Authoritative input is the current raw Knowledge Base snapshot: 15/15 P006–P010 XLSX, 90 sheets, 4,745 non-empty rows, zero fallback and zero parse failures.
+- P006 exact bindings are employee `/employee/05/01/03`, `/employee/05/07/02`; center `/center/06/09/03`, `/center/05/02/02`; tech monitor `/tech/05/03/01`. Each retains its PHASE-01 source key in `phases/PHASE-10/PHASE10_PAGE_BINDINGS.json`.
+- P006 trace closes as: raw XLSX states/roles/rules → P006 → initial published form and S01–S11/END workflow → six IAM permissions → meeting API → `collaboration.meeting/meeting_item` → audit/outbox/worker notification → three real portal projections.
+- Local evidence is `phases/PHASE-10/P006_CHECKPOINT.md` and `.runlogs/phase10-p006-*`; the directory has no `.git`, so no remote SHA/CI status is asserted.
+- P006 is `CHECKPOINT_PASS / CLOSED`; P007 is next. P008–P010 remain planned and PHASE-11 remains blocked.
+
+## PHASE-10 P007 local implementation trace
+
+- P007 exact bindings are employee `/employee/04/01/01`, `/employee/03/01/09`, `/employee/03/01/10`; center `/center/04/01/01`, `/center/04/07/04`, `/center/04/07/05`; tech `/tech/05/03/01`.
+- Trace closes as raw XLSX states/roles/rules → P007 → published S01–S09/END workflow and form → five IAM permissions → schedule/shift-change API → `attendance.shift_change_request/item` plus learning qualification → audit/outbox/worker notification → three real portal projections.
+- Local evidence: `phases/PHASE-10/P007_CHECKPOINT.md` and `.runlogs/phase10-p007-*`; no remote SHA/CI fact is asserted.
+- P006/P007 are closed; P008 is next. P009/P010 remain planned and PHASE-11 remains blocked.
+
+## PHASE-11 P011-P016 construction trace
+
+- Authoritative source: 18 XLSX / 108 worksheets / 5,655 non-empty rows / SHA-256 `D21D758B6CCE42A68659A2D1711C977FFE8DAFDF56DB57234C775074F3A36C55`, with 0 fallback and 0 parse failure.
+- Explicit binding ledger: `phases/PHASE-11/PHASE11_PAGE_BINDINGS.json`; full-gate revalidation proves 31/31 source keys and 31/31 current router paths, with employee/center/tech coverage for every P011-P016 process.
+- Runtime chain: source states/roles/rules → V120-V125 published workflow/form → server authorization/data scope → engineering API → canonical table plus append-only facts → audit/outbox/Worker → employee/center/metadata-only tech projections.
+- Evidence chain: `P011_CHECKPOINT.md` through `P016_CHECKPOINT.md`, then `FULL_GATE_REPORT.md` and `.runlogs/phase11-full-*`.
+- State: `CONSTRUCTION_COMPLETE / INDEPENDENT_GATE_PENDING`; no independent PASS is asserted and PHASE-12 remains blocked.

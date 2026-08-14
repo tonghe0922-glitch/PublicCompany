@@ -92,6 +92,46 @@ P002 does not accept arbitrary target status or client-declared risk. Requested-
 
 P002 evidence: `P002_CHECKPOINT.md`, run `31332029201 / SUCCESS`, evidence SHA `cdd58b3e7d93326ad4e48bc9c3b4f3460efaf6a6`.
 
-### P003–P005 — contracted, not yet implemented at P002 close
+### P003–P005 — historical note at P002 close
 
-The PHASE-09 contract already freezes engineering identifiers for P003–P005, but this catalog does **not** mark them implemented before their own checkpoints. Current legal next target is P003; P004/P005 remain NOT_STARTED.
+The statement that followed P002 was true at that checkpoint only. PHASE-09 subsequently closed P003–P005; their formal contracts remain in `contracts/phase-09`.
+
+## PHASE-10 P006 approved engineering process HTTP contract
+
+PHASE-01 source HTTP records remain 0. These identifiers are frozen engineering mappings in `contracts/phase-10/PHASE10_HTTP_PERMISSION_CONTRACT.md`; business states and authority remain XLSX-backed.
+
+| Method | Path | Purpose | Authority |
+|---|---|---|---|
+| POST | `/api/v1/processes/P006/meetings` | create meeting topic and workflow instance | `p006.meeting.create` + SELF + Idempotency-Key |
+| GET | `/api/v1/processes/P006/meetings` | scoped business list or masked monitor list | `read` or `monitor` + server data scope/field policy |
+| GET | `/api/v1/processes/P006/meetings/{id}` | scoped meeting detail | `read` or `monitor` + server data scope/field policy |
+| POST | `/api/v1/processes/P006/meetings/{id}/actions/{actionCode}` | execute current-node source action | expectedVersion + node action + process permission + workflow candidate |
+
+P006 rejects client target-state control, stale writes, changed-payload idempotency reuse, cross-center access, non-owner S08 execution and executor self-acceptance. Local evidence: `phases/PHASE-10/P006_CHECKPOINT.md`.
+
+## PHASE-10 P007 approved engineering process HTTP contract
+
+| Method | Path | Purpose | Authority |
+|---|---|---|---|
+| GET | `/api/v1/processes/P007/schedules` | employee scoped published schedule | `p007.schedule.read/change` + SELF |
+| POST | `/api/v1/processes/P007/shift-changes` | create schedule demand | `p007.schedule.manage` + CENTER + idempotency |
+| GET | `/api/v1/processes/P007/shift-changes` | scoped business/monitor list | read or monitor + data/field policy |
+| GET | `/api/v1/processes/P007/shift-changes/{id}` | scoped detail | read or monitor + data/field policy |
+| POST | `/api/v1/processes/P007/shift-changes/{id}/actions/{actionCode}` | execute current source node | expectedVersion + permission + workflow candidate |
+
+P007 rejects client state targets, stale writes, cross-center detail, over-12-hour intervals, unqualified/conflicting shifts, manager employee-confirm and requester self-review. Evidence: `phases/PHASE-10/P007_CHECKPOINT.md`.
+
+## PHASE-11 P011-P016 approved engineering process HTTP contracts
+
+PHASE-01 source business HTTP records remain 0. These are explicit engineering mappings; they do not invent source REST facts.
+
+| Process | Collection root | Methods | Server authority |
+|---|---|---|---|
+| P011 | `/api/v1/processes/P011/performance-cycles` | POST create; GET list/detail; POST `/{id}/actions/{actionCode}` | permission + data scope + workflow candidate + expected version + idempotency |
+| P012 | `/api/v1/processes/P012/promotion-requests` | POST create; GET list/detail; POST action | same; appointment/effect remains separate from approval |
+| P013 | `/api/v1/processes/P013/reward-cases` | POST create; GET list/detail; POST action | same; impact execution uses instructions/receipts |
+| P014 | `/api/v1/processes/P014/discipline-cases` | POST create; GET list/detail; POST action | same; recusal/privacy/appeal separation |
+| P015 | `/api/v1/processes/P015/point-transactions` and `/point-rules` | rule draft/publish/list; transaction create/list/detail/action | same; ledger facts append-only |
+| P016 | `/api/v1/processes/P016/care-cases` | POST create; GET list/detail; POST action | same; records external execution receipt but never initiates payment |
+
+All undefined target-state control is rejected. Invalid IDs, stale versions, cross-scope access, unauthorized actions and tech business actions fail closed. Evidence: `phases/PHASE-11/FULL_GATE_REPORT.md`.

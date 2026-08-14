@@ -63,6 +63,14 @@ physical_table_count: 265
 
 ## 0. 规范词与适用边界
 
+### UI 组件唯一接入（PHASE-10）
+
+- 仓库内 UI 组件接入的 canonical 资料位于 `docs/implementation/ui/`；注册表、复用规则、页面计划 schema 与原生元素例外不得维护第二份项目内副本。
+- 公共组件只能从 `@sgj/ui` 或 `@sgj/platform-ui` 导入，禁止深层导入 Design System、模板、布局或平台复合组件内部路径。
+- 修改页面前必须先完成对应 `page-component-plans/<Page>.ui-plan.json`；新增/晋升组件必须同步源码、类型、测试、public index 与 `UI_COMPONENT_REGISTRY.json`。
+- Design System 不得调用业务 API、缓存人员/组织真值或承载 P006-P010 状态机、权限和流程动作；原生交互元素例外必须临时、可审计且通过 Gate，空例外是默认状态。
+- `scripts/implementation/ui_component_access_gate.py` 的正负自测与真实债务扫描是合并门槛；不得以 skip、永久例外或删除测试消除 finding。
+
 ### 0.1 规范词
 
 - **必须（MUST）**：不满足即视为功能未完成或存在不可接受风险。

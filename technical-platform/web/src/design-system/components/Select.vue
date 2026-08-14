@@ -22,13 +22,23 @@ const props = withDefaults(defineProps<{
   disabled: false,
 })
 
-const emit = defineEmits<{ 'update:modelValue': [value: string]; blur: [event: FocusEvent] }>()
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  change: [value: string]
+  blur: [event: FocusEvent]
+}>()
 const field = useFieldA11y({
   id: () => props.id,
   hint: () => props.hint,
   error: () => props.error,
   prefix: 'sgj-select',
 })
+
+function handleChange(event: Event): void {
+  const value = eventValue(event)
+  emit('update:modelValue', value)
+  emit('change', value)
+}
 </script>
 
 <template>
@@ -50,7 +60,7 @@ const field = useFieldA11y({
       :disabled="disabled"
       :aria-invalid="error ? 'true' : undefined"
       :aria-describedby="field.describedBy.value"
-      @change="emit('update:modelValue', eventValue($event))"
+      @change="handleChange"
       @blur="emit('blur', $event)"
     >
       <option value="" :disabled="required">{{ placeholder }}</option>

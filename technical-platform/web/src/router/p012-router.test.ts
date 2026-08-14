@@ -1,0 +1,7 @@
+import { createMemoryHistory } from 'vue-router'
+import { describe, expect, it } from 'vitest'
+import { createPortalRouter } from './portal-router'
+import { PORTALS } from '../platform/portal-config'
+
+async function route(portalCode:'employee'|'center'|'tech',path:string,permissions:string[]){const router=createPortalRouter(PORTALS[portalCode],{authenticated:true,restore:()=>Promise.resolve(true),can:(permission)=>permissions.includes(permission)},createMemoryHistory());await router.push(path);await router.isReady();return router.currentRoute.value}
+describe('P012 exact source routes',()=>{it('binds employee application and appointment views fail closed',async()=>{expect((await route('employee','/employee/03/03/05',['p012.promotion.read'])).name).toBe('p012-promotion-application');expect((await route('employee','/employee/08/09/03',[])).name).toBe('forbidden')});it('binds center review and appointment routes',async()=>{expect((await route('center','/center/03/08/05',['p012.promotion.review'])).name).toBe('p012-promotion-review');expect((await route('center','/center/03/08/06',['p012.promotion.appoint'])).name).toBe('p012-promotion-appointment')});it('uses shared tech monitor without mutation authority',async()=>{expect((await route('tech','/tech/05/03/01',['p012.promotion.monitor'])).name).toBe('p004-workflow-instance-monitor');expect((await route('tech','/tech/05/03/01',['p012.promotion.appoint'])).name).toBe('forbidden')})})

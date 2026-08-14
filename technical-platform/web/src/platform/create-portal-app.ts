@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import '../styles.css'
 import type { PortalDefinition } from './portal-config'
 import PortalRuntimeRoot from './PortalRuntimeRoot.vue'
 import { recordRuntimeError } from './runtime-error-state'

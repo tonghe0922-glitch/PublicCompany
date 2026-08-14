@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+  "workspace_root": "I:\\PublicCompany_source_codex",
+  "canonical_repository_target": "docs/implementation/ui/UI_COMPONENT_REUSE_RULES.json",
+  "decision_flow": [
+    "search-registry-by-keywords-and-native-replacement",
+    "reuse-existing-public-component",
+    "compose-existing-components",
+    "create-platform-composite-if-cross-process",
+    "create-domain-feature-if-process-specific",
+    "create-new-design-system-component-only-for-new-generic-interaction",
+    "mark-blocked-by-contract-when-source-contract-is-missing"
+  ],
+  "approved_imports": [
+    "@sgj/ui",
+    "@sgj/platform-ui",
+    "process-local public index.ts"
+  ],
+  "forbidden_import_patterns": [
+    "/design-system/components/",
+    "/design-system/layout/",
+    "/design-system/templates/",
+    "/platform/processes/shared/<internal-subfolder>/"
+  ],
+  "raw_element_replacements": {
+    "button": "ui.button",
+    "input:text|number|email|tel|url|password|search": "ui.input",
+    "input:date|time|datetime-local": "ui.datetime",
+    "textarea": "ui.textarea",
+    "select": "ui.select",
+    "input:checkbox": "ui.checkbox",
+    "input:radio": "ui.radio-group",
+    "input:file": "ui.upload",
+    "table": "ui.table",
+    "modal": "ui.dialog",
+    "drawer": "ui.drawer"
+  },
+  "scan_roots": [
+    "technical-platform/web/src/platform/pages",
+    "technical-platform/web/src/platform/processes",
+    "technical-platform/web/src/portals"
+  ],
+  "excluded_roots": [
+    "technical-platform/web/src/design-system",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/fixtures/**"
+  ],
+  "duplicate_primitive_filenames_forbidden_outside_design_system": [
+    "Button.vue",
+    "Input.vue",
+    "Textarea.vue",
+    "Select.vue",
+    "Checkbox.vue",
+    "RadioGroup.vue",
+    "Switch.vue",
+    "Upload.vue",
+    "Dialog.vue",
+    "Drawer.vue",
+    "Table.vue",
+    "Card.vue",
+    "Avatar.vue",
+    "StatusChip.vue"
+  ],
+  "native_exception_contract": {
+    "path": "docs/implementation/ui/UI_NATIVE_ELEMENT_EXCEPTIONS.json",
+    "required_fields": [
+      "path",
+      "tag",
+      "reason",
+      "owner",
+      "expires_at",
+      "replacement_plan"
+    ],
+    "permanent_exceptions_forbidden": true
+  },
+  "usage_plan_contract": {
+    "directory": "docs/implementation/ui/page-component-plans",
+    "suffix": ".ui-plan.json",
+    "schema": "docs/implementation/ui/PAGE_COMPONENT_USAGE_PLAN.schema.json",
+    "required_for": [
+      "new-pages",
+      "modified-pages",
+      "PHASE-10 P006-P010 pages"
+    ]
+  },
+  "new_component_contract": {
+    "required": [
+      "source",
+      "types",
+      "tests",
+      "public-export",
+      "registry-entry",
+      "examples",
+      "impact-note"
+    ],
+    "design_system_must_not_depend_on": [
+      "API",
+      "session",
+      "permission-code",
+      "process-code",
+      "business-state-machine"
+    ],
+    "public_component_without_registry_is_failure": true
+  },
+  "ratchet": {
+    "phase10_scope": "mandatory",
+    "new_or_modified_pages": "mandatory",
+    "legacy_pages": "migrate progressively; no new violations"
+  }
+}
+

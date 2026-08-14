@@ -1,0 +1,158 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "P006MeetingPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+  "portal_codes": [
+    "employee",
+    "center"
+  ],
+  "route_paths": [
+    "/employee/05/01/03",
+    "/employee/05/07/02",
+    "/center/06/09/03",
+    "/center/05/02/02"
+  ],
+  "process_codes": [
+    "P006"
+  ],
+  "page_type": "mixed",
+  "page_template": "ui.template.detail-page",
+  "source_facts": {
+    "permissions": [
+      "p006.meeting.create",
+      "p006.meeting.read",
+      "p006.meeting.action",
+      "p006.meeting.manage",
+      "p006.meeting.accept"
+    ],
+    "data_scope": "SELF for employee; CENTER for management",
+    "sensitive_level": "P1-内部",
+    "states": [
+      "S01-S11",
+      "loading",
+      "empty",
+      "error",
+      "permission-denied",
+      "conflict"
+    ],
+    "actions": [
+      "SUBMIT",
+      "WITHDRAW",
+      "ACCEPT",
+      "RETURN",
+      "REJECT",
+      "PUBLISH",
+      "RECORD_ATTENDANCE",
+      "CONVENE",
+      "CONFIRM_MINUTES",
+      "GENERATE_ACTIONS",
+      "SUBMIT_EXECUTION",
+      "ACCEPT_RESULT",
+      "REWORK",
+      "ACKNOWLEDGE_OVERDUE",
+      "ARCHIVE"
+    ]
+  },
+  "field_component_map": [
+    {
+      "field": "subject|officialSubject|venueChannel",
+      "component_id": "ui.input",
+      "reason": "Registered text controls for server-defined meeting facts",
+      "editable_when": "Typed P006 node and caller permission form an UX candidate; backend remains authoritative"
+    },
+    {
+      "field": "reason|officialContent|resultSummary|evidence|acceptanceCriteria",
+      "component_id": "ui.textarea",
+      "reason": "Registered multiline controls preserve typed meeting material and evidence",
+      "editable_when": "The process contract exposes the field for the current typed action candidate"
+    },
+    {
+      "field": "priority|visibilityLevel",
+      "component_id": "ui.select",
+      "reason": "Only contract-defined option values are rendered",
+      "editable_when": "Create is available and the personnel-independent payload is valid"
+    },
+    {
+      "field": "businessDate|startAt|plannedStartAt|plannedFinishAt",
+      "component_id": "ui.datetime",
+      "reason": "Registered date/time projection with caller-owned typed values",
+      "editable_when": "The relevant create or action candidate is visible"
+    },
+    {
+      "field": "meeting-records",
+      "component_id": "platform.data-table",
+      "reason": "Server-sourced records use the shared responsive record projection",
+      "editable_when": "read or monitor projection is allowed"
+    },
+    {
+      "field": "businessNo|status|currentNodeCode|versionNo",
+      "component_id": "platform.process-record-meta",
+      "reason": "Business number and status remain server-sourced",
+      "editable_when": "never"
+    }
+  ],
+  "state_component_map": [
+    {
+      "state": "idle|loading|success|empty|partial|error|cancelled",
+      "component_id": "platform.async-state-boundary",
+      "reason": "Resource and action state remain independent typed AsyncState projections"
+    },
+    {
+      "state": "403|permission-denied",
+      "component_id": "platform.permission-gate",
+      "reason": "Caller/backend denial is projected for UX only; backend remains authoritative"
+    },
+    {
+      "state": "409|conflict",
+      "component_id": "platform.version-conflict-panel",
+      "reason": "Stale expectedVersion is fail-closed and refreshed by an explicit caller action"
+    },
+    {
+      "state": "timeout|error|partial",
+      "component_id": "platform.api-error-notice",
+      "reason": "Stable typed error projection without exposing backend detail"
+    }
+  ],
+  "action_component_map": [
+    {
+      "action": "typed P006 node action UX candidate",
+      "component_id": "platform.process-action-panel",
+      "confirmation": "contract-defined risk projection",
+      "permission": "caller permission narrows visibility; backend 403/409 is final",
+      "reason": "Current responses do not contain allowedActions; no server action authority is fabricated in the client"
+    },
+    {
+      "action": "destructive or irreversible P006 action candidate",
+      "component_id": "platform.high-risk-confirm-dialog",
+      "confirmation": "caller-supplied step-up result and reason only",
+      "permission": "backend re-authorizes every command",
+      "reason": "The dialog never captures credentials and does not alter workflow state"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "Authenticated PortalShell owns the only main landmark and primary h1; page content is a section below the route title",
+    "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
+    "limited_actions": []
+  },
+  "gaps": [
+    {
+      "id": "UI-GAP-P006-ACTION-OWNER-DIRECTORY",
+      "classification": "BLOCKED_BY_CONTRACT",
+      "status": "blocked",
+      "reason": "ownerEmployeeId requires an authoritative directory search API with pagination, data-scope enforcement, and a minimal active-employee projection. No such contract exists. The action-owner entry is visibly blocked, submit/action emission is disabled, the service is not called, and no empty UUID, typed UUID, static option, or cached local truth is sent."
+    }
+  ],
+  "native_element_exceptions": [],
+  "decision": "new-domain-feature",
+  "registry_updates": [],
+  "tests": [
+    "blocked ownerEmployeeId entry emits no action and never calls the service",
+    "backend 403 and 409 remain final even when node and caller permission form an UX candidate",
+    "timeout and partial failures preserve a retryable typed projection without backend detail",
+    "repeat click invokes one command with the caller-owned idempotency key for that action lifecycle",
+    "refresh replaces records with server businessNo, status, node and version facts",
+    "desktop table and mobile record cards project the same server-sourced records"
+  ],
+  "updated_at": "2026-08-13T20:10:00+08:00"
+}
