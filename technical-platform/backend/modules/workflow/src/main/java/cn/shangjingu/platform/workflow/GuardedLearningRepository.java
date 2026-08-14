@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -22,9 +23,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class GuardedLearningRepository implements LearningService.Repository {
     private final JdbcLearningRepository delegate;
+    private final P010LearningInsertWriter insertWriter;
 
     public GuardedLearningRepository(JdbcLearningRepository delegate) {
+        this(delegate, null);
+    }
+
+    @Autowired
+    public GuardedLearningRepository(
+            JdbcLearningRepository delegate, P010LearningInsertWriter insertWriter) {
         this.delegate = delegate;
+        this.insertWriter = insertWriter;
     }
 
     @Override
@@ -60,7 +69,19 @@ public class GuardedLearningRepository implements LearningService.Repository {
             Instant plannedStartAt,
             Instant plannedFinishAt,
             UUID actor) {
-        delegate.insert(
+        if (insertWriter == null) {
+            delegate.insert(
+                    record,
+                    reason,
+                    courseTeamName,
+                    riskLevel,
+                    learnerProfile,
+                    plannedStartAt,
+                    plannedFinishAt,
+                    actor);
+            return;
+        }
+        insertWriter.insert(
                 record,
                 reason,
                 courseTeamName,
