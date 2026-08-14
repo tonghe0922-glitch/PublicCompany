@@ -1,0 +1,40 @@
+name: PHASE-10 Toolchain Cache
+
+on:
+  push:
+    branches:
+      - agent/phase-10-public-capabilities-b
+    paths:
+      - .github/workflows/phase10-toolchain-cache.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web-toolchain:
+    name: Export locked PHASE-10 web toolchain
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.20.0
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Package locked dependencies
+        run: tar -I 'zstd -19 -T0' -cf phase10-web-node-modules.tar.zst node_modules
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase10-web-node-modules
+          path: technical-platform/web/phase10-web-node-modules.tar.zst
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
