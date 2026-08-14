@@ -29,7 +29,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: technical-platform/web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - name: Package locked dependencies
+      - name: Package locked dependencies for local verification
         run: tar -I 'zstd -19 -T0' -cf phase10-web-node-modules.tar.zst node_modules
       - uses: actions/upload-artifact@v4
         with:
