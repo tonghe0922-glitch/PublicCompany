@@ -12,7 +12,7 @@
 - [x] 识别 P016 PHASE-05 既有内核并登记复用审查。
 - [x] 生产目录相对 PHASE-10 基线改动为 0。
 - [x] PHASE-12/P017+ 保持 NOT_STARTED/LOCKED。
-- [ ] Preparation Gate 在最终准备 SHA 成功并回填精确 run ID。
+- [x] Preparation Gate run `31821929837` / SUCCESS；artifact `9227280256`；报告封板 SHA 继续执行同一门禁复验。
 
 ## C0 not yet completed
 

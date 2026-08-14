@@ -4,7 +4,7 @@
 > Construction branch: `agent/phase-11-performance-growth-welfare`
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction state: `PHASE-11 = IN_PROGRESS / PREPARATION_GATE_PENDING`
+> Current construction state: `PHASE-11 = IN_PROGRESS / PREPARATION_GATE_PASS`
 > Current legal checkpoint: `P011 = NEXT / C0_NOT_FROZEN`
 > Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
@@ -23,7 +23,7 @@
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS |
 | PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；封板后质量整改 HEAD `79edc420...` CI SUCCESS |
-| PHASE-11 | IN_PROGRESS | P011–P016；`PREPARATION_GATE_PENDING`；产品施工未开始 |
+| PHASE-11 | IN_PROGRESS | P011–P016；`PREPARATION_GATE_PASS`；当前停在 P011 C0 前 |
 | PHASE-12 | NOT_STARTED | P017–P020；LOCKED |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
@@ -98,7 +98,10 @@ Canonical primary tables = EXISTING_BASELINE_DDL / 6
 P011-P015 implementation = BASELINE_TABLE_ONLY
 P016 implementation = PREEXISTING_PHASE05_KERNEL / REUSE_REVIEW_REQUIRED
 Production files changed since PHASE-10 baseline during preparation = 0
-Preparation Gate = PENDING_FINAL_SHA
+Accepted preparation evidence candidate = 2f3bc41ebb0571d34ac9a75cbef8bedbf19a85ec
+Preparation Gate = run 31821929837 / run #2 / SUCCESS
+Preparation Gate artifact = 9227280256
+Preparation Gate artifact SHA256 = 786f6a5f19a4720066829fef65dc21ddae0be43d2743ad7787a222565d59dacb
 ```
 
 ## PHASE-11 process ledger

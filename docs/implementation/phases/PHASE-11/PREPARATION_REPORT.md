@@ -59,4 +59,4 @@ P016 既有实现包含 `CareCaseService`、`JdbcCareCaseRepository`、`WelfareC
 
 准备工作只有在以下条件同时成立时才算通过：准备文档与机器证据已提交；MASTER_PROGRESS 与 MASTER_PAGE_CATALOG 一致；Preparation Gate 在最终 SHA 成功；远端 SHA 与报告一致；生产目录相对 PHASE-10 基线仍为 0 改动。
 
-Preparation Gate：`PENDING_FINAL_SHA`。通过后本报告将更新为精确 run ID，并停止在 P011 C0 前。
+Preparation Gate：run `31821929837` / run #2 / **SUCCESS**。接受的准备证据候选为 `2f3bc41ebb0571d34ac9a75cbef8bedbf19a85ec`；artifact `9227280256`；digest `sha256:786f6a5f19a4720066829fef65dc21ddae0be43d2743ad7787a222565d59dacb`。本阶段状态保持 `IN_PROGRESS`，停止在 P011 C0 前；本次报告封板提交仍必须执行同一只读 Preparation Gate 复验。
