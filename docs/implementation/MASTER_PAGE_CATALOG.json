@@ -13,10 +13,26 @@
     "formal_gate": "PASS",
     "business_pages_reclassified_as_implemented": 0,
     "business_catalog_change": "NO_CHANGE_REVALIDATED",
-    "canonical_portals": ["employee", "center", "tech"],
-    "runtime_build_entries": ["employee", "center", "admin"],
-    "runtime_aliases": {"employee":"employee","center":"center","tech":"admin"},
-    "ia_navigation_source_counts": {"employee":885,"center":1417,"tech":1510},
+    "canonical_portals": [
+      "employee",
+      "center",
+      "tech"
+    ],
+    "runtime_build_entries": [
+      "employee",
+      "center",
+      "admin"
+    ],
+    "runtime_aliases": {
+      "employee": "employee",
+      "center": "center",
+      "tech": "admin"
+    },
+    "ia_navigation_source_counts": {
+      "employee": 885,
+      "center": 1417,
+      "tech": 1510
+    },
     "navigation_activation_rule": "implemented AND real_router_path AND all_required_permissions AND mobile_access_allowed",
     "fourth_tech_runtime_allowed": false
   },
@@ -26,19 +42,40 @@
     "formal_gate": "PASS",
     "business_page_binding": "explicit source_key + route_path; no fuzzy runtime matching"
   },
+  "phase10": {
+    "scope": "P006-P010 公共能力 B",
+    "state": "COMPLETE",
+    "formal_gate": "PASS",
+    "maintenance_head": "79edc420802bfb9d2e47a0976b6198a67e80c4c2",
+    "business_page_binding": "explicit frozen source coordinates; executable pages closed"
+  },
   "current_business_phase": {
-    "phase": "PHASE-10",
-    "process_codes": ["P006","P007","P008","P009","P010"],
-    "state": "IN_PROGRESS",
-    "c0_page_bindings": "docs/implementation/phases/PHASE-10/PHASE10_PAGE_BINDINGS.json",
-    "canonical_page_records_changed_at_c0": 0,
-    "rule": "selected pages remain PLANNED until the corresponding real implementation checkpoint passes"
+    "phase": "PHASE-11",
+    "process_codes": [
+      "P011",
+      "P012",
+      "P013",
+      "P014",
+      "P015",
+      "P016"
+    ],
+    "state": "IN_PROGRESS_PREPARATION",
+    "preparation_branch": "agent/phase-11-performance-growth-welfare",
+    "preparation_evidence": "docs/implementation/phases/PHASE-11",
+    "c0_page_bindings": null,
+    "canonical_page_records_changed_at_preparation": 0,
+    "rule": "page candidates remain candidates and canonical records remain PLANNED until explicit C0 source-coordinate binding and real implementation checkpoint"
   },
   "next_business_phase": {
-    "phase": "PHASE-11",
-    "process_codes": ["P011","P012","P013","P014","P015","P016"],
+    "phase": "PHASE-12",
+    "process_codes": [
+      "P017",
+      "P018",
+      "P019",
+      "P020"
+    ],
     "state": "NOT_STARTED",
-    "blocked_by": "PHASE-10 Formal Gate"
+    "blocked_by": "PHASE-11 independent Formal Gate"
   },
-  "note": "This file remains an index over the canonical PHASE-01 7,126 page facts. PHASE-10 C0 freezes explicit source-coordinate selections but does not reclassify PLANNED pages as IMPLEMENTED before real checkpoints."
+  "note": "This file remains an index over the canonical PHASE-01 7,126 page facts. PHASE-11 preparation parses sources and discovers candidates but freezes no route, permission or implemented page."
 }

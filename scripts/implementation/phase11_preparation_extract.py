@@ -236,8 +236,9 @@ def build_markdown(payload: dict[str, Any]) -> str:
         "- P011–P016 must be converted into formal SOURCE_CONTRACT / IMPACT_MATRIX / "
         "GAP_MATRIX only after this snapshot is reviewed with current code and master ledgers.",
         "- P017 and later processes remain out of scope.",
-        "- Machine evidence: "
-        "`docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json`.",
+        "- Full machine evidence is generated under "
+        "`docs/implementation/phases/PHASE-11/P011_P016_*` inside the CI artifact; "
+        "the repository tracks only reviewed preparation documents and executable generators.",
     ])
     return "\n".join(lines) + "\n"
 
