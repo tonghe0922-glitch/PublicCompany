@@ -58,6 +58,8 @@ jobs:
         run: python scripts/implementation/phase10_workflow_hygiene.py
       - name: Verify source, page, API, permission and database contracts
         run: python scripts/implementation/phase10_contract.py
+      - name: Verify semantic PHASE-10 frontend contracts
+        run: python scripts/implementation/phase10_frontend_contract.py
       - name: Verify phase boundary and repository hygiene
         shell: bash
         run: |
@@ -171,11 +173,163 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
+      - run: pnpm quality:duplicates
+      - run: pnpm quality:deadcode
       - run: pnpm build
+
+  e2e:
+    name: P006-P010 PostgreSQL Redis three-portal live E2E
+    runs-on: ubuntu-latest
+    env:
+      PHASE10_E2E_TENANT: PHASE10_E2E
+      PHASE10_E2E_LOGIN: phase10.employee
+      SJG_LOCAL_API_PROXY_TARGET: http://127.0.0.1:18110
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - name: Generate ephemeral PHASE-10 credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PASSWORD="S10_$(openssl rand -hex 18)"
+          echo "::add-mask::$PASSWORD"
+          echo "PHASE10_E2E_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      - name: Compile real PHASE-10 API fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -DskipTests install
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api test-compile
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api dependency:build-classpath \
+            -DincludeScope=test \
+            -Dmdep.outputFile="$GITHUB_WORKSPACE/technical-platform/backend/apps/api/target/phase10-classpath.txt"
+      - name: Install PHASE-10 browser dependencies
+        working-directory: technical-platform/web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+      - name: Start Spring Boot PostgreSQL 16 Redis fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_DIR=technical-platform/backend/apps/api
+          CP="$API_DIR/target/test-classes:$API_DIR/target/classes:$(cat "$API_DIR/target/phase10-classpath.txt")"
+          java -cp "$CP" cn.shangjingu.platform.api.Phase10BrowserBackendFixture \
+            > "$API_DIR/target/phase10-fixture.log" 2>&1 &
+          echo $! > "$API_DIR/target/phase10-fixture.pid"
+          for attempt in $(seq 1 150); do
+            if grep -q 'PHASE10_BROWSER_FIXTURE_READY' "$API_DIR/target/phase10-fixture.log" \
+              && curl -sS http://127.0.0.1:18110/actuator/health >/dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$(cat "$API_DIR/target/phase10-fixture.pid")" 2>/dev/null; then
+              cat "$API_DIR/target/phase10-fixture.log"
+              exit 1
+            fi
+            sleep 2
+          done
+          cat "$API_DIR/target/phase10-fixture.log"
+          exit 1
+      - name: Run P006-P010 real three-portal lifecycle E2E
+        working-directory: technical-platform/web
+        run: pnpm exec playwright test --config=playwright.phase10-live.config.ts
+      - name: Verify canonical database, outbox, audit and qualification facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          FACTS=technical-platform/backend/apps/api/target/phase10-fixture-runtime.json
+          test -s "$FACTS"
+          PG_CONTAINER=$(jq -r '.postgresContainerId' "$FACTS")
+          REDIS_CONTAINER=$(jq -r '.redisContainerId' "$FACTS")
+          TENANT_ID=$(jq -r '.tenantId' "$FACTS")
+          EMPLOYEE_ID=$(jq -r '.employeeId' "$FACTS")
+          QUALIFICATION_ROLE_ID=$(jq -r '.qualificationRoleId' "$FACTS")
+          MEETING_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from collaboration.meeting where tenant_id='$TENANT_ID'::uuid and official_subject='P006 live meeting' and not is_deleted")
+          SHIFT_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.shift_change_request where tenant_id='$TENANT_ID'::uuid and subject='P007 live schedule' and not is_deleted")
+          LEAVE_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.leave_request where tenant_id='$TENANT_ID'::uuid and subject='P008 live leave' and not is_deleted")
+          OVERTIME_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.overtime_request where tenant_id='$TENANT_ID'::uuid and subject='P009 live overtime' and not is_deleted")
+          LEARNING_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from learning.learning_assignment where tenant_id='$TENANT_ID'::uuid and subject='P010 live qualification' and not is_deleted")
+          test -n "$MEETING_ID"; test -n "$SHIFT_ID"; test -n "$LEAVE_ID"
+          test -n "$OVERTIME_ID"; test -n "$LEARNING_ID"
+          CLOSED=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from (
+              select status from collaboration.meeting where id='$MEETING_ID'::uuid
+              union all select status from attendance.shift_change_request where id='$SHIFT_ID'::uuid
+              union all select status from attendance.leave_request where id='$LEAVE_ID'::uuid
+              union all select status from attendance.overtime_request where id='$OVERTIME_ID'::uuid
+              union all select status from learning.learning_assignment where id='$LEARNING_ID'::uuid
+            ) x where status='已关闭'")
+          WORKFLOWS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from workflow.wf_instance where status='COMPLETED' and id in (
+              select workflow_instance_id from collaboration.meeting where id='$MEETING_ID'::uuid
+              union all select workflow_instance_id from attendance.shift_change_request where id='$SHIFT_ID'::uuid
+              union all select workflow_instance_id from attendance.leave_request where id='$LEAVE_ID'::uuid
+              union all select workflow_instance_id from attendance.overtime_request where id='$OVERTIME_ID'::uuid
+              union all select workflow_instance_id from learning.learning_assignment where id='$LEARNING_ID'::uuid)")
+          LEDGER=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from attendance.leave_request_item where master_id='$LEAVE_ID'::uuid and field_code='QUOTA_LEDGER' and not is_deleted")
+          EVIDENCE=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from learning.learning_assignment_evidence where assignment_id='$LEARNING_ID'::uuid")
+          QUALIFICATION_GRANT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from iam.user_role ur join iam.user_identity ui on ui.id=ur.identity_id and ui.tenant_id=ur.tenant_id where ur.tenant_id='$TENANT_ID'::uuid and ui.employee_id='$EMPLOYEE_ID'::uuid and ur.role_id='$QUALIFICATION_ROLE_ID'::uuid and ur.grant_source='QUALIFICATION' and not ur.is_deleted")
+          OUTBOX=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from core.outbox_event where tenant_id='$TENANT_ID'::uuid
+              and aggregate_id in ('$MEETING_ID'::uuid,'$SHIFT_ID'::uuid,'$LEAVE_ID'::uuid,'$OVERTIME_ID'::uuid,'$LEARNING_ID'::uuid)
+              and not is_deleted")
+          AUDIT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc \
+            "select count(*) from audit.operation_log where tenant_id='$TENANT_ID'::uuid and action like 'P0%'")
+          PASSWORD_HITS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc \
+            "select (select count(*) from audit.operation_log where row_to_json(operation_log)::text like '%$PHASE10_E2E_PASSWORD%') + (select count(*) from audit.security_event where row_to_json(security_event)::text like '%$PHASE10_E2E_PASSWORD%')")
+          REDIS_KEYS=$(docker exec "$REDIS_CONTAINER" redis-cli DBSIZE | tr -d '\r')
+          printf 'PHASE10_FACTS closed=%s workflows=%s ledger=%s evidence=%s qualification=%s outbox=%s audit=%s password=%s redis=%s\n' \
+            "$CLOSED" "$WORKFLOWS" "$LEDGER" "$EVIDENCE" "$QUALIFICATION_GRANT" "$OUTBOX" "$AUDIT" "$PASSWORD_HITS" "$REDIS_KEYS"
+          test "$CLOSED" -eq 5
+          test "$WORKFLOWS" -eq 5
+          test "$LEDGER" -eq 3
+          test "$EVIDENCE" -ge 6
+          test "$QUALIFICATION_GRANT" -eq 1
+          test "$OUTBOX" -ge 40
+          test "$AUDIT" -ge 50
+          test "$PASSWORD_HITS" -eq 0
+          test "$REDIS_KEYS" -ge 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase10-live-${{ github.sha }}
+          path: |
+            technical-platform/web/reports/playwright-phase10-live
+            technical-platform/backend/apps/api/target/phase10-fixture.log
+            technical-platform/backend/apps/api/target/phase10-fixture-runtime.json
+          if-no-files-found: warn
+      - name: Stop PHASE-10 live fixture
+        if: always()
+        shell: bash
+        run: |
+          PID_FILE=technical-platform/backend/apps/api/target/phase10-fixture.pid
+          if [ -s "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")" 2>/dev/null || true
+            wait "$(cat "$PID_FILE")" 2>/dev/null || true
+          fi
 
   verdict:
     name: PHASE-10 full gate verdict
-    needs: [contract, backend-unit, api-integration, database, web]
+    needs: [contract, backend-unit, api-integration, database, web, e2e]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -186,3 +340,4 @@ jobs:
           test '${{ needs.api-integration.result }}' = 'success'
           test '${{ needs.database.result }}' = 'success'
           test '${{ needs.web.result }}' = 'success'
+          test '${{ needs.e2e.result }}' = 'success'

@@ -2,6 +2,7 @@
 """Fail closed when retired workflows or stale repository wiring reappear."""
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -61,6 +62,8 @@ def verify() -> None:
         for token, reason in FORBIDDEN.items():
             if token in text:
                 violations.append(f"{path.relative_to(ROOT)}: {reason}: {token}")
+        if "phase10" in path.name and re.search(r"(?m)^\s*(?:contents|actions):\s*write\s*$", text):
+            violations.append(f"{path.relative_to(ROOT)}: PHASE-10 workflows are read-only")
     if violations:
         raise RuntimeError("stale workflow wiring detected:\n" + "\n".join(violations))
 
@@ -70,6 +73,12 @@ def verify() -> None:
         CURRENT_REPOSITORY,
         CURRENT_BRANCH,
         "phase10_workflow_hygiene.py",
+        "phase10_frontend_contract.py",
+        "quality:duplicates",
+        "quality:deadcode",
+        "playwright.phase10-live.config.ts",
+        "Phase10BrowserBackendFixture",
+        "needs.e2e.result",
         "Phase10WorkflowServiceTest",
         "WorkflowCandidateResolverTest",
         'phase: ["03", "05", "06", "09", "10"]',
@@ -82,6 +91,8 @@ def verify() -> None:
     for one_shot in (
         "repository-migration-rewrite.yml",
         "phase10-seal-once.yml",
+        "phase10-source-snapshot.yml",
+        "phase10-toolchain-cache.yml",
     ):
         if (WORKFLOWS / one_shot).exists():
             raise RuntimeError(f"one-shot workflow must not be active: {one_shot}")

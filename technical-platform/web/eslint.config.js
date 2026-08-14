@@ -40,6 +40,27 @@ export default tseslint.config(
     },
   },
   {
+    files: [
+      'src/router/portal-router.ts',
+      'src/router/portal-route-specs.ts',
+      'src/router/p008-p010-router.test.ts',
+      'src/platform/pages/P006MeetingPage.vue',
+      'src/platform/pages/P007ShiftPage.vue',
+      'src/platform/pages/Phase10TechMonitorPage.vue',
+      'src/platform/pages/Phase09TechWorkflowMonitorPage.vue',
+      'src/platform/pages/phase10/**/*.{ts,vue}',
+      'src/platform/phase10/**/*.{ts,vue}',
+    ],
+    rules: {
+      'max-len': ['error', {
+        code: 120,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+      }],
+    },
+  },
+  {
     files: ['src/design-system/runtime-*.test.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off',

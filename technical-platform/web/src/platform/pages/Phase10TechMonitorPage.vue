@@ -1,11 +1,66 @@
 <script setup lang="ts">
-import { onMounted,ref } from 'vue'
-import { usePortalSessionStore } from '../../session'
+import {
+  SgjButton,
+  SgjDashboardPageTemplate,
+  SgjStatusChip,
+  SgjTable,
+} from '../../design-system'
+import Phase10Feedback from '../phase10/components/Phase10Feedback.vue'
+import Phase10Kpis from '../phase10/components/Phase10Kpis.vue'
+import {
+  usePhase10TechMonitor,
+  type Phase10Process,
+} from '../phase10/useTechMonitor'
+import { statusTone } from '../phase10/shared'
 import type { PortalDefinition } from '../portal-config'
-type Process='P008'|'P009'|'P010'
-const props=defineProps<{portal:PortalDefinition;processes:Process[]}>(),session=usePortalSessionStore(),rows=ref<Record<string,unknown[]>>({}),busy=ref(false),feedback=ref('')
-function endpoint(p:Process){return p==='P008'?'/api/v1/processes/P008/leaves':p==='P009'?'/api/v1/processes/P009/overtime-requests':'/api/v1/processes/P010/assignments'}
-async function load(){busy.value=true;feedback.value='';try{const next:Record<string,unknown[]>={};for(const p of props.processes)next[p]=await session.request<unknown[]>(endpoint(p));rows.value=next}catch(e){feedback.value=e instanceof Error?e.message:'监控数据加载失败'}finally{busy.value=false}}
-onMounted(()=>void load())
+
+const props = defineProps<{
+  portal: PortalDefinition
+  processes: readonly Phase10Process[]
+}>()
+const {
+  rows, busy, feedback, failed, load, total, open, closed,
+} = usePhase10TechMonitor(props.processes)
 </script>
-<template><main class="phase09-page" data-testid="phase10-tech-monitor"><header><p class="phase09-kicker">PHASE-10 · TECH</p><h1>公共能力运行监控</h1><p>技术端仅查看服务端 metadata、工作流状态和集成运行事实；不提供请假审批、加班审批或 P010 专业认证能力。</p></header><p v-if="feedback" class="phase09-feedback">{{feedback}}</p><section v-for="process in processes" :key="process" class="phase09-card"><h2>{{process}} 运行投影</h2><pre>{{JSON.stringify(rows[process]??[],null,2)}}</pre></section><button :disabled="busy" @click="load">刷新监控</button></main></template>
+
+<template>
+  <SgjDashboardPageTemplate
+    title="公共能力运行监控"
+    description="只呈现服务端元数据、工作流节点和集成事实，不提供任何业务审批或专业认证动作。"
+    data-testid="phase10-tech-monitor"
+  >
+    <template #actions>
+      <SgjButton variant="secondary" size="sm" :loading="busy" @click="load">
+        刷新监控
+      </SgjButton>
+    </template>
+    <template #kpis><Phase10Kpis :total="total" :open="open" :closed="closed" /></template>
+    <Phase10Feedback :message="feedback" :failed="failed" />
+    <SgjTable
+      caption="PHASE-10 公共能力运行投影"
+      :empty="rows.length === 0"
+      empty-text="当前数据范围内没有运行记录"
+      :column-count="9"
+    >
+      <template #head>
+        <tr>
+          <th>流程</th><th>业务编号</th><th>节点</th><th>状态</th><th>中心</th>
+          <th>员工</th><th>事实时间</th><th>集成事实</th><th>更新时间</th>
+        </tr>
+      </template>
+      <template #body>
+        <tr v-for="row in rows" :key="`${row.process}-${row.businessNo}`">
+          <td>{{ row.process }}</td>
+          <td>{{ row.businessNo }}</td>
+          <td>{{ row.node }}</td>
+          <td><SgjStatusChip :tone="statusTone(row.status)">{{ row.status }}</SgjStatusChip></td>
+          <td>{{ row.ownerCenterId }}</td>
+          <td>{{ row.ownerEmployeeId }}</td>
+          <td>{{ row.period }}</td>
+          <td>{{ row.integrationFact }}</td>
+          <td>{{ row.updatedAt }}</td>
+        </tr>
+      </template>
+    </SgjTable>
+  </SgjDashboardPageTemplate>
+</template>

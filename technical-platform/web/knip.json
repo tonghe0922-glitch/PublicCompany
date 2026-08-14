@@ -12,7 +12,8 @@
     "playwright.phase09-p002-live.config.ts",
     "playwright.phase09-p003-live.config.ts",
     "playwright.phase09-p004-live.config.ts",
-    "playwright.phase09-p005-live.config.ts"
+    "playwright.phase09-p005-live.config.ts",
+    "playwright.phase10-live.config.ts"
   ],
   "project": [
     "src/**/*.{ts,vue}",
