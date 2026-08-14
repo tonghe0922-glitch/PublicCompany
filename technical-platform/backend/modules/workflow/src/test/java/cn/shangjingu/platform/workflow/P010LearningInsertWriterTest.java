@@ -37,6 +37,7 @@ class P010LearningInsertWriterTest {
                 null,
                 null,
                 null,
+                null,
                 Instant.now());
 
         writer.insert(
