@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toRef } from 'vue'
 import {
   SgjButton,
   SgjDashboardPageTemplate,
@@ -20,7 +21,7 @@ const props = defineProps<{
 }>()
 const {
   rows, busy, feedback, failed, load, total, open, closed,
-} = usePhase10TechMonitor(props.processes)
+} = usePhase10TechMonitor(toRef(props, 'processes'))
 </script>
 
 <template>

@@ -1,4 +1,10 @@
-import { computed, onMounted, ref } from 'vue'
+import {
+  computed,
+  ref,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+} from 'vue'
 import { usePortalSessionStore } from '../../session'
 import {
   displayTime,
@@ -95,12 +101,16 @@ async function fetchProcess(
   return aggregates.map((aggregate) => toMonitorRow(process, aggregate))
 }
 
-export function usePhase10TechMonitor(processes: readonly Phase10Process[]) {
+export function usePhase10TechMonitor(
+  processes: MaybeRefOrGetter<readonly Phase10Process[]>,
+) {
   const session = usePortalSessionStore()
   const rows = ref<Phase10MonitorRow[]>([])
   const state = useAsyncActionState()
   const load = () => state.run(async () => {
-    const groups = await Promise.all(processes.map(
+    const activeProcesses = toValue(processes)
+    rows.value = []
+    const groups = await Promise.all(activeProcesses.map(
       (process) => fetchProcess(process, session),
     ))
     rows.value = groups.flat()
@@ -109,6 +119,10 @@ export function usePhase10TechMonitor(processes: readonly Phase10Process[]) {
   const total = computed(() => rows.value.length)
   const open = computed(() => rows.value.filter(({ node }) => node !== 'END').length)
   const closed = computed(() => total.value - open.value)
-  onMounted(() => void load())
+  watch(
+    () => toValue(processes),
+    () => void load(),
+    { immediate: true },
+  )
   return { rows, ...state, load, total, open, closed }
 }
