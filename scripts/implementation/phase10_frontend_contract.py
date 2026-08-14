@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from phase10_remediation_contract import verify as verify_remediation
+
 ROOT = Path(__file__).resolve().parents[2]
 WEB = ROOT / "technical-platform" / "web" / "src"
 ROUTE_SPECS = WEB / "router" / "portal-route-specs.ts"
@@ -47,6 +49,12 @@ AUDITED_DIRS = [
     WEB / "platform" / "pages" / "phase10",
     WEB / "platform" / "phase10",
 ]
+
+COMPOSABLES = {
+    "P008": WEB / "platform" / "phase10" / "p008" / "useLeaveOperations.ts",
+    "P009": WEB / "platform" / "phase10" / "p009" / "useOvertimeOperations.ts",
+    "P010": WEB / "platform" / "phase10" / "p010" / "useLearningOperations.ts",
+}
 
 
 def audited_files() -> list[Path]:
@@ -111,6 +119,17 @@ def verify_design_system_and_native_controls() -> None:
         require(native.search(text) is None, f"native control found in audited PHASE-10 file: {path.relative_to(ROOT)}")
 
 
+def verify_composable_state_flow() -> None:
+    for process, path in COMPOSABLES.items():
+        text = path.read_text(encoding="utf-8")
+        require(".splice(" not in text, f"{process} composable must replace ref arrays instead of splicing")
+        require("const resetForm" in text, f"{process} composable must expose a resetForm helper")
+        require("resetForm()" in text, f"{process} successful actions must reset stale form state")
+        require("rows.value =" in text, f"{process} list refresh must assign rows.value")
+    leave = COMPOSABLES["P008"].read_text(encoding="utf-8")
+    require("ledger.value =" in leave, "P008 ledger refresh must assign ledger.value")
+
+
 def verify_readability() -> None:
     violations: list[str] = []
     for path in audited_files():
@@ -126,7 +145,9 @@ def verify() -> None:
     verify_routes()
     verify_monitor()
     verify_design_system_and_native_controls()
+    verify_composable_state_flow()
     verify_readability()
+    verify_remediation()
 
 
 def main() -> None:

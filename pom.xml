@@ -14,6 +14,7 @@
     <minio-java.version>8.6.0</minio-java.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
   </properties>
   <modules>
     <module>technical-platform/backend/modules/core</module>
@@ -66,6 +67,36 @@
     <plugins>
       <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId></plugin>
       <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId></plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>phase10-java-format-ratchet</id>
+            <phase>validate</phase>
+            <goals><goal>check</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+          <java>
+            <includes>
+              <include>src/main/java/cn/shangjingu/platform/workflow/GuardedShiftChangeRepository.java</include>
+              <include>src/main/java/cn/shangjingu/platform/workflow/GuardedLeaveRepository.java</include>
+              <include>src/main/java/cn/shangjingu/platform/workflow/GuardedOvertimeRepository.java</include>
+              <include>src/main/java/cn/shangjingu/platform/workflow/P007ShiftChangeInsertWriter.java</include>
+              <include>src/main/java/cn/shangjingu/platform/workflow/P010LearningInsertWriter.java</include>
+              <include>src/test/java/cn/shangjingu/platform/workflow/P010LearningInsertWriterTest.java</include>
+              <include>src/test/java/cn/shangjingu/platform/workflow/JdbcShiftChangeRepositoryInsertTest.java</include>
+              <include>src/main/java/cn/shangjingu/platform/api/phase10/Phase10ApiExceptionHandler.java</include>
+              <include>src/test/java/cn/shangjingu/platform/api/phase10/Phase10ApiExceptionHandlerTest.java</include>
+            </includes>
+            <removeUnusedImports />
+            <trimTrailingWhitespace />
+            <endWithNewline />
+          </java>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

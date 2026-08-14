@@ -104,55 +104,63 @@ function activityBody(form: LearningForm, activity: LearningActivity) {
   return { result: form.practicalResult.trim(), note: form.note.trim() || null }
 }
 
-async function loadData(session: PortalSessionStore, rows: Phase10Aggregate[]): Promise<void> {
-  const nextRows = await session.request<Phase10Aggregate[]>(ENDPOINT)
-  rows.splice(0, rows.length, ...nextRows)
+async function loadData(
+  session: PortalSessionStore,
+  rows: Ref<Phase10Aggregate[]>,
+): Promise<void> {
+  rows.value = await session.request<Phase10Aggregate[]>(ENDPOINT)
 }
 
 async function submitAssignment(
   session: PortalSessionStore,
-  rows: Phase10Aggregate[],
+  rows: Ref<Phase10Aggregate[]>,
   form: LearningForm,
   ownerCenterId: string,
   feedback: Ref<string>,
+  resetForm: () => void,
 ): Promise<void> {
   await session.request(ENDPOINT, {
     method: 'POST', idempotencyKey: idempotencyKey('P010', 'create'),
     body: createBody(form, ownerCenterId),
   })
   feedback.value = '学习任务已创建，等待课程版本发布'
+  resetForm()
   await loadData(session, rows)
 }
 
 async function executeAction(
   session: PortalSessionStore,
-  rows: Phase10Aggregate[],
+  rows: Ref<Phase10Aggregate[]>,
   form: LearningForm,
   aggregate: Phase10Aggregate,
   action: string,
   feedback: Ref<string>,
+  resetForm: () => void,
 ): Promise<void> {
   await session.request(`${ENDPOINT}/${aggregate.record.id}/actions/${action}`, {
     method: 'POST', idempotencyKey: idempotencyKey('P010', action.toLowerCase()),
     body: actionBody(form, aggregate),
   })
   feedback.value = `${aggregate.record.businessNo} 已执行 ${action}`
+  resetForm()
   await loadData(session, rows)
 }
 
 async function submitActivity(
   session: PortalSessionStore,
-  rows: Phase10Aggregate[],
+  rows: Ref<Phase10Aggregate[]>,
   form: LearningForm,
   aggregate: Phase10Aggregate,
   kind: LearningActivity,
   feedback: Ref<string>,
+  resetForm: () => void,
 ): Promise<void> {
   await session.request(`${ENDPOINT}/${aggregate.record.id}/${kind}`, {
     method: 'POST', idempotencyKey: idempotencyKey('P010', kind),
     body: activityBody(form, kind),
   })
   feedback.value = `${aggregate.record.businessNo} 已提交学习证据`
+  resetForm()
   await loadData(session, rows)
 }
 
@@ -163,19 +171,20 @@ export function useLearningOperations() {
   const state = useAsyncActionState()
   const summary = useRecordSummary(rows)
   const orgId = computed(() => session.session?.orgId ?? '')
-  const load = () => state.run(() => loadData(session, rows.value))
+  const resetForm = () => Object.assign(form, createLearningForm())
+  const load = () => state.run(() => loadData(session, rows))
   const create = () => state.run(
-    () => submitAssignment(session, rows.value, form, orgId.value, state.feedback),
+    () => submitAssignment(session, rows, form, orgId.value, state.feedback, resetForm),
   )
   const act = (aggregate: Phase10Aggregate, action: string) => state.run(
-    () => executeAction(session, rows.value, form, aggregate, action, state.feedback),
+    () => executeAction(session, rows, form, aggregate, action, state.feedback, resetForm),
   )
   const activity = (aggregate: Phase10Aggregate, kind: LearningActivity) => state.run(
-    () => submitActivity(session, rows.value, form, aggregate, kind, state.feedback),
+    () => submitActivity(session, rows, form, aggregate, kind, state.feedback, resetForm),
   )
   onMounted(() => void load())
   return {
-    rows, form, ...state, ...summary, load, create, act, activity,
+    rows, form, resetForm, ...state, ...summary, load, create, act, activity,
     canRead: computed(() => session.can('p010.learning.read')),
     canComplete: computed(() => session.can('p010.learning.complete')),
     canExam: computed(() => session.can('p010.learning.exam')),

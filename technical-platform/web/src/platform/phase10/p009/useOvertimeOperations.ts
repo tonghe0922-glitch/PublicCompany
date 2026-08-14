@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import {
   idempotencyKey,
@@ -106,9 +106,11 @@ function actionBody(form: OvertimeForm, aggregate: Phase10Aggregate): OvertimeAc
   }
 }
 
-async function loadData(session: PortalSessionStore, rows: Phase10Aggregate[]): Promise<void> {
-  const nextRows = await session.request<Phase10Aggregate[]>(ENDPOINT)
-  rows.splice(0, rows.length, ...nextRows)
+async function loadData(
+  session: PortalSessionStore,
+  rows: Ref<Phase10Aggregate[]>,
+): Promise<void> {
+  rows.value = await session.request<Phase10Aggregate[]>(ENDPOINT)
 }
 
 function permissionFor(session: PortalSessionStore, action: string): boolean {
@@ -125,14 +127,16 @@ export function useOvertimeOperations() {
   const state = useAsyncActionState()
   const summary = useRecordSummary(rows)
   const orgId = computed(() => session.session?.orgId ?? '')
-  const load = () => state.run(() => loadData(session, rows.value))
+  const resetForm = () => Object.assign(form, createOvertimeForm())
+  const load = () => state.run(() => loadData(session, rows))
   const create = () => state.run(async () => {
     await session.request(ENDPOINT, {
       method: 'POST', idempotencyKey: idempotencyKey('P009', 'create'),
       body: createBody(form, orgId.value),
     })
     state.feedback.value = '加班申请已提交并进入必要性校验'
-    await loadData(session, rows.value)
+    resetForm()
+    await loadData(session, rows)
   })
   const act = (aggregate: Phase10Aggregate, action: string) => state.run(async () => {
     await session.request(`${ENDPOINT}/${aggregate.record.id}/actions/${action}`, {
@@ -140,11 +144,12 @@ export function useOvertimeOperations() {
       body: actionBody(form, aggregate),
     })
     state.feedback.value = `${aggregate.record.businessNo} 已执行 ${action}`
-    await loadData(session, rows.value)
+    resetForm()
+    await loadData(session, rows)
   })
   onMounted(() => void load())
   return {
-    rows, form, ...state, ...summary, load, create, act,
+    rows, form, resetForm, ...state, ...summary, load, create, act,
     canSubmit: computed(() => session.can('p009.overtime.submit')),
     canReview: computed(() => session.can('p009.overtime.review')),
     canHr: computed(() => session.can('p009.overtime.hr')),

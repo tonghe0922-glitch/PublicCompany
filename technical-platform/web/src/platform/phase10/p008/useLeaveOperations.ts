@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import {
   idempotencyKey,
@@ -100,15 +100,15 @@ function actionBody(form: LeaveForm, aggregate: Phase10Aggregate): LeaveActionBo
 
 async function loadData(
   session: PortalSessionStore,
-  rows: Phase10Aggregate[],
-  ledger: LeaveLedgerEntry[],
+  rows: Ref<Phase10Aggregate[]>,
+  ledger: Ref<LeaveLedgerEntry[]>,
 ): Promise<void> {
   const [nextRows, nextLedger] = await Promise.all([
     session.request<Phase10Aggregate[]>(ENDPOINT),
     session.request<LeaveLedgerEntry[]>(LEDGER_ENDPOINT),
   ])
-  rows.splice(0, rows.length, ...nextRows)
-  ledger.splice(0, ledger.length, ...nextLedger)
+  rows.value = nextRows
+  ledger.value = nextLedger
 }
 
 function permissionFor(session: PortalSessionStore, action: string): boolean {
@@ -125,15 +125,17 @@ export function useLeaveOperations() {
   const state = useAsyncActionState()
   const summary = useRecordSummary(rows)
   const orgId = computed(() => session.session?.orgId ?? '')
+  const resetForm = () => Object.assign(form, createLeaveForm())
 
-  const load = () => state.run(() => loadData(session, rows.value, ledger.value))
+  const load = () => state.run(() => loadData(session, rows, ledger))
   const create = () => state.run(async () => {
     await session.request(ENDPOINT, {
       method: 'POST', idempotencyKey: idempotencyKey('P008', 'create'),
       body: createBody(form, orgId.value),
     })
     state.feedback.value = '请假申请已提交并进入额度预占流程'
-    await loadData(session, rows.value, ledger.value)
+    resetForm()
+    await loadData(session, rows, ledger)
   })
   const act = (aggregate: Phase10Aggregate, action: string) => state.run(async () => {
     await session.request(`${ENDPOINT}/${aggregate.record.id}/actions/${action}`, {
@@ -141,12 +143,13 @@ export function useLeaveOperations() {
       body: actionBody(form, aggregate),
     })
     state.feedback.value = `${aggregate.record.businessNo} 已执行 ${action}`
-    await loadData(session, rows.value, ledger.value)
+    resetForm()
+    await loadData(session, rows, ledger)
   })
 
   onMounted(() => void load())
   return {
-    rows, ledger, form, ...state, ...summary, load, create, act,
+    rows, ledger, form, resetForm, ...state, ...summary, load, create, act,
     canSubmit: computed(() => session.can('p008.leave.submit')),
     canReview: computed(() => session.can('p008.leave.review')),
     canManage: computed(() => session.can('p008.leave.manage')),

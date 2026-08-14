@@ -3,10 +3,13 @@ package cn.shangjingu.platform.workflow;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-/** Persists a P010 assignment with an executable, placeholder-aligned PostgreSQL statement. */
+/** Persists a P010 assignment with semantic named parameters. */
 @Repository
 public class P010LearningInsertWriter {
     static final String INSERT_SQL = """
@@ -17,15 +20,21 @@ public class P010LearningInsertWriter {
               completion_rate,content_version,course_team_name,course_version_id,
               learner_profile,period_or_course_no,phase_node_code)
             values(
-              ?,?,?,?,0,?,?,
-              'PORTAL',current_date,?,?,'NORMAL',?,
-              ?,?,?,?,
-              0,?,?,?,?,?,'S01')
+              :id,:tenantId,:businessNo,:status,0,:actor,:actor,
+              'PORTAL',current_date,:subject,:reason,'NORMAL',:riskLevel,
+              :ownerCenterId,:ownerEmployeeId,:plannedStartAt,:plannedFinishAt,
+              0,:contentVersion,:courseTeamName,:courseVersionId,
+              :learnerProfile,:periodOrCourseNo,'S01')
             """;
 
-    private final JdbcTemplate jdbc;
+    private final NamedParameterJdbcTemplate jdbc;
 
+    @Autowired
     public P010LearningInsertWriter(JdbcTemplate jdbc) {
+        this(new NamedParameterJdbcTemplate(jdbc));
+    }
+
+    P010LearningInsertWriter(NamedParameterJdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
@@ -38,26 +47,26 @@ public class P010LearningInsertWriter {
             Instant plannedStartAt,
             Instant plannedFinishAt,
             UUID actor) {
-        jdbc.update(
-                INSERT_SQL,
-                record.id(),
-                record.tenantId(),
-                record.businessNo(),
-                record.status(),
-                actor,
-                actor,
-                record.subject(),
-                reason,
-                riskLevel,
-                record.ownerCenterId(),
-                record.ownerEmployeeId(),
-                timestamp(plannedStartAt),
-                timestamp(plannedFinishAt),
-                record.contentVersion(),
-                courseTeamName,
-                record.courseVersionId(),
-                learnerProfile,
-                record.periodOrCourseNo());
+        MapSqlParameterSource parameters =
+                new MapSqlParameterSource()
+                        .addValue("id", record.id())
+                        .addValue("tenantId", record.tenantId())
+                        .addValue("businessNo", record.businessNo())
+                        .addValue("status", record.status())
+                        .addValue("actor", actor)
+                        .addValue("subject", record.subject())
+                        .addValue("reason", reason)
+                        .addValue("riskLevel", riskLevel)
+                        .addValue("ownerCenterId", record.ownerCenterId())
+                        .addValue("ownerEmployeeId", record.ownerEmployeeId())
+                        .addValue("plannedStartAt", timestamp(plannedStartAt))
+                        .addValue("plannedFinishAt", timestamp(plannedFinishAt))
+                        .addValue("contentVersion", record.contentVersion())
+                        .addValue("courseTeamName", courseTeamName)
+                        .addValue("courseVersionId", record.courseVersionId())
+                        .addValue("learnerProfile", learnerProfile)
+                        .addValue("periodOrCourseNo", record.periodOrCourseNo());
+        jdbc.update(INSERT_SQL, parameters);
     }
 
     private static Timestamp timestamp(Instant value) {

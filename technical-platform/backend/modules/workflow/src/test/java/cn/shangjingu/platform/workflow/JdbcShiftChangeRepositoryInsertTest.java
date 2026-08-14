@@ -18,35 +18,47 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-class P010LearningInsertWriterTest {
+class JdbcShiftChangeRepositoryInsertTest {
     @Test
-    void insertUsesSemanticNamedParameters() {
+    void productionInsertWriterUsesNamedParametersAndPreservesFieldSemantics() {
         NamedParameterJdbcTemplate jdbc = mock(NamedParameterJdbcTemplate.class);
-        when(jdbc.update(eq(P010LearningInsertWriter.INSERT_SQL), any(SqlParameterSource.class)))
+        when(jdbc.update(
+                        eq(P007ShiftChangeInsertWriter.INSERT_SQL),
+                        any(SqlParameterSource.class)))
                 .thenReturn(1);
-        P010LearningInsertWriter writer = new P010LearningInsertWriter(jdbc);
+        P007ShiftChangeInsertWriter writer = new P007ShiftChangeInsertWriter(jdbc);
         UUID id = UUID.randomUUID();
         UUID tenantId = UUID.randomUUID();
         UUID ownerCenterId = UUID.randomUUID();
         UUID ownerEmployeeId = UUID.randomUUID();
+        UUID targetEmployeeId = UUID.randomUUID();
+        UUID replacementEmployeeId = UUID.randomUUID();
         UUID actor = UUID.randomUUID();
-        LearningService.LearningRecord record =
-                new LearningService.LearningRecord(
+        ShiftChangeService.ShiftRecord record =
+                new ShiftChangeService.ShiftRecord(
                         id,
                         tenantId,
-                        "P010-TEST-001",
+                        "P007-TEST-001",
                         null,
                         null,
                         "S01",
-                        LearningService.label("S01"),
+                        "草稿",
                         0,
-                        "P010 test assignment",
+                        "P007 test shift",
+                        "test reason",
                         ownerCenterId,
                         ownerEmployeeId,
-                        "V1",
-                        "COURSE-P010-TEST",
-                        "P010-TEST-PERIOD",
-                        BigDecimal.ZERO,
+                        targetEmployeeId,
+                        replacementEmployeeId,
+                        "SHIFT_CHANGE",
+                        "test change",
+                        "TPL-A",
+                        "2031-05",
+                        Instant.parse("2031-05-01T01:00:00Z"),
+                        Instant.parse("2031-05-01T09:00:00Z"),
+                        BigDecimal.valueOf(8),
+                        null,
+                        null,
                         null,
                         null,
                         null,
@@ -57,34 +69,29 @@ class P010LearningInsertWriterTest {
                         null,
                         Instant.now());
 
-        writer.insert(
-                record,
-                "test reason",
-                "test course team",
-                "HIGH",
-                "test learner profile",
-                Instant.parse("2031-05-01T01:00:00Z"),
-                Instant.parse("2031-05-31T09:00:00Z"),
-                actor);
+        writer.insert(record, actor);
 
         ArgumentCaptor<SqlParameterSource> captor =
                 ArgumentCaptor.forClass(SqlParameterSource.class);
-        verify(jdbc).update(eq(P010LearningInsertWriter.INSERT_SQL), captor.capture());
+        verify(jdbc)
+                .update(eq(P007ShiftChangeInsertWriter.INSERT_SQL), captor.capture());
         MapSqlParameterSource parameters = (MapSqlParameterSource) captor.getValue();
-        assertFalse(P010LearningInsertWriter.INSERT_SQL.contains("?"));
+        assertFalse(P007ShiftChangeInsertWriter.INSERT_SQL.contains("?"));
         assertEquals(
                 Set.of(
                         "id", "tenantId", "businessNo", "status", "actor", "subject",
-                        "reason", "riskLevel", "ownerCenterId", "ownerEmployeeId",
-                        "plannedStartAt", "plannedFinishAt", "contentVersion",
-                        "courseTeamName", "courseVersionId", "learnerProfile",
-                        "periodOrCourseNo"),
+                        "reason", "ownerCenterId", "ownerEmployeeId", "changeAction",
+                        "changeReason", "contentVersion", "durationHours", "endAt",
+                        "periodOrCourseNo", "startAt", "templateCode",
+                        "targetEmployeeId", "replacementEmployeeId"),
                 Set.of(parameters.getParameterNames()));
         assertEquals(id, parameters.getValue("id"));
         assertEquals(tenantId, parameters.getValue("tenantId"));
         assertEquals(ownerCenterId, parameters.getValue("ownerCenterId"));
         assertEquals(ownerEmployeeId, parameters.getValue("ownerEmployeeId"));
+        assertEquals(targetEmployeeId, parameters.getValue("targetEmployeeId"));
+        assertEquals(replacementEmployeeId, parameters.getValue("replacementEmployeeId"));
         assertEquals(actor, parameters.getValue("actor"));
-        assertEquals("COURSE-P010-TEST", parameters.getValue("courseVersionId"));
+        assertEquals("TPL-A", parameters.getValue("contentVersion"));
     }
 }

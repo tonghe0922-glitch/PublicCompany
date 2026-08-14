@@ -1,6 +1,7 @@
 import { test } from '@playwright/test'
 import { runCollaborationFlows } from './phase10-live-p006-p007'
 import { runWorkforceFlows } from './phase10-live-p008-p010'
+import { verifyCenterFormReset, verifyEmployeeFormReset } from './phase10-live-form-reset'
 import {
   apiLogin,
   centerBase,
@@ -30,8 +31,10 @@ test('P006-P010 real PostgreSQL workflows close with three-portal scope, idempot
 
   await loginPortal(page, employeeBase, employeeLogin, '员工工作入口')
   await verifyRoutes(page, employeeBase, employeeRoutes)
+  await verifyEmployeeFormReset(page)
   await loginPortal(page, centerBase, managerLogin, '中心管理工作入口')
   await verifyRoutes(page, centerBase, centerRoutes)
+  await verifyCenterFormReset(page)
   await loginPortal(page, techBase, techLogin, '技术运行工作入口')
   await verifyRoutes(page, techBase, techRoutes)
 
