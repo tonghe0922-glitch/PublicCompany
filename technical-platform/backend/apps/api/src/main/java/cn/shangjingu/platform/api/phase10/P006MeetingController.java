@@ -87,9 +87,13 @@ public final class P006MeetingController {
         String permission=permission(action);
         require(authorization.authorizeAction(principal.context(),permission));
         var current=required(principal,id);
-        require(authorization.authorizeData(principal.context(),permission,target(current.meeting(),principal)));
-        if(ACTION.equals(permission) && !current.employeeVisible(principal.context().employeeId()))
+        boolean participantAction=ACTION.equals(permission);
+        if(participantAction && !current.employeeVisible(principal.context().employeeId()))
             throw denied("P006 employee is not a participant/action owner");
+        AuthorizationTarget authorizationTarget=participantAction
+                ? participantTarget(current.meeting(),principal)
+                : target(current.meeting(),principal);
+        require(authorization.authorizeData(principal.context(),permission,authorizationTarget));
         audit.recordOperation(principal.context(),"P006_ACTION_ATTEMPT_"+action,"collaboration.meeting",id);
         var result=meetings.act(context(principal),id,action,idempotencyKey,hash(Map.of("actionCode",action,"body",command)),command);
         audit.recordOperation(principal.context(),"P006_ACTION_"+action,"collaboration.meeting",id);
@@ -100,7 +104,8 @@ public final class P006MeetingController {
             boolean read,boolean manage,boolean monitor) {
         AuthorizationTarget target=target(a.meeting(),principal);
         if(manage && authorization.authorizeData(principal.context(),MANAGE,target).allowed()) return a;
-        if(read && a.employeeVisible(principal.context().employeeId()) && authorization.authorizeData(principal.context(),READ,target).allowed()) return a;
+        if(read && a.employeeVisible(principal.context().employeeId())
+                && authorization.authorizeData(principal.context(),READ,participantTarget(a.meeting(),principal)).allowed()) return a;
         if(monitor && authorization.authorizeData(principal.context(),MONITOR,target).allowed()) return a.metadataOnly();
         return null;
     }
@@ -114,6 +119,9 @@ public final class P006MeetingController {
     }
     private static AuthorizationTarget target(MeetingService.Meeting m,SessionPrincipal p) {
         return new AuthorizationTarget(m.tenantId(),m.ownerEmployeeId(),m.ownerCenterId(),p.context().positionId(),m.ownerEmployeeId());
+    }
+    static AuthorizationTarget participantTarget(MeetingService.Meeting m,SessionPrincipal p) {
+        return new AuthorizationTarget(m.tenantId(),p.context().employeeId(),m.ownerCenterId(),p.context().positionId(),m.ownerEmployeeId());
     }
     private boolean allowed(SessionPrincipal p,String permission) { return authorization.authorizeAction(p.context(),permission).allowed(); }
     private static DatabaseSecurityContext context(SessionPrincipal p) { var s=p.context(); return new DatabaseSecurityContext(s.tenantId(),s.userId(),s.identityId(),s.employeeId(),s.appointmentId(),s.orgId(),s.positionId()); }
