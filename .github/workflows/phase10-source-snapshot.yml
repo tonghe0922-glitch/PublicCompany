@@ -1,0 +1,32 @@
+name: PHASE-10 Source Snapshot
+
+on:
+  push:
+    branches:
+      - agent/phase-10-public-capabilities-b
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    name: Export repository source for audited maintenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout audited branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Create deterministic source archive
+        run: git archive --format=zip --output=PublicCompany-phase10-source.zip HEAD
+
+      - name: Upload source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: PublicCompany-phase10-source
+          path: PublicCompany-phase10-source.zip
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
