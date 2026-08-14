@@ -1,5 +1,6 @@
 # PHASE-11 ENGINEERING CONTRACT ROOT
 
+> Repository: `tonghe0922-glitch/PublicCompany`  
 > Status: `C0_NOT_FROZEN`  
 > Scope: P011–P016 绩效成长福利  
 > Branch: `agent/phase-11-performance-growth-welfare`
