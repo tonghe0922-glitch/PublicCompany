@@ -33,115 +33,74 @@ public class GuardedLeaveRepository implements LeaveService.Repository {
     @Override public int markDecision(UUID tenantId,UUID id,String decision,UUID actor){return required(delegate.markDecision(tenantId,id,decision,actor),"approval decision fact");}
     @Override public int markQuotaSettled(UUID tenantId,UUID id,UUID actor){return required(delegate.markQuotaSettled(tenantId,id,actor),"quota settlement fact");}
     @Override public int markAttendance(UUID tenantId,UUID id,UUID actor){return required(delegate.markAttendance(tenantId,id,actor),"attendance mark fact");}
-    @Override public int markLeaveStarted(UUID tenantId,UURQY[œİ[XİX[]URQXİÜŠ^Ü™]\›ˆ™\]Z\™Y
-[YØ]K›X\šÓX]™Tİ\Y
-[˜[YYXİX[]XİÜŠK˜XİX[X]™Hİ\˜XİŠNßB‚ˆİ™\œšYBˆX›XÈ[X\šÔ™]\›™Y
-URQ[˜[YURQY[œİ[XİX[]URQXİÜŠ^ÂˆX]™TÙ\šXÙK“X]™T™XÛÜ™™XÛÜ™Y[YØ]K™š[™
-[˜[YY
-K›Ü‘[ÙU›İÊ
+    @Override public int markLeaveStarted(UUID tenantId,UUID id,Instant actualAt,UUID actor){return required(delegate.markLeaveStarted(tenantId,id,actualAt,actor),"actual leave start fact");}
 
-KO›™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”X]™H™\]Y\İ›İ›İ[™ŠJNÂˆYŠXİX[]O[[
-]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”™]\›ˆXİX[]\È™\]Z\™YŠNÂˆYŠ™XÛÜ™›X]™Tİ\Y]
+    @Override
+    public int markReturned(UUID tenantId,UUID id,Instant actualAt,UUID actor){
+        LeaveService.LeaveRecord record=delegate.find(tenantId,id).orElseThrow(()->new ProcessRejectedException("P008 leave request not found"));
+        if(actualAt==null)throw new ProcessRejectedException("P008 return actualAt is required");
+        if(record.leaveStartedAt()==null)throw new ProcessRejectedException("P008 leave must start before return-to-work");
+        if(actualAt.isBefore(record.leaveStartedAt()))throw new ProcessRejectedException("P008 return-to-work cannot precede actual leave start");
+        return required(delegate.markReturned(tenantId,id,actualAt,actor),"return-to-work fact");
+    }
 
-OO[[
-]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”X]™H]\İİ\™Y›Ü™H™]\›‹]Ë]ÛÜšÈŠNÂˆYŠXİX[]š\Ğ™Y›Ü™J™XÛÜ™›X]™Tİ\Y]
+    @Override public int markQuotaAdjusted(UUID tenantId,UUID id,UUID actor){return required(delegate.markQuotaAdjusted(tenantId,id,actor),"quota adjustment fact");}
+    @Override public int markDayClosed(UUID tenantId,UUID id,UUID actor){return required(delegate.markDayClosed(tenantId,id,actor),"day-close fact");}
 
-JJ]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”™]\›‹]Ë]ÛÜšÈØ[››İ™XÙYHXİX[X]™Hİ\ŠNÂˆ™]\›ˆ™\]Z\™Y
-[YØ]K›X\šÔ™]\›™Y
-[˜[YYXİX[]XİÜŠKœ™]\›‹]Ë]ÛÜšÈ˜XİŠNÂˆB‚ˆİ™\œšYHX›XÈ[X\šÔ][İPY\İY
-URQ[˜[YURQYURQXİÜŠ^Ü™]\›ˆ™\]Z\™Y
-[YØ]K›X\šÔ][İPY\İY
-[˜[YYXİÜŠKœ][İHY\İY[˜XİŠNßBˆİ™\œšYHX›XÈ[X\šÑ^PÛÜÙY
-URQ[˜[YURQYURQXİÜŠ^Ü™]\›ˆ™\]Z\™Y
-[YØ]K›X\šÑ^PÛÜÙY
-[˜[YYXİÜŠK™^KXÛÜÙH˜XİŠNßB‚ˆİ™\œšYBˆX›XÈ›ÚY\[™YÙ\ŠURQ[˜[YURQYİš[™È[U\KšYÑXÚ[X[[[İ[İš[™È›İKURQXİÜŠ^Âˆ˜[Y]SYÙ\Š[U\K[[İ[
-NÂˆ[YØ]K˜\[™YÙ\Š[˜[YY[U\K[[İ[›İKXİÜŠNÂˆB‚ˆİ™\œšYHX›XÈÜ[Û˜[X]™TÙ\šXÙK“X]™T™XÛÜ™ˆš[™
-URQ[˜[YURQY
-^Ü™]\›ˆ[YØ]K™š[™
-[˜[YY
-NßBˆİ™\œšYHX›XÈ\İX]™TÙ\šXÙK“X]™T™XÛÜ™ˆ\İ
-URQ[˜[Y
-^Ü™]\›ˆ[YØ]K›\İ
-[˜[Y
-NßBˆİ™\œšYHX›XÈ\İX]™TÙ\šXÙK“YÙ\‘[OˆYÙ\ŠURQ[˜[Y
-^Ü™]\›ˆ[YØ]K›YÙ\Š[˜[Y
-NßB‚ˆİ]XÈİš[™ÈØ[›ÛšXØ[[™İ™\YÙ[Y
-İš[™È˜[YJHÂˆYˆ
-˜[YHOH[˜[YKš\Ğ›[šÊ
-JH™]\›ˆ[Âˆİš[™Èš[[YYH˜[YKš[J
-NÂˆHÂˆ™]\›ˆURQ™œ›ÛTİš[™Êš[[YY
-KÔİš[™Ê
-Kœ™\XÙJ‹H‹ˆŠNÂˆHØ]Ú
-[YØ[\™İ[Y[^Ù\[ÛˆYÛ›Ü™Y
-HÂˆYˆ
-š[[YY›[™İ
+    @Override
+    public void appendLedger(UUID tenantId,UUID id,String entryType,BigDecimal amount,String note,UUID actor){
+        validateLedger(entryType,amount);
+        delegate.appendLedger(tenantId,id,entryType,amount,note,actor);
+    }
 
-HˆÌŠHÂˆ›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠˆ”[™İ™\ˆYÙ[™Y™\™[˜ÙH^ÙYYÈHØ[›ÛšXØ[˜\˜Ú\ŠÌŠHÛÛ˜XİŠNÂˆBˆ™]\›ˆš[[YYÂˆBˆB‚ˆš]˜]Hİ]XÈX]™TÙ\šXÙK“X]™T™XÛÜ™Ú]Ø[›ÛšXØ[[™İ™\YÙ[
-ˆX]™TÙ\šXÙK“X]™T™XÛÜ™™XÛÜ™
-HÂˆ™]\›ˆ™]ÈX]™TÙ\šXÙK“X]™T™XÛÜ™
-ˆ™XÛÜ™šY
+    @Override public Optional<LeaveService.LeaveRecord> find(UUID tenantId,UUID id){return delegate.find(tenantId,id);}
+    @Override public List<LeaveService.LeaveRecord> list(UUID tenantId){return delegate.list(tenantId);}
+    @Override public List<LeaveService.LedgerEntry> ledger(UUID tenantId){return delegate.ledger(tenantId);}
 
-K™XÛÜ™[˜[Y
+    static String canonicalHandoverAgentId(String value) {
+        if (value == null || value.isBlank()) return null;
+        String trimmed = value.trim();
+        try {
+            return UUID.fromString(trimmed).toString().replace("-", "");
+        } catch (IllegalArgumentException ignored) {
+            if (trimmed.length() > 32) {
+                throw new ProcessRejectedException(
+                        "P008 handover agent reference exceeds the canonical varchar(32) contract");
+            }
+            return trimmed;
+        }
+    }
 
-K™XÛÜ™˜\Ú[™\ÜÓ›Ê
-Kˆ™XÛÜ™ÛÜšÙ›İÒ[œİ[˜ÙRY
+    private static LeaveService.LeaveRecord withCanonicalHandoverAgent(
+            LeaveService.LeaveRecord record) {
+        return new LeaveService.LeaveRecord(
+                record.id(), record.tenantId(), record.businessNo(),
+                record.workflowInstanceId(), record.workflowInstanceNo(),
+                record.currentNodeCode(), record.status(), record.versionNo(),
+                record.subject(), record.reason(), record.ownerCenterId(),
+                record.ownerEmployeeId(), record.attendanceType(), record.startAt(),
+                record.endAt(), record.durationHours(), record.quotaAccountId(),
+                record.quotaAmount(), canonicalHandoverAgentId(record.handoverAgentId()),
+                record.knownImpact(), record.quotaReservedAt(),
+                record.handoverConfirmedAt(), record.decision(), record.approvedAt(),
+                record.rejectedAt(), record.quotaSettledAt(),
+                record.attendanceMarkedAt(), record.leaveStartedAt(),
+                record.returnedAt(), record.quotaAdjustedAt(), record.dayClosedAt(),
+                record.closedAt(), record.updatedAt());
+    }
 
-K™XÛÜ™ÛÜšÙ›İÒ[œİ[˜ÙS›Ê
-Kˆ™XÛÜ™˜İ\œ™[›ÙPÛÙJ
-K™XÛÜ™œİ]\Ê
-K™XÛÜ™™\œÚ[Û“›Ê
-Kˆ™XÛÜ™œİXš™Xİ
+    private static void validateLedger(String entryType,BigDecimal amount){
+        if(!LEDGER_TYPES.contains(entryType))throw new ProcessRejectedException("P008 quota ledger entry type is invalid");
+        if(amount==null)throw new ProcessRejectedException("P008 quota ledger amount is required");
+        if("ADJUST".equals(entryType)){
+            if(amount.signum()==0)throw new ProcessRejectedException("P008 quota adjustment must be non-zero");
+        }else if(amount.signum()<=0){
+            throw new ProcessRejectedException("P008 quota ledger amount must be positive");
+        }
+    }
 
-K™XÛÜ™œ™X\ÛÛŠ
-K™XÛÜ™›İÛ™\Ù[\’Y
-
-Kˆ™XÛÜ™›İÛ™\‘[\ŞYYRY
-
-K™XÛÜ™˜][™[˜ÙU\J
-K™XÛÜ™œİ\]
-
-Kˆ™XÛÜ™™[™]
-
-K™XÛÜ™™\˜][Û’İ\œÊ
-K™XÛÜ™œ][İPXØÛİ[Y
-
-Kˆ™XÛÜ™œ][İP[[İ[
-
-KØ[›ÛšXØ[[™İ™\YÙ[Y
-™XÛÜ™š[™İ™\YÙ[Y
-
-JKˆ™XÛÜ™šÛ›İÛ’[\Xİ
-
-K™XÛÜ™œ][İT™\Ù\™Y]
-
-Kˆ™XÛÜ™š[™İ™\ÛÛ™š\›YY]
-
-K™XÛÜ™™XÚ\Ú[ÛŠ
-K™XÛÜ™˜\›İ™Y]
-
-Kˆ™XÛÜ™œ™Z™XİY]
-
-K™XÛÜ™œ][İTÙ]Y]
-
-Kˆ™XÛÜ™˜][™[˜ÙSX\šÙY]
-
-K™XÛÜ™›X]™Tİ\Y]
-
-Kˆ™XÛÜ™œ™]\›™Y]
-
-K™XÛÜ™œ][İPY\İY]
-
-K™XÛÜ™™^PÛÜÙY]
-
-Kˆ™XÛÜ™˜ÛÜÙY]
-
-K™XÛÜ™\]Y]
-
-JNÂˆB‚ˆš]˜]Hİ]XÈ›ÚY˜[Y]SYÙ\Šİš[™È[U\KšYÑXÚ[X[[[İ[
-^ÂˆYŠSQÑT—ÕTTË˜ÛÛZ[œÊ[U\JJ]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”][İHYÙ\ˆ[H\H\È[˜[YŠNÂˆYŠ[[İ[O[[
-]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”][İHYÙ\ˆ[[İ[\È™\]Z\™YŠNÂˆYŠQ•TÕ‹™\]X[Ê[U\JJ^ÂˆYŠ[[İ[œÚYÛ[J
-OOL
-]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”][İHY\İY[]\İ™H›Û‹^™\›ÈŠNÂˆY[ÙHYŠ[[İ[œÚYÛ[J
-OL
-^Âˆ›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”][İHYÙ\ˆ[[İ[]\İ™HÜÚ]]™HŠNÂˆBˆB‚ˆš]˜]Hİ]XÈ[™\]Z\™Y
-[\]Yİš[™ÈÜ\˜][ÛŠ^ÂˆYŠ\]YOLJ]›İÈ™]È›ØÙ\ÜÔ™Z™XİY^Ù\[ÛŠ”ŠÛÜ\˜][ÛŠÈˆ˜Z[YÛÜÙYŠNÂˆ™]\›ˆ\]YÂˆBŸB
+    private static int required(int updated,String operation){
+        if(updated!=1)throw new ProcessRejectedException("P008 "+operation+" failed closed");
+        return updated;
+    }
+}
