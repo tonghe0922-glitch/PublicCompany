@@ -23,9 +23,9 @@
 - [x] 冻结 P011 additive database overlay、RLS、constraints、indexes。
 - [x] 形成 P011 验收测试矩阵和失败回滚策略。
 
-## Construction not started
+## Construction checkpoints
 
-- [ ] P011 executable implementation。
+- [x] P011 executable implementation：Checkpoint run `31871437974` / SUCCESS。
 - [ ] P012 executable implementation。
 - [ ] P013 executable implementation。
 - [ ] P014 executable implementation。
@@ -34,4 +34,4 @@
 - [ ] Six-process three-portal Live E2E。
 - [ ] PHASE_REPORT / final full gate / independent Phase Gate。
 
-C0 已冻结；下一合法动作仅为 P011 可执行小闭环。P012–P016 仍按 checkpoint 顺序施工，P017+ 保持锁定。
+C0 已冻结；P011 已通过 checkpoint 并关闭。下一合法动作仅为 P012 可执行小闭环；P013–P016 仍按 checkpoint 顺序施工，P017+ 保持锁定。
