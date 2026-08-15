@@ -76,7 +76,12 @@ class Phase11LifecycleServiceTest {
                 .thenReturn(new IdempotencyClaim(recordId, false));
         when(numbers.next(actor.tenantId(), actor.employeeId(), "P011"))
                 .thenReturn("P011-202608150001");
-        when(workflow.start(actor, Phase11Process.P011, any(), eq(data), eq("p011-create")))
+        when(workflow.start(
+                        eq(actor),
+                        eq(Phase11Process.P011),
+                        any(),
+                        eq(data),
+                        eq("p011-create")))
                 .thenReturn(new Phase11WorkflowCoordinator.Started(workflowId, "S02"));
         when(repository.bindWorkflow(
                         eq(Phase11Process.P011),
