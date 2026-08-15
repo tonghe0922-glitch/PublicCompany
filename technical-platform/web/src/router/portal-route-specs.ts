@@ -29,6 +29,9 @@ import P010PermissionLinkagePage from '../platform/pages/phase10/P010PermissionL
 import P010PracticalCertificationPage from '../platform/pages/phase10/P010PracticalCertificationPage.vue'
 import P010PracticalTaskPage from '../platform/pages/phase10/P010PracticalTaskPage.vue'
 import P010QualificationsPage from '../platform/pages/phase10/P010QualificationsPage.vue'
+import P011CenterPage from '../platform/pages/phase11/P011CenterPage.vue'
+import P011EmployeePage from '../platform/pages/phase11/P011EmployeePage.vue'
+import P011TechPage from '../platform/pages/phase11/P011TechPage.vue'
 
 export interface PortalRouteSpec {
   portal: PortalCode
@@ -288,6 +291,28 @@ const P010_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   },
 ]
 
+
+const P011_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  {
+    portal: 'employee', path: '/employee/08/01/01', name: 'p011-performance-self',
+    component: P011EmployeePage,
+    permissionsAny: ['p011.performance.self', 'p011.performance.read'],
+  },
+  {
+    portal: 'center', path: '/center/10/01/01', name: 'p011-performance-management',
+    component: P011CenterPage,
+    permissionsAny: [
+      'p011.performance.create', 'p011.performance.evaluate',
+      'p011.performance.calibrate', 'p011.performance.appeal',
+      'p011.performance.impact',
+    ],
+  },
+  {
+    portal: 'tech', path: '/tech/06/05/01', name: 'p011-performance-monitor',
+    component: P011TechPage, permission: 'p011.performance.monitor',
+  },
+]
+
 const PHASE10_TECH_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
     portal: 'tech', path: '/tech/07/11/01',
@@ -315,4 +340,5 @@ export const PORTAL_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   ...P009_ROUTE_SPECS,
   ...P010_ROUTE_SPECS,
   ...PHASE10_TECH_ROUTE_SPECS,
+  ...P011_ROUTE_SPECS,
 ]

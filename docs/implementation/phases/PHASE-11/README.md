@@ -3,8 +3,8 @@
 > Repository: `tonghe0922-glitch/PublicCompany`
 > Construction branch: `agent/phase-11-performance-growth-welfare`
 > Baseline: `79edc420802bfb9d2e47a0976b6198a67e80c4c2`
-> Status: **IN_PROGRESS / C0_FROZEN_CANDIDATE**
-> Current legal checkpoint: **P011 executable implementation (after C0 gate)**
+> Status: **IN_PROGRESS / P011_CHECKPOINT_CANDIDATE**
+> Current legal checkpoint: **P011 checkpoint gate**
 > PHASE-12: **NOT_STARTED / LOCKED**
 
 ## 1. 阶段边界
@@ -13,7 +13,7 @@
 
 | Process | 业务流程 | Canonical primary table | 当前真实状态 |
 |---|---|---|---|
-| P011 | 绩效管理 | `performance.performance_cycle` | BASELINE_TABLE_ONLY |
+| P011 | 绩效管理 | `performance.performance_cycle` | CHECKPOINT_CANDIDATE / GATE_PENDING |
 | P012 | 晋升与任职发展 | `hr.promotion_request` | BASELINE_TABLE_ONLY |
 | P013 | 奖励 | `reward.reward_case` | BASELINE_TABLE_ONLY |
 | P014 | 纪律、责任与申诉 | `reward.discipline_case` | BASELINE_TABLE_ONLY |
@@ -53,7 +53,7 @@ Preparation Gate
 → independent Phase Gate
 ```
 
-当前停止点：**C0 工程合同已冻结候选；等待 C0 Gate 通过后，只允许开始 P011 产品小闭环。P012–P016 与 PHASE-12 不得并行抢跑。**
+当前停止点：**C0 Gate 已通过；P011 可执行闭环候选已提交，等待 P011 Checkpoint Gate。P012–P016 与 PHASE-12 不得并行抢跑。**
 
 准备证据候选：`2f3bc41ebb0571d34ac9a75cbef8bedbf19a85ec`；Preparation Gate run `31821929837` / SUCCESS；artifact `9227280256` / `sha256:786f6a5f19a4720066829fef65dc21ddae0be43d2743ad7787a222565d59dacb`。
 
@@ -65,3 +65,10 @@ Preparation Gate
 - `DATABASE_CONTRACT.md`
 - `TEST_MATRIX.md`
 - `docs/implementation/contracts/phase-11/C0_DECISION_LOG.md`
+
+## 6. P011 checkpoint candidate
+
+- C0 Contract Freeze run `31865754854` / SUCCESS。
+- Preparation continuity run `31865754872` / SUCCESS。
+- P011 候选包含独立四类分数事实、canonical workflow、权限/数据范围、RLS、Audit、Outbox、三端页面及单元/数据库/前端测试。
+- 本节只记录候选，不在 Checkpoint Gate 全绿前将 P011 标记 `CHECKPOINT_PASS / CLOSED`。
