@@ -25,7 +25,7 @@ PHASE-10 已封板并完成封板后质量整改；PHASE-11 已在独立分支 `
 | Business API source records | 0；禁止推断 HTTP path |
 | Production changes since PHASE-10 baseline | 0 |
 
-Source Probe：run `31818722531` / SUCCESS；artifact `9226054438`；digest `sha256:635f4576931620835b1cbdadb5a17f1e27f15e71b9bf410ef8ba0860c33bc652`。  
+Source Probe：run `31818722531` / SUCCESS；artifact `9226054438`；digest `sha256:635f4576931620835b1cbdadb5a17f1e27f15e71b9bf410ef8ba0860c33bc652`。
 Preparation Analysis：run `31819889568` / SUCCESS；artifact `9226506967`；digest `sha256:d73e755908f0e46b4ba4442cad3da7e0ebc2a7285dd09c47fc8e12223fa134b0`。
 
 ## 4. 代码基线核验
@@ -38,7 +38,6 @@ Preparation Analysis：run `31819889568` / SUCCESS；artifact `9226506967`；dig
 | P014 | EXISTING_BASELINE_DDL | MISSING | MISSING | MISSING | 仅基线主表 |
 | P015 | EXISTING_BASELINE_DDL | MISSING | MISSING | MISSING | 仅基线主表 |
 | P016 | EXISTING_BASELINE_DDL | EXISTING_EXACT_MARKER | EXISTING_EXACT_MARKER | EXISTING_EXACT_MARKER | 既有 PHASE-05 内核，C0 复用审查 |
-
 
 P016 既有实现包含 `CareCaseService`、`JdbcCareCaseRepository`、`WelfareCareCaseController`、单元/数据库测试和前端流程定义；其 API 与 permission 仍带 `phase05` 身份，且当前页面只是流程定义而非 PHASE-11 三端业务页。因此必须复用优先、逐项对齐，不得直接标记 CLOSED。
 
