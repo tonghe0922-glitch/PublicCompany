@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JdbcPhase11Repository implements Phase11Repository {
+public class JdbcPhase11Repository implements Phase11Repository {
     private final NamedParameterJdbcTemplate jdbc;
     private final ObjectMapper mapper;
 
