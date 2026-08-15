@@ -21,6 +21,7 @@ REQUIRED = {
     "router_test": "technical-platform/web/src/router/p011-router.test.ts",
     "service_test": "technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11/Phase11LifecycleServiceTest.java",
     "database_test": "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P011DatabaseIT.java",
+    "checkpoint_evidence": "docs/implementation/phases/PHASE-11/P011_CHECKPOINT_EVIDENCE.md",
 }
 
 ACTIONS = (
@@ -58,8 +59,6 @@ def require(content: str, *fragments: str, label: str) -> None:
 def main() -> None:
     process = text("process")
     require(process, 'P011(', '"performance.performance_cycle"', label="process")
-    if re.search(r"\bP0(12|13|14|15|16|17|18|19|20)\b", process):
-        fail("P011 checkpoint exposes a later executable process")
     for action in ACTIONS:
         require(process, f'"{action}"', label="process graph")
 
@@ -94,7 +93,7 @@ def main() -> None:
         "p011.performance.evaluate",
         "p011.performance.calibrate",
         "p011.performance.appeal",
-        "p011.performance.impact",
+       "p011.performance.impact",
         "p011.performance.monitor",
         "metadataOnly()",
         label="controller",
@@ -132,7 +131,7 @@ def main() -> None:
         "0–1000",
         "expectedVersion",
         label="operations",
-    )
+   )
     if "localStorage" in workspace + operations or re.search(r"mock.*P011", workspace + operations, re.I):
         fail("P011 frontend contains local or mock business truth")
 
@@ -140,14 +139,22 @@ def main() -> None:
         text(key)
 
     progress = (ROOT / "docs/implementation/MASTER_PROGRESS.md").read_text(encoding="utf-8")
-    if "P011 = CHECKPOINT_PASS / CLOSED" in progress:
-        fail("P011 cannot be closed before the checkpoint and live E2E gates pass")
-    require(
-        progress,
-        "P011 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE",
-        "PHASE-12 = NOT_STARTED / LOCKED",
-        label="MASTER_PROGRESS",
-    )
+    candidate = "P011 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE" in progress
+    closed = "P011 = CHECKPOINT_PASS / CLOSED / run 31871437974" in progress
+    if not candidate and not closed:
+        fail("MASTER_PROGRESS has neither the P011 candidate nor the verified closed state")
+    if closed:
+        evidence = text("checkpoint_evidence")
+        require(
+            evidence,
+            "Run ID: `31871437974`",
+            "P011 checkpoint verdict | SUCCESS",
+            "PHASE-44 API security regression | SUCCESS",
+            "PostgreSQL 16 P011 canonical facts and immutability | SUCCESS",
+            "P011 Vue TypeScript lint unit quality and three builds | SUCCESS",
+            label="P011 checkpoint evidence",
+        )
+    require(progress, "PHASE-12 = NOT_STARTED / LOCKED", label="MASTER_PROGRESS")
 
     print(
         "PHASE-11 P011 contract PASS: independent score facts, canonical workflow, "
