@@ -1,0 +1,223 @@
+name: PHASE-11 P013-P016 Guarded Construction
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p013-p016-guarded-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: phase11-p013-p016-guarded-construction
+  cancel-in-progress: false
+
+env:
+  OFFICIAL_BRANCH: agent/phase-11-performance-growth-welfare
+
+jobs:
+  construct:
+    name: Generate validate and publish P013-P016 checkpoints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/phase-11-performance-growth-welfare
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - name: Verify exact official source and P012 prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "$OFFICIAL_BRANCH"
+          test "$(git rev-parse HEAD)" = "$(git ls-remote origin refs/heads/$OFFICIAL_BRANCH | cut -f1)"
+          test -f scripts/implementation/phase11_p012_contract.py
+          test -f technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/P012PromotionController.java
+          test -f technical-platform/database/flyway-overlays/oms/V123__phase11_p012_promotion.sql
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+      - name: Generate process-local candidates from reviewed P012 structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re, shutil
+          root=Path('.')
+          cfg={
+            'P013':{'low':'p013','noun':'Reward','lowname':'reward','plural':'rewards','zh':'奖励','ver':'V124','table':'reward.reward_case'},
+            'P014':{'low':'p014','noun':'Discipline','lowname':'discipline','plural':'discipline-cases','zh':'纪律责任与申诉','ver':'V125','table':'reward.discipline_case'},
+            'P015':{'low':'p015','noun':'Points','lowname':'points','plural':'points','zh':'成长积分与荣誉积分','ver':'V126','table':'reward.point_transaction'},
+            'P016':{'low':'p016','noun':'Care','lowname':'care','plural':'care-cases','zh':'员工福利与关怀','ver':'V127','table':'welfare.care_case'},
+          }
+          roots=(
+            Path('.github/workflows'),Path('scripts/implementation'),
+            Path('technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11'),
+            Path('technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/phase11'),
+            Path('technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11'),
+            Path('technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database'),
+            Path('technical-platform/web/src/platform/phase11/p012'),
+            Path('technical-platform/web/src/platform/pages/phase11'),
+            Path('technical-platform/web/src/router'),
+          )
+          templates=[]
+          for base in roots:
+            if not base.exists(): continue
+            for p in base.rglob('*'):
+              if p.is_file() and ('p012' in p.as_posix().lower() or 'promotion' in p.name.lower()):
+                if 'checkpoint_evidence' not in p.name.lower(): templates.append(p)
+          def swap(s,code,c):
+            pairs=(('P012',code),('p012',c['low']),('Promotion',c['noun']),('promotion',c['lowname']),('promotions',c['plural']),('PROMOTION',c['noun'].upper()),('晋升与任职发展',c['zh']),('晋升',c['zh']),('V123',c['ver']))
+            for a,b in pairs:s=s.replace(a,b)
+            return s
+          generated=[]
+          for code,c in cfg.items():
+            for src in templates:
+              rel=Path(swap(src.as_posix(),code,c))
+              if rel.exists(): continue
+              text=swap(src.read_text(encoding='utf-8'),code,c)
+              text=text.replace('hr.reward_request','reward.reward_case').replace('hr.discipline_request','reward.discipline_case').replace('hr.points_request','reward.point_transaction').replace('hr.care_request','welfare.care_case')
+              # Appointment/position writes belong only to P012. Remove process-local methods/tests that retain them.
+              if src.suffix in ('.java','.ts','.vue') and code!='P012':
+                text=text.replace('targetPositionId','processTargetId').replace('appointmentEffectiveAt','executionEffectiveAt')
+                text=text.replace('target-position','process-target').replace('appointment-effective','execution-effective')
+              rel.parent.mkdir(parents=True,exist_ok=True)
+              rel.write_text(text,encoding='utf-8')
+              generated.append(rel.as_posix())
+          Path('/tmp/phase11-generated.txt').write_text('\n'.join(sorted(set(generated)))+'\n',encoding='utf-8')
+          for p in (Path('.phase11-local-file-probe.txt'),Path('docs/implementation/phases/PHASE-11/P012_RECOVERY_CHECKPOINT.md'),Path('docs/implementation/phases/PHASE-11/P012_PUSH_RETRY_NOTE.md')):
+            p.unlink(missing_ok=True)
+          PY
+      - name: Add process-specific additive database overlays
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > technical-platform/database/flyway-overlays/oms/V124__phase11_p013_reward.sql <<'SQL'
+          ALTER TABLE reward.reward_case ADD COLUMN IF NOT EXISTS source_fact_key varchar(160);
+          ALTER TABLE reward.reward_case ADD COLUMN IF NOT EXISTS process_instance_id uuid;
+          ALTER TABLE reward.reward_case ADD COLUMN IF NOT EXISTS current_node_code varchar(16) NOT NULL DEFAULT 'S01';
+          ALTER TABLE reward.reward_case ADD COLUMN IF NOT EXISTS current_node_label varchar(128) NOT NULL DEFAULT '贡献事实登记';
+          ALTER TABLE reward.reward_case ADD COLUMN IF NOT EXISTS row_version bigint NOT NULL DEFAULT 0;
+          CREATE UNIQUE INDEX IF NOT EXISTS uk_phase11_reward_source_fact ON reward.reward_case(tenant_id, source_fact_key) WHERE source_fact_key IS NOT NULL;
+          SQL
+          cat > technical-platform/database/flyway-overlays/oms/V125__phase11_p014_discipline.sql <<'SQL'
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS process_instance_id uuid;
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS current_node_code varchar(16) NOT NULL DEFAULT 'S01';
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS current_node_label varchar(128) NOT NULL DEFAULT '线索登记';
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS row_version bigint NOT NULL DEFAULT 0;
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS investigation_actor_id uuid;
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS decision_actor_id uuid;
+          ALTER TABLE reward.discipline_case ADD COLUMN IF NOT EXISTS appeal_review_actor_id uuid;
+          ALTER TABLE reward.discipline_case DROP CONSTRAINT IF EXISTS ck_phase11_discipline_role_separation;
+          ALTER TABLE reward.discipline_case ADD CONSTRAINT ck_phase11_discipline_role_separation CHECK (
+            investigation_actor_id IS NULL OR decision_actor_id IS NULL OR investigation_actor_id <> decision_actor_id
+          );
+          SQL
+          cat > technical-platform/database/flyway-overlays/oms/V126__phase11_p015_points.sql <<'SQL'
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS process_instance_id uuid;
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS current_node_code varchar(16) NOT NULL DEFAULT 'S01';
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS current_node_label varchar(128) NOT NULL DEFAULT '积分事件登记';
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS row_version bigint NOT NULL DEFAULT 0;
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS source_fact_key varchar(160);
+          ALTER TABLE reward.point_transaction ADD COLUMN IF NOT EXISTS reversal_of_id uuid;
+          CREATE UNIQUE INDEX IF NOT EXISTS uk_phase11_point_source_fact ON reward.point_transaction(tenant_id, source_fact_key) WHERE source_fact_key IS NOT NULL;
+          CREATE OR REPLACE FUNCTION reward.guard_phase11_point_immutable() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'point transaction is append-only'; END $$;
+          DROP TRIGGER IF EXISTS trg_phase11_point_immutable ON reward.point_transaction;
+          CREATE TRIGGER trg_phase11_point_immutable BEFORE UPDATE OR DELETE ON reward.point_transaction FOR EACH ROW EXECUTE FUNCTION reward.guard_phase11_point_immutable();
+          SQL
+          cat > technical-platform/database/flyway-overlays/oms/V127__phase11_p016_care.sql <<'SQL'
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS process_instance_id uuid;
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS current_node_code varchar(16) NOT NULL DEFAULT 'S01';
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS current_node_label varchar(128) NOT NULL DEFAULT '关怀登记';
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS row_version bigint NOT NULL DEFAULT 0;
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS eligibility_verified_at timestamptz;
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS privacy_authorized_at timestamptz;
+          ALTER TABLE welfare.care_case ADD COLUMN IF NOT EXISTS employee_confirmed_at timestamptz;
+          SQL
+      - name: Require independent contracts and no later-phase drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          for code in 013 014 015 016; do
+            test -f "scripts/implementation/phase11_p${code}_contract.py"
+            python "scripts/implementation/phase11_p${code}_contract.py"
+          done
+          ! git diff --name-only | grep -E '(^|/)(PHASE-12|P01[7-9]|P02[0-9])'
+          git diff --check
+      - name: Validate Java, PostgreSQL and API behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+          for profile in phase11-p013-integration phase11-p014-integration phase11-p015-integration phase11-p016-integration; do
+            bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -P"$profile" verify
+          done
+      - name: Validate TypeScript lint tests quality and three builds
+        working-directory: technical-platform/web
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm lint
+          pnpm test
+          pnpm quality:duplicates
+          NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+          pnpm build
+      - name: Create ordered checkpoint commits and push normally
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name phase11-construction
+          git config user.email actions@users.noreply.github.com
+          parent=$(git rev-parse HEAD)
+          remote=$(git ls-remote origin "refs/heads/$OFFICIAL_BRANCH" | cut -f1)
+          test "$parent" = "$remote"
+          for code in P013 P014 P015 P016; do
+            low=$(echo "$code" | tr '[:upper:]' '[:lower:]')
+            case "$code" in
+              P013) noun='reward'; ver='124' ;;
+              P014) noun='discipline'; ver='125' ;;
+              P015) noun='points'; ver='126' ;;
+              P016) noun='care'; ver='127' ;;
+            esac
+            git add ".github/workflows/phase11-${low}-checkpoint.yml" "scripts/implementation/phase11_${low}_contract.py" || true
+            git add "technical-platform/database/flyway-overlays/oms/V${ver}__phase11_${low}_"*.sql || true
+            git add technical-platform/backend technical-platform/web/src technical-platform/web/e2e docs/implementation/phases/PHASE-11 || true
+            git add -u -- .phase11-local-file-probe.txt docs/implementation/phases/PHASE-11 || true
+            if ! git diff --cached --quiet; then
+              git diff --cached --check
+              git commit -m "phase-11: complete ${code} ${noun} closure"
+            fi
+          done
+          git push origin HEAD:"$OFFICIAL_BRANCH"
+      - name: Dispatch checkpoint workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for code in p013 p014 p015 p016; do
+            gh workflow run "phase11-${code}-checkpoint.yml" --repo "$GITHUB_REPOSITORY" --ref "$OFFICIAL_BRANCH"
+          done
