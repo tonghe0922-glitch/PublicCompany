@@ -15,8 +15,8 @@ KB = ROOT / "Knowledge Base"
 OUTPUT_JSON = ROOT / "docs/implementation/evidence/PHASE-04_SOURCE_CONTRACT.json"
 OUTPUT_MD = ROOT / "docs/implementation/phases/PHASE-04/SOURCE_CONTRACT.md"
 
-ORG_WORKBOOK = KB / "00 企业架构及员工/01 企业组织架构数据表.xlsx"
-EMPLOYEE_WORKBOOK = KB / "00 企业架构及员工/02 员工的真实工号.xlsx"
+ORG_WORKBOOK = KB / "00 企业架构及员工/01 企业组织架构数据表_TM.xlsx"
+EMPLOYEE_WORKBOOK = KB / "00 企业架构及员工/02 员工的工号_TM.xlsx"
 PROCESS_NAMES = {
     "P001": "001_统一登录与多岗位身份切换.xlsx",
     "P002": "002_权限申请、复核与回收.xlsx",

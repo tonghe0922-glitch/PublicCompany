@@ -105,6 +105,13 @@ def validate_binding_source(binding: dict[str, Any], cache: dict[str, dict[str, 
         raise RuntimeError(f"binding route/source row drift: {key} expected route={route}; physical matching rows={matching[:5]}")
 
 
+def phase_number(value: object) -> int:
+    match = re.fullmatch(r"PHASE-(\d{2})", str(value or ""))
+    if match is None:
+        raise RuntimeError(f"invalid phase identifier: {value}")
+    return int(match.group(1))
+
+
 def verify_page_index() -> None:
     index = json.loads(PAGE_INDEX.read_text(encoding="utf-8"))
     canonical = index.get("canonical_business_records") or {}
@@ -113,8 +120,16 @@ def verify_page_index() -> None:
     if not isinstance(page_count, int) or page_count < 7000 or page_count != trace_count:
         raise RuntimeError(f"canonical page trace integrity drifted: pages={page_count}, traces={trace_count}")
     warn_drift("canonical page_count", page_count, BASELINE_FACTS["page_count"])
+
+    phase10 = index.get("phase10") or {}
+    if phase10.get("state") != "COMPLETE" or phase10.get("formal_gate") != "PASS":
+        raise RuntimeError("MASTER_PAGE_CATALOG PHASE-10 closure regressed")
+
     current = index.get("current_business_phase") or {}
-    if current.get("phase") != "PHASE-10" or current.get("process_codes") != list(EXPECTED_STATES):
+    current_phase = str(current.get("phase", ""))
+    if phase_number(current_phase) < 10:
+        raise RuntimeError("MASTER_PAGE_CATALOG current phase regressed before PHASE-10")
+    if current_phase == "PHASE-10" and current.get("process_codes") != list(EXPECTED_STATES):
         raise RuntimeError("MASTER_PAGE_CATALOG current PHASE-10 scope drifted")
 
 
@@ -196,10 +211,10 @@ def verify() -> None:
     progress = PROGRESS.read_text(encoding="utf-8")
     if "| PHASE-09 | COMPLETE |" not in progress:
         raise RuntimeError("PHASE-09 must remain COMPLETE")
-    if not re.search(r"\| PHASE-10 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|", progress):
-        raise RuntimeError("PHASE-10 must be in formal construction lifecycle")
-    if "| PHASE-11 | NOT_STARTED |" not in progress:
-        raise RuntimeError("PHASE-11 must remain NOT_STARTED")
+    if "| PHASE-10 | COMPLETE |" not in progress:
+        raise RuntimeError("PHASE-10 closure must remain COMPLETE")
+    if not re.search(r"\| PHASE-11 \| (NOT_STARTED|IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|", progress):
+        raise RuntimeError("PHASE-11 must remain in a valid construction lifecycle state")
 
 
 def main() -> None:
