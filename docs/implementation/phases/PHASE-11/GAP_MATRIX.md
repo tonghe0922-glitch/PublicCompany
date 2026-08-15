@@ -49,6 +49,6 @@
 - 生产目录相对 PHASE-10 基线无改动；
 - P017+ 保持锁定。
 
-## 5. C0 closeout
+## 5. P011 C0 freeze closeout
 
 C0-01～C0-08 已在 `docs/implementation/contracts/phase-11/C0_DECISION_LOG.md` 处理。页面、HTTP/permission、workflow、database 和 test contracts 已冻结为工程事实；业务实现状态仍保持 P011–P015 MISSING、P016 PARTIAL。
