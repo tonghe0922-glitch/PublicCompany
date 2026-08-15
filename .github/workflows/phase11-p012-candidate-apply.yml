@@ -1,0 +1,116 @@
+name: PHASE-11 P012 Guarded Candidate Recovery
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p012-candidate-apply.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: phase11-p012-guarded-candidate
+  cancel-in-progress: false
+
+env:
+  OFFICIAL_BRANCH: agent/phase-11-performance-growth-welfare
+  CANDIDATE_TREE: 4d87a89ef3e10c205b7c821e02fed9f946f42745
+
+jobs:
+  validate-and-fast-forward:
+    name: Validate P012 candidate before official fast-forward
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/phase-11-performance-growth-welfare
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - name: Build candidate commit without moving the branch
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "$OFFICIAL_BRANCH"
+          current=$(git rev-parse HEAD)
+          remote=$(git ls-remote origin "refs/heads/$OFFICIAL_BRANCH" | cut -f1)
+          test "$current" = "$remote"
+          payload=$(python - "$current" "$CANDIDATE_TREE" <<'PY'
+          import json,sys
+          print(json.dumps({
+            "message":"phase-11: complete P012 promotion appointment",
+            "tree":sys.argv[2],
+            "parents":[sys.argv[1]],
+          }))
+          PY
+          )
+          candidate=$(gh api --method POST "/repos/$GITHUB_REPOSITORY/git/commits" --input - --jq .sha <<<"$payload")
+          echo "sha=$candidate" >> "$GITHUB_OUTPUT"
+          git fetch origin "$candidate"
+          git checkout --detach "$candidate"
+      - name: Require exact P012 product scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f scripts/implementation/phase11_p012_contract.py
+          test -f .github/workflows/phase11-p012-checkpoint.yml
+          test -f technical-platform/database/flyway-overlays/oms/V123__phase11_p012_promotion.sql
+          test -f technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/P012PromotionController.java
+          test -f technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P012DatabaseIT.java
+          test -f technical-platform/web/src/platform/pages/phase11/P012EmployeePage.vue
+          test -f technical-platform/web/src/platform/pages/phase11/P012CenterPage.vue
+          test -f technical-platform/web/src/platform/pages/phase11/P012TechPage.vue
+          test ! -e .phase11-local-file-probe.txt
+          ! find docs/implementation/phases/PHASE-11 -maxdepth 1 -type f | grep -Ei 'RECOVERY|PUSH_RETRY'
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+          git diff --check HEAD^ HEAD
+      - name: Java and PostgreSQL P012 validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+          bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase11-p012-integration verify
+      - name: Frontend P012 and three-build validation
+        working-directory: technical-platform/web
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm lint
+          pnpm test
+          pnpm quality:duplicates
+          NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+          pnpm build
+      - name: Fast-forward only when the official ref is unchanged
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="${{ steps.candidate.outputs.sha }}"
+          parent=$(git rev-parse "$candidate^")
+          remote=$(git ls-remote origin "refs/heads/$OFFICIAL_BRANCH" | cut -f1)
+          test "$remote" = "$parent"
+          gh api --method PATCH "/repos/$GITHUB_REPOSITORY/git/refs/heads/$OFFICIAL_BRANCH" -f sha="$candidate" -F force=false >/dev/null
