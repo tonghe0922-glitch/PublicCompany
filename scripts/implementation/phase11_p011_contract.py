@@ -21,7 +21,6 @@ REQUIRED = {
     "router_test": "technical-platform/web/src/router/p011-router.test.ts",
     "service_test": "technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11/Phase11LifecycleServiceTest.java",
     "database_test": "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P011DatabaseIT.java",
-    "checkpoint_evidence": "docs/implementation/phases/PHASE-11/P011_CHECKPOINT_EVIDENCE.md",
 }
 
 ACTIONS = (
@@ -36,6 +35,17 @@ ACTIONS = (
     "RESOLVE_APPEAL",
     "EXECUTE_IMPACT",
     "ARCHIVE",
+)
+
+CHECKPOINT_RUN = "31871437974"
+CHECKPOINT_EVIDENCE = ROOT / "docs/implementation/phases/PHASE-11/P011_CHECKPOINT_EVIDENCE.md"
+CHECKPOINT_JOBS = (
+    "P011 C0, scope and repository contract | SUCCESS",
+    "Java 21 P011 application and API behavior | SUCCESS",
+    "PHASE-04 API security regression | SUCCESS",
+    "PostgreSQL 16 P011 canonical facts and immutability | SUCCESS",
+    "P011 Vue TypeScript lint unit quality and three builds | SUCCESS",
+    "P011 checkpoint verdict | SUCCESS",
 )
 
 
@@ -56,9 +66,38 @@ def require(content: str, *fragments: str, label: str) -> None:
             fail(f"{label} missing {fragment!r}")
 
 
+def verify_checkpoint_evidence(progress: str) -> None:
+    if not CHECKPOINT_EVIDENCE.is_file():
+        fail(f"missing {CHECKPOINT_EVIDENCE.relative_to(ROOT)}")
+    evidence = CHECKPOINT_EVIDENCE.read_text(encoding="utf-8")
+    require(evidence, f"Run | {CHECKPOINT_RUN}", label="P011 checkpoint evidence")
+    for job in CHECKPOINT_JOBS:
+        require(evidence, job, label="P011 checkpoint evidence")
+    require(
+        progress,
+        f"P011 = CHECKPOINT_PASS / CLOSED / run {CHECKPOINT_RUN}",
+        label="MASTER_PROGRESS",
+    )
+
+
+def verify_lifecycle_state(progress: str) -> str:
+    candidate = "P011 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE"
+    closed = "P011 = CHECKPOINT_PASS / CLOSED"
+    if candidate in progress:
+        return "CANDIDATE"
+    if closed in progress:
+        verify_checkpoint_evidence(progress)
+        return "CLOSED"
+    fail("MASTER_PROGRESS must contain the P011 candidate or evidence-backed CLOSED state")
+    raise AssertionError("unreachable")
+
+
 def main() -> None:
     process = text("process")
     require(process, 'P011(', '"performance.performance_cycle"', label="process")
+    # P012-P016 are legal later checkpoints in PHASE-11. Only PHASE-12/P017+ drift is forbidden here.
+    if re.search(r"\bP0(17|18|19|20)\b", process):
+        fail("P011 regression contract exposes a PHASE-12 executable process")
     for action in ACTIONS:
         require(process, f'"{action}"', label="process graph")
 
@@ -93,7 +132,7 @@ def main() -> None:
         "p011.performance.evaluate",
         "p011.performance.calibrate",
         "p011.performance.appeal",
-       "p011.performance.impact",
+        "p011.performance.impact",
         "p011.performance.monitor",
         "metadataOnly()",
         label="controller",
@@ -131,7 +170,7 @@ def main() -> None:
         "0–1000",
         "expectedVersion",
         label="operations",
-   )
+    )
     if "localStorage" in workspace + operations or re.search(r"mock.*P011", workspace + operations, re.I):
         fail("P011 frontend contains local or mock business truth")
 
@@ -139,26 +178,14 @@ def main() -> None:
         text(key)
 
     progress = (ROOT / "docs/implementation/MASTER_PROGRESS.md").read_text(encoding="utf-8")
-    candidate = "P011 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE" in progress
-    closed = "P011 = CHECKPOINT_PASS / CLOSED / run 31871437974" in progress
-    if not candidate and not closed:
-        fail("MASTER_PROGRESS has neither the P011 candidate nor the verified closed state")
-    if closed:
-        evidence = text("checkpoint_evidence")
-        require(
-            evidence,
-            "Run ID: `31871437974`",
-            "P011 checkpoint verdict | SUCCESS",
-            "PHASE-44 API security regression | SUCCESS",
-            "PostgreSQL 16 P011 canonical facts and immutability | SUCCESS",
-            "P011 Vue TypeScript lint unit quality and three builds | SUCCESS",
-            label="P011 checkpoint evidence",
-        )
+    state = verify_lifecycle_state(progress)
     require(progress, "PHASE-12 = NOT_STARTED / LOCKED", label="MASTER_PROGRESS")
 
     print(
-        "PHASE-11 P011 contract PASS: independent score facts, canonical workflow, "
-        "server authorization, RLS, outbox, three-portal pages and tests are present"
+        "PHASE-11 P011 contract PASS: state="
+        + state
+        + "; independent score facts, canonical workflow, server authorization, RLS, "
+        "outbox, three-portal pages and tests are present"
     )
 
 
