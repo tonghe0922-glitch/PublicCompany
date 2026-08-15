@@ -22,7 +22,7 @@ Before the independent Gate, that same candidate passed the normal PHASE-05 cons
 
 Gate run `31250885752` used the exact-SHA Gate workflow. Preflight successfully verified:
 
-- repository `louthison/PublicCompany`;
+- repository `tonghe0922-glitch/PublicCompany`;
 - checked-out HEAD equals the resolved candidate SHA;
 - remote `ChatGPT_Version_V0.05` head equals the candidate at Gate preflight;
 - PHASE-04 was COMPLETE;

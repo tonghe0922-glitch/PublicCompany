@@ -2,15 +2,18 @@ name: PHASE-10 Preparation Source Probe
 
 on:
   push:
-    branches: [ChatGPT_Version_V0.07]
+    branches: [agent/phase-10-public-capabilities-b]
     paths:
       - ".github/workflows/phase10-preparation-probe.yml"
       - "scripts/implementation/phase10_preparation_extract.py"
       - "scripts/implementation/phase10_page_trace.py"
       - "scripts/implementation/phase10_page_candidates.py"
+      - "scripts/implementation/phase10_contract.py"
+      - "scripts/implementation/phase10_repository_identity.py"
       - "docs/implementation/MASTER_PROCESS_CATALOG.json"
-      - "docs/implementation/contracts/phase-01/pages.json"
-      - "docs/implementation/contracts/phase-01/api_records.jsonl"
+      - "docs/implementation/MASTER_PAGE_CATALOG.json"
+      - "docs/implementation/phases/PHASE-10/PHASE10_PAGE_BINDINGS.json"
+      - "Knowledge Base/01 完整的页面架构/**"
       - "Knowledge Base/02 业务流程 表单 字段/S1 三端业务流程表单字段包/**/01_平台公共能力/*.xlsx"
   workflow_dispatch:
 
@@ -23,7 +26,7 @@ concurrency:
 
 jobs:
   source-probe:
-    name: Parse P006-P010 authoritative XLSX and discover C0 page candidates
+    name: Parse P006-P010 authoritative XLSX and validate frozen page bindings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,12 +35,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Parse authoritative sources and emit candidate evidence
+      - name: Guard canonical repository and PHASE-10 branch
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REPOSITORY" = "louthison/PublicCompany"
-          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-10-public-capabilities-b"
+          python scripts/implementation/phase10_repository_identity.py
+      - name: Parse authoritative sources and emit binding evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/implementation/phase10_preparation_extract.py scripts/implementation/phase10_page_trace.py scripts/implementation/phase10_page_candidates.py scripts/implementation/phase10_contract.py scripts/implementation/phase10_repository_identity.py
+          python scripts/implementation/phase10_contract.py
           python scripts/implementation/phase10_preparation_extract.py
           python scripts/implementation/phase10_page_trace.py
           python scripts/implementation/phase10_page_candidates.py
@@ -52,12 +62,13 @@ jobs:
           candidates = json.loads(Path('docs/implementation/phases/PHASE-10/P006_P010_PAGE_CANDIDATES.json').read_text(encoding='utf-8'))
           assert source['workbook_count'] == 15 and source['parse_failures'] == 0
           assert trace['target_process_codes'] == ['P006','P007','P008','P009','P010']
+          assert trace['matched_page_records'] > 0
           for code in ['P006','P007','P008','P009','P010']:
               for portal in ['employee','center','tech']:
                   assert candidates['processes'][code][portal]['candidate_count'] > 0, (code, portal)
           print(json.dumps({
             'source': {k:source[k] for k in ('workbook_count','sheet_count','nonempty_row_count','parse_failures')},
-            'direct_page_trace_count': trace['matched_page_records'],
+            'validated_binding_count': trace['matched_page_records'],
             'candidate_counts': {c:{p:candidates['processes'][c][p]['candidate_count'] for p in ['employee','center','tech']} for c in ['P006','P007','P008','P009','P010']}
           }, ensure_ascii=False))
           PY

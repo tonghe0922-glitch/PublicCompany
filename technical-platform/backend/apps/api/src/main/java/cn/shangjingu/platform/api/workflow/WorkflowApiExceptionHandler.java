@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(assignableTypes = WorkflowRuntimeController.class)
+@RestControllerAdvice
 public final class WorkflowApiExceptionHandler {
     @ExceptionHandler(WorkflowException.class)
     public ResponseEntity<Map<String, Object>> workflow(WorkflowException ex) {

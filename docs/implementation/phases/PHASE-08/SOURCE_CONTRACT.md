@@ -2,7 +2,7 @@
 
 > Phase: `PHASE-08｜三端 Portal Shell、Router、导航、Session 与 API Client`
 > process_code: `PLATFORM/Portal-Router-Session-API-Client`
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Contract state: `C0_FROZEN / PRE_START_VALIDATION`
 > Previous phase: `PHASE-07 = COMPLETE / FORMAL_GATE_PASS`

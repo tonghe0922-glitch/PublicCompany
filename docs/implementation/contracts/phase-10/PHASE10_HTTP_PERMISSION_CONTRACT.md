@@ -55,6 +55,7 @@ Permissions: `p009.overtime.submit`, `p009.overtime.read`, `p009.overtime.review
 ## P010 — learning / exam / qualification
 
 HTTP:
+- `POST /api/v1/processes/P010/assignments`
 - `GET /api/v1/processes/P010/assignments`
 - `GET /api/v1/processes/P010/assignments/{id}`
 - `POST /api/v1/processes/P010/assignments/{id}/learning-progress`
@@ -63,5 +64,7 @@ HTTP:
 - `POST /api/v1/processes/P010/assignments/{id}/actions/{actionCode}`
 
 Permissions: `p010.learning.read`, `p010.learning.manage`, `p010.learning.complete`, `p010.learning.exam`, `p010.learning.certify`, `p010.learning.monitor`.
+
+Creation is a center-managed S01 business fact. The server generates the P010 business number, verifies that the target employee is active in the authenticated center, and verifies that the published workflow/form contracts exist. Creation does not bypass the source state machine: the workflow instance starts only when an authorized manager executes `PUBLISH_CONTENT` from S01.
 
 `p010.learning.certify` belongs only to source-authorized supervisor/professional roles. Tech support/monitor roles must not receive it merely because they operate the platform.

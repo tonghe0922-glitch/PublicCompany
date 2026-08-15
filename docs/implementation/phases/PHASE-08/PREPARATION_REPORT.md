@@ -2,7 +2,7 @@
 
 > 阶段：`PHASE-08｜三端 Portal Shell、Router、导航、Session 与 API Client`
 > 状态：`PREPARATION_ONLY / NOT_STARTED`
-> Repository：`louthison/PublicCompany`
+> Repository：`tonghe0922-glitch/PublicCompany`
 > Branch：`ChatGPT_Version_V0.07`
 > Preparation fact baseline：`051893f7b47a35258eb03e04d1da94fa712cc93e`
 > Previous phase：`PHASE-07 = COMPLETE / FORMAL_GATE_PASS`

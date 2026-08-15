@@ -1,7 +1,7 @@
 # PHASE-07 PHASE_GATE — Independent Formal Acceptance Final
 
 > Gate state: `PASS`
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Tested implementation anchor: `4d2cf205685e6806bb0a7bd5bdb542586afafd5a`
 > READY_FOR_GATE candidate audited: `4797a70bc3d7e542fc2eed0ce32de974b2f67030`
@@ -84,7 +84,7 @@ PHASE-07 independent formal verdict = SUCCESS
 ```text
 PHASE GATE: PASS
 
-Repository: louthison/PublicCompany
+Repository: tonghe0922-glitch/PublicCompany
 Branch: ChatGPT_Version_V0.07
 READY_FOR_GATE candidate: 4797a70bc3d7e542fc2eed0ce32de974b2f67030
 Construction workflow: 31268081850 = PASS

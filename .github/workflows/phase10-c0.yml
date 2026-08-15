@@ -2,14 +2,19 @@ name: PHASE-10 C0 Contract Freeze
 
 on:
   push:
-    branches: [ChatGPT_Version_V0.07]
+    branches: [agent/phase-10-public-capabilities-b]
     paths:
       - ".github/workflows/phase10-c0.yml"
+      - ".github/workflows/phase10-preparation-gate.yml"
+      - ".github/workflows/phase10-full-gate.yml"
+      - "README.md"
       - "scripts/implementation/phase10_*.py"
+      - "docs/implementation/CONSTRUCTION_RULES.md"
       - "docs/implementation/phases/PHASE-10/**"
       - "docs/implementation/contracts/phase-10/**"
       - "docs/implementation/MASTER_PROGRESS.md"
       - "technical-platform/database/flyway/oms/**"
+      - "technical-platform/database/flyway-overlays/oms/**"
       - "technical-platform/web/src/**"
       - "technical-platform/backend/apps/api/src/main/java/**"
       - "technical-platform/backend/modules/**"
@@ -23,7 +28,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PHASE10_BASE_SHA: 14f4c51fb968a606de812bc7457813af6e1b0434
+  PHASE10_BASE_SHA: cd4f5c05f259c043fbe3e1288d6addccff6110e9
 
 jobs:
   c0:
@@ -34,16 +39,19 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Verify frozen C0 contracts
+      - name: Verify repository identity and frozen C0 contracts
         run: |
           set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-10-public-capabilities-b"
+          python scripts/implementation/phase10_repository_identity.py
           python scripts/implementation/phase10_contract.py
           git diff --check
       - name: Reject P011+ executable coupling, shadow tables and credentials
         shell: bash
         run: |
           set -euo pipefail
-          TARGETS=(technical-platform/web/src technical-platform/backend/apps/api/src/main/java technical-platform/backend/modules technical-platform/database/flyway/oms)
+          TARGETS=(technical-platform/web/src technical-platform/backend/apps/api/src/main/java technical-platform/backend/modules technical-platform/database/flyway-overlays/oms)
           ADDED=$(git diff -U0 "$PHASE10_BASE_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
           if printf '%s\n' "$ADDED" | grep -E '\bP0(11|12|13|14|15|16)\b|\bP(0?[1-9][7-9]|0?[2-9][0-9]|1[0-2][0-9])\b'; then
             echo 'PHASE-10 introduced next-phase executable coupling'

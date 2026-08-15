@@ -1,6 +1,6 @@
 # PHASE-09 正式阶段验收（PHASE_GATE）— Closeout Recheck
 
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Scope: `P001–P005`
 > Gate Date: `2026-08-11`
@@ -38,7 +38,7 @@
 
 | Requirement | Expected | Actual after repair | Result |
 |---|---|---|---|
-| Repo / branch | 唯一仓库 + 指定施工分支 | `louthison/PublicCompany` / `ChatGPT_Version_V0.07` | PASS |
+| Repo / branch | 唯一仓库 + 指定施工分支 | `tonghe0922-glitch/PublicCompany` / `ChatGPT_Version_V0.07` | PASS |
 | Phase scope | 只验 P001–P005，不施工 P006+ | P001–P005 only；PHASE-10 NOT_STARTED | PASS |
 | Master schedule | PHASE-09 核心门槛=5流程三端闭环 | 与根 CSV 一致 | PASS |
 | P001 | IAM/MFA/session 三端真实闭环 | CHECKPOINT_PASS / CLOSED | PASS |

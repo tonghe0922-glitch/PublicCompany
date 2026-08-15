@@ -1,7 +1,7 @@
 # PHASE-08 TEST_EVIDENCE — FORMAL GATE PASS
 
 > Phase: `PHASE-08`
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Accepted implementation candidate: `48c3b822ed23f20565e331f3590a5209574f865e`
 > Independent Formal Gate recheck: `31290849170 / run_attempt=2 = PASS`

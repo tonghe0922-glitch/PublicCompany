@@ -2,7 +2,7 @@
 
 > 阶段：`PHASE-07｜前端 Design System 与共享组件库`
 > process_code：`PLATFORM/Design-System`
-> Repository：`louthison/PublicCompany`
+> Repository：`tonghe0922-glitch/PublicCompany`
 > Branch：`ChatGPT_Version_V0.07`
 > External-audit baseline：`fa5c2246a71a4936126855f1803b673d443213a0`
 > Tested implementation anchor：`4d2cf205685e6806bb0a7bd5bdb542586afafd5a`

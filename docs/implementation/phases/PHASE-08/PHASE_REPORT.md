@@ -1,6 +1,6 @@
 # PHASE-08 PHASE_REPORT — FORMAL GATE PASS
 
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 > Phase state: `COMPLETE / FORMAL_GATE_PASS / INDEPENDENT_RECHECK`
 > Scope: `PLATFORM/Portal-Router-Session-API-Client`

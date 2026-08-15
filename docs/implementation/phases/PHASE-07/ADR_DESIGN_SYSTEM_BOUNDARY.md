@@ -2,7 +2,7 @@
 
 > Status: ACCEPTED_FOR_PHASE-07_REWORK
 > Date: 2026-08-09
-> Repository: `louthison/PublicCompany`
+> Repository: `tonghe0922-glitch/PublicCompany`
 > Branch: `ChatGPT_Version_V0.07`
 
 ## 1. 背景

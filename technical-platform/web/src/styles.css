@@ -3,6 +3,7 @@
 @import "./design-system/components.css";
 @import "./design-system/templates.css";
 @import "./design-system/extended.css";
+@import "./platform/phase10/phase10.css";
 
 :root {
   font-family: Inter, "SF Pro Display", "SF Pro Text", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
