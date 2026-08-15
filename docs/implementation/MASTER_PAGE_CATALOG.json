@@ -59,12 +59,12 @@
       "P015",
       "P016"
     ],
-    "state": "IN_PROGRESS_PREPARATION",
+    "state": "IN_PROGRESS_C0_FROZEN",
     "preparation_branch": "agent/phase-11-performance-growth-welfare",
     "preparation_evidence": "docs/implementation/phases/PHASE-11",
-    "c0_page_bindings": null,
-    "canonical_page_records_changed_at_preparation": 0,
-    "rule": "page candidates remain candidates and canonical records remain PLANNED until explicit C0 source-coordinate binding and real implementation checkpoint"
+    "c0_page_bindings": "docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json",
+    "rule": "frozen bindings remain PLANNED until each real process checkpoint passes; no fuzzy runtime matching",
+    "canonical_page_records_changed_at_c0": 0
   },
   "next_business_phase": {
     "phase": "PHASE-12",

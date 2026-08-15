@@ -83,14 +83,14 @@ def main() -> None:
         BRANCH,
         "PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS",
         "PHASE-11 = IN_PROGRESS",
-        "P011 = NEXT / C0_NOT_FROZEN / NOT_IMPLEMENTED",
+        "P011 = NEXT / C0_GATE_PENDING / NOT_IMPLEMENTED",
         "PHASE-12 = NOT_STARTED / LOCKED",
     )
     if "PHASE-11 = COMPLETE" in master or "P011 = CHECKPOINT_PASS" in master:
         fail("preparation must not claim PHASE-11 or P011 completion")
     if not any(
         marker in master
-        for marker in ("PREPARATION_GATE_PENDING", "PREPARATION_GATE_PASS")
+        for marker in ("C0_FROZEN_CANDIDATE", "PREPARATION_GATE_PASS")
     ):
         fail("MASTER_PROGRESS has no preparation-gate state")
 
@@ -98,7 +98,7 @@ def main() -> None:
         PHASE_DIR / "README.md",
         BRANCH,
         "IN_PROGRESS",
-        "P011 C0 contract freeze",
+        "P011 executable implementation",
         "PHASE-12: **NOT_STARTED / LOCKED**",
     )
     if "PHASE-11 COMPLETE" in phase_readme:
@@ -113,10 +113,15 @@ def main() -> None:
     require_text(PHASE_DIR / "IMPACT_MATRIX.md", "P016", "禁止 shadow table")
     require_text(PHASE_DIR / "GAP_MATRIX.md", "P011 C0 freeze", "P016 复用差距")
     require_text(PHASE_DIR / "START_CHECKLIST.md", "Construction not started")
-    require_text(CONTRACT_DIR / "README.md", "C0_NOT_FROZEN", BRANCH)
-    decision_log = require_text(CONTRACT_DIR / "C0_DECISION_LOG.md", "C0-01", "C0-08")
-    if decision_log.count("| OPEN |") != 8:
-        fail("all eight C0 clarification rows must remain OPEN during preparation")
+    require_text(CONTRACT_DIR / "README.md", "PHASE-11 C0", BRANCH)
+    decision_log = require_text(
+        CONTRACT_DIR / "C0_DECISION_LOG.md",
+        "C0-01",
+        "C0-08",
+        "FROZEN / READY_FOR_P011_IMPLEMENTATION",
+    )
+    if "| OPEN |" in decision_log:
+        fail("C0 clarification rows must be resolved after the C0 freeze")
 
     snapshot_path = PHASE_DIR / "P011_P016_SOURCE_SNAPSHOT.json"
     generated_source_path = PHASE_DIR / "P011_P016_SOURCE_CONTRACT.json"
@@ -214,24 +219,21 @@ def main() -> None:
     catalog = load_json(ROOT / "docs" / "implementation" / "MASTER_PAGE_CATALOG.json")
     current = catalog.get("current_business_phase") or {}
     next_phase = catalog.get("next_business_phase") or {}
-    if current.get("phase") != "PHASE-11" or current.get("state") != "IN_PROGRESS_PREPARATION":
-        fail("MASTER_PAGE_CATALOG current phase is not PHASE-11 preparation")
-    if current.get("process_codes") != list(CODES) or current.get("c0_page_bindings") is not None:
-        fail("MASTER_PAGE_CATALOG PHASE-11 scope/binding state invalid")
-    if current.get("canonical_page_records_changed_at_preparation") != 0:
-        fail("preparation must not reclassify canonical page records")
+    if current.get("phase") != "PHASE-11" or current.get("state") != "IN_PROGRESS_C0_FROZEN":
+        fail("MASTER_PAGE_CATALOG current phase is not PHASE-11 C0 frozen")
+    if current.get("process_codes") != list(CODES):
+        fail("MASTER_PAGE_CATALOG PHASE-11 scope mismatch")
+    if current.get("c0_page_bindings") != "docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json":
+        fail("MASTER_PAGE_CATALOG PHASE-11 frozen binding path invalid")
+    if current.get("canonical_page_records_changed_at_c0") != 0:
+        fail("C0 must not reclassify canonical page records")
     if next_phase.get("phase") != "PHASE-12" or next_phase.get("state") != "NOT_STARTED":
         fail("PHASE-12 must remain NOT_STARTED")
 
-    changed_production = git_lines(
-        "diff", "--name-only", f"{BASELINE_SHA}...HEAD", "--",
-        "technical-platform/backend",
-        "technical-platform/web/src",
-        "technical-platform/web/e2e",
-        "technical-platform/database",
-    )
-    if changed_production:
-        fail("production paths changed: " + ", ".join(changed_production))
+    # This contract is preparation/C0 continuity only. Product checkpoints are
+    # validated by their own workflows after C0, so production drift is no
+    # longer rejected here once the preparation-only workflows stop matching
+    # production paths.
     artifact_only_paths = (
         "docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json",
         "docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.md",
@@ -248,7 +250,7 @@ def main() -> None:
 
     print(
         "PHASE-11 preparation contract PASS: sources, ledgers, gaps, page candidates, "
-        "P016 reuse evidence and PHASE-12 boundary are consistent"
+        "P016 reuse evidence, C0 freeze and PHASE-12 boundary are consistent"
     )
 
 

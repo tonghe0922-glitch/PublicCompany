@@ -13,10 +13,6 @@ on:
       - "docs/implementation/MASTER_PROCESS_CATALOG.json"
       - "Knowledge Base/01 完整的页面架构/**"
       - "Knowledge Base/02 业务流程 表单 字段/S1 三端业务流程表单字段包/**/01_平台公共能力/*.xlsx"
-      - "technical-platform/backend/**"
-      - "technical-platform/web/src/**"
-      - "technical-platform/web/e2e/**"
-      - "technical-platform/database/**"
   workflow_dispatch:
 
 permissions:
