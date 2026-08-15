@@ -1,0 +1,25 @@
+name: PHASE-11 P012 Candidate Checkpoint Dispatcher
+
+on:
+  workflow_run:
+    workflows: [PHASE-11 P012 Guarded Candidate Recovery]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  dispatch:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch exact official P012 checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: agent/phase-11-performance-growth-welfare
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ github.event.workflow_run.head_branch }}" = "$BRANCH"
+          gh workflow run phase11-p012-checkpoint.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH"
