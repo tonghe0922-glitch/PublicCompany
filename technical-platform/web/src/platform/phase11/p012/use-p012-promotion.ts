@@ -2,6 +2,7 @@ import { computed, onMounted, reactive, toRefs, watchEffect } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import type { PortalDefinition } from '../../portal-config'
 import { createProcessRecord, executeProcessAction, listProcessRecords } from '../process-client'
+import { processCommandActor } from '../process-command-journal'
 import type { ProcessState } from '../process-state'
 import { useProcessOperation } from '../use-process-operation'
 
@@ -10,9 +11,10 @@ interface ExecutionFact { id: string; executionType: string; effectiveDate: stri
 export interface PromotionRecord {
   id: string; businessNo: string; currentNodeCode: string | null; status: string
   versionNo: number; subject: string; ownerEmployeeId: string; targetPositionCode: string
-  plannedEffectiveDate: string; score1000: number | null; executions: ExecutionFact[]
+  plannedEffectiveDate: string; score1000: number | null; executions: ExecutionFact[]; availableActions: ServerAction[]
 }
-export interface P012Action { code: string; label: string; permission: string }
+interface ServerAction { code: string; labelCode: string; taskId: string | null; expectedVersion: number }
+export interface P012Action { code: string; label: string }
 type Session = ReturnType<typeof usePortalSessionStore>
 type Operations = ReturnType<typeof useProcessOperation>
 type Form = ReturnType<typeof createForm>
@@ -30,27 +32,17 @@ const probationOptions = [
   { value: 'PASS', label: '通过' },
   { value: 'ROLLBACK', label: '回退' },
 ] as const
-const ACTIONS: Record<string, P012Action[]> = {
-  S01: [action('SUBMIT', '提交申请或提名', 'p012.promotion.read')],
-  S02: [action('CHECK_ELIGIBILITY', '完成资格与冻结审查', 'p012.promotion.manage')],
-  S03: [action('RECORD_ASSESSMENT', '登记千分制评估', 'p012.promotion.review')],
-  S04: [action('VERIFY_VACANCY_BUDGET', '核验岗位空缺与预算', 'p012.promotion.manage')],
-  S05: [action('COMPLETE_REVIEW', '完成独立竞聘评审', 'p012.promotion.review')],
-  S06: [action('APPROVE', '审批', 'p012.promotion.approve')],
-  S07: [action('COMPLETE_NOTICE', '完成公示与告知', 'p012.promotion.manage')],
-  S08: [
-    action('RECORD_APPOINTMENT', '登记任命与薪资权威回执', 'p012.promotion.appoint'),
-    action('CONFIRM_APPOINTMENT', '员工确认任命', 'p012.promotion.read'),
-  ],
-  S09: [action('COMPLETE_PROBATION', '完成验证期', 'p012.promotion.review')],
-  S10: [
-    action('MAKE_EFFECTIVE', '正式生效', 'p012.promotion.appoint'),
-    action('ROLL_BACK', '登记回退安排', 'p012.promotion.appoint'),
-  ],
+const ACTION_PRESENTATION: Record<string, P012Action> = {
+  SUBMIT: action('SUBMIT', '提交申请或提名'), CHECK_ELIGIBILITY: action('CHECK_ELIGIBILITY', '完成资格与冻结审查'),
+  RECORD_ASSESSMENT: action('RECORD_ASSESSMENT', '登记千分制评估'), VERIFY_VACANCY_BUDGET: action('VERIFY_VACANCY_BUDGET', '核验岗位空缺与预算'),
+  COMPLETE_REVIEW: action('COMPLETE_REVIEW', '完成独立竞聘评审'), APPROVE: action('APPROVE', '审批'),
+  COMPLETE_NOTICE: action('COMPLETE_NOTICE', '完成公示与告知'), RECORD_APPOINTMENT: action('RECORD_APPOINTMENT', '登记任命与薪资权威回执'),
+  CONFIRM_APPOINTMENT: action('CONFIRM_APPOINTMENT', '员工确认任命'), COMPLETE_PROBATION: action('COMPLETE_PROBATION', '完成验证期'),
+  MAKE_EFFECTIVE: action('MAKE_EFFECTIVE', '正式生效'), ROLL_BACK: action('ROLL_BACK', '登记回退安排'),
 }
 
-function action(code: string, label: string, permission: string): P012Action {
-  return { code, label, permission }
+function action(code: string, label: string): P012Action {
+  return { code, label }
 }
 function createForm() {
   return reactive({
@@ -114,10 +106,14 @@ function createLoad(context: Context) {
 function createCreate(context: Context, load: () => Promise<void>) {
   return async (): Promise<void> => {
     const body = createBody(context.form)
-    const result = await context.operations.runAction(
-      context.createKey,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: context.createKey,
+        recordLockKey: `P012:record:create:${context.props.portal.code}:${context.props.mode}`,
+        operationKey: 'P012:create', actor: processCommandActor(context.session), payload: body,
+      },
       request => createProcessRecord<PromotionRecord, typeof body>(
-        context.session, COLLECTION, 'p012-create', body, request,
+        context.session, COLLECTION, request.idempotencyKey, body, request,
       ),
       '晋升申请已创建。',
     )
@@ -128,22 +124,23 @@ function createPerform(context: Context, load: () => Promise<void>) {
   return async (item: PromotionRecord, candidate: P012Action): Promise<void> => {
     const key = `P012:action:${item.id}:${candidate.code}`
     const body = actionBody(context.form, item, candidate)
-    const result = await context.operations.runAction(
-      key,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: key, recordLockKey: `P012:record:${item.id}`,
+        operationKey: `P012:record:${item.id}:${candidate.code}`,
+        actor: processCommandActor(context.session), payload: body,
+      },
       request => executeProcessAction<PromotionRecord, typeof body>(
         context.session, COLLECTION, item.id, candidate.code,
-        `p012-${candidate.code.toLowerCase()}`, body, request,
+        request.idempotencyKey, body, request,
       ),
       `${candidate.label}已完成。`,
     )
     if (result.ok) await load()
   }
 }
-function availableActions(context: Context, item: PromotionRecord): P012Action[] {
-  if (context.props.mode === 'tech' || !item.currentNodeCode) return []
-  return (ACTIONS[item.currentNodeCode] ?? []).filter(candidate =>
-    context.session.can(candidate.permission)
-    || (candidate.code === 'SUBMIT' && context.session.can('p012.promotion.manage')))
+function availableActions(item: PromotionRecord): P012Action[] {
+  return item.availableActions.flatMap(candidate => ACTION_PRESENTATION[candidate.code] ?? [])
 }
 
 export function useP012Promotion(props: P012Props) {
@@ -166,8 +163,10 @@ export function useP012Promotion(props: P012Props) {
     ...toRefs(form), records, listState, createState, canRead,
     canCreate: computed(() => session.can('p012.promotion.read') || session.can('p012.promotion.manage')),
     isTech: computed(() => props.mode === 'tech'), employmentOptions, probationOptions,
-    load, create, perform, actions: (item: PromotionRecord) => availableActions(context, item),
+    load, create, perform, actions: (item: PromotionRecord) => availableActions(item),
     actionState: (item: PromotionRecord, candidate: P012Action): ProcessState =>
       operations.actionState(`P012:action:${item.id}:${candidate.code}`),
+    recordPending: (item: PromotionRecord) =>
+      operations.recordPending(processCommandActor(session), `P012:record:${item.id}`),
   }
 }

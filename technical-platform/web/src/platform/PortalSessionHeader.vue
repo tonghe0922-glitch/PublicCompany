@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { SessionView } from '../contracts'
-import { SgjButton, SgjSelect, SgjStatusChip } from '../design-system'
+import { SgjButton, SgjSelect, SgjStatusChip } from '@sgj/ui'
 import type { PortalDefinition } from './portal-config'
 
 const props = withDefaults(defineProps<{

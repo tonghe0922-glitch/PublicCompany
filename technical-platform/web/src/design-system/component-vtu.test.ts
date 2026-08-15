@@ -50,6 +50,37 @@ describe('PHASE-07 Vue Test Utils component behavior', () => {
     wrapper.unmount()
   })
 
+  it('forwards Input native constraints without leaking them to FieldFrame', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        label: '动态口令',
+        modelValue: '',
+        hint: '请输入六位数字',
+        error: '动态口令格式错误',
+        disabled: true,
+      },
+      attrs: {
+        inputmode: 'numeric',
+        maxlength: '6',
+      },
+      attachTo: document.body,
+    })
+    const frame = wrapper.get('.sgj-field')
+    const input = wrapper.get('input')
+    expect(input.attributes('inputmode')).toBe('numeric')
+    expect(input.attributes('maxlength')).toBe('6')
+    expect(frame.attributes('inputmode')).toBeUndefined()
+    expect(frame.attributes('maxlength')).toBeUndefined()
+    expect(wrapper.get('label').attributes('for')).toBe(input.attributes('id'))
+    expect(input.attributes('aria-describedby')?.split(' ')).toHaveLength(2)
+    expect(input.attributes('aria-invalid')).toBe('true')
+    expect(input.attributes('disabled')).toBeDefined()
+    await wrapper.setProps({ disabled: false })
+    await input.setValue('123456')
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['123456'])
+    wrapper.unmount()
+  })
+
   it('runs Dialog initial focus, Tab loop, Escape and focus restore', async () => {
     const opener = document.createElement('button')
     document.body.append(opener)

@@ -16,7 +16,7 @@ const {
   reviewPassed, approved, salaryConfirmationReference, externalReference,
   probationResult, actualEffectiveDate, resultSummary, evidenceNote, isTech, canRead,
   canCreate, listState, createState, employmentOptions, probationOptions,
-  load, create, perform, actions, actionState,
+  load, create, perform, actions, actionState, recordPending,
 } = useP012Promotion(props)
 </script>
 
@@ -110,6 +110,7 @@ const {
               v-for="candidate in actions(item)"
               :key="candidate.code"
               :data-action="candidate.code"
+              :disabled="recordPending(item)"
               :loading="isPending(actionState(item, candidate))"
               @click="perform(item, candidate)"
             >{{ candidate.label }}</SgjButton>

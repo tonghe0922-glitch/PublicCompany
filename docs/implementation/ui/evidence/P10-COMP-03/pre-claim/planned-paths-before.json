@@ -1,0 +1,194 @@
+﻿{
+    "manifest":  "baseline-manifest.json",
+    "path_count":  31,
+    "existing_count":  2,
+    "missing_count":  29,
+    "paths":  [
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/PermissionGate.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessRecordMeta.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ProcessActionPanel.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/DateTimeRangeField.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_BLOCKED_CONTRACTS.md",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                      "exists":  true,
+                      "sha256":  "DCC9D3EA38F9AB254A5D0236F069202810CA3D6C48BD51447CCC9896FC923C34",
+                      "bytes":  84758
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DescriptionList.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessTimeline.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/HighRiskConfirmDialog.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncAction.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/AsyncStateBoundary.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncResource.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+                      "exists":  true,
+                      "sha256":  "01F2C13622D0F742960390495C5854A03FC63D3FB85722A306CCF2864DE3651F",
+                      "bytes":  316
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-state.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-contracts.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ui-error.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/action-contracts.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ConfirmDialog.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/VersionConflictPanel.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/map-api-error.ts",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ApiErrorNotice.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/FormErrorSummary.vue",
+                      "exists":  false,
+                      "sha256":  null,
+                      "bytes":  0
+                  }
+              ]
+}

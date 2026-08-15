@@ -19,6 +19,29 @@ import org.junit.jupiter.api.Test;
 
 class WorkflowRuntimeServiceTest {
     @Test
+    void exposesConditionMatchedActionCodesWithoutMutatingRuntimeState() {
+        Fixture fixture = new Fixture();
+        var started = fixture.start("availability-start");
+        int actionCount = fixture.repository.actions.size();
+        int taskCount = fixture.repository.tasks.size();
+        int instanceCount = fixture.repository.instances.size();
+
+        assertEquals(List.of("SUBMIT"), fixture.service.matchingActionCodes(
+                fixture.tenantId, started.instance().id(), List.of("SUBMIT", "MISSING")));
+        assertEquals(List.of(), fixture.service.matchingActionCodes(
+                fixture.tenantId, started.instance().id(), List.of("MISSING")));
+        fixture.repository.transitions.add(new WorkflowRuntimeService.RuntimeTransition(
+                "START", "SUBMIT", "END", null, false));
+        WorkflowException ambiguous = assertThrows(WorkflowException.class, () ->
+                fixture.service.matchingActionCodes(
+                        fixture.tenantId, started.instance().id(), List.of("SUBMIT")));
+        assertEquals(WorkflowException.Code.INVALID_DEFINITION, ambiguous.code());
+        assertEquals(actionCount, fixture.repository.actions.size());
+        assertEquals(taskCount, fixture.repository.tasks.size());
+        assertEquals(instanceCount, fixture.repository.instances.size());
+    }
+
+    @Test
     void bindsPublishedVersionMovesByServerTransitionAndReplaysIdempotently() {
         Fixture f = new Fixture();
         var firstStart = f.start("idem-start");

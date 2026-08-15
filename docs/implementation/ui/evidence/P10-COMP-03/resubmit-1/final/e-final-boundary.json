@@ -1,0 +1,21 @@
+﻿{
+    "checked_utc":  "2026-08-13T11:22:57.9855211Z",
+    "old_runtime_present":  7,
+    "old_runtime_ids":  [
+                            35248,
+                            43248,
+                            44872,
+                            41392,
+                            36432,
+                            15196,
+                            40796
+                        ],
+    "old_listener_count":  3,
+    "fresh_listener_count":  0,
+    "running_testcontainers":  0,
+    "ryuk":  0,
+    "new_process_count":  0,
+    "report_sha256":  "8FFA3034DCB675CE773D57E554E97BA562E810C82F9828766540012D2C030D9F",
+    "report_bytes":  14498,
+    "submitted_mismatch":  0
+}

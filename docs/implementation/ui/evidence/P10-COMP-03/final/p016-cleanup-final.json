@@ -1,0 +1,25 @@
+﻿{
+    "first_stop_exit":  128,
+    "force_stop_exit":  0,
+    "launcher_pid":  46820,
+    "postgres_id":  "c0b477f09212a3dc2aca75ef8b5638cb70df97fdbb2ced4bc358d06c7393a6a4",
+    "redis_id":  "7023df1e28123de82a62135dffccbac50de935e9a6b7b7f8b0cd9028cceef6a8",
+    "remaining_exact_ids":  [
+
+                            ],
+    "running_testcontainers_count":  0,
+    "ryuk_count":  0,
+    "listener_count":  0,
+    "new_process_count":  0,
+    "old_runtime_present":  7,
+    "old_runtime_ids":  [
+                            35248,
+                            43248,
+                            44872,
+                            41392,
+                            36432,
+                            15196,
+                            40796
+                        ],
+    "checked_utc":  "2026-08-13T10:49:23.2136136Z"
+}

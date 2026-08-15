@@ -1,0 +1,18 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "phase10-component-preflight",
+    "repository_root":  "I:\\PublicCompany_source_codex",
+    "timestamp_utc":  "2026-08-12T17:19:14.2582446Z",
+    "git_present":  false,
+    "tools":  {
+                  "powershell":  "5.1.19041.6456",
+                  "python":  "Python 3.12.10",
+                  "node":  "v24.15.0",
+                  "pnpm":  "10.34.0"
+              },
+    "required_files":  [
+                           "AGENT.md",
+                           "DESIGN.md",
+                           "technical-platform/web/package.json"
+                       ]
+}

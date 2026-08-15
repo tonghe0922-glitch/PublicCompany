@@ -1,0 +1,130 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-07-submitted13-disk-verification",
+    "generated_at_utc":  "2026-08-13T22:12:36.1875612Z",
+    "count":  13,
+    "present_count":  13,
+    "mismatch_count":  0,
+    "mismatches":  [
+
+                   ],
+    "files":  [
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "exists":  true,
+                      "sha256":  "C6A3FC1E49CF06D945F46DE795A715EA929C97EFA1885D52B61E516D2E625B87",
+                      "bytes":  9533,
+                      "manifest_sha256":  "C6A3FC1E49CF06D945F46DE795A715EA929C97EFA1885D52B61E516D2E625B87",
+                      "manifest_bytes":  9533,
+                      "match":  true
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P10-COMP-07_REPORT.md",
+                      "exists":  true,
+                      "sha256":  "DB6CE4C79C7E5C49DFE76879D259377D1F765A3A6E55F4AC0765EDDA5F529081",
+                      "bytes":  15479,
+                      "manifest_sha256":  "DB6CE4C79C7E5C49DFE76879D259377D1F765A3A6E55F4AC0765EDDA5F529081",
+                      "manifest_bytes":  15479,
+                      "match":  true
+                  },
+                  {
+                      "path":  "scripts/implementation/phase08_portal_contract.py",
+                      "exists":  true,
+                      "sha256":  "D595A1C2308023418626BBF7AB874E9A35CFD5E6644C8EF8E5F6011B01BFFA3D",
+                      "bytes":  9864,
+                      "manifest_sha256":  "D595A1C2308023418626BBF7AB874E9A35CFD5E6644C8EF8E5F6011B01BFFA3D",
+                      "manifest_bytes":  9864,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/contracts/index.ts",
+                      "exists":  true,
+                      "sha256":  "6FE204F3029C65963E920B8305342234FD7C53B8A7D574B864E56BBE21CFC1A1",
+                      "bytes":  75,
+                      "manifest_sha256":  "6FE204F3029C65963E920B8305342234FD7C53B8A7D574B864E56BBE21CFC1A1",
+                      "manifest_bytes":  75,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/contracts/route.ts",
+                      "exists":  true,
+                      "sha256":  "A3999D3F489DC9C36F994130039F6CC10D15DC9D6F61A313F64DF5F81D8DF292",
+                      "bytes":  15692,
+                      "manifest_sha256":  "A3999D3F489DC9C36F994130039F6CC10D15DC9D6F61A313F64DF5F81D8DF292",
+                      "manifest_bytes":  15692,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/core-routes.ts",
+                      "exists":  true,
+                      "sha256":  "10993B9978886FBCD4B568187CB77BB12C503E344F8CF5A406ADEC38893C6FEB",
+                      "bytes":  4011,
+                      "manifest_sha256":  "10993B9978886FBCD4B568187CB77BB12C503E344F8CF5A406ADEC38893C6FEB",
+                      "manifest_bytes":  4011,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/phase09-routes.ts",
+                      "exists":  true,
+                      "sha256":  "E269BC561F686B83B9C9CFDCCE59A50F03F403F9E664FDE0844856784AA31C0F",
+                      "bytes":  4042,
+                      "manifest_sha256":  "E269BC561F686B83B9C9CFDCCE59A50F03F403F9E664FDE0844856784AA31C0F",
+                      "manifest_bytes":  4042,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/phase10-routes.ts",
+                      "exists":  true,
+                      "sha256":  "309C52514B239F61E565C75F51EC05DAF13B9F2BA0FC127210164A28943A6716",
+                      "bytes":  10517,
+                      "manifest_sha256":  "309C52514B239F61E565C75F51EC05DAF13B9F2BA0FC127210164A28943A6716",
+                      "manifest_bytes":  10517,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/phase10-tech-monitor-router.test.ts",
+                      "exists":  true,
+                      "sha256":  "B3F6D5E378DEB9221024409147CE2CD5213D84553D781B7820B756493613F243",
+                      "bytes":  2668,
+                      "manifest_sha256":  "B3F6D5E378DEB9221024409147CE2CD5213D84553D781B7820B756493613F243",
+                      "manifest_bytes":  2668,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/portal-router.ts",
+                      "exists":  true,
+                      "sha256":  "97B7228BD8ACF50BE96654C3755A265C7BEBCEE4F26062BD03416FDE8B8DFEAD",
+                      "bytes":  2598,
+                      "manifest_sha256":  "97B7228BD8ACF50BE96654C3755A265C7BEBCEE4F26062BD03416FDE8B8DFEAD",
+                      "manifest_bytes":  2598,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/route-meta.d.ts",
+                      "exists":  true,
+                      "sha256":  "EF08D545144A04C76A5477E2DE49C5AB26DC9CA0F219C3A8DDE3E60BDE095728",
+                      "bytes":  417,
+                      "manifest_sha256":  "EF08D545144A04C76A5477E2DE49C5AB26DC9CA0F219C3A8DDE3E60BDE095728",
+                      "manifest_bytes":  417,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/route-module-boundary.test.ts",
+                      "exists":  true,
+                      "sha256":  "8A070E3C556C244DC84710985659C4DA39A0F0FE46A9699E308A9543E6435EDC",
+                      "bytes":  3479,
+                      "manifest_sha256":  "8A070E3C556C244DC84710985659C4DA39A0F0FE46A9699E308A9543E6435EDC",
+                      "manifest_bytes":  3479,
+                      "match":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/route-semantics.test.ts",
+                      "exists":  true,
+                      "sha256":  "CC247FD8BDC13EEA41754BFD13CBF6C56CFFE43699F504E7EE6384357F637FA2",
+                      "bytes":  23020,
+                      "manifest_sha256":  "CC247FD8BDC13EEA41754BFD13CBF6C56CFFE43699F504E7EE6384357F637FA2",
+                      "manifest_bytes":  23020,
+                      "match":  true
+                  }
+              ]
+}

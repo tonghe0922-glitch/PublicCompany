@@ -1,0 +1,53 @@
+﻿{
+    "controlled_stop":  true,
+    "launcher_pid":  47876,
+    "stopped_process_ids":  [
+                                976,
+                                27448,
+                                47876
+                            ],
+    "postgres_id":  "9be29362f5a6673e440d25adb77b555f92458420eb8f91e7aca0eb17bdddd7e4",
+    "redis_id":  "fe89b5b71820fa1d85283d2b8b867cbca71009696854e6d2098397cd1d8b589d",
+    "remaining_exact_ids":  [
+
+                            ],
+    "ryuk_count":  0,
+    "running_testcontainers_count":  0,
+    "listener_count":  0,
+    "listeners":  [
+
+                  ],
+    "old_runtime_expected":  7,
+    "old_runtime_present":  7,
+    "old_runtime":  [
+                        {
+                            "ProcessId":  40796,
+                            "Name":  "node.exe"
+                        },
+                        {
+                            "ProcessId":  35248,
+                            "Name":  "cmd.exe"
+                        },
+                        {
+                            "ProcessId":  43248,
+                            "Name":  "java.exe"
+                        },
+                        {
+                            "ProcessId":  44872,
+                            "Name":  "cmd.exe"
+                        },
+                        {
+                            "ProcessId":  41392,
+                            "Name":  "java.exe"
+                        },
+                        {
+                            "ProcessId":  36432,
+                            "Name":  "node.exe"
+                        },
+                        {
+                            "ProcessId":  15196,
+                            "Name":  "node.exe"
+                        }
+                    ],
+    "checked_utc":  "2026-08-13T09:31:01.8800085Z"
+}

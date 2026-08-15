@@ -1,0 +1,24 @@
+﻿{
+    "postgres_exact_absent":  true,
+    "redis_exact_absent":  true,
+    "running_testcontainers_count":  0,
+    "running_ryuk_count":  0,
+    "fresh_listener_count":  0,
+    "launcher_alive":  false,
+    "saved_child_process_count":  0,
+    "runtime_count":  7,
+    "runtime_pids":  [
+                         15196,
+                         35248,
+                         36432,
+                         40796,
+                         41392,
+                         43248,
+                         44872
+                     ],
+    "listeners":  [
+                      "5173:40796",
+                      "5174:36432",
+                      "5175:15196"
+                  ]
+}

@@ -1,0 +1,221 @@
+﻿{
+    "count":  30,
+    "present_count":  28,
+    "expected_deleted_count":  2,
+    "mismatch_count":  0,
+    "mismatches":  [
+
+                   ],
+    "files":  [
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "4775C0C53C0F57EF5691D8D6DDFB7F25489154DD6A5FF926A40DCE1CB002DDD2",
+                      "bytes":  7874
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P10-COMP-06_REPORT.md",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "E502F22509B7BD4FA77ACF4A0577F14BB676A0CC187723A5C714F62ACAA5A172",
+                      "bytes":  13554
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/Phase10TechMonitorPage.ui-plan.json",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "AA0CE44341624BEC04F8546902022639B1A985F79878B767211421700DC01086",
+                      "bytes":  7720
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "896F4DECBFC3EA20B3D72B571E756370411A8B81FCA3B6C02FF5DD366675C244",
+                      "bytes":  88075
+                  },
+                  {
+                      "path":  "scripts/implementation/phase10_component_source_gate_test.py",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "8B61E7288FF0DDAE0CCA857C6EA15E72D65A94B9AC97754CAD60273502375C87",
+                      "bytes":  44134
+                  },
+                  {
+                      "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase10/MonitorProjection.java",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "3D99A57DE829E03652E99639893B3246B5072AAE3658FBFEF15F4DCC76382A8F",
+                      "bytes":  438
+                  },
+                  {
+                      "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase10/Phase10TechMonitorController.java",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "8BF089E27E94FD4ABB6684505A03472C5CFA3B6937EDCCBF7CE3DF5B8C9E1F1A",
+                      "bytes":  4571
+                  },
+                  {
+                      "path":  "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase10TechMonitorBrowserBackendFixture.java",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "75694700689573F00DDC0F123FD3A3B17D27CB35A46C2C09A41562207ADB5FCA",
+                      "bytes":  19002
+                  },
+                  {
+                      "path":  "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase10TechMonitorIntegrationTest.java",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "F9A78353515A4F54628441FF874670EFE8AF11CC2AF881392B2634B7F1787F72",
+                      "bytes":  13334
+                  },
+                  {
+                      "path":  "technical-platform/web/e2e/phase10-tech-monitor-live.spec.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "FB51F1B43B2C92FCF072B74FB6D6322F2B8DD5303D536B8E25673197EA63C4E1",
+                      "bytes":  8400
+                  },
+                  {
+                      "path":  "technical-platform/web/knip.json",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "5D721C2CF646D62A9034E0D20D7B8DB113868B2393CD7C182534BF7A4F9CECD1",
+                      "bytes":  1190
+                  },
+                  {
+                      "path":  "technical-platform/web/playwright.phase10-tech-monitor-live.config.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "03DBFD2CD048E1F520291E85B3B50F19F5941B0F309B0FE8F237AA75712CE940",
+                      "bytes":  1003
+                  },
+                  {
+                      "path":  "technical-platform/web/src/contracts/index.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "3903B9039BDFDD07754CA0B4A67BD0662EB4A697E7B7D791CDB6296BE3E0592A",
+                      "bytes":  51
+                  },
+                  {
+                      "path":  "technical-platform/web/src/contracts/monitoring.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "8B00E61BE91E282E6DCB9117007FEC7D6E938F5C08D553A0EA1E3AA03A976E32",
+                      "bytes":  2056
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/layout/PortalShell.landmark.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "DABC042D616050752D92D5E315D97031D49777DE57D93196DA71F6AD2D9D48BE",
+                      "bytes":  2037
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/ui-component-access.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "48E0751C24AB3F4021B63D3E9CB4716DF0BF6BB536871ECC6D9B3F0A411DAFA6",
+                      "bytes":  3736
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.ui-plan.json",
+                      "expected_state":  "deleted",
+                      "absent":  true,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+                      "expected_state":  "deleted",
+                      "absent":  true,
+                      "sha256":  null,
+                      "bytes":  0
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "F506AEC9641221E391B46E0C396A85456EA9825E7E3438471AEC12BC32B489FD",
+                      "bytes":  2584
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "49E8C2CCAB62C297D4690B3F7511792450E058C4BAFB08FC19D2F0BF05505C97",
+                      "bytes":  1661
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/index.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "13F13BA6DB552D0B6B59E3392E0C40D8ECA2A3D3921031B50B31ADE4ECFD2373",
+                      "bytes":  123
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-components.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "5F8BD0723A23A0F9D9E10F9FD3C90D23E222B2CF8C99353B4EFC3AE96F6C5F93",
+                      "bytes":  4630
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-page.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "131687DFB94CAE8C818B9085A135676189D0E4DDA1B5206CAEB3FBB30E73694E",
+                      "bytes":  7688
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/MonitorPanel.vue",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "62ECA756A901F9A02242DA178DEC7C2678D1D194661E7B7F8CE4BDB36BF5DD94",
+                      "bytes":  1028
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-service.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "8C449ADC0E7BFB82DC373E8E1C7B83FFFAD6BCDE3F5977012BF2E5C18D8B25AD",
+                      "bytes":  11040
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-service.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "1D46F38D535103377AE98CEE600274BF1ABE128ADB0F335BC3055ACC5121EEEB",
+                      "bytes":  2996
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/MonitorStatusTable.vue",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "FAFABCB39495EC6DA36CA3F5B6081CA03F679B37C8691DCB39E3D9E9D66E1088",
+                      "bytes":  2369
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/monitoring/useMonitorProjection.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "5BB38353D38CEF177FC8464B147B57C991D55945CFD8422CF1EC5937DDAE8B9F",
+                      "bytes":  2679
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/phase10-tech-monitor-router.test.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "27E93153F0E38AE9836F22606BF1F8821D1EB769FB3AB3C7675F75BFAB4A0BDC",
+                      "bytes":  2397
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/portal-router.ts",
+                      "expected_state":  "present",
+                      "exists":  true,
+                      "sha256":  "DEC6E16E4F28697E15CDFDA45E17B017F1AB1C847FDF49C986B1DFF6AC3115AD",
+                      "bytes":  25509
+                  }
+              ]
+}

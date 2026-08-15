@@ -1,0 +1,1178 @@
+{
+  "schema_version": "1.1",
+  "gate": "phase10-component-source",
+  "repository_root": "I:\\PublicCompany_source_codex",
+  "status": "FAIL",
+  "violation_count": 232,
+  "violations": [
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 27
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 28
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 29
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 37
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 37
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 15
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": 34
+    },
+    {
+      "code": "PAGE_MISSING",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P007ShiftPage.vue",
+      "line": null
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 58
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 59
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 65
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 82
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 96
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 96
+    },
+    {
+      "code": "RAW_TABLE",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 97
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 36
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 36
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 37
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 45
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 46
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 48
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 49
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 45
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 46
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 48
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 49
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": 92
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 32
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 33
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 38
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 48
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 48
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 25
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 26
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 27
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 25
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 26
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 27
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": 44
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 15
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 16
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 17
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 25
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 25
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": 22
+    },
+    {
+      "code": "PAGE_MISSING",
+      "path": "technical-platform\\web\\src\\platform\\pages\\Phase10TechMonitorPage.vue",
+      "line": null
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P006MeetingPage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P008LeavePage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P009OvertimePage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform\\web\\src\\platform\\pages\\P010LearningPage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    }
+  ],
+  "remote_operations_performed": false
+}

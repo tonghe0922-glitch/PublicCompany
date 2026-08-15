@@ -1,0 +1,15 @@
+P10-COMP-03 RESUBMIT-2 final-freeze boundary wrapper failure
+Date: 2026-08-13 Asia/Shanghai
+
+Classification: orchestration/wrapper failure; not a source or Gate result.
+Command defect: the read-only PowerShell inventory used `Get-Item$p` instead of `Get-Item -LiteralPath $p`.
+Observed wrapper result: task_diff_count=33 with zero byte lengths; this result is invalid and must not be reused.
+Exit: non-zero wrapper failure.
+Repository writes from the failed command: 0.
+Candidate/source changes caused by the failed command: 0.
+
+One corrected read-only rerun was performed with `Get-Item -LiteralPath $p`.
+Corrected exit: 0.
+Corrected task manifest count: 33.
+Corrected task diff count: 2.
+

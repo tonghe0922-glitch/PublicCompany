@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { SgjButton, SgjInput, SgjSelect, SgjTextarea } from '@sgj/ui'
 import { usePortalSessionStore } from '../../session'
 import type { PortalDefinition } from '../portal-config'
 
@@ -109,36 +110,36 @@ onMounted(() => { void run(load) })
       <h2>提交资料变更</h2>
       <p v-if="!canSubmit">当前身份没有 p003.change.submit 权限。</p>
       <div class="form-grid">
-        <label>变更字段
-          <select v-model="fieldCode" :disabled="busy || !canSubmit">
-            <option value="person_name">姓名</option><option value="mobile">手机号</option><option value="id_no">证件号（P3，需证明）</option>
-          </select>
-        </label>
-        <label>新值<input v-model="proposedValue" :disabled="busy || !canSubmit" autocomplete="off" required /></label>
-        <label>证明引用<input v-model="proofReference" :disabled="busy || !canSubmit" placeholder="P3 字段必填" /></label>
-        <label>期望生效时间<input v-model="expectedEffectiveAt" type="datetime-local" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">主题<input v-model="subject" :disabled="busy || !canSubmit" required /></label>
-        <label class="wide">变更原因<textarea v-model="reason" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">已知影响<textarea v-model="knownImpact" :disabled="busy || !canSubmit" /></label>
+        <SgjSelect v-model="fieldCode" label="变更字段" :options="[
+          { value: 'person_name', label: '姓名' },
+          { value: 'mobile', label: '手机号' },
+          { value: 'id_no', label: '证件号（P3，需证明）' },
+        ]" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="proposedValue" label="新值" :disabled="busy || !canSubmit" autocomplete="off" required />
+        <SgjInput v-model="proofReference" label="证明引用" :disabled="busy || !canSubmit" placeholder="P3 字段必填" />
+        <SgjInput v-model="expectedEffectiveAt" label="期望生效时间" type="datetime-local" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="subject" class="wide" label="主题" :disabled="busy || !canSubmit" required />
+        <SgjTextarea v-model="reason" class="wide" label="变更原因" :disabled="busy || !canSubmit" />
+        <SgjTextarea v-model="knownImpact" class="wide" label="已知影响" :disabled="busy || !canSubmit" />
       </div>
-      <button type="button" :disabled="busy || !canSubmit || !proposedValue || !subject || (fieldCode === 'id_no' && !proofReference)" @click="submit">提交资料变更</button>
+      <SgjButton type="button" :disabled="busy || !canSubmit || !proposedValue || !subject || (fieldCode === 'id_no' && !proofReference)" @click="submit">提交资料变更</SgjButton>
     </section>
 
     <section class="phase09-card">
-      <div class="section-head"><h2>{{ isEmployee ? '我的变更记录' : '可见资料变更' }}</h2><button type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</button></div>
+      <div class="section-head"><h2>{{ isEmployee ? '我的变更记录' : '可见资料变更' }}</h2><SgjButton type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</SgjButton></div>
       <p v-if="!canRead">当前身份没有 p003.change.read 权限。</p>
-      <label v-if="!isEmployee">本次处理说明<textarea v-model="actionReason" :disabled="busy" /></label>
+      <SgjTextarea v-if="!isEmployee" v-model="actionReason" label="本次处理说明" :disabled="busy" />
       <div v-if="records.length" class="record-list">
         <article v-for="record in records" :key="record.id" class="record" :data-request-id="record.id">
           <div class="record-title"><strong>{{ record.businessNo }}</strong><span role="status">{{ record.status }}</span></div>
           <p>{{ record.subject }} · 风险 {{ record.riskLevel }}</p>
           <ul><li v-for="change in record.changes" :key="change.fieldCode"><code>{{ change.fieldCode }}</code> → {{ change.proposedValueMasked }} · {{ change.sensitivity }}<span v-if="change.proofProvided"> · 已有证明</span></li></ul>
           <div v-if="isCenter && canReview && reviewable(record)" class="actions">
-            <button type="button" :disabled="busy" @click="review(record, 'APPROVE')">通过当前复核</button>
-            <button type="button" :disabled="busy" @click="review(record, 'REJECT')">拒绝</button>
+            <SgjButton type="button" :disabled="busy" @click="review(record, 'APPROVE')">通过当前复核</SgjButton>
+            <SgjButton type="button" :disabled="busy" @click="review(record, 'REJECT')">拒绝</SgjButton>
           </div>
           <div v-if="!isEmployee && !isCenter && canApply && applicable(record)" class="actions">
-            <button type="button" :disabled="busy" @click="apply(record)">执行权威更新并同步</button>
+            <SgjButton type="button" :disabled="busy" @click="apply(record)">执行权威更新并同步</SgjButton>
           </div>
         </article>
       </div>

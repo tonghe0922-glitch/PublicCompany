@@ -1,0 +1,127 @@
+﻿{
+    "schema_version":  "1.0",
+    "task_id":  "P10-COMP-03A",
+    "generated_at_utc":  "2026-08-13T01:08:03.4453593Z",
+    "workspace_source_id":  "222602D6659C7E9A9A027C63F9D0D3635BA2E2B01B5555B3C758070A807F33EA",
+    "task_source_id":  "FE96B72DCA3B646DF9107ACE3D969D01B5E4777A88E7BDBB5F5EFDD6BB123C42",
+    "evidence_metadata_id":  "F61D6FB59B3DE62D7826FF79DC9C72D0CB013BC0D4218102A1A5230F7F97B5FC",
+    "submitted_file_count":  23,
+    "mismatch_count":  0,
+    "files":  [
+                  {
+                      "path":  "AGENT.md",
+                      "sha256":  "9F2ECFF73550311276E0FE69A60BF4EA84A3D93A5F83FD2A26671CC69F1738E4",
+                      "bytes":  102718
+                  },
+                  {
+                      "path":  "DESIGN.md",
+                      "sha256":  "039CC1500878E82D1C7F610FDA90EA1EE6D2EBEA497BFA4849BFA587A5204CFA",
+                      "bytes":  28378
+                  },
+                  {
+                      "path":  "docs/implementation/ui/CURRENT_UI_COMPONENT_VIOLATIONS.json",
+                      "sha256":  "C664F77F431684A750D83B46F2C051F4C723D05CA977D003B482CDE609F4FAF7",
+                      "bytes":  53407
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03A_REPORT.md",
+                      "sha256":  "06822424CBE627745A5A9C6BAB100380D8B9D7A01A3977DD705637FE3F5CB270",
+                      "bytes":  7718
+                  },
+                  {
+                      "path":  "docs/implementation/ui/PAGE_COMPONENT_USAGE_PLAN.schema.json",
+                      "sha256":  "57B48F3913F9089DB65FF0A2FD23711AE410E881D28A6EF040921BDA0BA2D451",
+                      "bytes":  2606
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P006MeetingPage.ui-plan.json",
+                      "sha256":  "02D7E0F53B28B3F75277BAF58F6854B74285DEF46AE81CAEE3CC6B605467E34A",
+                      "bytes":  3596
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P007SchedulePage.ui-plan.json",
+                      "sha256":  "82AD1308F92AF9000B3FE325F1286D99DE38A9B81FBA6BD7379D9A58BC7002E9",
+                      "bytes":  3519
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P008LeavePage.ui-plan.json",
+                      "sha256":  "702688B107FE472AECFF9307243CDAFD23AF728AD883EC780284DF896F1A6838",
+                      "bytes":  3496
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P009OvertimePage.ui-plan.json",
+                      "sha256":  "5327AF18BDFFE28FA799AA6DD454C50A99866D91750E3BF8F77AEC234BA0BF5D",
+                      "bytes":  3572
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P010LearningPage.ui-plan.json",
+                      "sha256":  "008C99CAACF8E54A24DE53DBE978ABFD3C084A5068B8B9C7BB8490F7090E9D78",
+                      "bytes":  3683
+                  },
+                  {
+                      "path":  "docs/implementation/ui/README.md",
+                      "sha256":  "C02F5674E39C8E8E231FBFF4A746F084D1E374F7CDC5ABFC04665603FBAD8F4A",
+                      "bytes":  1275
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_AI_IMPLEMENTATION_GUARDRAILS.md",
+                      "sha256":  "D166D8C2B4FB04A34F20259A48054AB182AA6CC3A3874BF915BE47ADAE8F8B0C",
+                      "bytes":  6287
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_CONSTRUCTION_STANDARD.md",
+                      "sha256":  "C9FE3DB421E05B620A9FDC1362E047841D13E9702CCEFDA23C533E1C08E47C58",
+                      "bytes":  14442
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                      "sha256":  "7D9A74C8EDE60D727CEAF7B839D44F6C6B73DA0A43D5BF11D3D11FAF02AE4507",
+                      "bytes":  84602
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REUSE_RULES.json",
+                      "sha256":  "27FEB846CE63FA445D0146B2591A8A4EA73642FF9EB3AB64B57D5526E137C461",
+                      "bytes":  3083
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_NATIVE_ELEMENT_EXCEPTIONS.json",
+                      "sha256":  "65658F0E3D6E7F9C2EE0C9B0AAAEA42E81F6BDC5A8F791A95B808F3FAEC00CC5",
+                      "bytes":  50
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_PAGE_COMPOSITION_STANDARD.md",
+                      "sha256":  "8722F9CF614990BC3842705718514D7A48A36CFDC12719B46FA76B199E9168C0",
+                      "bytes":  6068
+                  },
+                  {
+                      "path":  "scripts/implementation/ui_component_access_gate.py",
+                      "sha256":  "726CAEFB7C3190CD897873E3CDFE726EBFBE5E78213A84A237B417FDC9BF0B88",
+                      "bytes":  31855
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/index.ts",
+                      "sha256":  "708BD8B56B71AE18359481E0EBC4265228FF382994CC72D2622C32DDD000CF6B",
+                      "bytes":  2945
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/ui-component-access.test.ts",
+                      "sha256":  "571B1952FD6C42B8C9B051F804D7F4C8DC7A0DCF5E67007C7199DD1C6875518E",
+                      "bytes":  1310
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+                      "sha256":  "01F2C13622D0F742960390495C5854A03FC63D3FB85722A306CCF2864DE3651F",
+                      "bytes":  316
+                  },
+                  {
+                      "path":  "technical-platform/web/tsconfig.app.json",
+                      "sha256":  "0465C23D5595B4D308ACA828D810752C2E3A5231E48B46190BEB4E7EEB990AC9",
+                      "bytes":  792
+                  },
+                  {
+                      "path":  "technical-platform/web/vite.config.ts",
+                      "sha256":  "3567D5314FB12C2E8DDFA216E4420C98A55191DCE31A36E87ECF10C2CB50C199",
+                      "bytes":  2781
+                  }
+              ]
+}

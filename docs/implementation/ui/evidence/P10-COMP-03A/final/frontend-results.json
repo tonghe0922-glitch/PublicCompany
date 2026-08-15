@@ -1,0 +1,8 @@
+﻿{
+    "targeted":  0,
+    "lint":  0,
+    "typecheck":  0,
+    "unit":  0,
+    "build":  0,
+    "knip":  0
+}

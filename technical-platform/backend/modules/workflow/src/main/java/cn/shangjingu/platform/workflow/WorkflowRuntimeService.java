@@ -218,6 +218,35 @@ public class WorkflowRuntimeService {
         return new Result(instance, task, null, false);
     }
 
+    @Transactional(readOnly = true)
+    public List<String> matchingActionCodes(UUID tenantId, UUID instanceId, List<String> candidateActionCodes) {
+        requireUuid(tenantId, "tenantId");
+        requireUuid(instanceId, "instanceId");
+        if (candidateActionCodes == null) {
+            throw WorkflowException.invalid("candidate action codes are required");
+        }
+        Instance instance = repository.findInstance(tenantId, instanceId)
+                .orElseThrow(() -> WorkflowException.notFound("workflow instance not found"));
+        List<String> matchingCodes = new ArrayList<>();
+        for (String candidate : candidateActionCodes) {
+            requireText(candidate, "candidate action code");
+            List<RuntimeTransition> matching = repository.listTransitions(
+                            tenantId, instance.versionId(), instance.currentNodeCode(), candidate.trim())
+                    .stream()
+                    .filter(transition -> conditionEvaluator.matches(
+                            transition.conditionExpr(), instance.contextSnapshot()))
+                    .toList();
+            if (matching.size() > 1) {
+                throw new WorkflowException(WorkflowException.Code.INVALID_DEFINITION,
+                        "workflow action resolves to multiple eligible transitions");
+            }
+            if (matching.size() == 1) {
+                matchingCodes.add(candidate.trim());
+            }
+        }
+        return List.copyOf(matchingCodes);
+    }
+
     private Task authorizeCurrentTask(ActionCommand command, Instance instance, RuntimeNode current) {
         if (START_NODE.equalsIgnoreCase(current.nodeType())) {
             if (command.taskId() != null) {

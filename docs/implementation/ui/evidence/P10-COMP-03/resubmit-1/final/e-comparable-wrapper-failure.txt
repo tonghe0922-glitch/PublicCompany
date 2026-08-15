@@ -1,0 +1,4 @@
+﻿FIRST_COMPARABLE_WRAPPER_FAILURE
+Process exit 0, semantic validation FAIL: empty projections.
+Cause: property-form Where-Object predicate was malformed.
+Not authoritative; corrected with explicit scriptblocks.

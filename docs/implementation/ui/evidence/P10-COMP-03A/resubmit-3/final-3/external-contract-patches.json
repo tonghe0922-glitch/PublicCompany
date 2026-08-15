@@ -1,0 +1,29 @@
+﻿{
+    "classification":  "external_authorized_contract_patch",
+    "patches":  [
+                    "CONTRACT-PATCH-01",
+                    "CONTRACT-PATCH-02"
+                ],
+    "files":  [
+                  {
+                      "path":  "I:\\PublicCompany_组件核对与AI整改方案\\06_AI任务清单.yaml",
+                      "sha256":  "4850D8FDD7193B3C0D6A5DAFE4CFA389BC4BA1B86637B77C7BE6E685CFA66511",
+                      "bytes":  16217
+                  },
+                  {
+                      "path":  "I:\\PublicCompany_组件核对与AI整改方案\\machine\\phase10-ai-tasks.json",
+                      "sha256":  "8961F43FF21A16A2C3598A515B375B256CB250F06A535F134A93B4027FD4B8CC",
+                      "bytes":  19322
+                  },
+                  {
+                      "path":  "I:\\PublicCompany_组件核对与AI整改方案\\machine\\manifest.json",
+                      "sha256":  "6831D4F530B60ED7729A1815AB0A8A774580F269BD6B9F0C0B6B6C546761E17C",
+                      "bytes":  11312
+                  },
+                  {
+                      "path":  "I:\\PublicCompany_组件核对与AI整改方案\\SHA256SUMS.txt",
+                      "sha256":  "07652D803E8FB1A2F28B4F4662C8F98F802A455DDAE23579804BFDD76FDA2DD7",
+                      "bytes":  5607
+                  }
+              ]
+}

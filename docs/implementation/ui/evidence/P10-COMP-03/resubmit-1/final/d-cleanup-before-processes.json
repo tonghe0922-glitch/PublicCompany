@@ -1,0 +1,26 @@
+﻿[
+    {
+        "ProcessId":  43872,
+        "ParentProcessId":  10380,
+        "Name":  "cmd.exe",
+        "CommandLine":  "\"C:\\Windows\\system32\\cmd.exe\" /d /c \"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform/backend/apps/api/pom.xml -DskipTests -Dexec.mainClass=cn.shangjingu.platform.api.Phase11P016BrowserBackendFixture -Dexec.classpathScope=test exec:java "
+    },
+    {
+        "ProcessId":  51932,
+        "ParentProcessId":  43872,
+        "Name":  "conhost.exe",
+        "CommandLine":  "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+        "ProcessId":  43860,
+        "ParentProcessId":  43872,
+        "Name":  "java.exe",
+        "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform/backend/apps/api/pom.xml -DskipTests -Dexec.mainClass=cn.shangjingu.platform.api.Phase11P016BrowserBackendFixture -Dexec.classpathScope=test exec:java"
+    },
+    {
+        "ProcessId":  46252,
+        "ParentProcessId":  21772,
+        "Name":  "powershell.exe",
+        "CommandLine":  "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -Command \"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n$ErrorActionPreference=\u0027Continue\u0027; $e=\u0027docs/implementation/ui/evidence/P10-COMP-03/resubmit-1/final\u0027; $launcher=[int](Get-Content -Raw \\\"$e/d-launcher.pid.txt\\\"); $runtime=Get-Content -Raw \u0027technical-platform/backend/apps/api/target/phase11-p016-fixture-runtime.json\u0027|ConvertFrom-Json; $before=@(Get-CimInstance Win32_Process|Where-Object{($_.ProcessId-eq$launcher)-or($_.ParentProcessId-eq$launcher)-or($_.CommandLine-like\u0027*Phase11P016BrowserBackendFixture*\u0027)}); $before|Select-Object ProcessId,ParentProcessId,Name,CommandLine|ConvertTo-Json -Depth 4|Set-Content -Encoding UTF8 \\\"$e/d-cleanup-before-processes.json\\\"; \u0026 taskkill.exe /PID $launcher /F /T 2\u003e\u00261|Tee-Object -FilePath \\\"$e/d-taskkill.log\\\"; $kill=$LASTEXITCODE; $kill|Set-Content -Encoding ASCII \\\"$e/d-taskkill.exit.txt\\\"; $deadline=(Get-Date).AddSeconds(90); do{Start-Sleep -Seconds 2; $remaining=@(); foreach($cid in @($runtime.postgresContainerId,$runtime.redisContainerId)){if(docker ps -aq --no-trunc --filter \\\"id=$cid\\\"){$remaining+=$cid}}; $runningTc=@(docker ps -q --filter \u0027label=org.testcontainers=true\u0027); $ryuk=@(docker ps -q --filter \u0027ancestor=testcontainers/ryuk:0.12.0\u0027); $ports=@(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue|Where-Object LocalPort -in 18090,5360,5361,5362); $newProcs=@(Get-CimInstance Win32_Process|Where-Object{$_.ProcessId-ne$PID-and$_.CommandLine-and($_.CommandLine-like\u0027*Phase11P016BrowserBackendFixture*\u0027-or$_.CommandLine-match\u0027(--port|port=)(5360|5361|5362)\u0027)}); if(!$remaining.Count-and!$runningTc.Count-and!$ryuk.Count-and!$ports.Count-and!$newProcs.Count){break}}while((Get-Date)-lt$deadline); $oldIds=35248,43248,44872,41392,36432,15196,40796; $old=@($oldIds|Where-Object{Get-Process -Id $_ -ErrorAction SilentlyContinue}); $result=[ordered]@{checked_utc=(Get-Date).ToUniversalTime().ToString(\u0027o\u0027);launcher_pid=$launcher;taskkill_exit=$kill;postgres_id=$runtime.postgresContainerId;redis_id=$runtime.redisContainerId;remaining_exact_ids=$remaining;running_testcontainers_count=$runningTc.Count;ryuk_count=$ryuk.Count;fresh_listener_count=$ports.Count;new_process_count=$newProcs.Count;old_runtime_expected=7;old_runtime_present=$old.Count;old_runtime_ids=$old}; $result|ConvertTo-Json -Depth 5|Set-Content -Encoding UTF8 \\\"$e/d-cleanup.json\\\"; $result|ConvertTo-Json -Depth 5; if($kill-ne0-or$remaining.Count-or$runningTc.Count-or$ryuk.Count-or$ports.Count-or$newProcs.Count-or$old.Count-ne7){exit 4}\""
+    }
+]

@@ -18,7 +18,8 @@
     "P011",
     "P012",
     "P013",
-    "P014"
+    "P014",
+    "P016"
   ],
   "page_type": "dashboard",
   "page_template": "ui.template.dashboard-page",
@@ -53,9 +54,15 @@
         "P011",
         "P012",
         "P013",
-        "P014"
+        "P014",
+        "P016"
       ],
-      "rule": "The old shared page actually rendered P006, P007 and P010-P014; those permission-gated metadata projections remain present without embedding the P004/P005 business pages. P004/P005 use only MonitorPanel. P008 and P016 exist in shared-route meta but had no old-page projection, while P009 uses an independent technical monitor route; none is silently added to this page."
+      "rule": "The hub composes monitor-only features/projections, including the dedicated three-field P016 projection, without embedding any route Page.vue or business mutation feature. P008 remains on the attendance-monitor contract and P009 on its independent route."
+    },
+    "p015_dedicated_monitor": {
+      "route": "/tech/06/06/09",
+      "permission": "p015.points.monitor",
+      "rule": "P015 remains an explicit dedicated monitor route and is not omitted from the architecture merely because it is not composed into this shared hub."
     },
     "mutation_boundary": "The technical page performs only projection GET and technical refresh. It provides no create, act, approve, accept, certify, execute, mutation URL, business action, or fabricated allowedActions authority.",
     "layer_status": "MonitorPanel and MonitorStatusTable raise L2 inventory to 15/18 ready with 3 BLOCKED_BY_CONTRACT; this plan does not declare an L2, L4, L5, or other LAYER PASS."
@@ -95,7 +102,7 @@
     }
   ],
   "responsive_projection": {
-    "desktop": "MonitorPanel renders the P004 and P005 typed allowlist as separate accessible desktop tables and keeps the old shared page's actual P006, P007 and P010-P014 metadata-monitor regions under their established permission gates.",
+    "desktop": "The hub renders permission-gated metadata-only sections for its shared processes, including the server-allowlisted P016 businessNo/currentNodeCode/status projection.",
     "mobile": "The same state.data facts render as mobile rows; no alternative records prop, raw DTO, or duplicated page truth exists.",
     "limited_actions": [
       "refresh is the only P004/P005 control",
@@ -112,10 +119,10 @@
       "reason": "The old shared page's actual P006, P007 and P010-P014 metadata-monitor projections and route behavior are preserved, but this task does not invent a cross-process unknown DTO or broaden their backend contracts. Each remains governed by its existing typed page/service and permission boundary."
     },
     {
-      "id": "UI-GAP-SHARED-ROUTE-META-DISPLAY-ASYMMETRY",
+      "id": "UI-GAP-P008-SHARED-ROUTE-META-DISPLAY-ASYMMETRY",
       "classification": "DEFERRED_TO_P10_COMP_07_READ_ONLY_RECONCILIATION",
       "status": "partial",
-      "reason": "The /tech/05/03/01 route meta includes P008 leave monitor and P016 welfare monitor permissions, but the old shared page rendered neither process. This task preserves that factual boundary and does not add either projection; P10-COMP-07 must reconcile the route-meta/display asymmetry against authoritative contracts. P009 already has an independent technical monitor route and is not migrated into this shared page."
+      "reason": "P016 is closed by the dedicated three-field projection in this task. P008 remains governed by the attendance-monitor contract, and P009 remains on its independent technical route."
     },
     {
       "id": "UI-GAP-L2-BLOCKED-COMPOSITES",
@@ -136,8 +143,8 @@
     "subject, content, reason, resultSummary, amount, actualAmount, owner, recipient, evidence, detail, stack and test secrets are absent from text, HTML and all attributes",
     "technical refresh uses only GET and no create, act, approve, accept, certify or execute request is possible",
     "idle, loading, empty, partial, error, success and responsive desktop/mobile projections share one state.data truth",
-    "the old shared page's actual P006, P007 and P010-P014 metadata monitor projections remain available without embedding P004/P005 business pages",
-    "P008/P016 shared-route meta asymmetry remains explicitly deferred and P009 remains on its independent monitor route"
+    "P006, P007 and P010-P014 monitor-only features remain available without embedding route pages",
+      "P016 monitor-only renders a real three-field record with zero employee, amount, invoice or evidence fields; P015 remains explicitly dedicated"
   ],
   "updated_at": "2026-08-14T02:40:00+08:00"
 }

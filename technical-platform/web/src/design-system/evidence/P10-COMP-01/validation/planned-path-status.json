@@ -1,0 +1,62 @@
+﻿[
+    {
+        "path":  "technical-platform/web/src/design-system/tokens.css",
+        "change":  "unchanged",
+        "sha256":  "AF81CEBEB01E79AAC9D4A8F6A0EDD604D3D113FA53AF52CF362B10CD2DBDBD02",
+        "bytes":  2164
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/runtime-primitives.test.ts",
+        "change":  "modified",
+        "sha256":  "11794A4EF2B0B85A98A100A609C9DA3AFDB716EC3B6AB2691CA7D0CAD7163BE7",
+        "bytes":  7189
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/foundation.test.ts",
+        "change":  "modified",
+        "sha256":  "26B1BCE29A3DA9B50BC14BA6EFB4535E25C7E57E1FA54E693333DAEDA0F3CDCF",
+        "bytes":  1584
+    },
+    {
+        "path":  "technical-platform/web/src/router/PortalNavigation.vue",
+        "change":  "modified",
+        "sha256":  "33C8CA50FC7B4F178937E046AD30BD587026ABC87E90E3BF995E598D32CD31AB",
+        "bytes":  5485
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/COMPONENT_CONTRACTS.md",
+        "change":  "added",
+        "sha256":  "1015691B28FECB6A4A5F04A36EC776E4024CF7E8FCF033CCFC14E3537B9F1D7E",
+        "bytes":  3522
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/components/PersonPicker.vue",
+        "change":  "unchanged",
+        "sha256":  "FC9E3F091627FD6E8B203D7B1DDFF8458096FBE15AB2ED754F6B2C8E792F1004",
+        "bytes":  861
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/components/Select.vue",
+        "change":  "modified",
+        "sha256":  "6688CFBEED9D79127F4056942743FF5F2BA95FEB96EC219FEF85E66C1DEFA41F",
+        "bytes":  1795
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/components/OrganizationPicker.vue",
+        "change":  "unchanged",
+        "sha256":  "3B15BC1F80B6B95F8CEEE00ACE7426915106DA5F4E2FA1EF4293EF5F41E28CC9",
+        "bytes":  861
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/component-vtu.test.ts",
+        "change":  "modified",
+        "sha256":  "65359571AE15552703B95D1D0CFF5EEF94F5A7D50FE846F23AFF5B50D132D3A9",
+        "bytes":  10288
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/components/Drawer.vue",
+        "change":  "modified",
+        "sha256":  "FF8122BD2125DA5DE3F28AA2A24155B2C41F7DEE91CFAAC9A2248FA3D6D7366D",
+        "bytes":  1908
+    }
+]

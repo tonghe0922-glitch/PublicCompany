@@ -54,17 +54,17 @@ const mountRecords: Record<string, unknown[]> = {
   P012: [{
     id: 'promotion-1', businessNo: 'P012-1', currentNodeCode: null, status: 'ARCHIVED',
     versionNo: 1, subject: '晋升夹具', ownerEmployeeId: 'employee-2',
-    targetPositionCode: 'POSITION-2', plannedEffectiveDate: '2026-09-01', executions: [],
+    targetPositionCode: 'POSITION-2', plannedEffectiveDate: '2026-09-01', executions: [], availableActions: [],
   }],
   P013: [{
     id: 'reward-1', businessNo: 'P013-1', currentNodeCode: null, status: 'ARCHIVED',
     versionNo: 1, subject: '奖励夹具', ownerEmployeeId: 'employee-2', sourceFactKey: 'FACT-13',
-    employeeEventType: 'SERVICE', impacts: [], receipts: [],
+    employeeEventType: 'SERVICE', impacts: [], receipts: [], availableActions: [],
   }],
   P014: [{
     id: 'discipline-1', businessNo: 'P014-1', currentNodeCode: 'END', status: 'ARCHIVED',
     versionNo: 1, subject: '纪律夹具', affectedEmployeeId: 'employee-2', sourceFactKey: 'FACT-14',
-    businessObjectNo: 'CASE-14', decisions: [], impacts: [], receipts: [],
+    businessObjectNo: 'CASE-14', decisions: [], impacts: [], receipts: [], availableActions: [],
   }],
 }
 

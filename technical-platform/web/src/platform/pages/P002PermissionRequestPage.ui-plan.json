@@ -44,10 +44,22 @@
   },
   "field_component_map": [
     {
-      "field": "request-kind|target|reason",
+      "field": "requestedRoleId|effectiveStartAt|effectiveEndAt|businessObjectNo|businessObjectName|businessScopeId|subject|externalReferenceNo",
       "component_id": "ui.input",
-      "reason": "Existing request fields; P10-COMP-02 changes only landmark semantics",
-      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+      "reason": "CXR-08 uses the public input contract without changing the request payload",
+      "editable_when": "Existing server-defined state and permission contract"
+    },
+    {
+      "field": "priority",
+      "component_id": "ui.select",
+      "reason": "CXR-08 uses the public select contract with the existing priority values",
+      "editable_when": "Existing server-defined values"
+    },
+    {
+      "field": "reason|expectedResult|actionReason",
+      "component_id": "ui.textarea",
+      "reason": "CXR-08 uses the public textarea contract without changing action payloads",
+      "editable_when": "Existing server-defined state and permission contract"
     },
     {
       "field": "records",
@@ -82,14 +94,7 @@
     "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
     "limited_actions": []
   },
-  "gaps": [
-    {
-      "id": "UI-GAP-P002PermissionRequestPage-LANDMARK-SCOPE",
-      "classification": "deferred-existing-debt",
-      "status": "not-expanded",
-      "reason": "P002 form/action component migration is deferred; no business control is changed in P10-COMP-02."
-    }
-  ],
+  "gaps": [],
   "native_element_exceptions": [],
   "decision": "reuse-only",
   "registry_updates": [],
@@ -97,7 +102,8 @@
     "exactly one rendered main under authenticated shell",
     "exactly one accessible h1 sourced from route metadata",
     "desktop and mobile route title semantics",
+    "CXR-08 public component migration and raw interactive element count zero",
     "existing permission/action/data-scope behavior remains unchanged"
   ],
-  "updated_at": "2026-08-13T00:00:00+08:00"
+  "updated_at": "2026-08-15T00:00:00+08:00"
 }

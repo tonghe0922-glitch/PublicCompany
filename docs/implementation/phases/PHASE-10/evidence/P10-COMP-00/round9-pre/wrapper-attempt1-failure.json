@@ -1,0 +1,7 @@
+﻿{
+    "attempt":  1,
+    "wrapper_exit":  1,
+    "preflight_started":  false,
+    "baseline_started":  false,
+    "error":  "DirectoryNotFoundException opening redirected log before evidence directory creation"
+}

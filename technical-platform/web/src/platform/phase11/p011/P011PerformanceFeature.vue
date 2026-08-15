@@ -13,7 +13,7 @@ const {
   session, records, businessDate, subject, reason, ownerEmployeeId, contentVersion,
   periodOrCourseNo, score1000, appealRaised, executionType, externalReference,
   resultSummary, evidenceNote, isCenter, isTech, canRead, listState, createState,
-  executionOptions, load, create, perform, actions, actionState, actionPending,
+  executionOptions, load, create, perform, actions, actionState, actionPending, recordPending,
 } = useP011Performance(props)
 </script>
 
@@ -104,6 +104,7 @@ const {
               v-for="candidate in actions(item)"
               :key="candidate.code"
               :data-action="candidate.code"
+              :disabled="recordPending(item)"
               :loading="actionPending(item, candidate)"
               @click="perform(item, candidate)"
             >{{ candidate.label }}</SgjButton>

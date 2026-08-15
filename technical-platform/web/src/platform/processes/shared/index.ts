@@ -7,6 +7,9 @@ export type { AsyncResource } from './async/useAsyncResource'
 export type { AsyncPhase, AsyncState } from './async/async-state'
 
 export { default as MonitorPanel } from './monitoring/MonitorPanel.vue'
+export { default as AttendanceWorkflowMonitorFeature } from './monitoring/AttendanceWorkflowMonitorFeature.vue'
+export { default as PhaseWorkflowMonitorFeature } from './monitoring/PhaseWorkflowMonitorFeature.vue'
+export { default as ProcessMetadataMonitorFeature } from './monitoring/ProcessMetadataMonitorFeature.vue'
 
 export { default as ApiErrorNotice } from './errors/ApiErrorNotice.vue'
 export { default as FormErrorSummary } from './errors/FormErrorSummary.vue'

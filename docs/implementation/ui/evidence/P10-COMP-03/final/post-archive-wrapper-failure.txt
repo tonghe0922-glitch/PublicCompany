@@ -1,0 +1,4 @@
+Command: Move-Item final/post final/post-before-report-correction
+Exit/condition: non-terminating Access denied; the wrapper continued and regenerated post in place.
+Classification: evidence orchestration failure, not a project preflight/baseline result.
+Repository effect: no hand-written candidate change; the subsequently frozen report was followed by a fresh authoritative post run.

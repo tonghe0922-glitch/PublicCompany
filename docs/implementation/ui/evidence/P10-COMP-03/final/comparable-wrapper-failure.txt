@@ -1,0 +1,5 @@
+Command: inline PowerShell comparable generator, first attempt
+Exit: 1
+Reason: custom function name Filter was parsed as the PowerShell Filter keyword.
+Repository effect: parser stopped before comparable/hash manifests were written; no candidate or report change.
+Correction: function renamed SelectItems; corrected generator exited 0.

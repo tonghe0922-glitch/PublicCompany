@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<{
   name?: string
   placeholder?: string
   autocomplete?: string
+  inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+  maxlength?: string | number
   hint?: string
   error?: string
   required?: boolean
@@ -54,6 +56,8 @@ const field = useFieldA11y({
       :value="modelValue"
       :placeholder="placeholder"
       :autocomplete="autocomplete"
+      :inputmode="inputmode"
+      :maxlength="maxlength"
       :required="required"
       :disabled="disabled"
       :readonly="readonly"

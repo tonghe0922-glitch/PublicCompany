@@ -1,0 +1,26 @@
+﻿[
+    {
+        "path":  "scripts/implementation/ui_component_access_gate.py",
+        "sha256":  "E05083C0B231B8D9D925C20A1390B8B39A59A70846B517AD85EB036951AC1EF7",
+        "bytes":  103512,
+        "last_write_utc":  "2026-08-13T08:11:26.3534848Z"
+    },
+    {
+        "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+        "sha256":  "DCC9D3EA38F9AB254A5D0236F069202810CA3D6C48BD51447CCC9896FC923C34",
+        "bytes":  84758,
+        "last_write_utc":  "2026-08-13T04:16:33.8189667Z"
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/component-vtu.test.ts",
+        "sha256":  "8915B86FE71829C89564D537FE63A431F94C9A97E38AA1056EC1654B540A0296",
+        "bytes":  11534,
+        "last_write_utc":  "2026-08-13T04:16:14.6746998Z"
+    },
+    {
+        "path":  "docs/implementation/ui/P10-COMP-03A_REPORT.md",
+        "sha256":  "CD09DB800A04BD8A66F7371CF4D0056FA91F04A899816C2D0BCE6C73D021D6CA",
+        "bytes":  22482,
+        "last_write_utc":  "2026-08-13T08:04:20.1670063Z"
+    }
+]

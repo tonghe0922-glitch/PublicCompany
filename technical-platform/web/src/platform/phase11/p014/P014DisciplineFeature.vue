@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { toRef } from 'vue'
+
 import {
   SgjButton, SgjCard, SgjCheckbox, SgjConflict, SgjDateTime, SgjEmpty,
   SgjError, SgjInput, SgjListPageTemplate, SgjLoading, SgjNoPermission,
@@ -8,7 +10,12 @@ import { isPending } from '../process-state'
 import { useP014Discipline } from './use-p014-discipline'
 import type { P014Props } from './use-p014-discipline'
 
-const props = defineProps<P014Props>()
+interface P014FeatureProps extends P014Props {
+  headingLevel?: 1 | 2 | 3
+}
+
+const props = withDefaults(defineProps<P014FeatureProps>(), { headingLevel: 1 })
+const headingLevel = toRef(props, 'headingLevel')
 const {
   records, businessDate, subject, reason, affectedEmployeeId, sourceFactKey,
   businessObjectType, businessObjectNo, businessObjectName, employeeEventType,
@@ -17,12 +24,12 @@ const {
   receiptType, externalReference, externalOccurredAt, appealRequested,
   isTech, canRead, canCreate, listState, createState, businessObjectOptions,
   employeeEventOptions, impactLevelOptions, decisionOptions, impactTypeOptions,
-  receiptTypeOptions, load, create, perform, actions, actionState,
+  receiptTypeOptions, load, create, perform, actions, actionState, recordPending,
 } = useP014Discipline(props)
 </script>
 
 <template>
-  <SgjListPageTemplate data-testid="p014-page" :title="isTech ? '纪律案件流程元数据监控' : '纪律事实、职责分离与申诉闭环'" :description="isTech ? '技术端仅查看流程元数据；当事人、事实、证据、决定和回执均不可见。' : '平台只记录外部人工授权决定及下游权威回执，不自动认定责任或直接处分。'">
+  <SgjListPageTemplate data-testid="p014-page" :heading-level="headingLevel" :title="isTech ? '纪律案件流程元数据监控' : '纪律事实、职责分离与申诉闭环'" :description="isTech ? '技术端仅查看流程元数据；当事人、事实、证据、决定和回执均不可见。' : '平台只记录外部人工授权决定及下游权威回执，不自动认定责任或直接处分。'">
     <template #actions><SgjButton variant="secondary" :disabled="!canRead" :loading="isPending(listState)" @click="load">刷新</SgjButton></template>
     <SgjNoPermission v-if="!canRead" />
     <template v-else>
@@ -79,7 +86,7 @@ const {
             </template>
           </template>
           <p v-else>当事人、事实、证据、决定、影响指令和执行回执已隐藏。</p>
-          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
+          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :disabled="recordPending(item)" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
         </SgjRecordCard>
       </div>
       <SgjError v-if="['error', 'no-permission'].includes(createState.failure)" title="创建纪律案件失败" :description="createState.message" :error-code="createState.errorCode" :trace-id="createState.traceId" />

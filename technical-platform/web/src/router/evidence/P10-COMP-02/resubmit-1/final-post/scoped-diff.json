@@ -1,0 +1,19 @@
+﻿{
+    "schema_version":  "1.0",
+    "pre_workspace_source_id":  "147FBA56E8E3340015D29E9E1C535BD76D4D2D10E8059510294D75411EDA454F",
+    "post_workspace_source_id":  "147FBA56E8E3340015D29E9E1C535BD76D4D2D10E8059510294D75411EDA454F",
+    "ui_task_count":  0,
+    "concurrent_core_count":  0,
+    "unrelated_count":  0,
+    "metadata_count":  1,
+    "changes":  [
+
+                ],
+    "evidence_metadata":  [
+                              {
+                                  "path":  "technical-platform/web/src/router/evidence/P10-COMP-02/P10-COMP-02_REPORT.md",
+                                  "sha256":  "330F816DB4836535EAA7D1B0B2E6DE311FE2490056DBACCB7B6E2FF196A8D23E",
+                                  "bytes":  7370
+                              }
+                          ]
+}

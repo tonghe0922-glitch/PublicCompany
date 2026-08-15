@@ -1,0 +1,20 @@
+﻿[
+    {
+        "ProcessId":  47876,
+        "ParentProcessId":  45780,
+        "Name":  "cmd.exe",
+        "CommandLine":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform/backend/apps/api/pom.xml -DskipTests -Dexec.mainClass=cn.shangjingu.platform.api.Phase11P016BrowserBackendFixture -Dexec.classpathScope=test exec:java \""
+    },
+    {
+        "ProcessId":  976,
+        "ParentProcessId":  47876,
+        "Name":  "conhost.exe",
+        "CommandLine":  "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+        "ProcessId":  27448,
+        "ParentProcessId":  47876,
+        "Name":  "java.exe",
+        "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform/backend/apps/api/pom.xml -DskipTests -Dexec.mainClass=cn.shangjingu.platform.api.Phase11P016BrowserBackendFixture -Dexec.classpathScope=test exec:java"
+    }
+]

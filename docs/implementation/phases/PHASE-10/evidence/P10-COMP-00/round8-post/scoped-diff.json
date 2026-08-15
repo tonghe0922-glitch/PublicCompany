@@ -1,0 +1,26 @@
+﻿{
+    "schema_version":  "2.0",
+    "before_baseline_id":  "8E0B04FD9F995F3EFD18673CE42B09C2FDA767269795E1523C7BF592CFBDD4A2",
+    "after_baseline_id":  "8E0B04FD9F995F3EFD18673CE42B09C2FDA767269795E1523C7BF592CFBDD4A2",
+    "before_task_source_id":  "E0244B96FFAFF668AEDA0AE6015B3D77FCB26078B53B2740E33D1498AE1CF78A",
+    "after_task_source_id":  "E0244B96FFAFF668AEDA0AE6015B3D77FCB26078B53B2740E33D1498AE1CF78A",
+    "before_evidence_metadata_id":  "D80616F2DBE2739B80DFE7FEDA231FE86569F8CB2BA6FF5673AD5B1EA7FCB5AB",
+    "after_evidence_metadata_id":  "BAE144702A86792A8093470DCE24E49E4485CC5E13DCFFD98D0231AF65F0861E",
+    "task_changes":  [
+
+                     ],
+    "evidence_metadata_changes":  [
+                                      {
+                                          "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                                          "change":  "modified",
+                                          "classification":  "evidence_metadata"
+                                      }
+                                  ],
+    "concurrent_core":  [
+
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

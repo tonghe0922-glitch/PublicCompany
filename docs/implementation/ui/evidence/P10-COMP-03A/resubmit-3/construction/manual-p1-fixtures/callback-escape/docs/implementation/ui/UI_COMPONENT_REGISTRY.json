@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "components": [
+    {
+      "id": "ui.button",
+      "name": "SgjButton",
+      "layer": "design-system",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/components/Button.vue",
+      "export_name": "SgjButton",
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-runtime.test.ts"
+      ]
+    },
+    {
+      "id": "ui.template.form-page",
+      "name": "SgjFormPageTemplate",
+      "layer": "template",
+      "status": "existing-stable",
+      "public": true,
+      "public_import": "@sgj/ui",
+      "implementation_path": "technical-platform/web/src/design-system/templates/FormPageTemplate.vue",
+      "export_name": "SgjFormPageTemplate",
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-runtime.test.ts"
+      ]
+    },
+    {
+      "id": "ui.internal.field-frame",
+      "name": "FieldFrame",
+      "layer": "internal",
+      "status": "internal",
+      "public": false,
+      "public_import": null,
+      "implementation_path": "technical-platform/web/src/design-system/components/FieldFrame.vue",
+      "export_name": null,
+      "required_tests": [
+        "technical-platform/web/src/design-system/component-runtime.test.ts"
+      ]
+    }
+  ]
+}

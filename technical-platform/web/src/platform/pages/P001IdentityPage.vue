@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { SgjButton, SgjInput, SgjTable } from '@sgj/ui'
 import type { PortalDefinition } from '../portal-config'
 import { usePortalSessionStore } from '../../session'
 
@@ -174,38 +175,38 @@ onMounted(() => {
       <p v-if="mfaStatus" data-testid="p001-mfa-status">
         服务端状态：<strong>{{ mfaStatus.status }}</strong> · 版本 {{ mfaStatus.versionNo }}
       </p>
-      <label>发行方<input v-model="issuer" :disabled="busy" /></label>
-      <label>账号标识<input v-model="accountName" :disabled="busy" /></label>
-      <label>当前密码（绑定前重新验证）<input v-model="currentPassword" type="password" autocomplete="current-password" :disabled="busy" /></label>
-      <button type="button" :disabled="busy || !issuer || !accountName || !currentPassword || mfaActive" @click="enroll">
+      <SgjInput v-model="issuer" label="发行方" :disabled="busy" />
+      <SgjInput v-model="accountName" label="账号标识" :disabled="busy" />
+      <SgjInput v-model="currentPassword" label="当前密码（绑定前重新验证）" type="password" autocomplete="current-password" :disabled="busy" />
+      <SgjButton type="button" :disabled="busy || !issuer || !accountName || !currentPassword || mfaActive" @click="enroll">
         {{ mfaStatus?.status === 'PENDING' ? '重新创建 TOTP' : '创建 TOTP' }}
-      </button>
+      </SgjButton>
       <div v-if="enrollment" class="phase09-secret">
         <strong>一次性绑定密钥</strong>
         <code>{{ enrollment.secret }}</code>
         <small>仅用于本次绑定，请添加到验证器后立即确认。</small>
       </div>
-      <label>6 位验证码<input v-model="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :disabled="busy" /></label>
-      <label>当前版本<input v-model.number="expectedVersion" type="number" min="0" disabled /></label>
+      <SgjInput v-model="code" label="6 位验证码" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :disabled="busy" />
+      <SgjInput :model-value="String(expectedVersion)" label="当前版本" type="number" min="0" disabled @update:model-value="expectedVersion = Number($event)" />
       <div class="phase09-actions">
-        <button type="button" :disabled="busy || code.length !== 6 || mfaStatus?.status !== 'PENDING'" @click="confirm">确认启用</button>
-        <button type="button" :disabled="busy || code.length !== 6 || !mfaActive" @click="disable">停用 MFA</button>
+        <SgjButton type="button" :disabled="busy || code.length !== 6 || mfaStatus?.status !== 'PENDING'" @click="confirm">确认启用</SgjButton>
+        <SgjButton type="button" :disabled="busy || code.length !== 6 || !mfaActive" @click="disable">停用 MFA</SgjButton>
       </div>
     </section>
 
     <section class="phase09-card">
       <h2>活动会话</h2>
-      <label v-if="isMonitorPortal && canMonitor">目标用户 ID<input v-model="targetUserId" :disabled="busy" placeholder="UUID；留空查看本人" /></label>
-      <button type="button" :disabled="busy || (isMonitorPortal && !canMonitor)" @click="loadSessions">刷新服务端会话</button>
+      <SgjInput v-if="isMonitorPortal && canMonitor" v-model="targetUserId" label="目标用户 ID" :disabled="busy" placeholder="UUID；留空查看本人" />
+      <SgjButton type="button" :disabled="busy || (isMonitorPortal && !canMonitor)" @click="loadSessions">刷新服务端会话</SgjButton>
       <p v-if="isMonitorPortal && !canMonitor">当前身份没有 p001.session.monitor 权限。</p>
-      <table v-if="sessions.length">
-        <thead><tr><th>身份</th><th>员工</th><th>组织</th><th>访问到期</th></tr></thead>
-        <tbody>
+      <SgjTable v-if="sessions.length" aria-label="活动会话" :column-count="4">
+        <template #head><tr><th>身份</th><th>员工</th><th>组织</th><th>访问到期</th></tr></template>
+        <template #body>
           <tr v-for="item in sessions" :key="item.familyId">
             <td>{{ item.identityId }}</td><td>{{ item.employeeId }}</td><td>{{ item.orgId }}</td><td>{{ item.accessExpiresAt }}</td>
           </tr>
-        </tbody>
-      </table>
+        </template>
+      </SgjTable>
       <p v-else>暂无可见活动会话。</p>
     </section>
 

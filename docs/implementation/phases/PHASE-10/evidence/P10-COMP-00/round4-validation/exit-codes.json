@@ -1,0 +1,22 @@
+﻿{
+    "schema_version":  "4.0",
+    "project_source_gate_self_test":  0,
+    "project_local_tools_self_test":  0,
+    "project_source_gate_current":  1,
+    "project_source_gate_current_violation_count":  357,
+    "discovered_route_page_count":  7,
+    "derived_action_code_count":  46,
+    "package_ui_gate_self_test":  0,
+    "package_ui_gate_current":  1,
+    "package_ui_gate_current_error_count":  88,
+    "pnpm_lint":  0,
+    "pnpm_typecheck":  0,
+    "pnpm_test":  0,
+    "pnpm_test_files":  25,
+    "pnpm_test_cases":  106,
+    "pnpm_build_three_portals":  0,
+    "failed_post_array_binding_exit":  1,
+    "project_round4_post_preflight":  0,
+    "project_round4_post_baseline":  0,
+    "notes":  "Current source/UI FAIL expose dependency debt. Failed array binding is retained and not called PASS. Build retains approx 2.046 MB warning."
+}

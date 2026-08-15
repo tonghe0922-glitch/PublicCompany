@@ -1,0 +1,1 @@
+import { resolveComponent } from 'vue';export const node=()=>resolveComponent('textarea')

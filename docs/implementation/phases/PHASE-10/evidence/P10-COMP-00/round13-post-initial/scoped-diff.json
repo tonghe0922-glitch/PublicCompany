@@ -1,0 +1,30 @@
+﻿{
+    "schema_version":  "2.0",
+    "before_baseline_id":  "00C65151BD80025B2634746FC36F0F370307FC53B3489ADE63A1761FD565F684",
+    "after_baseline_id":  "A136FB4685EA1EFCB66DAD73126A992CAB4F8B84D19699E629167E3F7221561C",
+    "before_task_source_id":  "94E6014B8937D6E9CA1983212B30A35DE3FEC05E2074CF6A568F68257E46D5B3",
+    "after_task_source_id":  "94E6014B8937D6E9CA1983212B30A35DE3FEC05E2074CF6A568F68257E46D5B3",
+    "before_evidence_metadata_id":  "0C66ADEB6D67D0F8C37B60B2DD196B1B5573D1F21B798ED8BEE1CA761562F658",
+    "after_evidence_metadata_id":  "620325C4BD34D1C34BA913BC97F50AFDE48C793BC6B1C754430449947CE12892",
+    "task_changes":  [
+
+                     ],
+    "evidence_metadata_changes":  [
+                                      {
+                                          "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                                          "change":  "modified",
+                                          "classification":  "evidence_metadata"
+                                      }
+                                  ],
+    "concurrent_core":  [
+                            {
+                                "path":  "docs/implementation/phases/PHASE-11/START_CHECKLIST.md",
+                                "change":  "modified",
+                                "classification":  "concurrent_core"
+                            }
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

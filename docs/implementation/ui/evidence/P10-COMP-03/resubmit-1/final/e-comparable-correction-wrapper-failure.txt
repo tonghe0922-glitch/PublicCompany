@@ -1,0 +1,4 @@
+﻿SECOND_COMPARABLE_WRAPPER_FAILURE
+PowerShell parser exit 1 before execution: a here-string header followed content on the same line.
+No file operation in that command executed; candidate/report/source unchanged.
+Correction uses a string array and explicit scriptblocks.

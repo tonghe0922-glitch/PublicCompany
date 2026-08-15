@@ -43,7 +43,18 @@ def source_states(payload: dict, code: str) -> list[tuple[str,str]]:
     return result
 
 
-def verify() -> None:
+def verify_phase_lifecycle(mode: str, phase11_status: str) -> None:
+    if mode not in {"construction", "sealed-regression"}:
+        raise ValueError(f"unsupported mode: {mode}")
+    if mode == "construction" and phase11_status != "NOT_STARTED":
+        raise ValueError("construction mode requires PHASE-11 NOT_STARTED")
+    if mode == "sealed-regression" and phase11_status not in {
+            "NOT_STARTED", "IN_PROGRESS", "CONSTRUCTION_COMPLETE", "REGATE_REQUIRED",
+            "CONSTRUCTION_COMPLETE / REGATE_REQUIRED", "COMPLETE"}:
+        raise ValueError(f"sealed-regression rejected PHASE-11 status: {phase11_status}")
+
+
+def verify(mode: str = "construction") -> None:
     for path in [PHASE/"README.md", PHASE/"PREPARATION_REPORT.md", PHASE/"SOURCE_CONTRACT.md", PHASE/"IMPACT_MATRIX.md", PHASE/"GAP_MATRIX.md", PHASE/"START_CHECKLIST.md", BINDINGS, CONTRACT]:
         if not path.is_file() or path.stat().st_size == 0:
             raise RuntimeError(f"missing PHASE-10 C0 artifact: {path.relative_to(ROOT)}")
@@ -108,16 +119,20 @@ def verify() -> None:
     progress = PROGRESS.read_text(encoding="utf-8")
     if "| PHASE-09 | COMPLETE |" not in progress:
         raise RuntimeError("PHASE-09 must remain COMPLETE")
-    if not re.search(r"\| PHASE-10 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE) \|", progress):
+    if not re.search(r"\| PHASE-10 \| (IN_PROGRESS|READY_FOR_GATE|COMPLETE|REGATE_REQUIRED) \|", progress):
         raise RuntimeError("PHASE-10 must be in formal construction lifecycle")
-    if "| PHASE-11 | NOT_STARTED |" not in progress:
-        raise RuntimeError("PHASE-11 must remain NOT_STARTED")
+    phase11_match = re.search(r"\| PHASE-11 \| ([^|]+?) \|", progress)
+    if not phase11_match:
+        raise RuntimeError("PHASE-11 lifecycle row is missing")
+    verify_phase_lifecycle(mode, phase11_match.group(1).strip())
 
 
 def main() -> None:
-    argparse.ArgumentParser().parse_args()
-    verify()
-    print("PHASE-10 C0 source/page/API/permission/database contract is frozen and current")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=("construction", "sealed-regression"), default="construction")
+    args = parser.parse_args()
+    verify(args.mode)
+    print(f"PHASE-10 C0 source/page/API/permission/database contract is frozen and current ({args.mode})")
 
 
 if __name__ == "__main__": main()

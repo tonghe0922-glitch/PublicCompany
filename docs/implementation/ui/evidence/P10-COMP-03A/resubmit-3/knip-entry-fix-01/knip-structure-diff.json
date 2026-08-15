@@ -1,0 +1,23 @@
+﻿{
+    "pre_sha256":  "8EE8E8E598CC8490088E75B2166FB35D27BE27ED329149DDEAE691457A3040F0",
+    "pre_bytes":  1108,
+    "post_sha256":  "EA2BF690C6A8ACEBCA95D3AACCC12E1DC30EF55C5A5AB80434EC3C2C36FF6BB5",
+    "post_bytes":  1136,
+    "entry_count":  25,
+    "added":  [
+                  "src/showcase/main.ts"
+              ],
+    "removed":  [
+
+                ],
+    "other_keys":  [
+                       "project",
+                       "ignoreExportsUsedInFile"
+                   ],
+    "project":  [
+                    "src/**/*.{ts,vue}",
+                    "*.{ts,js}",
+                    "e2e/**/*.ts"
+                ],
+    "ignoreExportsUsedInFile":  true
+}

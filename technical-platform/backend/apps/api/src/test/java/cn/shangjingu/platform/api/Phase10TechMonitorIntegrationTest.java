@@ -43,9 +43,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = Phase10TechMonitorController.class)
@@ -72,12 +72,12 @@ class Phase10TechMonitorIntegrationTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper mapper;
 
-    @MockBean GenericRequestService requests;
-    @MockBean NoticeReceiptService notices;
-    @MockBean AuthorizationService authorization;
-    @MockBean JdbcSecurityAuditService audit;
-    @MockBean SessionService sessions;
-    @MockBean IdentityDirectoryService identities;
+    @MockitoBean GenericRequestService requests;
+    @MockitoBean NoticeReceiptService notices;
+    @MockitoBean AuthorizationService authorization;
+    @MockitoBean JdbcSecurityAuditService audit;
+    @MockitoBean SessionService sessions;
+    @MockitoBean IdentityDirectoryService identities;
 
     private GenericRequestService.GenericRequest visibleRequest;
     private NoticeReceiptService.NoticeAggregate visibleNotice;

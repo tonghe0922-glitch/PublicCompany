@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "1.0",
+  "contractId": "CXR06_AVAILABLE_ACTIONS_HTTP_CONTRACT",
+  "status": "REGATE_CANDIDATE",
+  "sourceOfTruth": {
+    "kind": "REAL_HTTP_INTEGRATION_TEST",
+    "log": ".runlogs/cxr06-available-actions/green/api-six-it-rerun4-final.log",
+    "postgres": "16.14",
+    "flywayTarget": "125.2",
+    "classes": 6,
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "compatibility": {
+    "recordShape": "UNCHANGED_ROOT_FIELDS",
+    "additiveRootField": "availableActions",
+    "availableActionItemFields": [
+      "code",
+      "labelCode",
+      "taskId",
+      "expectedVersion"
+    ],
+    "extraItemFieldsAllowed": false,
+    "startTaskId": null,
+    "pendingTaskId": "CURRENT_PENDING_WORKFLOW_TASK_ID",
+    "expectedVersion": "SAME_RECORD_CURRENT_VERSION"
+  },
+  "authority": {
+    "transition": "WorkflowRuntimeService.matchingActionCodes",
+    "candidateAndAssignee": "WorkflowCandidateResolver plus current pending task",
+    "domainActorAndPersistedGuard": "existing P011-P016 domain service ACTIONS and shared validation guard",
+    "permissionAndDataScope": "AuthorizationService",
+    "projectionSideEffects": "NONE",
+    "postRemainsFinalAuthority": true
+  },
+  "processes": [
+    {
+      "processCode": "P011",
+      "testClass": "cn.shangjingu.platform.api.Phase11P011IntegrationTest",
+      "roles": ["owner", "supervisor", "calibrator", "tech", "cross-center"],
+      "taskIndependentActions": []
+    },
+    {
+      "processCode": "P012",
+      "testClass": "cn.shangjingu.platform.api.Phase11P012IntegrationTest",
+      "roles": ["owner", "assessor", "reviewer", "approver", "appointment-executor", "tech", "cross-center"],
+      "taskIndependentActions": []
+    },
+    {
+      "processCode": "P013",
+      "testClass": "cn.shangjingu.platform.api.Phase11P013IntegrationTest",
+      "roles": ["owner", "reviewer", "approver", "tech", "cross-center"],
+      "taskIndependentActions": []
+    },
+    {
+      "processCode": "P014",
+      "testClass": "cn.shangjingu.platform.api.Phase11P014IntegrationTest",
+      "roles": ["affected", "investigator", "responsibility-reviewer", "decider", "appeal-reviewer", "tech", "cross-center"],
+      "taskIndependentActions": [
+        {
+          "code": "SUBMIT_APPEAL",
+          "taskId": null,
+          "reason": "Existing append-only affected-employee self-loop does not claim or act the pending reviewer task"
+        }
+      ]
+    },
+    {
+      "processCode": "P015",
+      "testClass": "cn.shangjingu.platform.api.Phase11P015IntegrationTest",
+      "roles": ["affected", "reviewer", "adjuster", "tech", "cross-center"],
+      "taskIndependentActions": []
+    },
+    {
+      "processCode": "P016",
+      "testClass": "cn.shangjingu.platform.api.Phase11P016IntegrationTest",
+      "roles": ["affected", "approver", "executor", "receipt-actor", "reconciler", "tech", "cross-center"],
+      "taskIndependentActions": [],
+      "monitorProjection": {
+        "fields": ["businessNo", "status", "currentNodeCode"],
+        "availableActionsExposed": false
+      }
+    }
+  ],
+  "failClosed": {
+    "zeroMatchingTransition": "EMPTY",
+    "multipleMatchingTransitions": "INVALID_DEFINITION_EXCEPTION",
+    "monitorOnly": "EMPTY",
+    "tech": "EMPTY",
+    "crossCenter": "EMPTY_OR_HTTP_403",
+    "nonCandidate": "EMPTY_AND_POST_REJECTED",
+    "staleVersion": "HTTP_409",
+    "unknownFrontendCode": "IGNORED"
+  },
+  "independentGatePassClaimed": false,
+  "phase12OrP017PlusChanged": 0
+}

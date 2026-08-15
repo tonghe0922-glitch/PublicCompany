@@ -1,0 +1,12 @@
+﻿{
+    "orchestration_status":  "ABORTED_BEFORE_RESULT",
+    "ctrl_exit":  0,
+    "forced_stop":  false,
+    "postgres_id":  "ce11657d2ba102c21720b5018032f48dbf715d70ca98f47bc414ba0c8d6380d9",
+    "redis_id":  "f0d3eca719599426a4d4fcf58130795c3e3395425066034cff90309eb9fe9e1f",
+    "remaining_exact_ids":  [
+
+                            ],
+    "listeners":  0,
+    "workspace_processes":  0
+}

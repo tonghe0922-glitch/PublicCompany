@@ -1,0 +1,21 @@
+﻿{
+    "launcher_pid":  51744,
+    "fixture_tree_pids":  [
+                              49460,
+                              51584,
+                              51744
+                          ],
+    "api_listener_owner_pid":  49460,
+    "api_listener_in_tree":  true,
+    "runtime_fresh":  true,
+    "marker_fresh":  true,
+    "postgres_id_length":  64,
+    "redis_id_length":  64,
+    "new_ids_distinct_from_d1_d2":  true,
+    "postgres_running_exact_membership":  true,
+    "redis_running_exact_membership":  true,
+    "postgres_inspect_exit":  0,
+    "redis_inspect_exit":  0,
+    "postgres_inspect_exact":  true,
+    "redis_inspect_exact":  true
+}

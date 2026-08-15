@@ -1,0 +1,30 @@
+﻿{
+    "schema_version":  "2.0",
+    "before_baseline_id":  "4C2BABD32F18B6AC8CE12FC01E9A42EC98CB69411E5FFB4C9AFEF85F7188C903",
+    "after_baseline_id":  "C5D688EF7EB254939DBFCCDBA5E721CFEA45E41A582B2225090ECDA72A52263B",
+    "before_task_source_id":  "562B847D193B016E17D18D79C50778146801D53BD2290CBEF7247D94223834CD",
+    "after_task_source_id":  "562B847D193B016E17D18D79C50778146801D53BD2290CBEF7247D94223834CD",
+    "before_evidence_metadata_id":  "03298A24411E37D456C3B78C98B57EF1896813DC29F15D853CD257C79572A476",
+    "after_evidence_metadata_id":  "AE73583E645841B130362C9DFCD44C153842DE732BAF44EC84C6C96B6C83ED39",
+    "task_changes":  [
+
+                     ],
+    "evidence_metadata_changes":  [
+                                      {
+                                          "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                                          "change":  "modified",
+                                          "classification":  "evidence_metadata"
+                                      }
+                                  ],
+    "concurrent_core":  [
+                            {
+                                "path":  "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P016DatabaseIT.java",
+                                "change":  "modified",
+                                "classification":  "concurrent_core"
+                            }
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

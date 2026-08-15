@@ -1,0 +1,85 @@
+﻿{
+    "command_exit":  0,
+    "task_count":  33,
+    "diff_count":  2,
+    "diff":  [
+                 {
+                     "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                     "pre_sha":  "64B135E8BFA47118E343682F37F2462343E812DA4371CF86220A8D32597F8CC4",
+                     "pre_bytes":  4950,
+                     "sha":  "F32004A39A6CABBD083CC036D94DBEE7C8554357B847B87F089723A6D6B0EDE5",
+                     "bytes":  5182,
+                     "changed":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                     "pre_sha":  "A0F2F99B402D659C7D6966FE61146AE3D84A34D088A7A2E613E0ACD3013028DA",
+                     "pre_bytes":  4435,
+                     "sha":  "6AA0309E634308788B655CA95A443744979DFCB73818AC82A7CF0B1DF1C557DC",
+                     "bytes":  7537,
+                     "changed":  true
+                 }
+             ],
+    "old_runtime_expected":  7,
+    "old_runtime_present":  7,
+    "old_runtime":  [
+                        {
+                            "Id":  35248,
+                            "ProcessName":  "cmd",
+                            "StartTime":  "\/Date(1786599120228)\/"
+                        },
+                        {
+                            "Id":  44872,
+                            "ProcessName":  "cmd",
+                            "StartTime":  "\/Date(1786599152362)\/"
+                        },
+                        {
+                            "Id":  41392,
+                            "ProcessName":  "java",
+                            "StartTime":  "\/Date(1786599152679)\/"
+                        },
+                        {
+                            "Id":  43248,
+                            "ProcessName":  "java",
+                            "StartTime":  "\/Date(1786599120533)\/"
+                        },
+                        {
+                            "Id":  15196,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786599296496)\/"
+                        },
+                        {
+                            "Id":  36432,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786599296454)\/"
+                        },
+                        {
+                            "Id":  40796,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786597904012)\/"
+                        }
+                    ],
+    "legacy_listeners":  [
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5175,
+                                 "OwningProcess":  15196
+                             },
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5174,
+                                 "OwningProcess":  36432
+                             },
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5173,
+                                 "OwningProcess":  40796
+                             }
+                         ],
+    "fresh_listeners":  [
+
+                        ],
+    "running_testcontainers_ryuk":  [
+
+                                    ]
+}

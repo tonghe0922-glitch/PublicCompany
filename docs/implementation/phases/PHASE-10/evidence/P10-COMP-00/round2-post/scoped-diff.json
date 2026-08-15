@@ -1,0 +1,55 @@
+﻿{
+    "schema_version":  "1.0",
+    "before_baseline_id":  "17FA0360DE27683711D028AC493008B4670FA66A6E192120F2CCB445A0AC1017",
+    "after_baseline_id":  "A563046689F2BBF79E2099B4B93A62F27D5DF27872719A251289A1064E4145C0",
+    "before_task_scope_id":  "B536DC126FBEEE106BABEBE045DA7FDFAFECFEC84E9B6D89ED700CE00BBE35E1",
+    "after_task_scope_id":  "76078CFE4F614010512DF0CB67F31876141295A7E5C2E73EB2C7AAF79D828E89",
+    "task_changes":  [
+                         {
+                             "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                             "change":  "modified",
+                             "classification":  "ui_task_scope"
+                         },
+                         {
+                             "path":  "scripts/implementation/phase10_component_local_tools_test.py",
+                             "change":  "modified",
+                             "classification":  "ui_task_scope"
+                         },
+                         {
+                             "path":  "scripts/implementation/phase10_component_source_gate_test.py",
+                             "change":  "modified",
+                             "classification":  "ui_task_scope"
+                         },
+                         {
+                             "path":  "scripts/local/phase10-component-baseline.ps1",
+                             "change":  "modified",
+                             "classification":  "ui_task_scope"
+                         }
+                     ],
+    "concurrent_core":  [
+                            {
+                                "path":  "technical-platform/backend/modules/reward/src/main/java/cn/shangjingu/platform/reward/PointLedgerService.java",
+                                "change":  "modified",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/platform/pages/P015PointLedgerPage.vue",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/router/portal-router.ts",
+                                "change":  "modified",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/router/p015-router.test.ts",
+                                "change":  "added",
+                                "classification":  "concurrent_core"
+                            }
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

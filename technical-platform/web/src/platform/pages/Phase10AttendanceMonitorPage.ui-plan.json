@@ -34,9 +34,9 @@
   "field_component_map": [
     {
       "field": "attendance-metadata-panels",
-      "component_id": "ui.card",
-      "reason": "Composes P008/P009 read-only monitor projections",
-      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+      "component_id": "platform.attendance-workflow-monitor-feature",
+      "reason": "Composes permission-gated P008/P009 three-field read-only monitor projections",
+      "editable_when": "Never; businessNo/currentNodeCode/status are read-only server facts"
     }
   ],
   "state_component_map": [
@@ -65,22 +65,18 @@
     "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
     "limited_actions": []
   },
-  "gaps": [
-    {
-      "id": "UI-GAP-Phase10AttendanceMonitorPage-LANDMARK-SCOPE",
-      "classification": "deferred-existing-debt",
-      "status": "not-expanded",
-      "reason": "Nested page landmarks are repaired; P10-COMP-06 owns later technical projection reconstruction."
-    }
-  ],
+  "gaps": [],
   "native_element_exceptions": [],
-  "decision": "reuse-only",
-  "registry_updates": [],
+  "decision": "new-platform-composite",
+  "registry_updates": [
+    "platform.attendance-workflow-monitor-feature"
+  ],
   "tests": [
     "exactly one rendered main under authenticated shell",
     "exactly one accessible h1 sourced from route metadata",
-    "desktop and mobile route title semantics",
-    "existing permission/action/data-scope behavior remains unchanged"
+    "P008-only, P009-only, both and neither permission matrix without unauthorized refresh",
+    "permission changes react without remounting",
+    "backend 403 and empty states remain visible without sensitive attendance facts"
   ],
   "updated_at": "2026-08-13T00:00:00+08:00"
 }

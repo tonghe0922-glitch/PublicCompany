@@ -1,0 +1,23 @@
+﻿{
+    "pre_workspace_id":  "32C7D820B62597FA13C7100AAC206CFB8A5E629EB82F33E7C80DFDD5BA6E2BF4",
+    "pre_workspace_count":  1541,
+    "current_workspace_id":  "471F1B300B3FFCB1E08CB6811EB6429AE261FA51D96E41CC08082CDEB97A744F",
+    "current_workspace_count":  1541,
+    "pre_task_id":  "09065B3F69C1E682F0DB20BE42E007898EB76A3017D64463594BC1196C3E7773",
+    "pre_task_count":  32,
+    "current_task_id":  "DE1EFD918C68AD4977B4678FD5F67AFBDE8309A345567F5A3B4006380C325F0E",
+    "current_task_count":  32,
+    "task_changes":  [
+                         "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                         "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+                     ],
+    "workspace_changes":  [
+                              "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                              "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts"
+                          ],
+    "unrelated_changes":  [
+
+                          ],
+    "report_pre_sha":  "8FFA3034DCB675CE773D57E554E97BA562E810C82F9828766540012D2C030D9F",
+    "report_current_sha":  "8FFA3034DCB675CE773D57E554E97BA562E810C82F9828766540012D2C030D9F"
+}

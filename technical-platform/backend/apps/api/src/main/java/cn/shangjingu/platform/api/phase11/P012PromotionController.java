@@ -26,13 +26,177 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/processes/P012")
 public final class P012PromotionController {
-    private static final String READ="p012.promotion.read",MANAGE="p012.promotion.manage",MONITOR="p012.promotion.monitor";
-    private final PromotionRequestService promotion;private final AuthorizationService authorization;private final JdbcSecurityAuditService audit;private final ObjectMapper mapper;
-    public P012PromotionController(PromotionRequestService promotion,AuthorizationService authorization,JdbcSecurityAuditService audit,ObjectMapper mapper){this.promotion=promotion;this.authorization=authorization;this.audit=audit;this.mapper=mapper;}
-    @PostMapping("/promotion-requests") public PromotionRequestService.Request create(@AuthenticationPrincipal SessionPrincipal p,@RequestHeader("Idempotency-Key")String key,@RequestBody PromotionRequestService.CreateCommand c){String permission=p.context().employeeId().equals(c.ownerEmployeeId())?READ:MANAGE;require(authorization.authorizeAction(p.context(),permission));var target=new AuthorizationTarget(p.context().tenantId(),c.ownerEmployeeId(),p.context().orgId(),null,c.ownerEmployeeId());require(authorization.authorizeData(p.context(),permission,target));audit.recordOperation(p.context(),"P012_CREATE_ATTEMPT","hr.promotion_request",null);var r=promotion.create(context(p),key,hash(c),c);audit.recordOperation(p.context(),"P012_CREATED","hr.promotion_request",r.id());return view(p,r);}
-    @GetMapping("/promotion-requests/{id}") public PromotionRequestService.Request get(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id){String permission=readPermission(p);var v=promotion.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P012 promotion request not found"));require(authorization.authorizeData(p.context(),permission,target(v)));audit.recordOperation(p.context(),"P012_READ","hr.promotion_request",id);return view(p,v);}
-    @GetMapping("/promotion-requests") public List<PromotionRequestService.Request> list(@AuthenticationPrincipal SessionPrincipal p){String permission=readPermission(p);var values=promotion.list(context(p)).stream().filter(v->authorization.authorizeData(p.context(),permission,target(v)).allowed()).map(v->view(p,v)).toList();audit.recordOperation(p.context(),"P012_LIST","hr.promotion_request",null);return values;}
-    @PostMapping("/promotion-requests/{id}/actions/{actionCode}") public PromotionRequestService.Request act(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id,@PathVariable String actionCode,@RequestHeader("Idempotency-Key")String key,@RequestBody PromotionRequestService.ActionCommand c){var current=promotion.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P012 promotion request not found"));String action=safe(actionCode);String permission="SUBMIT".equals(action)&&!p.context().employeeId().equals(current.ownerEmployeeId())?MANAGE:promotion.permissionForAction(current,action);require(authorization.authorizeAction(p.context(),permission));require(authorization.authorizeData(p.context(),permission,target(current)));audit.recordOperation(p.context(),"P012_ACTION_ATTEMPT_"+action,"hr.promotion_request",id);var r=promotion.act(context(p),id,action,key,hash(Map.of("actionCode",action,"body",c)),c);audit.recordOperation(p.context(),"P012_ACTION_"+action,"hr.promotion_request",id);return view(p,r);}
-    private PromotionRequestService.Request view(SessionPrincipal p,PromotionRequestService.Request v){return authorization.authorizeAction(p.context(),MONITOR).allowed()&&!authorization.authorizeAction(p.context(),READ).allowed()?v.metadataOnly():v;}private String readPermission(SessionPrincipal p){if(authorization.authorizeAction(p.context(),READ).allowed())return READ;require(authorization.authorizeAction(p.context(),MONITOR));return MONITOR;}
-    private static AuthorizationTarget target(PromotionRequestService.Request v){return new AuthorizationTarget(v.tenantId(),v.ownerEmployeeId(),v.ownerCenterId(),null,v.ownerEmployeeId());}private static DatabaseSecurityContext context(SessionPrincipal p){var s=p.context();return new DatabaseSecurityContext(s.tenantId(),s.userId(),s.identityId(),s.employeeId(),s.appointmentId(),s.orgId(),s.positionId());}private static void require(AuthorizationDecision d){if(!d.allowed())throw new AccessDeniedException("P012 authorization denied: "+d.reason());}private static String safe(String v){if(v==null)return"INVALID";String n=v.trim().toUpperCase();return n.matches("[A-Z0-9_]{1,32}")?n:"INVALID";}private String hash(Object v){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));}catch(Exception e){throw new IllegalArgumentException("P012 request cannot be hashed",e);}}
+
+  private static final String READ = "p012.promotion.read",
+      MANAGE = "p012.promotion.manage",
+      MONITOR = "p012.promotion.monitor";
+
+  private final PromotionRequestService promotion;
+
+  private final Phase11AvailableActionProjectionService projections;
+
+  private final AuthorizationService authorization;
+
+  private final JdbcSecurityAuditService audit;
+
+  private final ObjectMapper mapper;
+
+  public P012PromotionController(
+      PromotionRequestService promotion,
+      Phase11AvailableActionProjectionService projections,
+      AuthorizationService authorization,
+      JdbcSecurityAuditService audit,
+      ObjectMapper mapper) {
+    this.promotion = promotion;
+    this.projections = projections;
+    this.authorization = authorization;
+    this.audit = audit;
+    this.mapper = mapper;
+  }
+
+  @PostMapping("/promotion-requests")
+  public Phase11AvailableActionProjectionService.RecordView<PromotionRequestService.Request> create(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody PromotionRequestService.CreateCommand c) {
+    String permission = p.context().employeeId().equals(c.ownerEmployeeId()) ? READ : MANAGE;
+    require(authorization.authorizeAction(p.context(), permission));
+    var target =
+        new AuthorizationTarget(
+            p.context().tenantId(),
+            c.ownerEmployeeId(),
+            p.context().orgId(),
+            null,
+            c.ownerEmployeeId());
+    require(authorization.authorizeData(p.context(), permission, target));
+    audit.recordOperationOnce(
+        p.context(), "P012_CREATE_ATTEMPT", "hr.promotion_request", null, key);
+    var r = promotion.create(context(p), key, hash(c), c);
+    audit.recordOperationOnce(p.context(), "P012_CREATED", "hr.promotion_request", r.id(), key);
+    return view(p, r);
+  }
+
+  @GetMapping("/promotion-requests/{id}")
+  public Phase11AvailableActionProjectionService.RecordView<PromotionRequestService.Request> get(
+      @AuthenticationPrincipal SessionPrincipal p, @PathVariable UUID id) {
+    String permission = readPermission(p);
+    var v =
+        promotion
+            .find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P012 promotion request not found"));
+    require(authorization.authorizeData(p.context(), permission, target(v)));
+    audit.recordOperation(p.context(), "P012_READ", "hr.promotion_request", id);
+    return view(p, v);
+  }
+
+  @GetMapping("/promotion-requests")
+  public List<Phase11AvailableActionProjectionService.RecordView<PromotionRequestService.Request>>
+      list(@AuthenticationPrincipal SessionPrincipal p) {
+    String permission = readPermission(p);
+    var values =
+        promotion.list(context(p)).stream()
+            .filter(v -> authorization.authorizeData(p.context(), permission, target(v)).allowed())
+            .map(v -> view(p, v))
+            .toList();
+    audit.recordOperation(p.context(), "P012_LIST", "hr.promotion_request", null);
+    return values;
+  }
+
+  @PostMapping("/promotion-requests/{id}/actions/{actionCode}")
+  public Phase11AvailableActionProjectionService.RecordView<PromotionRequestService.Request> act(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @PathVariable UUID id,
+      @PathVariable String actionCode,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody PromotionRequestService.ActionCommand c) {
+    var current =
+        promotion
+            .find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P012 promotion request not found"));
+    String action = safe(actionCode);
+    String permission = actionPermission(p, current, action);
+    require(authorization.authorizeAction(p.context(), permission));
+    require(authorization.authorizeData(p.context(), permission, target(current)));
+    audit.recordOperationOnce(
+        p.context(), "P012_ACTION_ATTEMPT_" + action, "hr.promotion_request", id, key);
+    var r =
+        promotion.act(
+            context(p), id, action, key, hash(Map.of("actionCode", action, "body", c)), c);
+    audit.recordOperationOnce(
+        p.context(), "P012_ACTION_" + action, "hr.promotion_request", id, key);
+    return view(p, r);
+  }
+
+  private Phase11AvailableActionProjectionService.RecordView<PromotionRequestService.Request> view(
+      SessionPrincipal p, PromotionRequestService.Request v) {
+    boolean monitorOnly =
+        authorization.authorizeAction(p.context(), MONITOR).allowed()
+            && !authorization.authorizeAction(p.context(), READ).allowed();
+    var record = monitorOnly ? v.metadataOnly() : v;
+    return projections.project(
+        p,
+        record,
+        v.workflowInstanceId(),
+        v.versionNo(),
+        () -> promotion.availableActionCodes(context(p), v),
+        code -> false,
+        code -> actionPermission(p, v, code),
+        target(v),
+        monitorOnly);
+  }
+
+  private String actionPermission(
+      SessionPrincipal p, PromotionRequestService.Request v, String action) {
+    return "SUBMIT".equals(action) && !p.context().employeeId().equals(v.ownerEmployeeId())
+        ? MANAGE
+        : promotion.permissionForAction(v, action);
+  }
+
+  private String readPermission(SessionPrincipal p) {
+    if (authorization.authorizeAction(p.context(), READ).allowed()) {
+      return READ;
+    }
+    require(authorization.authorizeAction(p.context(), MONITOR));
+    return MONITOR;
+  }
+
+  private static AuthorizationTarget target(PromotionRequestService.Request v) {
+    return new AuthorizationTarget(
+        v.tenantId(), v.ownerEmployeeId(), v.ownerCenterId(), null, v.ownerEmployeeId());
+  }
+
+  private static DatabaseSecurityContext context(SessionPrincipal p) {
+    var s = p.context();
+    return new DatabaseSecurityContext(
+        s.tenantId(),
+        s.userId(),
+        s.identityId(),
+        s.employeeId(),
+        s.appointmentId(),
+        s.orgId(),
+        s.positionId());
+  }
+
+  private static void require(AuthorizationDecision d) {
+    if (!d.allowed()) {
+      throw new AccessDeniedException("P012 authorization denied: " + d.reason());
+    }
+  }
+
+  private static String safe(String v) {
+    if (v == null) {
+      return "INVALID";
+    }
+    String n = v.trim().toUpperCase();
+    return n.matches("[A-Z0-9_]{1,32}") ? n : "INVALID";
+  }
+
+  private String hash(Object v) {
+    try {
+      return HexFormat.of()
+          .formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));
+    } catch (Exception e) {
+      throw new IllegalArgumentException("P012 request cannot be hashed", e);
+    }
+  }
 }

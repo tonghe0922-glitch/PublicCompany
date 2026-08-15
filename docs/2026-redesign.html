@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>员工端 · 工作入口 — 2026 适老化重设计</title>
+<style>
+  :root{
+    --bg-0:#0a0d16;
+    --glass:rgba(255,255,255,.05);
+    --glass-strong:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.13);
+    --txt:#f6f8fc;
+    --txt-2:#cdd4e8;
+    --txt-3:#9aa3bf;
+    --aurora:linear-gradient(135deg,#5eead4,#818cf8,#f0abfc);
+    --shadow:0 24px 50px -28px rgba(0,0,0,.75);
+    --r-lg:24px; --r-md:18px; --r-sm:14px;
+    --c-teal:#14b8a6; --c-violet:#7c5cf0; --c-gold:#e0a106;
+    --c-coral:#f0506e; --c-blue:#2f80ed; --c-pink:#db2777;
+    --blur:18px;
+  }
+  [data-theme="light"]{
+    --bg-0:#eef1f8;
+    --glass:rgba(255,255,255,.72);
+    --glass-strong:rgba(255,255,255,.9);
+    --stroke:rgba(18,22,46,.14);
+    --txt:#14172a;
+    --txt-2:#3d4466;
+    --txt-3:#6b7190;
+    --shadow:0 22px 46px -28px rgba(40,46,90,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:17px}
+  body{font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg-0);color:var(--txt);-webkit-font-smoothing:antialiased;letter-spacing:.2px;line-height:1.5}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .app{position:relative;z-index:2;display:grid;grid-template-columns:266px 1fr;min-height:100vh}
+
+  /* Sidebar -> bottom nav on mobile */
+  .side{position:sticky;top:0;height:100vh;padding:26px 18px;display:flex;flex-direction:column;gap:6px;
+    border-right:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+  .brand{display:flex;align-items:center;gap:13px;padding:4px 12px 22px}
+  .logo{width:44px;height:44px;border-radius:14px;background:var(--aurora);display:grid;place-items:center;
+    font-weight:800;color:#0a0b14;font-size:20px;box-shadow:0 8px 24px -8px rgba(129,140,248,.7)}
+  .brand b{font-size:1.15rem;letter-spacing:.5px}
+  .brand span{display:block;font-size:.78rem;color:var(--txt-3);font-weight:600;letter-spacing:1.5px}
+  .nav{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+  .nav a{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r-sm);color:var(--txt-2);
+    font-size:1.05rem;font-weight:600;text-decoration:none;position:relative;transition:.2s;min-height:52px}
+  .nav a svg{width:23px;height:23px;flex:none}
+  .nav a:hover{background:var(--glass);color:var(--txt)}
+  .nav a.active{background:var(--glass-strong);color:var(--txt)}
+  .nav a.active::before{content:"";position:absolute;left:-18px;top:50%;transform:translateY(-50%);width:4px;height:26px;border-radius:0 4px 4px 0;background:var(--aurora)}
+  .side-foot{margin-top:auto;padding:16px;border-radius:var(--r-md);background:var(--glass-strong);border:1px solid var(--stroke);font-size:.85rem;color:var(--txt-2);line-height:1.6}
+  .side-foot b{font-size:.95rem;color:var(--txt)}
+
+  .main{padding:24px 32px 44px;min-width:0}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  .page h1{font-size:2rem;font-weight:700;letter-spacing:.3px}
+  .page p{font-size:1rem;color:var(--txt-2);margin-top:5px}
+  .spacer{flex:1}
+  .fontctl{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:30px;background:var(--glass);border:1px solid var(--stroke)}
+  .fontctl button{width:38px;height:38px;border:none;border-radius:50%;background:var(--glass-strong);color:var(--txt);font-size:1.05rem;font-weight:700;cursor:pointer}
+  .fontctl button:hover{background:var(--aurora);color:#0a0b14}
+  .fontctl .lab{font-size:.85rem;color:var(--txt-2);min-width:42px;text-align:center}
+  .toggle{width:50px;height:28px;border-radius:20px;background:var(--glass-strong);border:1px solid var(--stroke);position:relative;cursor:pointer;flex:none}
+  .toggle i{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:var(--aurora);transition:.3s}
+  [data-theme="light"] .toggle i{left:24px}
+  .avatar{width:46px;height:46px;border-radius:50%;background:var(--aurora);display:grid;place-items:center;color:#0a0b14;font-weight:700;font-size:1.05rem}
+
+  /* summary cards */
+  .summ{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:30px}
+  .card{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r-lg);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .sc{padding:22px 24px;display:flex;align-items:center;gap:18px}
+  .sc .ic{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;flex:none}
+  .sc .ic svg{width:30px;height:30px}
+  .sc .num{font-size:1.9rem;font-weight:300;letter-spacing:-.5px;line-height:1.1}
+  .sc .num small{font-size:1rem;color:var(--txt-2);margin-left:3px}
+  .sc .name{font-size:1rem;font-weight:600;margin-top:2px}
+  .sc .sub{font-size:.86rem;color:var(--txt-2);margin-top:3px}
+
+  /* function sections */
+  .sec{margin-bottom:30px}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .sec-head .bar{width:6px;height:26px;border-radius:4px;background:var(--aurora)}
+  .sec-head h2{font-size:1.4rem;font-weight:700}
+  .sec-head .cnt{font-size:.9rem;color:var(--txt-3);margin-left:auto}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .fn{padding:20px;display:flex;align-items:center;gap:16px;min-height:108px;cursor:pointer;transition:.22s}
+  .fn:hover{transform:translateY(-3px);border-color:var(--stroke-strong,#fff3)}
+  .fn .chip{width:60px;height:60px;border-radius:17px;display:grid;place-items:center;flex:none;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+  .fn .chip svg{width:31px;height:31px;stroke:#fff;fill:none;stroke-width:1.9}
+  .fn .t{font-size:1.2rem;font-weight:700;line-height:1.25}
+  .fn .d{font-size:.9rem;color:var(--txt-2);margin-top:5px;line-height:1.45}
+
+  .foot{margin-top:28px;text-align:center;font-size:.85rem;color:var(--txt-3);letter-spacing:.5px}
+
+  @media(max-width:1080px){
+    .summ{grid-template-columns:repeat(2,1fr)}
+    .grid4{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:768px){
+    .app{grid-template-columns:1fr}
+    .side{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;flex-direction:row;
+      padding:8px 4px;border-right:none;border-top:1px solid var(--stroke);
+      background:var(--glass-strong);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);z-index:50}
+    .brand,.side-foot{display:none}
+    .nav{flex-direction:row;flex:1;margin-top:0;gap:2px;justify-content:space-around}
+    .nav a{padding:8px 2px;font-size:.82rem;flex-direction:column;gap:4px;justify-content:center;min-height:0}
+    .nav a svg{width:25px;height:25px}
+    .nav a.active::before{left:50%;top:auto;bottom:-8px;transform:translateX(-50%);width:22px;height:3px;border-radius:3px}
+    .main{padding:18px 16px 104px}
+    .page h1{font-size:1.6rem}
+    .topbar{gap:12px}
+    .fontctl{order:3}
+    .summ,.grid4{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="app">
+    <!-- Sidebar / bottom nav -->
+    <aside class="side">
+      <div class="brand">
+        <div class="logo">云</div>
+        <div><b>云栖谷</b><span>员工端</span></div>
+      </div>
+      <nav class="nav">
+        <a class="active" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 11l9-7 9 7M5 10v10h14V10"/></svg>首页</a>
+        <a href="#sec-work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M3 9h14M8 2v4M16 2v4"/></svg>我的工作</a>
+        <a href="#sec-apply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg>申请审批</a>
+        <a href="#sec-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>通知制度</a>
+        <a href="#sec-sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2l8 3v6c0 5-4 8-8 10-4-2-8-5-8-10V5z"/></svg>账号安全</a>
+      </nav>
+      <div class="side-foot">
+        <b>服务时间</b><br/>工作日 09:00–18:00<br/>紧急事务请拨分机 8000
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="page">
+          <h1>上午好，张建国</h1>
+          <p>工号 E10293 · 景区运营部 · 2026 年 08 月 13 日 星期四</p>
+        </div>
+        <div class="spacer"></div>
+        <div class="fontctl">
+          <button id="fDec" aria-label="缩小字体">A−</button>
+          <span class="lab" id="fLab">标准</span>
+          <button id="fInc" aria-label="放大字体">A＋</button>
+        </div>
+        <div class="toggle" id="themeBtn"><i></i></div>
+        <div class="avatar">张</div>
+      </div>
+
+      <!-- Summary -->
+      <div class="summ">
+        <div class="card sc">
+          <div class="ic" style="background:var(--c-coral)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M6 3h9l3 3v14H6z"/><path d="M9 11h6M9 15h6"/></svg></div>
+          <div><div class="num">3<small>项</small></div><div class="name">待办事项</div><div class="sub">其中 1 项紧急待处理</div></div>
+        </div>
+        <div class="card sc">
+          <div class="ic" style="background:var(--c-teal)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M11 7v4l3 2"/></svg></div>
+          <div><div class="num">09–18<small>时</small></div><div class="name">今日排班</div><div class="sub">观光车调度 · B 线</div></div>
+        </div>
+        <div class="card sc">
+          <div class="ic" style="background:var(--c-gold)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg></div>
+          <div><div class="num">5<small>条</small></div><div class="name">未读通知</div><div class="sub">2 条需回执确认</div></div>
+        </div>
+        <div class="card sc">
+          <div class="ic" style="background:var(--c-violet)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 21l-4.9-2.8.9-5.5-4-3.9 5.5-.8z"/></svg></div>
+          <div><div class="num">1,280</div><div class="name">我的积分</div><div class="sub">本月 +86 分</div></div>
+        </div>
+      </div>
+
+      <!-- 我的工作 -->
+      <section class="sec" id="sec-work">
+        <div class="sec-head"><span class="bar"></span><h2>我的工作</h2><span class="cnt">5 项功能</span></div>
+        <div class="grid4">
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-teal)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M3 9h14M8 2v4M16 2v4"/></svg></div>
+            <div><div class="t">我的今日排班</div><div class="d">查看当班时间与岗位安排</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#0ea5a4"><svg viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></div>
+            <div><div class="t">换班申请</div><div class="d">与他人协商一致后提交</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#2dd4bf"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M18 9v6M15 12h6"/></svg></div>
+            <div><div class="t">替班申请</div><div class="d">临时顶替同事班次</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#06b6d4"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 8a3 3 0 010 6M21 20c0-3-2-4-3-4"/></svg></div>
+            <div><div class="t">会议详情与材料</div><div class="d">查看会议议程与附件</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-teal)"><svg viewBox="0 0 24 24"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M12 6h8M12 14h8"/></svg></div>
+            <div><div class="t">我的行动项</div><div class="d">跟进会议分配的任务</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 申请与审批 -->
+      <section class="sec" id="sec-apply">
+        <div class="sec-head"><span class="bar"></span><h2>申请与审批</h2><span class="cnt">4 项功能</span></div>
+        <div class="grid4">
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-violet)"><svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg></div>
+            <div><div class="t">通用申请与审批</div><div class="d">提交各类审批单据</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#8b5cf6"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="4"/><path d="M11 11l6 6M16 16l2-2M14 14l2-2"/></svg></div>
+            <div><div class="t">临时权限申请</div><div class="d">申请短期系统权限</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#a78bfa"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/><circle cx="15" cy="14" r="2"/><path d="M17 16l2 2"/></svg></div>
+            <div><div class="t">项目权限申请</div><div class="d">加入项目所需权限</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-violet)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M15 4l5 5-3 3-5-5z"/></svg></div>
+            <div><div class="t">个人资料变更</div><div class="d">修改联系方式等信息</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 通知与制度 -->
+      <section class="sec" id="sec-notice">
+        <div class="sec-head"><span class="bar"></span><h2>通知与制度</h2><span class="cnt">1 项功能</span></div>
+        <div class="grid4">
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-gold)"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg></div>
+            <div><div class="t">制度通知与执行回执</div><div class="d">阅读制度并签收回执</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 账号与安全 -->
+      <section class="sec" id="sec-sec">
+        <div class="sec-head"><span class="bar"></span><h2>账号与安全</h2><span class="cnt">2 项功能</span></div>
+        <div class="grid4">
+          <div class="card fn">
+            <div class="chip" style="background:var(--c-coral)"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-4 8-8 10-4-2-8-5-8-10V5z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div><div class="t">账号安全 · MFA</div><div class="d">管理多重身份验证</div></div>
+          </div>
+          <div class="card fn">
+            <div class="chip" style="background:#fb7185"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="14" height="11" rx="2"/><path d="M18 8h2v7H6"/><path d="M7 19h8"/></svg></div>
+            <div><div class="t">登录设备与会话</div><div class="d">查看并退出可疑设备</div></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="foot">云栖谷员工端 · 2026 适老化视觉重设计概念稿 · 功能映射自已实现导航（navigation-source）· 模拟数据</div>
+    </main>
+  </div>
+
+<script>
+  const root = document.documentElement;
+  // theme
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    root.dataset.theme = root.dataset.theme==='dark'?'light':'dark';
+  });
+  // font size scale (适老化)
+  const steps=[15,17,19,21,23], names=['小','标准','大','特大','超大'];
+  let fi=1;
+  const lab=document.getElementById('fLab');
+  function apply(){ root.style.fontSize=steps[fi]+'px'; lab.textContent=names[fi]; }
+  document.getElementById('fDec').addEventListener('click',()=>{ if(fi>0)fi--; apply(); });
+  document.getElementById('fInc').addEventListener('click',()=>{ if(fi<steps.length-1)fi++; apply(); });
+</script>
+</body>
+</html>

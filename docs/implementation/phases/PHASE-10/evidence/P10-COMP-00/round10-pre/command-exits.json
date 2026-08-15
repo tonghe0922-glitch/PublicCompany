@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "preflight_exit": 0,
+  "baseline_exit": 0,
+  "scope": "round10-pre-only",
+  "concurrent_core_hand_written_changes": 0,
+  "concurrent_core_excluded_generated": [
+    ".runlogs/phase11-full-*.log",
+    "technical-platform/backend/**/target/**",
+    "technical-platform/backend/**/surefire-reports/**",
+    "technical-platform/backend/**/failsafe-reports/**"
+  ]
+}

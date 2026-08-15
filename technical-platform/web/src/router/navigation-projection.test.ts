@@ -82,6 +82,36 @@ describe('PHASE-08 navigation projection', () => {
     expect(projectActiveNavigation([item], { ...base, permissions: new Set(['record.read', 'record.scope']) })).toHaveLength(1)
   })
 
+  it('projects a shared any-permission entry only when one declared monitor permission is granted', () => {
+    const sharedMonitor = {
+      ...entry({ status: 'implemented', portalCode: 'tech', routePath: '/tech/05/03/01' }),
+      permissionCodes: [],
+      permissionCodesAny: ['p014.discipline.monitor', 'p016.welfare.monitor'],
+    } as NavigationSourceEntry
+    const base = {
+      portalCode: 'tech' as const,
+      implementedRoutePaths: new Set(['/tech/05/03/01']),
+      mobile: false,
+    }
+
+    expect(projectActiveNavigation([sharedMonitor], { ...base, permissions: new Set() })).toEqual([])
+    expect(projectActiveNavigation([sharedMonitor], {
+      ...base,
+      permissions: new Set(['p016.welfare.monitor']),
+    })).toHaveLength(1)
+  })
+
+  it('shows shared monitor navigation to a P016-monitor-only user', () => {
+    const items = projectActiveNavigation(PORTAL_IA_NAVIGATION, {
+      portalCode: 'tech',
+      permissions: new Set(['p016.welfare.monitor']),
+      implementedRoutePaths: new Set(['/tech/05/03/01']),
+      mobile: false,
+    })
+
+    expect(items.map(item => item.routePath)).toContain('/tech/05/03/01')
+  })
+
   it('honors mobile no/limited without expanding capability', () => {
     const noItem = entry({ sourceKey: 'no', status: 'implemented', mobileAccess: 'no' })
     const limited = entry({ sourceKey: 'limited', status: 'implemented', mobileAccess: 'limited' })

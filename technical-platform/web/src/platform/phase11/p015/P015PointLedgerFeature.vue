@@ -18,6 +18,7 @@ const {
   isTech, canRead, canManage, transactionState, ruleState, createTransactionState,
   createRuleState, partialFailure, pointKindOptions, load, loadTransactions,
   createTransaction, createRule, publish, perform, actions, actionState, publishState,
+  recordPending, rulePending,
 } = useP015PointLedger(props)
 </script>
 
@@ -71,7 +72,7 @@ const {
               :error-code="publishState(rule).errorCode"
               :trace-id="publishState(rule).traceId"
             />
-            <template #actions><SgjButton v-if="canManage && rule.status === 'DRAFT'" :loading="isPending(publishState(rule))" @click="publish(rule)">发布规则版本</SgjButton></template>
+            <template #actions><SgjButton v-if="canManage && rule.status === 'DRAFT'" :disabled="rulePending(rule)" :loading="isPending(publishState(rule))" @click="publish(rule)">发布规则版本</SgjButton></template>
           </SgjRecordCard>
         </div>
       </SgjCard>
@@ -121,7 +122,7 @@ const {
             </template>
           </template>
           <p v-else>员工、来源、积分值、等级和证据已隐藏；技术端仅显示流程元数据。</p>
-          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
+          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :disabled="recordPending(item)" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
         </SgjRecordCard>
       </div>
       <SgjError

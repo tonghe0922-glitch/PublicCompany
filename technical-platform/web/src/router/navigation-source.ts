@@ -11,6 +11,7 @@ export interface NavigationSourceEntry {
   routeName: string | null
   routePath: string | null
   permissionCodes: string[]
+  permissionCodesAny?: string[]
   mobileAccess: string
   status: string
   sensitiveLevel: string | null
@@ -33,7 +34,11 @@ const PHASE09_IMPLEMENTED_NAVIGATION: readonly NavigationSourceEntry[] = [
   implemented('tech', 'p001-monitor', '会话安全监控', '/tech/03/01/01', 'p001-security-monitor', ['p001.session.monitor']),
   implemented('tech', 'p002-execution', '权限授权与回收', '/tech/03/01/04', 'p002-permission-execution', ['p002.request.execute']),
   implemented('tech', 'p003-apply', '资料权威更新', '/tech/04/01/01', 'p003-profile-sync-monitor', ['p003.change.apply']),
-  implemented('tech', 'workflow-monitor', 'P004/P005 工作流监控', '/tech/05/03/01', 'p004-workflow-instance-monitor', ['p005.notice.monitor']),
+  implementedAny('tech', 'workflow-monitor', 'P004-P016 工作流监控', '/tech/05/03/01', 'p004-workflow-instance-monitor', [
+    'p004.request.read', 'p005.notice.monitor', 'p006.meeting.monitor', 'p007.schedule.monitor',
+    'p008.leave.monitor', 'p010.learning.monitor', 'p011.performance.monitor', 'p012.promotion.monitor',
+    'p013.reward.monitor', 'p014.discipline.monitor', 'p016.welfare.monitor',
+  ]),
 ]
 
 const PHASE10_P006_IMPLEMENTED_NAVIGATION: readonly NavigationSourceEntry[] = [
@@ -85,6 +90,17 @@ function implemented(
     sensitiveLevel: 'P1-内部',
     dataScope: portalCode === 'employee' ? 'SELF' : 'CENTER',
   }
+}
+
+function implementedAny(
+  portalCode: string,
+  key: string,
+  label: string,
+  routePath: string,
+  routeName: string,
+  permissionCodesAny: string[],
+): NavigationSourceEntry {
+  return { ...implemented(portalCode, key, label, routePath, routeName, []), permissionCodesAny }
 }
 
 export const PORTAL_IA_NAVIGATION: readonly NavigationSourceEntry[] = [

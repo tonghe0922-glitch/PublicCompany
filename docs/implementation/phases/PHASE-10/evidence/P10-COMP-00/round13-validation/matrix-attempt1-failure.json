@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "attempt": 1,
+  "status": "ABORTED_BEFORE_REVIEWER_GATE",
+  "source_self_exit": 0,
+  "wrapper_exit": 1,
+  "error": "Python NameError: __main__ is not defined because the PowerShell-native argument boundary removed embedded double quotes from run_name",
+  "effects": "reviewer output log was empty; reviewer scripts and remaining gates did not run; no result from this attempt is used as the formal matrix"
+}

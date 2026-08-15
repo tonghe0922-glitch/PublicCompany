@@ -1,0 +1,51 @@
+﻿{
+    "raw_pre":  {
+                    "workspace_id":  "4B28E8298C33B2D9D6D65F9956FBDF9FF1D3CA606B1445A2C6988A36F1BCE05F",
+                    "workspace_count":  1578,
+                    "task_id":  "0675F607C9E4E93C2A71D76281520CA22A8979E339FE1556128866CDAF6BDA0C",
+                    "task_count":  33,
+                    "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                    "metadata_count":  0
+                },
+    "raw_post":  {
+                     "workspace_id":  "60FC84F8D8FDB2F9773CE63D2A9E58B95F0CEFA48C2C8DC9C35ECFC8520B6C6C",
+                     "workspace_count":  1578,
+                     "task_id":  "D231C370D4773857C065C506F48D6CC44AC118D6FA7DE91E10CA554233B1CC18",
+                     "task_count":  33,
+                     "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                     "metadata_count":  0
+                 },
+    "comparable_pre":  {
+                           "workspace_id":  "EA2B6A196571388E41B423A10BAEB5B7F2E7052B9105C6DB741507C0623536E5",
+                           "workspace_count":  1577,
+                           "task_id":  "97DB7AD4F9EE2CE5B41A4BA1D9E7223F9FCDF7B7383904D6E2C2642CBCD2C2B5",
+                           "task_count":  32,
+                           "metadata_id":  "776818368E8528CE00282C77C31125BB430D5CE71FC17918F236C60CA291969A",
+                           "metadata_count":  1
+                       },
+    "comparable_post":  {
+                            "workspace_id":  "7465ED49DF13EDDFB93E3901E73EFF8E3660A0A8F51AD30E2700CEC0809CF31F",
+                            "workspace_count":  1577,
+                            "task_id":  "63BB05FBF1C7747AC86DE0246E7068D5DCB4BAF7B9EC3D60C0C3FC136A262DF3",
+                            "task_count":  32,
+                            "metadata_id":  "968AA8F3C1E16CB89D11C16BC0A538506725B654885D326BE13C6B4B501D481F",
+                            "metadata_count":  1
+                        },
+    "scoped":  {
+                   "task":  1,
+                   "unrelated":  0,
+                   "concurrent":  0,
+                   "metadata":  1
+               },
+    "submitted":  {
+                      "count":  33,
+                      "mismatch_count":  0
+                  },
+    "report":  {
+                   "path":  "docs/implementation/ui/page-component-plans/P10-COMP-04_REPORT.md",
+                   "sha256":  "EA560E91F373A2D1E02A9D15ABF22D120393C43DAB19BD635D044A2CA6DC8567",
+                   "bytes":  13572
+               },
+    "external_authorized_contract_patch":  "CONTRACT-PATCH-06 (outside workspace)",
+    "runtime_boundary":  "formal P006 exact cleanup complete; original pre-existing runtime 7/7 retained"
+}

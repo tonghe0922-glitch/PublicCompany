@@ -1,0 +1,9 @@
+﻿{
+    "project_source_gate_self_test":  0,
+    "project_local_tools_self_test":  0,
+    "project_source_gate_current":  1,
+    "project_source_gate_current_violation_count":  262,
+    "package_ui_gate_self_test":  0,
+    "package_ui_gate_current":  1,
+    "package_ui_gate_current_error_count":  88
+}

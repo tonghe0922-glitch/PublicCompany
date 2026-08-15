@@ -18,58 +18,374 @@ import org.testcontainers.utility.DockerImageName;
 
 /** Real PHASE-11 / P016 Spring Boot + PostgreSQL 16 + Redis browser fixture. */
 public final class Phase11P016BrowserBackendFixture {
-    private static final UUID TENANT=uuid("00000000-0000-0000-0000-000000002026"),CENTER_A=uuid("10000000-0000-0000-0000-000000003726"),CENTER_B=uuid("10000000-0000-0000-0000-000000003727"),POSITION_A=uuid("20000000-0000-0000-0000-000000003726"),POSITION_B=uuid("20000000-0000-0000-0000-000000003727"),AFFECTED=uuid("30000000-0000-0000-0000-000000003726"),MANAGER=uuid("30000000-0000-0000-0000-000000003727"),APPROVER=uuid("30000000-0000-0000-0000-000000003728"),EXECUTOR=uuid("30000000-0000-0000-0000-000000003729"),RECONCILER=uuid("30000000-0000-0000-0000-000000003730"),TECH=uuid("30000000-0000-0000-0000-000000003731"),OUTSIDER=uuid("30000000-0000-0000-0000-000000003732");
-    private static final String API_PASSWORD="p016_browser_api_"+shortId(),AUDIT_PASSWORD="p016_browser_audit_"+shortId();
-    private Phase11P016BrowserBackendFixture(){}
 
-    public static void main(String[] args)throws Exception{
-        String tenant=required("PHASE11_P016_TENANT"),managerLogin=required("PHASE11_P016_LOGIN"),password=required("PHASE11_P016_PASSWORD");
-        PostgreSQLContainer<?> postgres=new PostgreSQLContainer<>("postgres:16.14-alpine3.24").withDatabaseName("postgres").withUsername("postgres").withPassword("bootstrap-"+shortId());
-        GenericContainer<?> redis=new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
-        postgres.start();redis.start();prepare(postgres,tenant,managerLogin,password);ConfigurableApplicationContext context=startApi(postgres,redis);writeFacts(postgres,redis);
-        Runtime.getRuntime().addShutdownHook(new Thread(()->{context.close();redis.stop();postgres.stop();}));System.out.println("PHASE11_P016_BROWSER_FIXTURE_READY");new CountDownLatch(1).await();
+  private static final UUID TENANT = uuid("00000000-0000-0000-0000-000000002026"),
+      CENTER_A = uuid("10000000-0000-0000-0000-000000003726"),
+      CENTER_B = uuid("10000000-0000-0000-0000-000000003727"),
+      POSITION_A = uuid("20000000-0000-0000-0000-000000003726"),
+      POSITION_B = uuid("20000000-0000-0000-0000-000000003727"),
+      AFFECTED = uuid("30000000-0000-0000-0000-000000003726"),
+      MANAGER = uuid("30000000-0000-0000-0000-000000003727"),
+      APPROVER = uuid("30000000-0000-0000-0000-000000003728"),
+      EXECUTOR = uuid("30000000-0000-0000-0000-000000003729"),
+      RECONCILER = uuid("30000000-0000-0000-0000-000000003730"),
+      TECH = uuid("30000000-0000-0000-0000-000000003731"),
+      OUTSIDER = uuid("30000000-0000-0000-0000-000000003732");
+  private static final String API_PASSWORD = "p016_browser_api_" + shortId(),
+      AUDIT_PASSWORD = "p016_browser_audit_" + shortId();
+
+  private Phase11P016BrowserBackendFixture() {}
+
+  public static void main(String[] args) throws Exception {
+    String tenant = required("PHASE11_P016_TENANT"),
+        managerLogin = required("PHASE11_P016_LOGIN"),
+        password = required("PHASE11_P016_PASSWORD");
+    PostgreSQLContainer<?> postgres =
+        new PostgreSQLContainer<>("postgres:16.14-alpine3.24")
+            .withDatabaseName("postgres")
+            .withUsername("postgres")
+            .withPassword("bootstrap-" + shortId());
+    GenericContainer<?> redis =
+        new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
+    postgres.start();
+    redis.start();
+    prepare(postgres, tenant, managerLogin, password);
+    ConfigurableApplicationContext context = startApi(postgres, redis);
+    writeFacts(postgres, redis);
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  context.close();
+                  redis.stop();
+                  postgres.stop();
+                }));
+    System.out.println("PHASE11_P016_BROWSER_FIXTURE_READY");
+    new CountDownLatch(1).await();
+  }
+
+  private static ConfigurableApplicationContext startApi(
+      PostgreSQLContainer<?> postgres, GenericContainer<?> redis) {
+    return new SpringApplication(ApiApplication.class)
+        .run(
+            "--server.port=18090",
+            "--spring.flyway.enabled=false",
+            "--spring.datasource.url=" + url(postgres, "sjg_oms"),
+            "--spring.datasource.username=sjg_api_runtime",
+            "--spring.datasource.password=" + API_PASSWORD,
+            "--spring.data.redis.host=" + redis.getHost(),
+            "--spring.data.redis.port=" + redis.getMappedPort(6379),
+            "--sjg.audit.datasource.url=" + url(postgres, "sjg_audit"),
+            "--sjg.audit.datasource.username=sjg_audit_writer",
+            "--sjg.audit.datasource.password=" + AUDIT_PASSWORD,
+            "--sjg.security.session.access-ttl=PT30M",
+            "--sjg.security.session.refresh-ttl=PT1H");
+  }
+
+  private static void prepare(
+      PostgreSQLContainer<?> postgres, String tenant, String managerLogin, String password)
+      throws Exception {
+    Path root = root();
+    Flyway.configure()
+        .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
+        .locations("filesystem:" + root.resolve("technical-platform/database/flyway/cluster"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    try (Connection c =
+            DriverManager.getConnection(
+                postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute("alter role sjg_api_runtime password '" + API_PASSWORD + "'");
+      s.execute("alter role sjg_audit_writer password '" + AUDIT_PASSWORD + "'");
+      s.execute("create database sjg_oms");
+      s.execute("create database sjg_audit");
     }
+    Flyway.configure()
+        .dataSource(url(postgres, "sjg_oms"), postgres.getUsername(), postgres.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/oms"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/oms"))
+        .placeholders(
+            Map.of(
+                "sjg_tenant_id",
+                TENANT.toString(),
+                "sjg_tenant_code",
+                tenant,
+                "sjg_tenant_name",
+                "P016 Browser Tenant"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    Flyway.configure()
+        .dataSource(url(postgres, "sjg_audit"), postgres.getUsername(), postgres.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/audit"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/audit"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    seed(postgres, managerLogin, password);
+  }
 
-    private static ConfigurableApplicationContext startApi(PostgreSQLContainer<?> postgres,GenericContainer<?> redis){return new SpringApplication(ApiApplication.class).run("--server.port=18090","--spring.flyway.enabled=false","--spring.datasource.url="+url(postgres,"sjg_oms"),"--spring.datasource.username=sjg_api_runtime","--spring.datasource.password="+API_PASSWORD,"--spring.data.redis.host="+redis.getHost(),"--spring.data.redis.port="+redis.getMappedPort(6379),"--sjg.audit.datasource.url="+url(postgres,"sjg_audit"),"--sjg.audit.datasource.username=sjg_audit_writer","--sjg.audit.datasource.password="+AUDIT_PASSWORD,"--sjg.security.session.access-ttl=PT30M","--sjg.security.session.refresh-ttl=PT1H");}
-
-    private static void prepare(PostgreSQLContainer<?> postgres,String tenant,String managerLogin,String password)throws Exception{
-        Path root=root();
-        Flyway.configure().dataSource(postgres.getJdbcUrl(),postgres.getUsername(),postgres.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/cluster")).cleanDisabled(true).load().migrate();
-        try(Connection c=DriverManager.getConnection(postgres.getJdbcUrl(),postgres.getUsername(),postgres.getPassword());Statement s=c.createStatement()){s.execute("alter role sjg_api_runtime password '"+API_PASSWORD+"'");s.execute("alter role sjg_audit_writer password '"+AUDIT_PASSWORD+"'");s.execute("create database sjg_oms");s.execute("create database sjg_audit");}
-        Flyway.configure().dataSource(url(postgres,"sjg_oms"),postgres.getUsername(),postgres.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/oms"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/oms")).placeholders(Map.of("sjg_tenant_id",TENANT.toString(),"sjg_tenant_code",tenant,"sjg_tenant_name","P016 Browser Tenant")).cleanDisabled(true).load().migrate();
-        Flyway.configure().dataSource(url(postgres,"sjg_audit"),postgres.getUsername(),postgres.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/audit"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/audit")).cleanDisabled(true).load().migrate();
-        seed(postgres,managerLogin,password);
+  private static void seed(PostgreSQLContainer<?> postgres, String managerLogin, String password)
+      throws Exception {
+    String hash = new BCryptPasswordEncoder(12).encode(password);
+    try (Connection c =
+            DriverManager.getConnection(
+                url(postgres, "sjg_oms"), postgres.getUsername(), postgres.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute(
+          "insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values"
+              + " ('"
+              + CENTER_A
+              + "','"
+              + TENANT
+              + "','P016_A','P016 Center A','CENTER','p016_a'::ltree,'ACTIVE'),('"
+              + CENTER_B
+              + "','"
+              + TENANT
+              + "','P016_B','P016 Center B','CENTER','p016_b'::ltree,'ACTIVE')");
+      s.execute(
+          "insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values"
+              + " ('"
+              + POSITION_A
+              + "','"
+              + TENANT
+              + "','P016_A','P016 Position A','"
+              + CENTER_A
+              + "','ACTIVE'),('"
+              + POSITION_B
+              + "','"
+              + TENANT
+              + "','P016_B','P016 Position B','"
+              + CENTER_B
+              + "','ACTIVE')");
+      UUID[] actors = {AFFECTED, MANAGER, APPROVER, EXECUTOR, RECONCILER, TECH, OUTSIDER};
+      for (int i = 0; i < actors.length; i++) {
+        UUID center = i == 6 ? CENTER_B : CENTER_A, position = i == 6 ? POSITION_B : POSITION_A;
+        s.execute(
+            "insert into"
+                + " org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id)"
+                + " values ('"
+                + actors[i]
+                + "','"
+                + TENANT
+                + "','P016-B00"
+                + (i + 1)
+                + "','P016 Browser Actor "
+                + i
+                + "','ACTIVE',current_date-90,'"
+                + center
+                + "','"
+                + position
+                + "')");
+      }
+      s.execute(
+          "insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled)"
+              + " values ('"
+              + TENANT
+              + "','P016_SELF','P016 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"
+              + TENANT
+              + "','P016_CENTER','P016 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");
+      s.execute(
+          "insert into"
+              + " iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level)"
+              + " values (gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.read','Session"
+              + " read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");
+      String[][] roles = {
+        {"p016.browser.affected", "SELF", "p016.welfare.read"},
+        {
+          managerLogin,
+          "CENTER",
+          "p016.welfare.read,p016.welfare.manage,p016.welfare.approve,p016.welfare.execute"
+        },
+        {
+          "p016.browser.approver",
+          "CENTER",
+          "p016.welfare.read,p016.welfare.approve,p016.welfare.execute"
+        },
+        {
+          "p016.browser.executor",
+          "CENTER",
+          "p016.welfare.read,p016.welfare.execute,p016.welfare.reconcile"
+        },
+        {"p016.browser.reconciler", "CENTER", "p016.welfare.read,p016.welfare.reconcile"},
+        {"p016.browser.tech", "CENTER", "p016.welfare.monitor"},
+        {"p016.browser.out", "CENTER", "p016.welfare.read"}
+      };
+      for (int i = 0; i < roles.length; i++) {
+        seedActor(
+            s,
+            i,
+            actors[i],
+            roles[i][0],
+            roles[i][1],
+            roles[i][2],
+            hash,
+            i == 6 ? CENTER_B : CENTER_A,
+            i == 6 ? POSITION_B : POSITION_A);
+      }
     }
+  }
 
-    private static void seed(PostgreSQLContainer<?> postgres,String managerLogin,String password)throws Exception{
-        String hash=new BCryptPasswordEncoder(12).encode(password);
-        try(Connection c=DriverManager.getConnection(url(postgres,"sjg_oms"),postgres.getUsername(),postgres.getPassword());Statement s=c.createStatement()){
-            s.execute("insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values ('"+CENTER_A+"','"+TENANT+"','P016_A','P016 Center A','CENTER','p016_a'::ltree,'ACTIVE'),('"+CENTER_B+"','"+TENANT+"','P016_B','P016 Center B','CENTER','p016_b'::ltree,'ACTIVE')");
-            s.execute("insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values ('"+POSITION_A+"','"+TENANT+"','P016_A','P016 Position A','"+CENTER_A+"','ACTIVE'),('"+POSITION_B+"','"+TENANT+"','P016_B','P016 Position B','"+CENTER_B+"','ACTIVE')");
-            UUID[] actors={AFFECTED,MANAGER,APPROVER,EXECUTOR,RECONCILER,TECH,OUTSIDER};
-            for(int i=0;i<actors.length;i++){UUID center=i==6?CENTER_B:CENTER_A,position=i==6?POSITION_B:POSITION_A;s.execute("insert into org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id) values ('"+actors[i]+"','"+TENANT+"','P016-B00"+(i+1)+"','P016 Browser Actor "+i+"','ACTIVE',current_date-90,'"+center+"','"+position+"')");}
-            s.execute("insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled) values ('"+TENANT+"','P016_SELF','P016 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"+TENANT+"','P016_CENTER','P016 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");
-            s.execute("insert into iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level) values (gen_random_uuid(),'"+TENANT+"','platform.session.read','Session read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"+TENANT+"','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");
-            String[][] roles={{"p016.browser.affected","SELF","p016.welfare.read"},{managerLogin,"CENTER","p016.welfare.read,p016.welfare.manage,p016.welfare.approve,p016.welfare.execute"},{"p016.browser.approver","CENTER","p016.welfare.read,p016.welfare.approve,p016.welfare.execute"},{"p016.browser.executor","CENTER","p016.welfare.read,p016.welfare.execute,p016.welfare.reconcile"},{"p016.browser.reconciler","CENTER","p016.welfare.read,p016.welfare.reconcile"},{"p016.browser.tech","CENTER","p016.welfare.monitor"},{"p016.browser.out","CENTER","p016.welfare.read"}};
-            for(int i=0;i<roles.length;i++)seedActor(s,i,actors[i],roles[i][0],roles[i][1],roles[i][2],hash,i==6?CENTER_B:CENTER_A,i==6?POSITION_B:POSITION_A);
-        }
+  private static void seedActor(
+      Statement s,
+      int index,
+      UUID employee,
+      String login,
+      String scope,
+      String permissions,
+      String hash,
+      UUID center,
+      UUID position)
+      throws Exception {
+    UUID user = derived(4, index),
+        identity = derived(5, index),
+        role = derived(6, index),
+        appointment = derived(7, index);
+    String roleCode = "P016_BROWSER_" + index;
+    s.execute(
+        "insert into"
+            + " org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status)"
+            + " values ('"
+            + appointment
+            + "','"
+            + TENANT
+            + "','"
+            + employee
+            + "','"
+            + position
+            + "','"
+            + center
+            + "',true,current_date-90,'ACTIVE')");
+    s.execute(
+        "insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level)"
+            + " values ('"
+            + user
+            + "','"
+            + TENANT
+            + "','"
+            + login
+            + "','"
+            + hash
+            + "','ACTIVE',0)");
+    s.execute(
+        "insert into"
+            + " iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at)"
+            + " values ('"
+            + identity
+            + "','"
+            + TENANT
+            + "','"
+            + user
+            + "','"
+            + employee
+            + "','EMPLOYEE','P016 "
+            + login
+            + "','"
+            + center
+            + "','"
+            + position
+            + "',true,now()-interval '1 day')");
+    s.execute(
+        "insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled)"
+            + " values ('"
+            + role
+            + "','"
+            + TENANT
+            + "','"
+            + roleCode
+            + "','"
+            + roleCode
+            + "','PLATFORM','P016_"
+            + scope
+            + "',true)");
+    s.execute(
+        "insert into iam.role_permission(tenant_id,role_id,permission_id) select '"
+            + TENANT
+            + "','"
+            + role
+            + "',id from iam.permission where tenant_id='"
+            + TENANT
+            + "' and permission_code in ('platform.session.read','platform.session.logout','"
+            + permissions.replace(",", "','")
+            + "') and not is_deleted");
+    s.execute(
+        "insert into"
+            + " iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + user
+            + "','"
+            + identity
+            + "','"
+            + role
+            + "',now()-interval '1 day','TEST_ONLY')");
+  }
+
+  private static void writeFacts(PostgreSQLContainer<?> postgres, GenericContainer<?> redis)
+      throws Exception {
+    Path output =
+        root()
+            .resolve(
+                "technical-platform/backend/apps/api/target/phase11-p016-fixture-runtime.json");
+    Files.createDirectories(output.getParent());
+    Files.writeString(
+        output,
+        "{\n  \"postgresContainerId\": \""
+            + postgres.getContainerId()
+            + "\",\n  \"redisContainerId\": \""
+            + redis.getContainerId()
+            + "\",\n  \"tenantId\": \""
+            + TENANT
+            + "\",\n  \"affectedId\": \""
+            + AFFECTED
+            + "\"\n}\n");
+  }
+
+  private static String url(PostgreSQLContainer<?> postgres, String database) {
+    return "jdbc:postgresql://"
+        + postgres.getHost()
+        + ":"
+        + postgres.getMappedPort(5432)
+        + "/"
+        + database;
+  }
+
+  private static String required(String name) {
+    String value = System.getenv(name);
+    if (value == null || value.isBlank()) {
+      throw new IllegalStateException("required environment missing: " + name);
     }
+    return value;
+  }
 
-    private static void seedActor(Statement s,int index,UUID employee,String login,String scope,String permissions,String hash,UUID center,UUID position)throws Exception{
-        UUID user=derived(4,index),identity=derived(5,index),role=derived(6,index),appointment=derived(7,index);String roleCode="P016_BROWSER_"+index;
-        s.execute("insert into org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status) values ('"+appointment+"','"+TENANT+"','"+employee+"','"+position+"','"+center+"',true,current_date-90,'ACTIVE')");
-        s.execute("insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level) values ('"+user+"','"+TENANT+"','"+login+"','"+hash+"','ACTIVE',0)");
-        s.execute("insert into iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at) values ('"+identity+"','"+TENANT+"','"+user+"','"+employee+"','EMPLOYEE','P016 "+login+"','"+center+"','"+position+"',true,now()-interval '1 day')");
-        s.execute("insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled) values ('"+role+"','"+TENANT+"','"+roleCode+"','"+roleCode+"','PLATFORM','P016_"+scope+"',true)");
-        s.execute("insert into iam.role_permission(tenant_id,role_id,permission_id) select '"+TENANT+"','"+role+"',id from iam.permission where tenant_id='"+TENANT+"' and permission_code in ('platform.session.read','platform.session.logout','"+permissions.replace(",","','")+"') and not is_deleted");
-        s.execute("insert into iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source) values ('"+TENANT+"','"+user+"','"+identity+"','"+role+"',now()-interval '1 day','TEST_ONLY')");
+  private static UUID derived(int group, int index) {
+    return uuid("%d0000000-0000-0000-0000-%012d".formatted(group, 3726 + index));
+  }
+
+  private static UUID uuid(String value) {
+    return UUID.fromString(value);
+  }
+
+  private static String shortId() {
+    return UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+  }
+
+  private static Path root() {
+    Path p = Path.of("").toAbsolutePath();
+    while (p != null) {
+      if (Files.exists(p.resolve("AGENT.md"))) {
+        return p;
+      }
+      p = p.getParent();
     }
-
-    private static void writeFacts(PostgreSQLContainer<?> postgres,GenericContainer<?> redis)throws Exception{Path output=root().resolve("technical-platform/backend/apps/api/target/phase11-p016-fixture-runtime.json");Files.createDirectories(output.getParent());Files.writeString(output,"{\n  \"postgresContainerId\": \""+postgres.getContainerId()+"\",\n  \"redisContainerId\": \""+redis.getContainerId()+"\",\n  \"tenantId\": \""+TENANT+"\",\n  \"affectedId\": \""+AFFECTED+"\"\n}\n");}
-    private static String url(PostgreSQLContainer<?> postgres,String database){return"jdbc:postgresql://"+postgres.getHost()+":"+postgres.getMappedPort(5432)+"/"+database;}
-    private static String required(String name){String value=System.getenv(name);if(value==null||value.isBlank())throw new IllegalStateException("required environment missing: "+name);return value;}
-    private static UUID derived(int group,int index){return uuid("%d0000000-0000-0000-0000-%012d".formatted(group,3726+index));}
-    private static UUID uuid(String value){return UUID.fromString(value);}
-    private static String shortId(){return UUID.randomUUID().toString().replace("-","").substring(0,16);}
-    private static Path root(){Path p=Path.of("").toAbsolutePath();while(p!=null){if(Files.exists(p.resolve("AGENT.md")))return p;p=p.getParent();}throw new IllegalStateException("repository root not found");}
+    throw new IllegalStateException("repository root not found");
+  }
 }

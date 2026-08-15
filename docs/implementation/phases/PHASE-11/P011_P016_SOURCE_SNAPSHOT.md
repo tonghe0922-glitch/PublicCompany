@@ -1,5 +1,8 @@
 # PHASE-11 P011–P016 XLSX ACTUAL PARSE SNAPSHOT
 
+<!-- GENERATED: DO NOT EDIT. Regenerate with the generator recorded in the JSON contract. -->
+> Content SHA-256: `64bba585691e70d59310ef1d66b899f1583c0486d04c0cf89258f3feac53dd5a`
+
 > 优先读取当前仓库中的原始 XLSX；原件缺失时只使用 PHASE-01 已落盘、逐行且带来源坐标的机器合同缓存。
 > 缓存模式不会伪称重新解析原始 XLSX；本文件只冻结施工来源，不代表业务流程已实现。
 

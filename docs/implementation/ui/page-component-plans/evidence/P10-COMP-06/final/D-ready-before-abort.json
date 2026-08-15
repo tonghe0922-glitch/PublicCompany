@@ -1,0 +1,7 @@
+﻿{
+    "launcher_pid":  32348,
+    "runtime_last_write_utc":  "2026-08-13T20:00:43.4940122Z",
+    "postgres_container_id":  "87b5b362ca5f5114c94f5888f758b32207862192aa7e52635c02c68a69004695",
+    "redis_container_id":  "6000ed4dcdb42f03fc076d6e3a6588cca495a56ce553b6cc5ffc6f22e19f9084",
+    "ready_marker":  true
+}

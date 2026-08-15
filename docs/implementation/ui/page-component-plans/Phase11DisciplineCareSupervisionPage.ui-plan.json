@@ -1,0 +1,48 @@
+{
+  "$schema": "urn:shangjingu:page-component-usage-plan:1.0",
+  "schema_version": "1.0",
+  "page": "Phase11DisciplineCareSupervisionPage",
+  "implementation_path": "technical-platform/web/src/platform/pages/Phase11DisciplineCareSupervisionPage.vue",
+  "portal_codes": ["center"],
+  "route_paths": ["/center/06/03/09"],
+  "process_codes": ["P014", "P016"],
+  "page_type": "dashboard",
+  "page_template": "ui.template.dashboard-page",
+  "source_facts": {
+    "source_key": "2-2中心全层级页面.xlsx:三级页面明细:R338:15e6269002de",
+    "multi_process_binding": ["P014", "P016"],
+    "permissions": [
+      "p014.discipline.read", "p014.discipline.manage", "p014.discipline.investigate",
+      "p014.discipline.decide", "p014.discipline.appeal", "p016.welfare.read",
+      "p016.welfare.manage", "p016.welfare.approve", "p016.welfare.execute",
+      "p016.welfare.reconcile"
+    ],
+    "data_scope": "Each process feature is mounted only by its own permission family and performs its own server-authorized scoped collection request.",
+    "composition_boundary": "The thin route page owns one shared feature. The shared feature composes P014DisciplineFeature and P016CareSupportFeature directly and imports no route Page.vue."
+  },
+  "field_component_map": [],
+  "state_component_map": [
+    {
+      "state": "P014-only|P016-only|both|neither",
+      "component_id": "platform.permission-gate",
+      "reason": "Independent process permission gates prevent unauthorized child mounting or requests; API 403 and record data scope remain final."
+    }
+  ],
+  "action_component_map": [],
+  "responsive_projection": {
+    "desktop": "Visible process supervision features are distinct sections.",
+    "mobile": "The same independently authorized sections stack without combining process state or actions."
+  },
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "new-shared-composite",
+  "registry_updates": [],
+  "tests": [
+    "P014-only mounts and loads only P014",
+    "P016-only mounts and loads only P016",
+    "P014 plus P016 mounts and loads both independently",
+    "neither permission mounts no business feature",
+    "no feature or route page nests another route Page.vue"
+  ],
+  "updated_at": "2026-08-14T22:00:00+08:00"
+}

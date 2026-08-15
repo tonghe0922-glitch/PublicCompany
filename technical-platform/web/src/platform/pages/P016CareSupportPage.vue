@@ -5,7 +5,6 @@ import type { PortalDefinition } from '../portal-config'
 const props = defineProps<{
   portal: PortalDefinition
   mode: 'employee' | 'center' | 'tech'
-  sharedSupervision?: boolean
 }>()
 </script>
 

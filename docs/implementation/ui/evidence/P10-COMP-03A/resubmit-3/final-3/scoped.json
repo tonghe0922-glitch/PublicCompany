@@ -1,0 +1,29 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-03A-resubmit-3-final-3-scoped",
+    "pre_comparable_workspace_id":  "AAE1CD6634CF11C3CF6C72A3136C7A00E4F67BCB75E86A5B807BED9B1623FC7F",
+    "post_comparable_workspace_id":  "AAE1CD6634CF11C3CF6C72A3136C7A00E4F67BCB75E86A5B807BED9B1623FC7F",
+    "pre_comparable_task_id":  "839DFB87CAC8AA8917E876033413853A14644F797CD35D79DB5DDEB84865F866",
+    "post_comparable_task_id":  "839DFB87CAC8AA8917E876033413853A14644F797CD35D79DB5DDEB84865F866",
+    "task_changes":  [
+
+                     ],
+    "task_change_count":  0,
+    "unrelated_changes":  [
+
+                          ],
+    "unrelated_change_count":  0,
+    "concurrent_core_changes":  [
+
+                                ],
+    "concurrent_core_change_count":  0,
+    "metadata_changes":  [
+                             {
+                                 "path":  "docs/implementation/ui/P10-COMP-03A_REPORT.md",
+                                 "change":  "modified"
+                             }
+                         ],
+    "metadata_change_count":  1,
+    "expected":  "0/0/0/1",
+    "actual":  "0/0/0/1"
+}

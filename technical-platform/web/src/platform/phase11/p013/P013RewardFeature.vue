@@ -17,7 +17,7 @@ const {
   receiptType, externalReference, externalOccurredAt, resultSummary, evidenceNote,
   isTech, canRead, canCreate, listState, createState, eventTypeOptions,
   impactLevelOptions, impactTypeOptions, receiptTypeOptions,
-  load, create, perform, actions, actionState,
+  load, create, perform, actions, actionState, recordPending,
 } = vm
 </script>
 
@@ -79,7 +79,7 @@ const {
             </template>
           </template>
           <p v-else>贡献内容、奖励等级、金额、积分、证据、影响指令和执行回执已隐藏。</p>
-          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
+          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :disabled="recordPending(item)" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
         </SgjRecordCard>
       </div>
       <SgjError v-if="['error', 'no-permission'].includes(createState.failure)" title="创建奖励案例失败" :description="createState.message" :error-code="createState.errorCode" :trace-id="createState.traceId" />

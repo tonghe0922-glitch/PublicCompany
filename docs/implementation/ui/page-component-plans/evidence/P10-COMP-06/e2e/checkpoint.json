@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "static": {
+    "eslintExit": 0,
+    "typecheckExit": 0,
+    "knipExit": 0
+  },
+  "fixture": {
+    "readyMarker": "PHASE10_TECH_MONITOR_BROWSER_FIXTURE_READY",
+    "apiPort": 18093,
+    "vitePorts": [5370, 5371, 5372],
+    "launcherPid": 47468,
+    "javaPid": 35988,
+    "wrapperFailurePreserved": "fixture-wrapper-failed.err.log"
+  },
+  "browser": {
+    "command": "pnpm exec playwright test --config=playwright.phase10-tech-monitor-live.config.ts",
+    "exit": 0,
+    "project": "desktop-chromium",
+    "passed": 1,
+    "failed": 0,
+    "durationSeconds": 12.4
+  },
+  "candidates": [
+    {
+      "path": "technical-platform/web/e2e/phase10-tech-monitor-live.spec.ts",
+      "sha256": "FB51F1B43B2C92FCF072B74FB6D6322F2B8DD5303D536B8E25673197EA63C4E1",
+      "bytes": 8400
+    },
+    {
+      "path": "technical-platform/web/playwright.phase10-tech-monitor-live.config.ts",
+      "sha256": "03DBFD2CD048E1F520291E85B3B50F19F5941B0F309B0FE8F237AA75712CE940",
+      "bytes": 1003
+    },
+    {
+      "path": "technical-platform/web/knip.json",
+      "sha256": "5D721C2CF646D62A9034E0D20D7B8DB113868B2393CD7C182534BF7A4F9CECD1",
+      "bytes": 1190
+    }
+  ]
+}

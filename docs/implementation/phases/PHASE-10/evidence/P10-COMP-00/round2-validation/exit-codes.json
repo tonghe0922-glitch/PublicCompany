@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.0",
+  "project_preflight": 0,
+  "project_round2_pre_baseline": 0,
+  "project_source_gate_self_test": 0,
+  "project_local_tools_self_test": 0,
+  "project_source_gate_current": 1,
+  "project_source_gate_current_violation_count": 501,
+  "package_source_gate_self_test": 1,
+  "package_ui_gate_self_test": 0,
+  "package_ui_gate_current": 1,
+  "package_ui_gate_current_error_count": 88,
+  "pnpm_typecheck": 0,
+  "pnpm_lint": 0,
+  "pnpm_test": 0,
+  "pnpm_test_files": 25,
+  "pnpm_test_cases": 106,
+  "pnpm_build_three_portals": 0,
+  "notes": "Current source/UI gates intentionally expose dependency-ordered page debt; package source self-test retains its external Windows decoder failure."
+}

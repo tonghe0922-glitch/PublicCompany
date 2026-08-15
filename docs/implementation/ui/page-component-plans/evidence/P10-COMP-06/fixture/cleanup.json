@@ -1,0 +1,25 @@
+﻿{
+    "status":  "PASS",
+    "fixtureSha256":  "75694700689573F00DDC0F123FD3A3B17D27CB35A46C2C09A41562207ADB5FCA",
+    "fixtureBytes":  19002,
+    "runtimeKeyCount":  20,
+    "runtimeForbiddenKeyCount":  0,
+    "postgresContainerId":  "2b1e25380f1fb95295df55373512e50228b84c83f58b543398d66f5a36058ad0",
+    "postgresInspectExit":  1,
+    "redisContainerId":  "98a3891cd4cd8202b6e09a5053a1257d36cfd646ee9d3acbeb642ab82d1bb20f",
+    "redisInspectExit":  1,
+    "runningTestcontainersCount":  0,
+    "runningRyukCount":  0,
+    "listenerCount":  0,
+    "newFixtureProcessCount":  0,
+    "originalRuntimeCount":  7,
+    "originalRuntimePids":  [
+                                15196,
+                                35248,
+                                36432,
+                                40796,
+                                41392,
+                                43248,
+                                44872
+                            ]
+}

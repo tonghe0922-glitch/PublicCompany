@@ -2,13 +2,13 @@ import { computed, onMounted, reactive, toRefs, watchEffect } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import type { PortalDefinition } from '../../portal-config'
 import { createProcessRecord, executeProcessAction, listProcessRecords } from '../process-client'
+import { processCommandActor } from '../process-command-journal'
 import type { ProcessState } from '../process-state'
 import { useProcessOperation } from '../use-process-operation'
 
 export interface P016Props {
   portal: PortalDefinition
   mode: 'employee' | 'center' | 'tech'
-  sharedSupervision?: boolean
 }
 export interface CareCase {
   id: string; businessNo: string; currentNodeCode: string; status: string; versionNo: number
@@ -18,8 +18,10 @@ export interface CareCase {
   approval: { outcome: string; approvedAmount: number | null } | null
   execution: { executionKind: string; externalReference: string } | null
   confirmation: { outcome: string } | null; reconciliation: { outcome: string } | null
+  availableActions: ServerAction[]
 }
-export interface P016Action { code: string; label: string; permission: string; selfOnly?: boolean }
+interface ServerAction { code: string; labelCode: string; taskId: string | null; expectedVersion: number }
+export interface P016Action { code: string; label: string }
 type Session = ReturnType<typeof usePortalSessionStore>
 type Operations = ReturnType<typeof useProcessOperation>
 type Form = ReturnType<typeof createForm>
@@ -33,19 +35,16 @@ const careTypeOptions = ['MARRIAGE_BIRTH', 'HARDSHIP', 'HEALTH', 'BEREAVEMENT', 
 const executionKindOptions = ['PAYMENT_RECEIPT', 'GOODS_DELIVERY', 'SERVICE_COMPLETION'].map(value => ({ value, label: value }))
 const confirmationOptions = ['CONFIRMED', 'DISPUTED'].map(value => ({ value, label: value }))
 const reconciliationOptions = ['MATCHED', 'EXCEPTION_RESOLVED'].map(value => ({ value, label: value }))
-const ACTIONS: Record<string, P016Action[]> = {
-  S01: [action('SUBMIT_APPLICATION', '提交关怀申请', 'p016.welfare.manage')],
-  S02: [action('CONFIRM_ELIGIBILITY', '确认资格有效', 'p016.welfare.manage'), action('REJECT_ELIGIBILITY', '驳回资格', 'p016.welfare.manage')],
-  S03: [action('AUTHORIZE_PRIVACY', '授权隐私材料', 'p016.welfare.read', true)],
-  S04: [action('APPROVE_CARE', '批准关怀', 'p016.welfare.approve'), action('REJECT_CARE', '拒绝关怀', 'p016.welfare.approve')],
-  S05: [action('RECORD_EXECUTION', '登记外部执行回执', 'p016.welfare.execute')],
-  S06: [action('CONFIRM_RECEIPT', '确认收到关怀', 'p016.welfare.read', true)],
-  S07: [action('RECONCILE', '完成对账', 'p016.welfare.reconcile')],
-  S08: [action('ARCHIVE', '归档', 'p016.welfare.manage')],
+const ACTION_PRESENTATION: Record<string, P016Action> = {
+  SUBMIT_APPLICATION: action('SUBMIT_APPLICATION', '提交关怀申请'), CONFIRM_ELIGIBILITY: action('CONFIRM_ELIGIBILITY', '确认资格有效'),
+  REJECT_ELIGIBILITY: action('REJECT_ELIGIBILITY', '驳回资格'), AUTHORIZE_PRIVACY: action('AUTHORIZE_PRIVACY', '授权隐私材料'),
+  APPROVE_CARE: action('APPROVE_CARE', '批准关怀'), REJECT_CARE: action('REJECT_CARE', '拒绝关怀'),
+  RECORD_EXECUTION: action('RECORD_EXECUTION', '登记外部执行回执'), CONFIRM_RECEIPT: action('CONFIRM_RECEIPT', '确认收到关怀'),
+  RECONCILE: action('RECONCILE', '完成对账'), ARCHIVE: action('ARCHIVE', '归档'),
 }
 
-function action(code: string, label: string, permission: string, selfOnly = false): P016Action {
-  return { code, label, permission, selfOnly }
+function action(code: string, label: string): P016Action {
+  return { code, label }
 }
 function now(): string {
   return new Date().toISOString()
@@ -64,12 +63,8 @@ function createForm() {
 function evidence(form: Form) {
   return { note: form.evidenceNote.trim(), recordedAt: now() }
 }
-function availableActions(context: Context, item: CareCase): P016Action[] {
-  if (context.props.mode === 'tech') return []
-  const affected = item.affectedEmployeeId === context.session.session?.employeeId
-  return (ACTIONS[item.currentNodeCode] ?? []).filter(candidate =>
-    context.session.can(candidate.permission)
-    && (candidate.selfOnly ? affected : !affected))
+function availableActions(item: CareCase): P016Action[] {
+  return item.availableActions.flatMap(candidate => ACTION_PRESENTATION[candidate.code] ?? [])
 }
 function createBody(form: Form) {
   return {
@@ -122,10 +117,14 @@ function createLoad(context: Context) {
 function createCare(context: Context, load: () => Promise<void>) {
   return async (): Promise<void> => {
     const body = createBody(context.form)
-    const result = await context.operations.runAction(
-      context.createKey,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: context.createKey,
+        recordLockKey: `P016:record:create:${context.props.portal.code}:${context.props.mode}`,
+        operationKey: 'P016:create', actor: processCommandActor(context.session), payload: body,
+      },
       request => createProcessRecord<CareCase, typeof body>(
-        context.session, COLLECTION, 'p016-create', body, request,
+        context.session, COLLECTION, request.idempotencyKey, body, request,
       ),
       '关怀事项已创建。',
     )
@@ -136,11 +135,15 @@ function performAction(context: Context, load: () => Promise<void>) {
   return async (item: CareCase, candidate: P016Action): Promise<void> => {
     const key = `P016:action:${item.id}:${candidate.code}`
     const body = actionBody(context.form, item, candidate)
-    const result = await context.operations.runAction(
-      key,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: key, recordLockKey: `P016:record:${item.id}`,
+        operationKey: `P016:record:${item.id}:${candidate.code}`,
+        actor: processCommandActor(context.session), payload: body,
+      },
       request => executeProcessAction<CareCase, typeof body>(
         context.session, COLLECTION, item.id, candidate.code,
-        `p016-${candidate.code.toLowerCase()}`, body, request,
+        request.idempotencyKey, body, request,
       ),
       `${candidate.label}已完成。`,
     )
@@ -158,21 +161,19 @@ export function useP016CareSupport(props: P016Props) {
   const listState = computed(() => operations.resourceState<CareCase[]>(resourceKey))
   const canRead = computed(() => session.can('p016.welfare.read') || session.can('p016.welfare.monitor'))
   const canManage = computed(() => session.can('p016.welfare.manage'))
-  const showCare = computed(() => !props.sharedSupervision || canRead.value || canManage.value
-    || ['approve', 'execute', 'reconcile'].some(code => session.can(`p016.welfare.${code}`)))
-  const showDiscipline = computed(() => Boolean(props.sharedSupervision)
-    && ['read', 'manage', 'investigate', 'decide', 'appeal'].some(code => session.can(`p014.discipline.${code}`)))
   const load = createLoad(context)
   watchEffect(() => { if (!form.affectedEmployeeId) form.affectedEmployeeId = session.session?.employeeId ?? '' })
-  onMounted(() => { if (showCare.value && canRead.value) void load() })
+  onMounted(() => { if (canRead.value) void load() })
   return {
     ...toRefs(form), cases: computed(() => listState.value.data ?? []), listState,
     createState: computed(() => operations.actionState(createKey)), canRead, canManage,
-    showCare, showDiscipline, isTech: computed(() => props.mode === 'tech'),
+    isTech: computed(() => props.mode === 'tech'),
     careTypeOptions, executionKindOptions, confirmationOptions, reconciliationOptions,
     load, createCase: createCare(context, load), perform: performAction(context, load),
-    actions: (item: CareCase) => availableActions(context, item),
+    actions: (item: CareCase) => availableActions(item),
     actionState: (item: CareCase, candidate: P016Action): ProcessState =>
       operations.actionState(`P016:action:${item.id}:${candidate.code}`),
+    recordPending: (item: CareCase) =>
+      operations.recordPending(processCommandActor(session), `P016:record:${item.id}`),
   }
 }

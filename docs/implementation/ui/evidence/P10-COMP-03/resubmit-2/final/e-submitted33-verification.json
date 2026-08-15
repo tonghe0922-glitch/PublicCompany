@@ -1,0 +1,12 @@
+﻿{
+    "submitted_count":  33,
+    "disk_mismatch_count":  0,
+    "mismatches":  [
+
+                   ],
+    "report_sha":  "0FE2ACC78B6971650911AA82472A9F0E7143AFC15D0B7BF4EFBB294FA628069C",
+    "report_bytes":  20278,
+    "old_runtime_present":  7,
+    "fresh_listener_count":  0,
+    "running_testcontainers_ryuk":  0
+}

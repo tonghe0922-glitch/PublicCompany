@@ -12,6 +12,7 @@ extract.OUT_DIR = extract.ROOT / "docs" / "implementation" / "phases" / extract.
 extract.OUT_JSON = extract.OUT_DIR / f"{extract.RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.json"
 extract.OUT_MD = extract.OUT_DIR / f"{extract.RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.md"
 extract.TARGET_CODES = ("P011", "P012", "P013", "P014", "P015", "P016")
+extract.GENERATOR_RELATIVE = "scripts/implementation/phase11_preparation_extract.py"
 
 if __name__ == "__main__":
     extract.main()

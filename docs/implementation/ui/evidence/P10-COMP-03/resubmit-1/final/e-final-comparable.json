@@ -1,0 +1,90 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-03-resubmit-1-final-comparable",
+    "report_excluded":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+    "pre":  {
+                "raw_workspace_id":  "C28742FEB27279A28529B87F10AF3709EE05269706FC34A8F93667BEA0DFCBA5",
+                "raw_workspace_count":  1542,
+                "raw_task_id":  "28DAC914909E09342312237921492AE01275AE3403D36F1C67D563EC9ACE7E51",
+                "raw_task_count":  33,
+                "workspace_id":  "CA3D31C2F0A95EB726EE80AB5DC09376864E57287E044E24E6E12A8EED57DFFA",
+                "workspace_count":  1541,
+                "task_id":  "18AFD21B3B68E87709A8B332B1F7CD38DD62C088B0B53D76DA3D491096E095FF",
+                "task_count":  32,
+                "metadata_id":  "D625C08D6001DB891E36C0448E01CA87FAA563DBA84FDB332D8C271A698EA106",
+                "metadata_count":  1
+            },
+    "post":  {
+                 "raw_workspace_id":  "72EDB466A366909032A121EFF5A8672DE29A22803816D9DF8341B20A951CFCF1",
+                 "raw_workspace_count":  1542,
+                 "raw_task_id":  "3A63CF6A3A543FC3A9A14999D598DB67688148831215F3E9EC0465073BF60B10",
+                 "raw_task_count":  33,
+                 "workspace_id":  "A3D71D0843777BD92C574EDE0529CE03127E6DEE85E286FD285AC342263FC4CF",
+                 "workspace_count":  1541,
+                 "task_id":  "09065B3F69C1E682F0DB20BE42E007898EB76A3017D64463594BC1196C3E7773",
+                 "task_count":  32,
+                 "metadata_id":  "3FA70B04E0E8F0FD913D0325954E68FABFD629E1667275EB2609608A5596D877",
+                 "metadata_count":  1
+             },
+    "scoped":  {
+                   "task_count":  5,
+                   "unrelated_count":  0,
+                   "concurrent_count":  0,
+                   "metadata_count":  1,
+                   "task_changes":  [
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/actions/ProcessActionPanel.vue",
+                                            "change":  "modified",
+                                            "before_sha256":  "69782DE5FC4713271C72DBFCEFC8F3E6DCFD2E43CD1781EB54F37C6A83BCFF7B",
+                                            "after_sha256":  "2C4D865D9660661B6A99A17A62322466EE71EAFF776726C26CA819C1BB33B02A",
+                                            "before_bytes":  1025,
+                                            "after_bytes":  2884
+                                        },
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts",
+                                            "change":  "modified",
+                                            "before_sha256":  "1DC0A7AA63CD16159C2CCFDA956597EFC3B510133FDD0A12AC24E2083036C19B",
+                                            "after_sha256":  "09E52DB0B648FDFE7D8B6B12BC4A08FE075913062C742E1CD91EEE4B77235D59",
+                                            "before_bytes":  2286,
+                                            "after_bytes":  5231
+                                        },
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                                            "change":  "modified",
+                                            "before_sha256":  "2E03C337C60090BC75D3F0C3D64A3DAE783024F1FC37C6120758EC567EAB3DA9",
+                                            "after_sha256":  "64B135E8BFA47118E343682F37F2462343E812DA4371CF86220A8D32597F8CC4",
+                                            "before_bytes":  2130,
+                                            "after_bytes":  4950
+                                        },
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/records/DescriptionList.vue",
+                                            "change":  "modified",
+                                            "before_sha256":  "4FB34B78B55DEA31C782665797A89B3FB85DD2115A5AE13F6444B0AC9B08B4A5",
+                                            "after_sha256":  "2A293C28D5A1A9FAD73B8E0C6051B6CEA6E3F5CCBED108311FDFCA0891C7A35B",
+                                            "before_bytes":  373,
+                                            "after_bytes":  663
+                                        },
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                                            "change":  "modified",
+                                            "before_sha256":  "C773C4E02D6FA8B04A8E6963DD6C6B28D8545B3FF3804080E86360A30246787C",
+                                            "after_sha256":  "A0F2F99B402D659C7D6966FE61146AE3D84A34D088A7A2E613E0ACD3013028DA",
+                                            "before_bytes":  1864,
+                                            "after_bytes":  4435
+                                        }
+                                    ],
+                   "unrelated_changes":  [
+
+                                         ],
+                   "metadata_changes":  [
+                                            {
+                                                "path":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+                                                "change":  "modified",
+                                                "before_sha256":  "6F20A468D5A40662CC62B75E1B63AFCBBF1C5E369A2C944CE286A9C778BBFFC7",
+                                                "after_sha256":  "8FFA3034DCB675CE773D57E554E97BA562E810C82F9828766540012D2C030D9F",
+                                                "before_bytes":  9038,
+                                                "after_bytes":  14498
+                                            }
+                                        ]
+               }
+}

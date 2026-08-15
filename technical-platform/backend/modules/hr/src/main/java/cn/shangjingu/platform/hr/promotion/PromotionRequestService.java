@@ -186,28 +186,26 @@ public final class PromotionRequestService {
         };
     }
 
+    public List<String> availableActionCodes(DatabaseSecurityContext actor, Request request) {
+        requireActor(actor);
+        return ACTIONS.getOrDefault(request.currentNodeCode(), Set.of()).stream()
+                .filter(action -> actorAndStateViolation(actor, request, action).isEmpty())
+                .sorted()
+                .toList();
+    }
+
     private void validateAction(DatabaseSecurityContext actor, Request request, String action, ActionCommand command) {
-        boolean owner = actor.employeeId().equals(request.ownerEmployeeId());
-        if ("CONFIRM_APPOINTMENT".equals(action) && !owner)
-            throw rejected("only the target employee may confirm the appointment");
-        if (Set.of("RECORD_ASSESSMENT", "COMPLETE_REVIEW", "APPROVE", "RECORD_APPOINTMENT", "COMPLETE_PROBATION", "MAKE_EFFECTIVE", "ROLL_BACK").contains(action) && owner)
-            throw rejected("target employee cannot review, approve or execute their own appointment");
+        actorAndStateViolation(actor, request, action).ifPresent(message -> { throw rejected(message); });
         if ("CHECK_ELIGIBILITY".equals(action) && (!Boolean.TRUE.equals(command.eligibilityConfirmed()) || !Boolean.TRUE.equals(command.freezeClear())))
             throw rejected("eligibility and freeze status must both be confirmed");
         if ("RECORD_ASSESSMENT".equals(action) && (command.score1000() == null || command.score1000() < 0 || command.score1000() > 1000))
             throw rejected("assessment score must be between 0 and 1000");
         if ("VERIFY_VACANCY_BUDGET".equals(action) && (!Boolean.TRUE.equals(command.vacancyConfirmed()) || trim(command.budgetVerificationReference()) == null))
             throw rejected("confirmed vacancy and external budget verification reference are required");
-        if ("COMPLETE_REVIEW".equals(action)) {
-            UUID assessor = repository.eventActor(actor.tenantId(), request.id(), "ASSESSMENT_RECORDED").orElseThrow(() -> rejected("assessment actor is missing"));
-            if (assessor.equals(actor.employeeId())) throw rejected("competition reviewer must be independent from assessor");
-            if (!Boolean.TRUE.equals(command.reviewPassed())) throw rejected("review must pass before approval");
-        }
-        if ("APPROVE".equals(action)) {
-            UUID reviewer = repository.eventActor(actor.tenantId(), request.id(), "REVIEW_COMPLETED").orElseThrow(() -> rejected("review actor is missing"));
-            if (reviewer.equals(actor.employeeId())) throw rejected("approver must be independent from reviewer");
-            if (!Boolean.TRUE.equals(command.approved())) throw rejected("approved decision is required to continue");
-        }
+        if ("COMPLETE_REVIEW".equals(action) && !Boolean.TRUE.equals(command.reviewPassed()))
+            throw rejected("review must pass before approval");
+        if ("APPROVE".equals(action) && !Boolean.TRUE.equals(command.approved()))
+            throw rejected("approved decision is required to continue");
         if ("RECORD_APPOINTMENT".equals(action) && (command.actualEffectiveDate() == null
             || trim(command.salaryConfirmationReference()) == null || trim(command.externalReference()) == null))
             throw rejected("effective date and external appointment/salary confirmation references are required");
@@ -223,6 +221,34 @@ public final class PromotionRequestService {
             if (!repository.eventExists(actor.tenantId(), request.id(), "PROBATION_ROLLBACK")) throw rejected("rollback probation evidence is required");
             validateExecution(command);
         }
+    }
+
+    private Optional<String> actorAndStateViolation(DatabaseSecurityContext actor, Request request, String action) {
+        boolean owner = actor.employeeId().equals(request.ownerEmployeeId());
+        if ("CONFIRM_APPOINTMENT".equals(action) && !owner)
+            return Optional.of("only the target employee may confirm the appointment");
+        if (Set.of("RECORD_ASSESSMENT", "COMPLETE_REVIEW", "APPROVE", "RECORD_APPOINTMENT", "COMPLETE_PROBATION", "MAKE_EFFECTIVE", "ROLL_BACK").contains(action) && owner)
+            return Optional.of("target employee cannot review, approve or execute their own appointment");
+        if ("RECORD_APPOINTMENT".equals(action)
+                && repository.executionExists(actor.tenantId(), request.id(), "CONFIRMED"))
+            return Optional.of("appointment confirmation is already recorded");
+        if ("COMPLETE_REVIEW".equals(action)) {
+            Optional<UUID> assessor = repository.eventActor(actor.tenantId(), request.id(), "ASSESSMENT_RECORDED");
+            if (assessor.isEmpty()) return Optional.of("assessment actor is missing");
+            if (assessor.get().equals(actor.employeeId()))
+                return Optional.of("competition reviewer must be independent from assessor");
+        }
+        if ("APPROVE".equals(action)) {
+            Optional<UUID> reviewer = repository.eventActor(actor.tenantId(), request.id(), "REVIEW_COMPLETED");
+            if (reviewer.isEmpty()) return Optional.of("review actor is missing");
+            if (reviewer.get().equals(actor.employeeId()))
+                return Optional.of("approver must be independent from reviewer");
+        }
+        if ("MAKE_EFFECTIVE".equals(action) && !repository.eventExists(actor.tenantId(), request.id(), "PROBATION_PASS"))
+            return Optional.of("passed probation evidence is required");
+        if ("ROLL_BACK".equals(action) && !repository.eventExists(actor.tenantId(), request.id(), "PROBATION_ROLLBACK"))
+            return Optional.of("rollback probation evidence is required");
+        return Optional.empty();
     }
 
     private static void validateExecution(ActionCommand command) {

@@ -1,0 +1,1671 @@
+{
+  "schema_version": "1.0",
+  "gate": "UI component access gate",
+  "repository_root": "I:\\PublicCompany_source_codex",
+  "registry": "I:\\PublicCompany_source_codex\\docs\\implementation\\ui\\UI_COMPONENT_REGISTRY.json",
+  "registry_schema_version": "1.0",
+  "scope": "all",
+  "scanned_file_count": 26,
+  "status": "FAIL",
+  "error_count": 207,
+  "warning_count": 0,
+  "findings": [
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/ForbiddenPage.vue",
+      "line": 3,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/LoginPage.vue",
+      "line": 5,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/NotFoundPage.vue",
+      "line": 4,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 180,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 191,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 192,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 199,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 177,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 178,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 179,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 188,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 189,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 198,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "line": 201,
+      "message": "业务层不得直接新增原生交互元素 <table>；请调用注册组件",
+      "excerpt": "<table"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 248,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 254,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 274,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 275,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 278,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 279,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 283,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 284,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 236,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 237,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 238,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 239,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 240,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 241,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 242,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 246,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 245,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 243,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 244,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "line": 257,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 124,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 128,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 137,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 138,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 141,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 117,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 118,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 119,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 120,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 113,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 121,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 122,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "line": 130,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 203,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 218,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 242,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 246,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 190,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 191,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 198,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 199,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 211,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 193,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 196,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 200,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 201,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 209,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "line": 210,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 279,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 296,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 330,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 333,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 262,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 263,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 264,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 268,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 269,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 270,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 271,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 272,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 273,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 274,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 275,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 276,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 284,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 266,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 277,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 285,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "line": 290,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 37,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 37,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 96,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 96,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 97,
+      "message": "业务层不得直接新增原生交互元素 <table>；请调用注册组件",
+      "excerpt": "<table"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 48,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 48,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <select>；请调用注册组件",
+      "excerpt": "<select"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 25,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 25,
+      "message": "业务层不得直接新增原生交互元素 <button>；请调用注册组件",
+      "excerpt": "<button"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <input>；请调用注册组件",
+      "excerpt": "<input"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24,
+      "message": "业务层不得直接新增原生交互元素 <textarea>；请调用注册组件",
+      "excerpt": "<textarea"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P011PerformancePage.vue",
+      "line": 19,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P012PromotionPage.vue",
+      "line": 19,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P013RewardPage.vue",
+      "line": 18,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P014DisciplinePage.vue",
+      "line": 19,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P015PointLedgerPage.vue",
+      "line": 20,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "LEGACY_UI_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P016CareSupportPage.vue",
+      "line": 17,
+      "message": "扫描范围内页面应收敛到 @sgj/ui，不再使用不稳定相对 barrel",
+      "excerpt": "from '../../design-system'"
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/ForbiddenPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：ForbiddenPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/LoginPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：LoginPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/NotFoundPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：NotFoundPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P001IdentityPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P001IdentityPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P002PermissionRequestPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P002PermissionRequestPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P003ProfileChangePage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P003ProfileChangePage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P004GenericRequestPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P004GenericRequestPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P005NoticePage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P005NoticePage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P011PerformancePage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P011PerformancePage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P012PromotionPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P012PromotionPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P013RewardPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P013RewardPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P014DisciplinePage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P014DisciplinePage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P015PointLedgerPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P015PointLedgerPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/P016CareSupportPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：P016CareSupportPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/Phase09CenterInboxPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：Phase09CenterInboxPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/Phase09TechWorkflowMonitorPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：Phase09TechWorkflowMonitorPage",
+      "excerpt": null
+    },
+    {
+      "severity": "error",
+      "code": "PAGE_USAGE_PLAN_MISSING",
+      "path": "docs/implementation/ui/page-component-plans/Phase10AttendanceMonitorPage.ui-plan.json",
+      "line": null,
+      "message": "页面缺少组件使用计划：Phase10AttendanceMonitorPage",
+      "excerpt": null
+    }
+  ],
+  "remote_operations_performed": false
+}

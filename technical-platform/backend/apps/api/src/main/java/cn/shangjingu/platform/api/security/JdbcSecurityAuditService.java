@@ -40,6 +40,27 @@ public final class JdbcSecurityAuditService implements StepUpAuditSink {
         });
     }
 
+    public void recordOperationOnce(SessionContext subject, String action, String resourceType, UUID resourceId, String idempotencyKey) {
+        recordOperationOnce(subject.tenantId(), subject.userId(), subject.identityId(), action, resourceType, resourceId, idempotencyKey);
+    }
+
+    public void recordOperationOnce(UUID tenantId, UUID userId, UUID identityId, String action, String resourceType,
+                                    UUID resourceId, String idempotencyKey) {
+        if (idempotencyKey == null || idempotencyKey.isBlank()) throw new IllegalArgumentException("Idempotency-Key must not be blank");
+        inTenant(tenantId, () -> {
+            PlatformTraceContext trace = PlatformTraceContextHolder.currentOrNull();
+            jdbc.update("""
+                    insert into audit.operation_log(
+                        tenant_id,actor_id,actor_identity_id,action,resource_type,resource_id,request_id,
+                        correlation_id,trace_id,idempotency_key)
+                    values (?,?,?,?,?,?,?,?,?,?)
+                    on conflict (tenant_id,action,resource_type,idempotency_key)
+                    where idempotency_key is not null do nothing
+                    """, tenantId,userId,identityId,action,resourceType,resourceId,requestId(),
+                    correlation(trace),traceId(trace),idempotencyKey);
+        });
+    }
+
     public void recordSensitiveAccess(SessionContext subject, String resourceType, UUID resourceId, String fieldsAccessedJson, String purpose) {
         inTenant(subject.tenantId(), () -> {
             PlatformTraceContext trace = PlatformTraceContextHolder.currentOrNull();

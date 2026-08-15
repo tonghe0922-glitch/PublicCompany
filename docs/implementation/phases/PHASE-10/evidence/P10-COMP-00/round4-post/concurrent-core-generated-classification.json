@@ -1,0 +1,26 @@
+﻿{
+    "schema_version":  "2.0",
+    "classification":  "concurrent_core_excluded_generated",
+    "attributed_to_ui_task_source":  false,
+    "patterns":  [
+                     ".runlogs/phase11-p015-*.log",
+                     "technical-platform/backend/**/target/**",
+                     "technical-platform/web/dist/**",
+                     "technical-platform/web/reports/playwright-phase11-p015-live/**",
+                     "technical-platform/web/test-results/**",
+                     "technical-platform/web/playwright-report/**",
+                     "technical-platform/web/coverage/**"
+                 ],
+    "baseline_exclusion_contract":  [
+                                        ".runlogs",
+                                        "target",
+                                        "dist",
+                                        "reports",
+                                        "test-results",
+                                        "playwright-report",
+                                        "coverage"
+                                    ],
+    "p016_generated_changes_after_round4_pre":  [
+
+                                                ]
+}

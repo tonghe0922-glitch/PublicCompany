@@ -1,0 +1,32 @@
+﻿{
+    "pre":  {
+                "workspace_id":  "B7421B23588C7FF049F293D9490FB9A0EE73F48BBF77330FFF1C2CAFE9BE5FED",
+                "workspace_count":  1541,
+                "task_id":  "41726E9699733A5F9422A25500FEC660BCF65DC261A55312FFB83AD34BEB262A",
+                "task_count":  32
+            },
+    "post":  {
+                 "workspace_id":  "CA3D31C2F0A95EB726EE80AB5DC09376864E57287E044E24E6E12A8EED57DFFA",
+                 "workspace_count":  1541,
+                 "task_id":  "18AFD21B3B68E87709A8B332B1F7CD38DD62C088B0B53D76DA3D491096E095FF",
+                 "task_count":  32
+             },
+    "workspace_changed":  [
+                              "scripts/implementation/ui_component_access_gate.py",
+                              "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts",
+                              "technical-platform/web/src/platform/processes/shared/async/useAsyncAction.ts",
+                              "technical-platform/web/src/platform/processes/shared/async/useAsyncResource.ts"
+                          ],
+    "task_changed":  [
+                         "scripts/implementation/ui_component_access_gate.py",
+                         "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts",
+                         "technical-platform/web/src/platform/processes/shared/async/useAsyncAction.ts",
+                         "technical-platform/web/src/platform/processes/shared/async/useAsyncResource.ts"
+                     ],
+    "scoped":  {
+                   "task":  4,
+                   "unrelated":  0,
+                   "concurrent":  0,
+                   "metadata":  1
+               }
+}

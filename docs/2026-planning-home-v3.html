@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>云栖谷 · 企划中心工作台</title>
+<style>
+  :root{
+    --fs:1;
+    --page-bg:#f0f2f7;
+    --card-bg:#ffffff;
+    --ink:#111421;--ink-2:#5a6073;--ink-3:#9ba2b3;
+    --line:#eef0f5;--line-2:#e8ebf2;
+    --pri:#6366f1;--pri-soft:#eef0ff;--pri-ink:#fff;
+    --sec:#10b981;--sec-soft:#ecfdf5;
+    --warn:#f59e0b;--warn-soft:#fffbeb;
+    --rose:#f43f5e;--rose-soft:#fef2f2;
+    --shadow-sm:0 1px 3px rgba(16,20,40,.06),0 1px 2px rgba(16,20,40,.04);
+    --shadow:0 4px 12px rgba(16,20,40,.07),0 1px 3px rgba(16,20,40,.05);
+    --shadow-lg:0 18px 50px rgba(16,20,40,.11),0 4px 12px rgba(16,20,40,.05);
+    --r:24px;--r-lg:32px;--r-pill:999px;--r-sm:14px;--r-xs:10px;
+    font-size:calc(15px*var(--fs));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,"SF Pro Display","PingFang SC","Microsoft YaHei",system-ui,"Segoe UI",Roboto,sans-serif;
+    background:var(--page-bg);color:var(--ink);line-height:1.55;
+    -webkit-font-smoothing:antialiased;letter-spacing:.005em;
+    min-height:100vh;padding:0;
+  }
+
+  /* ---------- Decorative blobs ---------- */
+  .blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .blob{position:absolute;border-radius:50%;opacity:.55}
+  .b1{width:420px;height:420px;background:#fde4cf;top:-120px;right:-80px}
+  .b2{width:360px;height:360px;background:#ddd6fe;bottom:-100px;left:-80px}
+
+  /* ---------- Main Card ---------- */
+  .wrap{position:relative;z-index:1;width:100%;max-width:none;
+    background:var(--card-bg);border-radius:0;
+    box-shadow:none;overflow:hidden;display:flex;min-height:100vh}
+
+  /* ---------- Sidebar (inside card) ---------- */
+  .side{width:252px;flex:0 0 auto;border-right:1px solid var(--line);display:flex;flex-direction:column;
+    background:linear-gradient(180deg,#fafbff 0%,#f5f3ff 100%)}
+  .brand{display:flex;align-items:center;gap:.65rem;padding:1.4rem 1.35rem}
+  .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--pri),#a78bfa);
+    color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.05rem;flex:0 0 auto}
+  .brand b{font-size:1.04rem;font-weight:800;letter-spacing:.01em}
+  .nav{padding:.6rem .75rem;flex:1;display:flex;flex-direction:column;gap:.15rem}
+  .nav a{display:flex;align-items:center;gap:.72rem;padding:.62rem .82rem;border-radius:var(--r-sm);
+    color:var(--ink-2);text-decoration:none;font-size:.88rem;font-weight:500;transition:.15s}
+  .nav a svg{width:19px;height:19px;flex:0 0 auto;color:var(--ink-3)}
+  .nav a:hover{background:rgba(99,102,241,.06);color:var(--ink)}
+  .nav a.on{background:var(--pri-soft);color:var(--pri);font-weight:700}
+  .nav a.on svg{color:var(--pri)}
+  .side-art{padding:1.2rem .9rem;text-align:center;margin:auto .6rem 0}
+  .side-art .illu{width:140px;height:110px;margin:0 auto .6rem;border-radius:var(--r);
+    background:linear-gradient(135deg,#c4b5fd,#a78bfa);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .side-art .illu::before{content:"📋";font-size:2.4rem}
+  .side-art p{font-size:.76rem;color:var(--ink-3);font-weight:600;line-height:1.45}
+  .me{padding:.9rem 1.1rem;border-top:1px solid var(--line);display:flex;align-items:center;gap:.7rem}
+  .me .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sec),#34d399);color:#fff;
+    display:grid;place-items:center;font-weight:700;flex:0 0 auto;font-size:.92rem}
+  .me b{font-size:.86rem}.me span{font-size:.7rem;color:var(--ink-3);display:block}
+
+  /* ---------- Content ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{display:flex;align-items:center;gap:1rem;padding:1.3rem 1.8rem;border-bottom:1px solid var(--line)}
+  .topbar h1{font-size:1.45rem;font-weight:800;letter-spacing:-.01em}
+  .topbar .sub{font-size:.84rem;color:var(--ink-3);margin-top:.08rem}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+  .search{display:flex;align-items:center;gap:.5rem;background:var(--page-bg);border:1px solid var(--line-2);
+    border-radius:var(--r-pill);padding:.48rem .9rem;color:var(--ink-3);width:260px}
+  .search input{border:0;background:0;outline:0;flex:1;font:inherit;color:var(--ink);font-size:.86rem}
+  .btn-ico{width:38px;height:38px;border-radius:11px;border:1px solid var(--line-2);background:var(--card-bg);
+    color:var(--ink-2);display:grid;place-items:center;cursor:pointer;transition:.15s;font-size:.95rem}
+  .btn-ico:hover{color:var(--ink);border-color:var(--ink-3)}
+  .fontctl{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:11px;overflow:hidden;background:var(--card-bg)}
+  .fontctl button{width:34px;height:38px;border:0;background:0;color:var(--ink-2);cursor:pointer;font-weight:700;font-size:.9rem}
+  .fontctl button:hover{background:var(--page-bg)}
+
+  .body{flex:1;overflow-y:auto;padding:1.4rem 1.8rem 2rem}
+  .body::-webkit-scrollbar{width:6px}.body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+
+  /* Hero */
+  .hero{display:flex;flex-wrap:wrap;gap:1.4rem;margin-bottom:1.4rem}
+  .hero-main{flex:1;min-width:300px;background:var(--page-bg);border:1px solid var(--line-2);
+    border-radius:var(--r);padding:1.5rem 1.6rem}
+  .hero-main .lbl{font-size:.72rem;font-weight:700;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase}
+  .hero-main h2{font-size:2.1rem;font-weight:850;margin:.3rem 0 .15rem;letter-spacing:-.02em;line-height:1.2}
+  .hero-main p{color:var(--ink-2);font-size:.9rem;max-width:52ch}
+  .alert{display:inline-flex;align-items:center;gap:.42rem;margin-top:.85rem;background:var(--warn-soft);
+    color:#b45309;font-size:.78rem;font-weight:700;padding:.42rem .8rem;border-radius:var(--r-pill)}
+  .hero-kpis{display:flex;gap:.9rem;flex-wrap:wrap}
+  .kpi{background:var(--card-bg);border:1px solid var(--line-2);border-radius:var(--r);
+    padding:1.15rem 1.35rem;min-width:130px;box-shadow:var(--shadow-sm)}
+  .kpi .n{font-size:1.95rem;font-weight:850;line-height:1.1;letter-spacing:-.03em}
+  .kpi .l{font-size:.74rem;color:var(--ink-3);font-weight:600;margin-top:.35rem}
+  .kpi.pri .n{color:var(--pri)} .kpi.sec .n{color:var(--sec)} .kpi.warn .n{color:var(--warn)}
+
+  /* Grid */
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:1.4rem;align-items:start}
+
+  /* Section */
+  .sec{background:var(--card-bg);border:1px solid var(--line-2);border-radius:var(--r);
+    box-shadow:var(--shadow-sm);padding:1.3rem 1.4rem}
+  .sec+.sec{margin-top:1.4rem}
+  .sec-h{display:flex;align-items:center;gap:.55rem;margin-bottom:1.05rem}
+  .sec-h h3{font-size:1rem;font-weight:800}
+  .sec-h .more{margin-left:auto;font-size:.78rem;color:var(--pri);font-weight:700;cursor:pointer;
+    background:0;border:0;text-decoration:none}
+  .sec-h .cnt{font-size:.7rem;color:var(--ink-3);font-weight:600}
+
+  /* Project cards */
+  .proj{border:1px solid var(--line-2);border-radius:var(--r-sm);padding:1.15rem 1.2rem;transition:.18s}
+  .proj+.proj{margin-top:.9rem}
+  .proj:hover{box-shadow:var(--shadow);border-color:var(--line)}
+  .proj .ph{display:flex;align-items:flex-start;gap:.8rem}
+  .proj .nm{font-weight:750;font-size:.98rem;flex:1;min-width:0}
+  .proj .own{font-size:.74rem;color:var(--ink-3);margin-top:.12rem}
+  .badge{font-size:.7rem;font-weight:700;padding:.26rem .6rem;border-radius:var(--r-pill);white-space:nowrap}
+  .bg{background:var(--sec-soft);color:#059669}
+  .bm{background:var(--warn-soft);color:#b45309}
+  .br{background:var(--rose-soft);color:#be123c}
+  .steps{display:flex;align-items:center;gap:0;margin:.85rem 0 .65rem}
+  .st{display:flex;align-items:center;flex:1}
+  .dot{width:22px;height:22px;border-radius:50%;background:var(--page-bg);color:var(--ink-3);
+    display:grid;place-items:center;font-size:.68rem;font-weight:700;flex:0 0 auto;z-index:1;
+    border:2px solid var(--card-bg)}
+  .ln{flex:1;height:3px;background:var(--line-2)}
+  .st.done .dot{background:var(--pri);color:#fff}
+  .st.done .ln{background:var(--pri)}
+  .st.cur .dot{background:var(--pri);color:#fff;box-shadow:0 0 0 4px var(--pri-soft)}
+  .meta{display:flex;flex-wrap:wrap;gap:.45rem .9rem;font-size:.78rem;color:var(--ink-2)}
+  .meta b{color:var(--ink);font-weight:700}
+  .meta .caution{color:#b45309;font-weight:700}
+  .bar{height:7px;border-radius:var(--r-pill);background:var(--page-bg);overflow:hidden;margin-top:.65rem}
+  .bar i{display:block;height:100%;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--pri),#a78bfa)}
+  .acts{display:flex;gap:.45rem;margin-top:.8rem;flex-wrap:wrap}
+  .acts button{font:inherit;font-size:.76rem;font-weight:650;padding:.38rem .78rem;border-radius:var(--r-pill);
+    border:1px solid var(--line-2);background:var(--card-bg);color:var(--ink-2);cursor:pointer;transition:.15s}
+  .acts button:hover{border-color:var(--pri);color:var(--pri)}
+
+  /* Pipeline */
+  .pipe{display:flex;gap:.75rem;overflow-x:auto;padding-bottom:.4rem}
+  .pipe::-webkit-scrollbar{height:8px}.pipe::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+  .pcol{flex:0 0 190px;background:var(--page-bg);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:.7rem}
+  .pcol h4{font-size:.78rem;font-weight:800;display:flex;align-items:center;gap:.4rem;margin-bottom:.65rem}
+  .pcol h4 .d{width:8px;height:8px;border-radius:50%}
+  .pcard{background:var(--card-bg);border:1px solid var(--line-2);border-radius:var(--r-xs);padding:.6rem .65rem;margin-bottom:.55rem}
+  .pcard .t{font-size:.82rem;font-weight:650;line-height:1.35}
+  .pcard .f{display:flex;align-items:center;gap:.35rem;margin-top:.4px;font-size:.68rem;color:var(--ink-3)}
+  .pcard .ft{font-size:.64rem;font-weight:700;padding:.13rem .42rem;border-radius:6px;background:var(--page-bg);color:var(--ink-2)}
+  .dp{background:var(--pri)} .dt{background:var(--warn)} .da{background:var(--amber)} .ds{background:var(--sec)} .dr{background:var(--rose)}
+
+  /* Timeline */
+  .tl{position:relative;padding-left:1.35rem}
+  .tl::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line-2)}
+  .ti{position:relative;padding:0 0 1rem}
+  .ti:last-child{padding-bottom:0}
+  .ti .pt{position:absolute;left:-1.35rem;top:4px;width:15px;height:15px;border-radius:50%;
+    background:var(--card-bg);border:2.5px solid var(--pri);z-index:1}
+  .ti.u .pt{border-color:var(--rose)}
+  .ti .tm{font-size:.7rem;font-weight:700;color:var(--pri)}
+  .ti.u .tm{color:var(--rose)}
+  .ti .tt{font-weight:650;font-size:.88rem;margin-top:.08rem}
+  .ti .td{font-size:.76rem;color:var(--ink-3);margin-top:.06rem}
+  .ti .src{display:inline-block;margin-top:.3rem;font-size:.66rem;font-weight:700;color:var(--ink-2);
+    background:var(--page-bg);border:1px solid var(--line-2);padding:.14rem .48rem;border-radius:6px}
+
+  /* Tools grid */
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+  .tool{display:flex;align-items:center;gap:.58rem;padding:.65rem .75rem;border:1px solid var(--line-2);
+    border-radius:var(--r-sm);background:var(--card-bg);cursor:pointer;transition:.15s;text-decoration:none;color:inherit}
+  .tool:hover{border-color:var(--pri);box-shadow:var(--shadow-sm)}
+  .tool .ic{width:30px;height:30px;border-radius:9px;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;flex:0 0 auto;font-size:.88rem}
+  .tool b{font-size:.8rem;font-weight:650;display:block}.tool span{font-size:.67rem;color:var(--ink-3)}
+
+  /* Account */
+  .acc{display:flex;flex-direction:column;gap:.6rem}
+  .acc .row{display:flex;align-items:center;gap:.65rem;font-size:.83rem}
+  .acc .row .ic{width:30px;height:30px;border-radius:9px;background:var(--page-bg);color:var(--ink-2);display:grid;place-items:center;flex:0 0 auto;font-size:.85rem}
+  .acc .row b{font-weight:650}.acc .row span{font-size:.71rem;color:var(--ink-3);display:block}
+  .acc .row .st{margin-left:auto;font-size:.71rem;font-weight:700;color:var(--sec)}
+  .acc .row .sw{color:var(--warn)}
+
+  /* FAB */
+  .fab{position:fixed;right:1.6rem;bottom:2rem;width:56px;height:56px;border-radius:50%;
+    border:0;background:var(--pri);color:#fff;font-size:1.5rem;display:grid;place-items:center;cursor:pointer;
+    box-shadow:var(--shadow-lg);z-index:40;transition:.2s}
+  .fab:hover{transform:scale(1.06)}
+  .fabm{position:fixed;right:1.6rem;bottom:5.6rem;background:var(--card-bg);
+    border:1px solid var(--line-2);border-radius:var(--r);box-shadow:var(--shadow-lg);padding:.45rem;z-index:40;
+    display:none;flex-direction:column;min-width:190px}
+  .fabm.show{display:flex;animation:pop .15s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .fabm button{display:flex;align-items:center;gap:.55rem;width:100%;text-align:left;border:0;background:0;
+    padding:.65rem .75rem;border-radius:var(--r-sm);cursor:pointer;font:inherit;color:var(--ink);font-size:.86rem;font-weight:600}
+  .fabm button:hover{background:var(--pri-soft);color:var(--pri)}
+  .fabm .ic{width:28px;height:28px;border-radius:8px;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center}
+
+  /* Bottom nav mobile */
+  .bn{display:none}
+
+  @media(max-width:1080px){
+    .cols{grid-template-columns:1fr}
+  }
+  @media(max-width:768px){
+    body{padding:0 0 4.5rem;min-height:100vh}
+    .wrap{border-radius:0;min-height:100vh;flex-direction:column}
+    .side{width:100%;border-right:0;border-bottom:1px solid var(--line);padding-bottom:0}
+    .nav{display:flex;overflow-x:auto;gap:0;padding:.4rem .6rem}
+    .nav a{flex:0 0 auto;white-space:nowrap;padding:.45rem .7rem;font-size:.82rem}
+    .side-art,.me{display:none}
+    .topbar{padding:1rem;flex-wrap:wrap;gap:.5rem}
+    .search{width:100%;order:3}
+    .body{padding:1rem}
+    .hero-main h2{font-size:1.6rem}
+    .kpis{width:100%}.kpi{flex:1;min-width:0;padding:.85rem 1rem}
+    .bn{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+      background:var(--card-bg);backdrop-filter:blur(16px);border-top:1px solid var(--line-2);
+      padding:.3rem .25rem calc(.3rem + env(safe-area-inset-bottom));justify-content:space-around}
+    .bn a{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;
+      color:var(--ink-3);text-decoration:none;font-size:.63rem;font-weight:600;padding:.28rem 0;position:relative}
+    .bn a.on{color:var(--pri)}
+    .bn a.on::before{content:"";position:absolute;top:0;width:24px;height:3px;border-radius:99px;background:var(--pri)}
+    .bn a .ic{width:22px;height:22px;display:grid;place-items:center;font-size:1.1rem}
+    .fab{right:1rem;bottom:4.4rem;width:52px;height:52px}
+    .fabm{right:1rem;bottom:9rem}
+    .tools{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- Background decoration -->
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<!-- Main Card -->
+<div class="wrap">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand"><div class="logo">云</div><div><b>云栖谷</b></div></div>
+    <nav class="nav">
+      <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>工作台</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>策划项目</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>企宣管线</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>待办协同</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>素材中心</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>品牌规范</a>
+    </nav>
+    <div class="side-art">
+      <div class="illu"></div>
+      <p>今日有 <b style="color:var(--pri)">1 个里程碑</b>临近<br>先把方案收尾吧 ✨</p>
+    </div>
+    <div class="me"><div class="av">林</div><div><b>林知遥</b><span>策划部 · 策划专员</span></div></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>工作台</h1>
+        <div class="sub">2026年8月13日 · 星期四 · 早班</div>
+      </div>
+      <div class="right">
+        <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="搜索项目、内容…"></div>
+        <div class="fontctl"><button id="fd">A−</button><button id="fu">A＋</button></div>
+        <button class="btn-ico" id="tb">🌙</button>
+      </div>
+    </header>
+
+    <div class="body">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-main">
+          <div class="lbl">我的工作概览</div>
+          <h2>林知遥，欢迎回来！</h2>
+          <p>你负责 4 个进行中的策划项目，本周还有 12 项企宣内容在管线中流转。</p>
+          <div class="alert">⚠️ 秋日非遗市集 · 方案评审 8/18，剩 5 天</div>
+        </div>
+        <div class="hero-kpis">
+          <div class="kpi pri"><div class="n">4</div><div class="l">进行中项目</div></div>
+          <div class="kpi sec"><div class="n">12</div><div class="l">本周内容产出</div></div>
+          <div class="kpi warn"><div class="n">5</div><div class="l">待我处理</div></div>
+        </div>
+      </section>
+
+      <div class="cols">
+        <!-- LEFT -->
+        <div>
+          <!-- Projects -->
+          <section class="sec">
+            <div class="sec-h">
+              <h3>进行中的策划项目</h3>
+              <span class="cnt">策划部 · 4</span>
+              <a class="more" href="#">查看全部 →</a>
+            </div>
+
+            <div class="proj">
+              <div class="ph">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">云栖谷·秋日非遗市集整体策划</div>
+                  <div class="own">负责人 林知遥 · 协同 周慕白、陈砚</div>
+                </div>
+                <span class="badge bg">风险低</span>
+              </div>
+              <div class="steps" data-c="3">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前：<b>方案研究 · 版本评审</b></span>
+                <span>下个里程碑：<b>8/18 方案评审</b></span>
+                <span>进度：<b>68%</b></span>
+              </div>
+              <div class="bar"><i style="width:68%"></i></div>
+              <div class="acts">
+                <button>版本与评审</button><button>变更控制</button><button>移交执行中心</button>
+              </div>
+            </div>
+
+            <div class="proj">
+              <div class="ph">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">研学产品「小小自然学家」线路策划</div>
+                  <div class="own">负责人 周慕白 · 协同 林知遥</div>
+                </div>
+                <span class="badge bm">风险中</span>
+              </div>
+              <div class="steps" data-c="4">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前：<b>预算·资源·时间计划</b></span>
+                <span>下个里程碑：<b>8/20 预算确认</b></span>
+                <span>进度：<b>45%</b></span>
+                <span class="caution">⚠ 供应商报价超预算 12%</span>
+              </div>
+              <div class="bar"><i style="width:45%"></i></div>
+              <div class="acts">
+                <button>预算计划</button><button>变更控制</button><button>移交执行中心</button>
+              </div>
+            </div>
+
+            <div class="proj">
+              <div class="ph">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">夜游经济·光影剧本游策划</div>
+                  <div class="own">负责人 林知遥</div>
+                </div>
+                <span class="badge bg">风险低</span>
+              </div>
+              <div class="steps" data-c="1">
+                <div class="st cur"><span class="dot">1</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">2</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前：<b>需求受理 · 价值评估</b></span>
+                <span>下个里程碑：<b>8/15 价值评估会</b></span>
+                <span>进度：<b>15%</b></span>
+              </div>
+              <div class="bar"><i style="width:15%"></i></div>
+              <div class="acts">
+                <button>需求与评估</button><button>立项</button><button>方案研究</button>
+              </div>
+            </div>
+
+            <div class="proj">
+              <div class="ph">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">跨年灯会主题策划</div>
+                  <div class="own">负责人 周慕白</div>
+                </div>
+                <span class="badge bg">风险低</span>
+              </div>
+              <div class="steps" data-c="2">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">2</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前：<b>立项 · 目标与范围</b></span>
+                <span>下个里程碑：<b>8/22 立项评审</b></span>
+                <span>进度：<b>30%</b></span>
+              </div>
+              <div class="bar"><i style="width:30%"></i></div>
+              <div class="acts">
+                <button>立项与责任</button><button>方案研究</button><button>复盘沉淀</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pipeline -->
+          <section class="sec">
+            <div class="sec-h">
+              <h3>企宣内容管线</h3>
+              <span class="cnt">企宣部 · 本周 12 项</span>
+              <a class="more" href="#">排期看板 →</a>
+            </div>
+            <div class="pipe">
+              <div class="pcol">
+                <h4><span class="d dp"></span>需求受理</h4>
+                <div class="pcard"><div class="t">「七夕限定」活动主视觉需求</div>
+                  <div class="f"><span class="ft">排期</span>交付 8/14</div></div>
+                <div class="pcard"><div class="t">研学产品详情页文案需求</div>
+                  <div class="f"><span class="ft">排期</span>待优先级</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dt"></span>制作中</h4>
+                <div class="pcard"><div class="t">抖音探店短视频脚本 v2</div>
+                  <div class="f"><span class="ft">视频</span>交付 8/15</div></div>
+                <div class="pcard"><div class="t">公众号《秋日漫游指南》推文</div>
+                  <div class="f"><span class="ft">图文</span>交付 8/16</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d da"></span>审核定稿</h4>
+                <div class="pcard"><div class="t">小红书种草图文 3 组</div>
+                  <div class="f"><span class="ft">图文</span>待审 2 项</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d ds"></span>交付</h4>
+                <div class="pcard"><div class="t">户外 LED 大屏素材包</div>
+                  <div class="f"><span class="ft">物料</span>格式校验中</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dr"></span>移交</h4>
+                <div class="pcard"><div class="t">国庆预热话题包</div>
+                  <div class="f"><span class="ft">移交</span>→ 新媒体运营</div></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT RAIL -->
+        <div>
+          <section class="sec">
+            <div class="sec-h"><h3>今日待办</h3><span class="cnt">协同 · 6</span></div>
+            <div class="tl">
+              <div class="ti"><span class="pt"></span><div class="tm">09:30</div>
+                <div class="tt">策划周会</div><div class="td">周会材料与上周行动项回顾</div>
+                <span class="src">会议详情与材料</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">10:00</div>
+                <div class="tt">提交预算资源计划</div><div class="td">秋日市集 · 人员/时间/预算表</div>
+                <span class="src">预算·资源·时间计划</span></div>
+              <div class="ti u"><span class="pt"></span><div class="tm">11:30</div>
+                <div class="tt">审批临时权限申请</div><div class="td">周慕白需 2 项景区后台数据权限</div>
+                <span class="src">通用申请审批 · 临时权限</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">14:00</div>
+                <div class="tt">更新事实核验清单</div><div class="td">品牌规范 · 敏感内容核验</div>
+                <span class="src">我的行动项</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">16:00</div>
+                <div class="tt">对齐执行中心移交清单</div><div class="td">秋日市集任务与验收标准</div>
+                <span class="src">向执行中心移交</span></div>
+              <div class="ti u"><span class="pt"></span><div class="tm">待处理</div>
+                <div class="tt">换班申请</div><div class="td">与替班 张三 对调 8/16 早班</div>
+                <span class="src">换班申请</span></div>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-h"><h3>快捷工具</h3></div>
+            <div class="tools">
+              <a class="tool"><span class="ic">🔎</span><span><b>素材库检索</b>标签 / 复用 / 到期</span></a>
+              <a class="tool"><span class="ic">📐</span><span><b>品牌规范</b>敏感 / 事实核验</span></a>
+              <a class="tool"><span class="ic">➕</span><span><b>新建策划需求</b>受理与评估</span></a>
+              <a class="tool"><span class="ic">🔑</span><span><b>权限申请</b>临时 / 项目</span></a>
+              <a class="tool"><span class="ic">📢</span><span><b>制度通知</b>回执与执行</span></a>
+              <a class="tool"><span class="ic">👤</span><span><b>资料变更</b>个人档案</span></a>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-h"><h3>账号与安全</h3></div>
+            <div class="acc">
+              <div class="row"><span class="ic">🛡️</span><div><b>多因子认证 (MFA)</b><span>已开启 · 今天 08:52</span></div><span class="st">安全</span></div>
+              <div class="row"><span class="ic">💻</span><div><b>登录设备与会话</b><span>2 台 · 1 台新设备</span></div><span class="sw">待确认</span></div>
+              <div class="row"><span class="ic">👤</span><div><b>个人资料</b><span>90 天未更新</span></div><span class="sw">待更新</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab">＋</button>
+<div class="fabm" id="fabm">
+  <button><span class="ic">📋</span>新建策划需求</button>
+  <button><span class="ic">🎨</span>新建宣传需求</button>
+  <button><span class="ic">📝</span>通用申请</button>
+</div>
+
+<nav class="bn">
+  <a class="on" href="#"><span class="ic">🏠</span>首页</a>
+  <a href="#"><span class="ic">📋</span>策划</a>
+  <a href="#"><span class="ic">🎨</span>企宣</a>
+  <a href="#"><span class="ic">⏱️</span>待办</a>
+  <a href="#"><span class="ic">👤</span>我的</a>
+</nav>
+
+<script>
+  // theme toggle
+  const tb=document.getElementById('tb');
+  tb.onclick=()=>{
+    const d=document.body.classList.toggle('dark');
+    tb.textContent=d?'☀️':'🌙';
+    if(d){
+      document.documentElement.style.setProperty('--page-bg','#12141c');
+      document.documentElement.style.setProperty('--card-bg','#1a1d27');
+      document.documentElement.style.setProperty('--ink','#eef1f8');
+      document.documentElement.style.setProperty('--ink-2','#9ba2b3');
+      document.documentElement.style.setProperty('--ink-3','#6b7290');
+      document.documentElement.style.setProperty('--line','#262a37');
+      document.documentElement.style.setProperty('--line-2','#1f232e');
+      document.documentElement.style.setProperty('--pri','#818cf8');
+      document.documentElement.style.setProperty('--pri-soft','#1e1b4b');
+      document.documentElement.style.setProperty('--sec','#34d399');
+      document.documentElement.style.setProperty('--sec-soft','#064e3b');
+      document.documentElement.style.setProperty('--warn','#fbbf24');
+      document.documentElement.style.setProperty('--warn-soft','#451a03');
+      document.documentElement.style.setProperty('--rose','#fb7185');
+      document.documentElement.style.setProperty('--rose-soft','#4c0519');
+      document.querySelector('.side').style.background='linear-gradient(180deg,#161822 0%,#1a1535 100%)';
+      document.querySelectorAll('.blob').forEach(b=>b.style.opacity='.2');
+    }else{
+      location.reload();
+    }
+  };
+  // font scale
+  let fs=1;const cap=v=>Math.max(.85,Math.min(1.3,v));
+  document.getElementById('fu').onclick=()=>{fs=cap(fs+.1);document.documentElement.style.setProperty('--fs',fs)};
+  document.getElementById('fd').onclick=()=>{fs=cap(fs-.1);document.documentElement.style.setProperty('--fs',fs)};
+  // stepper render
+  document.querySelectorAll('.steps').forEach(s=>{
+    const c=+s.dataset.c,[...sts]=s.children;
+    sts.forEach((st,i)=>{if(i<c)st.classList.add('done');else if(i===c)st.classList.add('cur')});
+  });
+  // fab
+  const fab=document.getElementById('fab'),fm=document.getElementById('fabm');
+  fab.onclick=()=>fm.classList.toggle('show');
+  document.addEventListener('click',e=>{if(!fab.contains(e.target)&&!fm.contains(e.target))fm.classList.remove('show')});
+  // nav active
+  document.querySelectorAll('.nav a,.bn a').forEach(a=>a.onclick=function(e){e.preventDefault();
+    document.querySelectorAll(this.closest('.nav')?'.nav a':'.bn a').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on')});
+</script>
+</body>
+</html>

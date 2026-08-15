@@ -1,0 +1,12 @@
+﻿{
+    "schema_version":  "1.0",
+    "evidence_metadata_id":  "74DBEC9E71C9256FCC3C14ACBA90AF4DFAAABA2E33120FBA2E49AA74442E7752",
+    "file_count":  1,
+    "files":  [
+                  {
+                      "path":  "technical-platform/web/src/design-system/evidence/P10-COMP-01/P10-COMP-01_REPORT.md",
+                      "sha256":  "0B195B2675966BE5639E3AB179FCCC8EC745187F1504EB16BA52D05F7F60CF90",
+                      "bytes":  6037
+                  }
+              ]
+}

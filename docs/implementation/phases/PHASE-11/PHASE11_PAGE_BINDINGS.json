@@ -10,6 +10,15 @@
     "P016": "CHECKPOINT_PASS_CLOSED"
   },
   "rule": "Explicit source-coordinate selections from PHASE-01 pages.json. No fuzzy runtime matching. Shared tech monitors provide support only and do not grant business approval authority.",
+  "multi_process_bindings": [
+    {
+      "source_key": "2-2中心全层级页面.xlsx:三级页面明细:R338:15e6269002de",
+      "portal": "center",
+      "route_path": "/center/06/03/09",
+      "process_codes": ["P014", "P016"],
+      "component": "Phase11DisciplineCareSupervisionPage"
+    }
+  ],
   "bindings": [
     {"process_code":"P011","portal":"employee","purpose":"performance target evaluation calibration appeal and improvement","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R54:26ae01dab661","route_path":"/employee/02/03/06"},
     {"process_code":"P011","portal":"employee","purpose":"performance feedback confirmation","source_key":"1-2员工全层级页面.xlsx:三级页面明细:R474:6520d246413d","route_path":"/employee/08/03/06"},

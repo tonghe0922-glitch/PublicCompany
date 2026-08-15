@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "checks": {
+    "techP004Status": 200,
+    "techP004Count": 1,
+    "techP005Status": 200,
+    "techP005Count": 1,
+    "p004SeedIdMatch": true,
+    "p005SeedIdMatch": true,
+    "p004KeysExact": true,
+    "p005KeysExact": true,
+    "outP004Status": 200,
+    "outP004Count": 0,
+    "outP005Status": 200,
+    "outP005Count": 0,
+    "deniedP004Status": 403,
+    "deniedP005Status": 403,
+    "techP004MutationStatus": 403,
+    "techP005MutationStatus": 403
+  }
+}

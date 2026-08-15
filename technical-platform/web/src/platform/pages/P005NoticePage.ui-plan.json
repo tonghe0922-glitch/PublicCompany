@@ -45,10 +45,22 @@
   },
   "field_component_map": [
     {
-      "field": "notice-content|effective-period",
+      "field": "policyCode|officialType|periodOrCourseNo|targetCenterId|targetPositionCode|understandingPassScore|businessDate|venueChannel|effectiveStartAt|effectiveEndAt|executionDueAt|officialSubject|understandingScore",
+      "component_id": "ui.input",
+      "reason": "CXR-08 uses the public input contract without changing notice or receipt payload types",
+      "editable_when": "Existing server-defined state and permission contract"
+    },
+    {
+      "field": "visibilityLevel",
+      "component_id": "ui.select",
+      "reason": "CXR-08 uses the public select contract with existing visibility values",
+      "editable_when": "Existing server-defined enum values"
+    },
+    {
+      "field": "officialContent|executionSummary|manageReason",
       "component_id": "ui.textarea",
-      "reason": "Existing notice facts; no data contract change",
-      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+      "reason": "CXR-08 uses the public textarea contract without changing notice lifecycle payloads",
+      "editable_when": "Existing server-defined state and permission contract"
     },
     {
       "field": "notice-records",
@@ -90,14 +102,7 @@
     "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
     "limited_actions": []
   },
-  "gaps": [
-    {
-      "id": "UI-GAP-P005NoticePage-LANDMARK-SCOPE",
-      "classification": "deferred-existing-debt",
-      "status": "not-expanded",
-      "reason": "P005 componentization remains future debt; P10-COMP-02 changes only landmarks/title."
-    }
-  ],
+  "gaps": [],
   "native_element_exceptions": [],
   "decision": "reuse-only",
   "registry_updates": [],
@@ -105,7 +110,8 @@
     "exactly one rendered main under authenticated shell",
     "exactly one accessible h1 sourced from route metadata",
     "desktop and mobile route title semantics",
+    "CXR-08 public component migration and raw interactive element count zero",
     "existing permission/action/data-scope behavior remains unchanged"
   ],
-  "updated_at": "2026-08-13T00:00:00+08:00"
+  "updated_at": "2026-08-15T00:00:00+08:00"
 }

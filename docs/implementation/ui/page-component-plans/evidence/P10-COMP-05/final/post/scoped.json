@@ -1,0 +1,334 @@
+﻿{
+    "task":  0,
+    "unrelated":  40,
+    "concurrent":  0,
+    "metadata":  0,
+    "task_paths":  [
+
+                   ],
+    "unrelated_paths":  [
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/mfa/MfaRejectedException.java",
+                                                    "sha256":  "0185A7345E9202635DC40EF82AD1555D4AF4BD90F644655BE0DEBBC95CDC4E40",
+                                                    "bytes":  844
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/mfa/MfaSecretCipher.java",
+                                                    "sha256":  "3FF602F88395996B35852599CBCECCF6169CFCD548A5EE6E1D8D077EF75B69CF",
+                                                    "bytes":  2674
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/RedisSessionStore.java",
+                                                    "sha256":  "7DCB857716FAC7C380EF34F13816DCA1321628A8DE9AE5CD5A46B35A1F9CFF79",
+                                                    "bytes":  7202
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/MfaCapabilityProvider.java",
+                                                    "sha256":  "8AD49E6C41776ED71B5C585AA409C94A0CD30FC60F9FB0DDB99691331F003B57",
+                                                    "bytes":  324
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/RedisStepUpTicketStore.java",
+                                                    "sha256":  "8CAAB8E2502DEDFA2F244807809F8AA714FF91F4DCD8114A84C3242433A19A53",
+                                                    "bytes":  4875
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpAuditEvent.java",
+                                                    "sha256":  "6547D0CE51229A9A0DE9DC12E174BB734CA228074199CABA104458F8678E0371",
+                                                    "bytes":  299
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/IamModule.java",
+                                                    "sha256":  "B8D92E29B8E4C80E71059750FD559010EA8F096C8C587F064BE916F1EB5A56BE",
+                                                    "bytes":  142
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/FailClosedMfaCapabilityProvider.java",
+                                                    "sha256":  "3D6A199DAB5877D687C530C35F97E351FF0FB640A2885CB128F263D1FDB8F3A7",
+                                                    "bytes":  398
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/FailClosedStepUpAuditSink.java",
+                                                    "sha256":  "2DB6F0FF3618824559133ED60E4D548F688B202B9EB5E41EC2688BC2E964A8EE",
+                                                    "bytes":  270
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpService.java",
+                                                    "sha256":  "12CC79F5D8F097A90CC91EFDE0224FA2214140BA3A81A58D467523110394638E",
+                                                    "bytes":  5525
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpTicket.java",
+                                                    "sha256":  "BBB9B900B20CF42B0C76699F28C617F30DF3227785F8215C19B404B562466F40",
+                                                    "bytes":  207
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpTicketStore.java",
+                                                    "sha256":  "EC0F09AAE8F17DAB45E401939FFBE15E81E856830E2AC2DD4D540C7029AEC925",
+                                                    "bytes":  1208
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpAuditSink.java",
+                                                    "sha256":  "6726642435DC33557EAC182F3BF321B6B6277E8B308358DCDF84ECB977E7E0E2",
+                                                    "bytes":  143
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpPolicy.java",
+                                                    "sha256":  "AA1C835AFC240CACC76CD26496D2E22DAA081DDF75E099FC6F6C55329C1D99D5",
+                                                    "bytes":  385
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/stepup/StepUpRejectedException.java",
+                                                    "sha256":  "8317A8629CA51D32102B9D2FCA8A6F63AA9BD380132ACE535BAF7BFDF03E7FD9",
+                                                    "bytes":  594
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/promotion/JdbcPromotionRequestRepository.java",
+                                                    "sha256":  "0C9498B2A6E1FFBF2A090AF58C777D78714029641720F1DF7ECCC5DB78547E21",
+                                                    "bytes":  18656
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/promotion/PromotionRequestService.java",
+                                                    "sha256":  "B6228A7A6D148626CF84499ADDF4BAB65B0D4F85DAF832E94A9B33B70258F1B5",
+                                                    "bytes":  26911
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/profile/JdbcProfileChangeRepository.java",
+                                                    "sha256":  "E70F77A141DC868AC8E3B922546072172078EE660655BEBB7AFDE6F6B4E711B4",
+                                                    "bytes":  9638
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/IdentityDirectoryService.java",
+                                                    "sha256":  "F6766AB5B85518F7A5A1623FC7465217FFCE89E6C3ADC9541A263CCE6F165F72",
+                                                    "bytes":  5672
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/PermissionRequestService.java",
+                                                    "sha256":  "2A92C5DD6E6823BDFEA9B28E19C5F145365F5ABE096455229D908893B446C33C",
+                                                    "bytes":  25686
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/pom.xml",
+                                                    "sha256":  "C1B26258E1736D1FD6820ABAB0C29A0DF343273DCB62E915D8F9C20F09BF8F00",
+                                                    "bytes":  1410
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/profile/ProfileSensitiveValueCipher.java",
+                                                    "sha256":  "50437626D792CC221F03FC25CAADA462C8A0C134E6229288D3781078958A957C",
+                                                    "bytes":  4189
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/document/pom.xml",
+                                                    "sha256":  "950F1FFDD20E91D6489785E773B377F17CDA7A8F3B3AB352B96AC52D3599DCB3",
+                                                    "bytes":  2034
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/document/src/test/java/cn/shangjingu/platform/document/DocumentModuleSmokeTest.java",
+                                                    "sha256":  "72A04DD0EC23845143BDB5FE0DC40B08B89B94559BE80C8AAC20C8A5E7212830",
+                                                    "bytes":  263
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/profile/ProfileChangeService.java",
+                                                    "sha256":  "23A29AB5D8E06556477003EE27D444168D501D813C3E0A02A85D7A72F8F2F000",
+                                                    "bytes":  22866
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/profile/ProfileChangeValueStore.java",
+                                                    "sha256":  "B2B7DC905C10EAF7421B78240F6536F602946CCF336E66B3AB5D32E613CEA2D4",
+                                                    "bytes":  7371
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/hr/src/main/java/cn/shangjingu/platform/hr/profile/ProfileFieldDefinition.java",
+                                                    "sha256":  "4707C6C5CDF4909A11DA8973DCA671B8564B6508D666A5F87B729A2B9222A965",
+                                                    "bytes":  2410
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/FieldSensitivity.java",
+                                                    "sha256":  "FCE08466A3B97EC39891132F3B2FE27A3C62148C3228867E2B05674E9BE0C5BB",
+                                                    "bytes":  107
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/domain/IdentityDirectoryPort.java",
+                                                    "sha256":  "D3DCBD929799673C2731BC4D8A920E6B450B59CFA6F83859AE073FA818E6FFA8",
+                                                    "bytes":  696
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/domain/IdentityRecord.java",
+                                                    "sha256":  "0384CE094431B9D682D82EA308A49943C5A4F8FCECE24DD436822855CE1CD9FE",
+                                                    "bytes":  429
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/domain/UserAccountRecord.java",
+                                                    "sha256":  "A2DD22D47AEB8B11A8B5B5AC1ED7AC58F7C205E228436AFA735B42DCF2CB4C81",
+                                                    "bytes":  392
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcPermissionRequestRepository.java",
+                                                    "sha256":  "C11EE96F9C6905AE79CF339075BCB73A79BE7113AE3C75676F07D3DE837A8842",
+                                                    "bytes":  21532
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/domain/AuthorizationGrant.java",
+                                                    "sha256":  "41B1CF0DAF458FD8E3E4F639E1C49B0217449B5AFC2CDEC8B33FEE57B5B32D24",
+                                                    "bytes":  379
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/domain/AuthorizationSnapshot.java",
+                                                    "sha256":  "C04A16CAA23E70E8903523D616EE1AED78B01B15CD6B274763CD95F5DFBC062D",
+                                                    "bytes":  707
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/DataScopeEvaluator.java",
+                                                    "sha256":  "4ED074465D186D12494E3329DCB3FBBB784BFF5B1A59F14BA07F43C934D099BA",
+                                                    "bytes":  1539
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/FieldAccessDecision.java",
+                                                    "sha256":  "CD121F614B009A6C26464C8725777EC8ACC09A08D6B555971E2D0A15C3AB36B1",
+                                                    "bytes":  249
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/FieldAccessService.java",
+                                                    "sha256":  "8A715149DD77006A8B873A047D6B49EAD5A432BFACAA77E093A840E07243C5A1",
+                                                    "bytes":  1313
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/AuthorizationDecision.java",
+                                                    "sha256":  "F286F79D7CE8448254668AFE56A702372D53103835C202571D81D6CC20D79740",
+                                                    "bytes":  748
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/AuthorizationService.java",
+                                                    "sha256":  "B4C903A370432ABCEE6AF4F5334E83E439E7FB0983FA6C0654A6C8239BDC389D",
+                                                    "bytes":  2986
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            },
+                            {
+                                "InputObject":  {
+                                                    "path":  "technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/authorization/AuthorizationTarget.java",
+                                                    "sha256":  "89190B2D89DC30F42F8346FC86B42E1FA153ACBF48DF9F99A04A7CE9CA3C0EFC",
+                                                    "bytes":  356
+                                                },
+                                "SideIndicator":  "=\u003e"
+                            }
+                        ],
+    "metadata_paths":  [
+
+                       ]
+}

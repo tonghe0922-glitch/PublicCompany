@@ -2,6 +2,7 @@ import { computed, onMounted, reactive, toRefs, watchEffect } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import type { PortalDefinition } from '../../portal-config'
 import { createProcessRecord, executeProcessAction, listProcessRecords } from '../process-client'
+import { processCommandActor } from '../process-command-journal'
 import type { ProcessState } from '../process-state'
 import { useProcessOperation } from '../use-process-operation'
 
@@ -11,9 +12,10 @@ export interface DisciplineCase {
   id: string; businessNo: string; currentNodeCode: string; status: string; versionNo: number
   subject: string; affectedEmployeeId: string | null; sourceFactKey: string | null
   businessObjectNo: string | null; impactLevel: string; decisions: unknown[]
-  impacts: Impact[]; receipts: unknown[]
+  impacts: Impact[]; receipts: unknown[]; availableActions: ServerAction[]
 }
-export interface P014Action { code: string; label: string; permission: string }
+interface ServerAction { code: string; labelCode: string; taskId: string | null; expectedVersion: number }
+export interface P014Action { code: string; label: string }
 type Session = ReturnType<typeof usePortalSessionStore>
 type Operations = ReturnType<typeof useProcessOperation>
 type Form = ReturnType<typeof createForm>
@@ -29,27 +31,19 @@ const impactLevelOptions = ['L1', 'L2', 'L3', 'L4'].map(value => ({ value, label
 const decisionOptions = ['UPHELD', 'AMENDED', 'REVOKED', 'NOT_APPLICABLE'].map(value => ({ value, label: value }))
 const impactTypeOptions = ['POINT_ADJUSTMENT', 'HR_DISCIPLINE', 'REMEDIATION'].map(value => ({ value, label: value }))
 const receiptTypeOptions = ['P015_POINT_LEDGER', 'HR_CASE_RECEIPT', 'REMEDIATION_RECEIPT'].map(value => ({ value, label: value }))
-const ACTIONS: Record<string, P014Action[]> = {
-  S01: [action('REGISTER_CLUE', '登记线索事实', 'p014.discipline.manage')],
-  S02: [action('RECORD_SAFEGUARD', '记录临时止险', 'p014.discipline.manage')],
-  S03: [action('COMPLETE_INVESTIGATION', '完成正式调查', 'p014.discipline.investigate')],
-  S04: [action('SUBMIT_STATEMENT', '提交陈述申辩', 'p014.discipline.appeal')],
-  S05: [action('COMPLETE_RESPONSIBILITY_REVIEW', '完成责任评审', 'p014.discipline.investigate')],
-  S06: [action('RECORD_DECISION', '记录外部授权决定', 'p014.discipline.decide')],
-  S07: [action('CONFIRM_SERVICE', '确认决定送达', 'p014.discipline.appeal')],
-  S08: [
-    action('RECORD_IMPACT', '登记下游影响指令', 'p014.discipline.manage'),
-    action('RECORD_RECEIPT', '登记权威执行回执', 'p014.discipline.manage'),
-    action('COMPLETE_IMPACTS', '完成影响回执核验', 'p014.discipline.manage'),
-  ],
-  S09: [action('SUBMIT_APPEAL', '提交申诉选择', 'p014.discipline.appeal'), action('REVIEW_APPEAL', '独立复核申诉', 'p014.discipline.appeal')],
-  S10: [action('CLOSE_CORE', '关闭核心案件', 'p014.discipline.manage')],
-  S11: [action('VERIFY_REMEDIATION', '验证整改结果', 'p014.discipline.manage')],
-  S12: [action('SUPPLEMENT_ARCHIVE', '补充归档', 'p014.discipline.manage')],
+const ACTION_PRESENTATION: Record<string, P014Action> = {
+  REGISTER_CLUE: action('REGISTER_CLUE', '登记线索事实'), RECORD_SAFEGUARD: action('RECORD_SAFEGUARD', '记录临时止险'),
+  COMPLETE_INVESTIGATION: action('COMPLETE_INVESTIGATION', '完成正式调查'), SUBMIT_STATEMENT: action('SUBMIT_STATEMENT', '提交陈述申辩'),
+  COMPLETE_RESPONSIBILITY_REVIEW: action('COMPLETE_RESPONSIBILITY_REVIEW', '完成责任评审'), RECORD_DECISION: action('RECORD_DECISION', '记录外部授权决定'),
+  CONFIRM_SERVICE: action('CONFIRM_SERVICE', '确认决定送达'), RECORD_IMPACT: action('RECORD_IMPACT', '登记下游影响指令'),
+  RECORD_RECEIPT: action('RECORD_RECEIPT', '登记权威执行回执'), COMPLETE_IMPACTS: action('COMPLETE_IMPACTS', '完成影响回执核验'),
+  SUBMIT_APPEAL: action('SUBMIT_APPEAL', '提交申诉选择'), REVIEW_APPEAL: action('REVIEW_APPEAL', '独立复核申诉'),
+  CLOSE_CORE: action('CLOSE_CORE', '关闭核心案件'), VERIFY_REMEDIATION: action('VERIFY_REMEDIATION', '验证整改结果'),
+  SUPPLEMENT_ARCHIVE: action('SUPPLEMENT_ARCHIVE', '补充归档'),
 }
 
-function action(code: string, label: string, permission: string): P014Action {
-  return { code, label, permission }
+function action(code: string, label: string): P014Action {
+  return { code, label }
 }
 function instant(value: string): string | null {
   return value ? new Date(value).toISOString() : null
@@ -112,10 +106,14 @@ function createLoad(context: Context) {
 function createCreate(context: Context, load: () => Promise<void>) {
   return async (): Promise<void> => {
     const body = createBody(context.form)
-    const result = await context.operations.runAction(
-      context.createKey,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: context.createKey,
+        recordLockKey: `P014:record:create:${context.props.portal.code}:${context.props.mode}`,
+        operationKey: 'P014:create', actor: processCommandActor(context.session), payload: body,
+      },
       request => createProcessRecord<DisciplineCase, typeof body>(
-        context.session, COLLECTION, 'p014-create', body, request,
+        context.session, COLLECTION, request.idempotencyKey, body, request,
       ),
       '纪律案件已创建。',
     )
@@ -126,25 +124,23 @@ function createPerform(context: Context, load: () => Promise<void>) {
   return async (item: DisciplineCase, candidate: P014Action): Promise<void> => {
     const key = `P014:action:${item.id}:${candidate.code}`
     const body = actionBody(context.form, item, candidate)
-    const result = await context.operations.runAction(
-      key,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: key, recordLockKey: `P014:record:${item.id}`,
+        operationKey: `P014:record:${item.id}:${candidate.code}`,
+        actor: processCommandActor(context.session), payload: body,
+      },
       request => executeProcessAction<DisciplineCase, typeof body>(
         context.session, COLLECTION, item.id, candidate.code,
-        `p014-${candidate.code.toLowerCase()}`, body, request,
+        request.idempotencyKey, body, request,
       ),
       `${candidate.label}已完成。`,
     )
     if (result.ok) await load()
   }
 }
-function availableActions(context: Context, item: DisciplineCase): P014Action[] {
-  if (context.props.mode === 'tech' || !item.currentNodeCode) return []
-  const self = item.affectedEmployeeId === context.session.session?.employeeId
-  const selfActions = ['SUBMIT_STATEMENT', 'CONFIRM_SERVICE', 'SUBMIT_APPEAL']
-  return (ACTIONS[item.currentNodeCode] ?? []).filter(candidate => {
-    if (!context.session.can(candidate.permission)) return false
-    return selfActions.includes(candidate.code) ? self : !self
-  })
+function availableActions(item: DisciplineCase): P014Action[] {
+  return item.availableActions.flatMap(candidate => ACTION_PRESENTATION[candidate.code] ?? [])
 }
 
 export function useP014Discipline(props: P014Props) {
@@ -168,8 +164,10 @@ export function useP014Discipline(props: P014Props) {
     canCreate: computed(() => session.can('p014.discipline.manage') || session.can('p014.discipline.appeal')),
     isTech: computed(() => props.mode === 'tech'), businessObjectOptions, employeeEventOptions,
     impactLevelOptions, decisionOptions, impactTypeOptions, receiptTypeOptions,
-    load, create, perform, actions: (item: DisciplineCase) => availableActions(context, item),
+    load, create, perform, actions: (item: DisciplineCase) => availableActions(item),
     actionState: (item: DisciplineCase, candidate: P014Action): ProcessState =>
       operations.actionState(`P014:action:${item.id}:${candidate.code}`),
+    recordPending: (item: DisciplineCase) =>
+      operations.recordPending(processCommandActor(session), `P014:record:${item.id}`),
   }
 }

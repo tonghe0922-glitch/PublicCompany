@@ -1,0 +1,147 @@
+{
+  "phase": "PHASE-03",
+  "name": "数据库三库、Schema、Flyway 与基础角色",
+  "scope": "PLATFORM/基础工程",
+  "status_at_report_creation": "PASS_READY_FOR_GATE",
+  "business_processes_implemented": 0,
+  "business_pages_marked_implemented": 0,
+  "previous_phase": {
+    "phase": "PHASE-02",
+    "status": "COMPLETE",
+    "formal_gate_baseline": "496e57801e5df849638d1f91e4423f251f9489d5"
+  },
+  "database_baseline": {
+    "postgresql": "16",
+    "databases": ["sjg_oms", "sjg_audit", "sjg_dw"],
+    "physical_schema_count": 46,
+    "table_catalog_count": 265,
+    "approved_ddl_unique_table_count": 265,
+    "table_catalog_only": 0,
+    "table_ddl_only": 0,
+    "index_catalog_count": 1024,
+    "approved_ddl_index_count": 1019,
+    "catalog_sourced_index_overlay_count": 5,
+    "formal_index_count": 1024,
+    "static_evidence": "docs/implementation/evidence/PHASE-03_STATIC_BASELINE.json"
+  },
+  "flyway": {
+    "formal_generated_root": "technical-platform/database/flyway",
+    "overlay_root": "technical-platform/database/flyway-overlays",
+    "source_manifest": "technical-platform/database/flyway/manifest.json",
+    "deterministic_regeneration": "PASS",
+    "source_generated_sha256_provenance": "PASS",
+    "version_uniqueness": "PASS",
+    "flyway_only_structural_sql_gate": "PASS",
+    "validate": "PASS",
+    "repeat_migrate_zero_pending": "PASS",
+    "v95_compatibility": {
+      "source": "Knowledge Base/03 数据库需求规则/03_SQL_DDL/01_sjg_oms/95_seed_process_catalog.sql",
+      "type": "psql_set_variable_to_flyway_placeholder",
+      "allowed_variables": ["sjg_tenant_id", "sjg_tenant_code", "sjg_tenant_name"],
+      "production_default_committed": false,
+      "unsupported_psql_metacommands": "FAIL_GENERATION"
+    }
+  },
+  "database_roles": {
+    "owner": {
+      "name": "sjg_owner",
+      "login": false,
+      "superuser": false,
+      "bypass_rls": false
+    },
+    "migration": {
+      "name": "sjg_migration",
+      "login": true,
+      "superuser": false,
+      "create_db": false,
+      "create_role": false,
+      "replication": false,
+      "bypass_rls": false,
+      "may_set_owner_role": true
+    },
+    "api_runtime": "sjg_api_runtime",
+    "worker_runtime": "sjg_worker_runtime",
+    "audit_writer": "sjg_audit_writer",
+    "auditor": "sjg_auditor",
+    "dw_writer": "sjg_dw_writer",
+    "dw_reader": "sjg_dw_reader",
+    "legacy_compatibility": {
+      "name": "sjg_app",
+      "login": false
+    }
+  },
+  "runtime_identity_separation": {
+    "bootstrap": "sjg_bootstrap",
+    "migration": "sjg_migration",
+    "api": "sjg_api_runtime",
+    "worker": "sjg_worker_runtime",
+    "api_application_flyway_enabled": false,
+    "worker_application_flyway_enabled": false,
+    "api_flyway_dependency_present": false,
+    "worker_flyway_dependency_present": false,
+    "independent_linux_migration_runner": "scripts/database/migrate.sh",
+    "independent_windows_migration_runner": "scripts/windows/migrate.bat"
+  },
+  "security": {
+    "all_installed_tenant_id_base_tables_have_rls": "PASS",
+    "all_formal_login_roles_nobypassrls": "PASS",
+    "audit_writer_insert_select": "PASS",
+    "audit_writer_update_denied": "PASS",
+    "audit_writer_delete_denied": "PASS",
+    "audit_writer_truncate_denied": "PASS",
+    "api_runtime_ddl_denied": "PASS",
+    "worker_runtime_ddl_denied": "PASS",
+    "database_owner_all_three_sjg_owner": "PASS"
+  },
+  "validations": {
+    "database_baseline": {
+      "workflow": "Phase 03 Database Baseline",
+      "run_id": 31173547265,
+      "head_sha": "f63249fdbec828d6178308b42d6a3900653ec077",
+      "conclusion": "success"
+    },
+    "runtime_identity": {
+      "workflow": "Phase 03 Runtime Database Identity",
+      "run_id": 31173547048,
+      "head_sha": "f63249fdbec828d6178308b42d6a3900653ec077",
+      "conclusion": "success"
+    },
+    "database_baseline_report": {
+      "workflow": "Phase 03 Database Baseline Report",
+      "run_id": 31171230996,
+      "conclusion": "success"
+    },
+    "phase02_completed_regression": {
+      "workflow": "Phase 02 Build",
+      "run_id": 31173720739,
+      "head_sha": "cc7612b722b951cb49ab8b89a2457ae1660c79f9",
+      "conclusion": "success",
+      "jobs": ["quality", "backend", "frontend", "infrastructure", "windows_chinese_path"]
+    },
+    "ledger_finalize": {
+      "workflow": "Phase 03 Ledger Finalize",
+      "run_id": 31174051036,
+      "workflow_head_sha": "934f0eeb1b7397ce7eb8526bfbcde24caee9e544",
+      "conclusion": "success",
+      "generated_commit": "6a847a023cbf4a4293ebed05a770384e23c418d6"
+    }
+  },
+  "not_run": [
+    "business Employee/Center/Tech end-to-end flow",
+    "business approval permission negative tests",
+    "business HTTP idempotency",
+    "business optimistic concurrency",
+    "business Outbox retry/DLQ/compensation",
+    "Step-Up/MFA",
+    "production secret deployment",
+    "production backup/restore rehearsal"
+  ],
+  "known_non_blocking_items": [
+    "Only the currently approved SQL seed is migrated in PHASE-03; other initialization CSV materials are not converted without an approved SQL contract.",
+    "Production tenant id/code/name are required deployment facts and have no committed defaults.",
+    "Production database role passwords are external deployment secrets and have no committed defaults.",
+    "The current execution environment has no local gh CLI; the user-authorized GitHub Connector is used equivalently and truthfully recorded."
+  ],
+  "current_head_validation_policy": "This evidence file cannot self-reference the commit that contains itself. Before reporting READY_FOR_GATE, verify the actual current remote branch SHA, Draft PR #2 head, and exact-head Phase 03 Database Baseline plus Phase 03 Runtime Database Identity workflow conclusions. No PENDING placeholder is used.",
+  "next_phase": "PHASE-04_NOT_STARTED_PENDING_FORMAL_GATE"
+}

@@ -1,0 +1,117 @@
+{
+  "contractId": "CXR09_JAVA_QUALITY_V1",
+  "authority": {
+    "gate": "scripts/implementation/cxr09_java_quality_gate.py",
+    "test": "scripts/implementation/cxr09_java_quality_gate_test.py",
+    "scope": "priority",
+    "expectedPriorityFileCountAtRed0": 96,
+    "includeRules": [
+      "all Java under backend modules attendance, learning, performance, reward and welfare",
+      "API main/test Java under phase10 or phase11 packages",
+      "API tests whose basename starts Phase10 or Phase11",
+      "database-baseline tests whose basename starts Phase10 or Phase11",
+      "Worker main Java whose basename starts Phase10 or Phase11"
+    ],
+    "excludedPathSegments": [
+      "target",
+      ".runlogs",
+      "generated",
+      "generated-sources",
+      "generated-test-sources"
+    ]
+  },
+  "sourceRatchets": {
+    "maximumCodeLineLength": 400,
+    "maximumStatementsPerLine": 1,
+    "nonCodeExcluded": [
+      "line comments",
+      "block comments",
+      "string and character literals",
+      "text blocks"
+    ],
+    "headerSemicolonsExcluded": [
+      "for",
+      "try-with-resources"
+    ]
+  },
+  "coverage": {
+    "lineMinimum": 0.8,
+    "criticalBranchMinimum": 0.9,
+    "requiredClasses": [
+      "cn/shangjingu/platform/performance/PerformanceCycleService",
+      "cn/shangjingu/platform/attendance/LeaveService",
+      "cn/shangjingu/platform/attendance/OvertimeService",
+      "cn/shangjingu/platform/attendance/ShiftChangeService",
+      "cn/shangjingu/platform/learning/LearningAssignmentService",
+      "cn/shangjingu/platform/hr/promotion/PromotionRequestService",
+      "cn/shangjingu/platform/reward/RewardCaseService",
+      "cn/shangjingu/platform/reward/DisciplineCaseService",
+      "cn/shangjingu/platform/reward/PointLedgerService",
+      "cn/shangjingu/platform/welfare/P016CareService",
+      "cn/shangjingu/platform/iam/authorization/AuthorizationService",
+      "cn/shangjingu/platform/core/process/SequentialStateMachine",
+      "cn/shangjingu/platform/core/process/IdempotencyRegistry",
+      "cn/shangjingu/platform/workflow/WorkflowCandidateResolver"
+    ],
+    "denominators": {
+      "requiredLineClasses": "ten priority domain services union five critical classes, with PointLedgerService de-duplicated",
+      "requiredLineClassCount": 14,
+      "criticalBranchClassCount": 5,
+      "aggregateLine": "JaCoCo report root LINE counter",
+      "criticalAggregateBranch": "sum of BRANCH counters across the five critical classes"
+    },
+    "criticalClasses": [
+      "cn/shangjingu/platform/iam/authorization/AuthorizationService",
+      "cn/shangjingu/platform/core/process/SequentialStateMachine",
+      "cn/shangjingu/platform/core/process/IdempotencyRegistry",
+      "cn/shangjingu/platform/workflow/WorkflowCandidateResolver",
+      "cn/shangjingu/platform/reward/PointLedgerService"
+    ],
+    "failClosed": [
+      "missing or invalid report",
+      "missing required class",
+      "missing counter",
+      "zero denominator",
+      "per-class line below 80 percent",
+      "aggregate line below 80 percent",
+      "per-critical-class branch below 90 percent",
+      "critical aggregate branch below 90 percent"
+    ]
+  },
+  "mavenToolchain": {
+    "requiredVersionedPlugins": [
+      "spring-boot-maven-plugin",
+      "spotless-maven-plugin with google-java-format",
+      "maven-checkstyle-plugin",
+      "spotbugs-maven-plugin",
+      "jacoco-maven-plugin"
+    ],
+    "formatMode": "CHECK_ONLY",
+    "mockitoAgent": "Surefire and Failsafe argLine must include the resolved mockito-core jar while preserving JaCoCo argLine",
+    "forbidden": [
+      "whole module exclude",
+      "Phase10 or Phase11 package suppression",
+      "broad Checkstyle suppression",
+      "-XX:+EnableDynamicAgentLoading",
+      "automatic source formatting"
+    ]
+  },
+  "dualLineDebt": {
+    "pythonGate": "syntax-aware code-line count excludes comments, strings and text blocks",
+    "checkstyle": "physical Java line count uses LineLength max=400 with no ignore pattern",
+    "completionRule": "both independent counts must reach zero"
+  },
+  "cli": {
+    "selfTest": "--self-test emits structured JSON and exits zero only when every named contract case passes",
+    "check": "--repo-root PATH --scope priority --jacoco-report FILE",
+    "findingFields": [
+      "code",
+      "path",
+      "line",
+      "metric"
+    ]
+  },
+  "phase12OrP017PlusAllowed": false,
+  "pushAllowed": false,
+  "independentGatePassClaimed": false
+}

@@ -1,0 +1,1 @@
+<script setup>const attrs={is:'SgjButton'};[attrs].forEach(x=>x.is='button')</script><template><component v-bind="attrs" /></template>

@@ -33,63 +33,777 @@ import org.springframework.stereotype.Service;
 /** P008 leave, attendance and quota-conservation aggregate. */
 @Service
 public final class LeaveService {
-    public static final String PROCESS_CODE="P008",INITIAL_FORM_CODE="EMP-P008-F01";
-    private static final Duration IDEMPOTENCY_TTL=Duration.ofHours(24);
-    private static final Map<String,Set<String>> ACTIONS=Map.ofEntries(
-            Map.entry("S01",Set.of("SUBMIT","WITHDRAW")),Map.entry("S02",Set.of("RESERVE","RETURN")),
-            Map.entry("S03",Set.of("CONFIRM_HANDOVER","RETURN")),Map.entry("S04",Set.of("APPROVE","REJECT")),
-            Map.entry("S05",Set.of("DEDUCT","RELEASE")),Map.entry("S06",Set.of("MARK_ATTENDANCE")),
-            Map.entry("S07",Set.of("START_LEAVE")),Map.entry("S08",Set.of("RETURN","EARLY_RETURN","CHANGE")),
-            Map.entry("S09",Set.of("ADJUST")),Map.entry("S10",Set.of("CLOSE_DAY")));
-    private final TenantTransactionRunner transactions;private final IdempotencyRegistry idempotency;private final BusinessNumberService numbers;
-    private final TransactionalOutboxService outbox;private final WorkflowRuntimeService workflow;private final WorkflowTaskAssignmentService tasks;
-    private final WorkflowFormService forms;private final Repository repository;private final ObjectMapper mapper;
-    public LeaveService(TenantTransactionRunner transactions,IdempotencyRegistry idempotency,BusinessNumberService numbers,TransactionalOutboxService outbox,
-            WorkflowRuntimeService workflow,WorkflowTaskAssignmentService tasks,WorkflowFormService forms,Repository repository,ObjectMapper mapper){this.transactions=transactions;this.idempotency=idempotency;this.numbers=numbers;this.outbox=outbox;this.workflow=workflow;this.tasks=tasks;this.forms=forms;this.repository=repository;this.mapper=mapper;}
 
-    public Leave create(DatabaseSecurityContext actor,String key,String hash,CreateCommand c){requireActor(actor);validateCreate(c);return transactions.required(actor,()->{
-        IdempotencyClaim claim=idempotency.claim(actor.tenantId(),actor.employeeId(),key,hash,"attendance.leave_request",UUID.randomUUID(),IDEMPOTENCY_TTL);if(claim.existing())return required(actor.tenantId(),claim.resourceId());
-        if(repository.hasEffectiveOverlap(actor.tenantId(),actor.employeeId(),c.startAt(),c.endAt(),claim.resourceId()))throw rejected("leave interval overlaps an effective attendance record");
-        UUID version=repository.latestPublishedWorkflowVersion(actor.tenantId(),PROCESS_CODE).orElseThrow(()->rejected("published workflow is not configured"));FormRef form=repository.latestPublishedForm(actor.tenantId(),INITIAL_FORM_CODE,PROCESS_CODE,"S01").orElseThrow(()->rejected("published initial form is not configured"));
-        List<UUID> managers=repository.permissionCandidates(actor.tenantId(),"p008.leave.manage",actor.orgId()),reviewers=repository.permissionCandidates(actor.tenantId(),"p008.leave.review",actor.orgId());if(managers.isEmpty()||reviewers.isEmpty())throw rejected("eligible leave manager and reviewer are required");
-        BigDecimal hours=hours(c.startAt(),c.endAt());Leave draft=new Leave(claim.resourceId(),actor.tenantId(),numbers.next(actor.tenantId(),actor.employeeId(),PROCESS_CODE),null,null,"S01",label("S01"),0,c.businessDate(),c.subject().trim(),c.reason().trim(),actor.orgId(),actor.employeeId(),c.attendanceType().trim(),"APPLY",c.reason().trim(),hours,c.startAt(),c.endAt(),c.handoverAgentId(),c.quotaAccountId().trim(),hours,null,null,List.of(),Instant.now());
-        repository.insert(draft,actor.employeeId());ObjectNode context=mapper.createObjectNode();context.put("ownerEmployeeId",actor.employeeId().toString());context.put("ownerCenterId",actor.orgId().toString());context.set("targetEmployeeIds",uuidArray(List.of(actor.employeeId())));context.set("managerCandidateIds",uuidArray(managers));context.set("reviewerCandidateIds",uuidArray(reviewers));
-        WorkflowRuntimeService.Result started=workflow.start(new WorkflowRuntimeService.StartCommand(actor.tenantId(),actor.employeeId(),actor.identityId(),version,"attendance.leave_request",draft.id(),draft.businessNo(),draft.subject(),"NORMAL",context,scoped(key,"start")));
-        forms.submit(new WorkflowFormService.SubmitForm(actor.tenantId(),actor.employeeId(),actor.identityId(),started.instance().id(),null,form.id(),form.versionNo(),initialValues(started.instance(),draft),scoped(key,"form")));
-        if(repository.bindWorkflow(actor.tenantId(),draft.id(),0,started.instance().id(),actor.employeeId())!=1)throw rejected("concurrent workflow binding conflict");emit(actor,draft,"S01","CREATED","S01",List.of(actor.employeeId()));return required(actor.tenantId(),draft.id());});}
+  public static final String PROCESS_CODE = "P008", INITIAL_FORM_CODE = "EMP-P008-F01";
 
-    public Leave act(DatabaseSecurityContext actor,UUID id,String actionCode,String key,String hash,ActionCommand c){requireActor(actor);Objects.requireNonNull(c,"P008 action command is required");String action=normalize(actionCode);return transactions.required(actor,()->{
-        IdempotencyClaim claim=idempotency.claim(actor.tenantId(),actor.employeeId(),key,hash,"attendance.leave_request.action",id,IDEMPOTENCY_TTL);if(claim.existing())return required(actor.tenantId(),id);Leave current=required(actor.tenantId(),id);if(current.versionNo()!=c.expectedVersion())throw rejected("leave version conflict");
-        WorkflowRuntimeService.Result runtime=workflow.get(actor.tenantId(),current.workflowInstanceId());String node=runtime.instance().currentNodeCode();if(!node.equals(current.currentNodeCode()))throw rejected("business projection is stale");if(!ACTIONS.getOrDefault(node,Set.of()).contains(action))throw rejected("action is not allowed at "+node);validateAction(actor,current,node,action,c);
-        if("S01".equals(node)){if(!actor.employeeId().equals(current.ownerEmployeeId()))throw rejected("only the employee may submit or withdraw");}else{if(runtime.task()==null)throw rejected("current workflow task is missing");tasks.claim(new WorkflowTaskAssignmentService.ClaimCommand(actor.tenantId(),runtime.task().id(),actor.employeeId()));}
-        if("RESERVE".equals(action)){if(repository.hasEffectiveOverlap(actor.tenantId(),current.ownerEmployeeId(),current.startAt(),current.endAt(),current.id()))throw rejected("leave interval overlaps an effective attendance record");repository.appendQuota(current,"RESERVE",current.quotaAmount().negate(),current.quotaAmount(),BigDecimal.ZERO,scoped(key,"quota"),trim(c.reason()),actor.employeeId());}
-        if("CONFIRM_HANDOVER".equals(action))repository.appendEvidence(actor.tenantId(),id,"handover_items",requiredArray(c.handoverItems(),"handover items"),actor.employeeId());
-        if("APPROVE".equals(action)||"REJECT".equals(action))repository.appendEvidence(actor.tenantId(),id,"approval_decision",mapper.createObjectNode().put("decision",action).put("reason",Objects.toString(trim(c.reason()),"")).put("reviewer",actor.employeeId().toString()).put("recordedAt",Instant.now().toString()),actor.employeeId());
-        if("DEDUCT".equals(action)){if(!"APPROVE".equals(repository.latestDecision(actor.tenantId(),id).orElse(null)))throw rejected("deduction requires an approval decision");repository.appendQuota(current,"DEDUCT",BigDecimal.ZERO,current.quotaAmount().negate(),current.quotaAmount(),scoped(key,"quota"),trim(c.reason()),actor.employeeId());}
-        if("RELEASE".equals(action)){if(!"REJECT".equals(repository.latestDecision(actor.tenantId(),id).orElse(null)))throw rejected("release requires a rejection decision");repository.appendQuota(current,"RELEASE",current.quotaAmount(),current.quotaAmount().negate(),BigDecimal.ZERO,scoped(key,"quota"),trim(c.reason()),actor.employeeId());}
-        if(Set.of("MARK_ATTENDANCE","START_LEAVE").contains(action))repository.appendEvidence(actor.tenantId(),id,action.equals("MARK_ATTENDANCE")?"attendance_mark":"leave_start",requiredEvidence(c.evidence(),action),actor.employeeId());
-        if("S08".equals(node)){Instant actualEnd="RETURN".equals(action)?current.endAt():c.actualEndAt();if(actualEnd==null||actualEnd.isBefore(current.startAt())||actualEnd.isAfter(current.endAt()))throw rejected("return action requires actual end within the approved interval");repository.recordActualEnd(actor.tenantId(),id,actualEnd,action,actor.employeeId());repository.appendEvidence(actor.tenantId(),id,"return_change",requiredEvidence(c.evidence(),action),actor.employeeId());}
-        if("ADJUST".equals(action)){Instant actualEnd=current.actualEndAt()==null?current.endAt():current.actualEndAt();BigDecimal actual=hours(current.startAt(),actualEnd),difference=current.quotaAmount().subtract(actual);if(difference.signum()<0)throw rejected("actual leave cannot exceed approved quota in this flow");repository.appendQuota(current,"ADJUST",difference,BigDecimal.ZERO,difference.negate(),scoped(key,"quota"),trim(c.reason()),actor.employeeId());repository.setActualHours(actor.tenantId(),id,actual,actor.employeeId());}
-        if("CLOSE_DAY".equals(action))repository.appendEvidence(actor.tenantId(),id,"day_close",requiredEvidence(c.evidence(),"day close"),actor.employeeId());
-        WorkflowRuntimeService.Result moved=workflow.act(new WorkflowRuntimeService.ActionCommand(actor.tenantId(),actor.employeeId(),actor.identityId(),current.workflowInstanceId(),runtime.task()==null?null:runtime.task().id(),node,action,trim(c.reason()),scoped(key,"workflow")));Instant closed="END".equals(moved.instance().currentNodeCode())?moved.instance().finishedAt():null;
-        if(repository.move(actor.tenantId(),id,current.versionNo(),label(moved.instance().currentNodeCode()),trim(c.resultSummary()),trim(c.actualAttendanceSummary()),closed,actor.employeeId())!=1)throw rejected("concurrent leave transition conflict");Leave result=required(actor.tenantId(),id);emit(actor,result,node,action,moved.instance().currentNodeCode(),recipients(moved));return result;});}
+  private static final Duration IDEMPOTENCY_TTL = Duration.ofHours(24);
 
-    public Optional<Leave> find(DatabaseSecurityContext a,UUID id){requireActor(a);return transactions.required(a,()->repository.find(a.tenantId(),id));}public List<Leave> list(DatabaseSecurityContext a){requireActor(a);return transactions.required(a,()->repository.list(a.tenantId()));}public List<QuotaEntry> quotaLedger(DatabaseSecurityContext a){requireActor(a);return transactions.required(a,()->repository.quotaLedger(a.tenantId()));}
-    public boolean employeeNode(Leave v){return v!=null&&Set.of("S01","S03","S08").contains(v.currentNodeCode());}public boolean reviewNode(Leave v){return v!=null&&"S04".equals(v.currentNodeCode());}
-    private void validateAction(DatabaseSecurityContext a,Leave v,String node,String action,ActionCommand c){if(Set.of("RETURN","REJECT").contains(action)&&trim(c.reason())==null)throw rejected("return/rejection requires a reason");if("S03".equals(node)&&!a.employeeId().equals(v.ownerEmployeeId()))throw rejected("only the employee may confirm handover");if("S04".equals(node)&&a.employeeId().equals(v.ownerEmployeeId()))throw rejected("employee cannot approve their own leave");if("S08".equals(node)&&!a.employeeId().equals(v.ownerEmployeeId()))throw rejected("only the employee may return or change leave");if("CLOSE_DAY".equals(action)&&trim(c.actualAttendanceSummary())==null)throw rejected("day close requires actual attendance summary");}
-    private List<WorkflowFormService.FieldValue> initialValues(WorkflowRuntimeService.Instance i,Leave v){return List.of(text("process_instance_no",i.instanceNo()),text("subject",v.subject()),text("reason",v.reason()),text("owner_employee_id",v.ownerEmployeeId().toString()),text("attendance_type",v.attendanceType()),text("start_at",v.startAt().toString()),text("end_at",v.endAt().toString()),text("quota_account_id",v.quotaAccountId()),number("duration_hours",v.durationHours()),number("quota_amount",v.quotaAmount()));}
-    private static WorkflowFormService.FieldValue text(String c,String v){return new WorkflowFormService.FieldValue(c,"TEXT",v,null,null,null,null,null,"P1",false);}private static WorkflowFormService.FieldValue number(String c,BigDecimal v){return new WorkflowFormService.FieldValue(c,"NUMBER",null,v,null,null,null,null,"P1",false);}
-    private void emit(DatabaseSecurityContext a,Leave v,String node,String action,String target,List<UUID> recipients){ObjectNode p=mapper.createObjectNode().put("leaveId",v.id().toString()).put("businessNo",v.businessNo()).put("event","CREATED".equals(action)?"P008.leave.created":"P008.stage."+node.substring(1)+".completed").put("actionCode",action).put("nodeCode",target);p.set("recipientEmployeeIds",uuidArray(recipients));int version=Math.max(1,v.versionNo()+1);outbox.enqueue(new TransactionalOutboxService.Command(a.tenantId(),a.employeeId(),"P008_LEAVE",v.id(),"P008_LEAVE_EVENT",version,json(p),"p008:"+v.id()+":v"+version+":"+node.toLowerCase(Locale.ROOT)+":"+action.toLowerCase(Locale.ROOT)));}
-    private List<UUID> recipients(WorkflowRuntimeService.Result r){if(r.task()==null||r.task().candidateRule()==null)return List.of();JsonNode f=r.task().candidateRule().get("field"),v=f==null||r.instance().contextSnapshot()==null?null:r.instance().contextSnapshot().get(f.asText());List<UUID> ids=new ArrayList<>();if(v!=null&&v.isArray())v.forEach(n->{try{ids.add(UUID.fromString(n.asText()));}catch(IllegalArgumentException e){throw rejected("workflow candidate id is invalid");}});return List.copyOf(ids);}private ArrayNode uuidArray(List<UUID> ids){ArrayNode a=mapper.createArrayNode();ids.stream().distinct().forEach(v->a.add(v.toString()));return a;}
-    private Leave required(UUID t,UUID id){return repository.find(t,id).orElseThrow(()->rejected("leave not found"));}private String json(JsonNode n){try{return mapper.writeValueAsString(n);}catch(JsonProcessingException e){throw rejected("event payload cannot be serialized");}}
-    private static void validateCreate(CreateCommand c){if(c==null||c.businessDate()==null||c.startAt()==null||c.endAt()==null)throw rejected("business date and interval are required");if(trim(c.subject())==null||c.subject().trim().length()<5)throw rejected("subject requires at least 5 characters");if(trim(c.reason())==null||c.reason().trim().length()<10)throw rejected("reason requires at least 10 characters");if(trim(c.attendanceType())==null||trim(c.quotaAccountId())==null)throw rejected("attendance type and quota account are required");hours(c.startAt(),c.endAt());}
-    private static BigDecimal hours(Instant s,Instant e){if(s==null||e==null||!e.isAfter(s))throw rejected("end time must be after start time");return BigDecimal.valueOf(Duration.between(s,e).toMinutes()).divide(BigDecimal.valueOf(60),6,RoundingMode.HALF_UP);}private static JsonNode requiredEvidence(JsonNode n,String p){if(n==null||!n.isObject())throw rejected(p+" requires immutable evidence");return n;}private static JsonNode requiredArray(JsonNode n,String p){if(n==null||!n.isArray()||n.isEmpty())throw rejected(p+" are required");return n;}
-    private static void requireActor(DatabaseSecurityContext a){if(a==null||a.tenantId()==null||a.employeeId()==null||a.identityId()==null||a.orgId()==null)throw rejected("authenticated tenant employee identity is required");}private static String normalize(String v){String n=v==null?"":v.trim().toUpperCase(Locale.ROOT);if(!n.matches("[A-Z0-9_]{1,32}"))throw rejected("invalid action code");return n;}private static String scoped(String k,String s){if(k==null||k.isBlank()||k.length()>160)throw rejected("valid idempotency key is required");return k+":"+s;}private static String trim(String v){return v==null||v.isBlank()?null:v.trim();}private static ProcessRejectedException rejected(String m){return new ProcessRejectedException("P008 "+m);}
-    public static String label(String n){return switch(n){case"S01"->"请假申请";case"S02"->"假期额度预占";case"S03"->"工作交接与代理";case"S04"->"审批";case"S05"->"预占转扣减/驳回释放";case"S06"->"排班与考勤标记";case"S07"->"实际休假";case"S08"->"销假/提前返岗/变更";case"S09"->"差额账本调整";case"S10"->"考勤日结与归档";case"END"->"已关闭";default->throw rejected("unknown source node "+n);};}
-    public record CreateCommand(LocalDate businessDate,String subject,String reason,String attendanceType,String quotaAccountId,UUID handoverAgentId,Instant startAt,Instant endAt){}
-    public record ActionCommand(int expectedVersion,String reason,String resultSummary,String actualAttendanceSummary,Instant actualEndAt,JsonNode handoverItems,JsonNode evidence){}
-    public record Item(UUID id,String fieldCode,int itemSeq,String itemName,JsonNode value,Instant createdAt){}public record FormRef(UUID id,int versionNo){}
-    public record QuotaEntry(UUID id,UUID employeeId,UUID ownerCenterId,String quotaAccountId,UUID leaveRequestId,String entryType,BigDecimal availableDelta,BigDecimal reservedDelta,BigDecimal consumedDelta,BigDecimal availableAfter,BigDecimal reservedAfter,BigDecimal consumedAfter,String reason,Instant createdAt){public QuotaEntry metadataOnly(){return new QuotaEntry(id,employeeId,ownerCenterId,null,leaveRequestId,entryType,availableDelta,reservedDelta,consumedDelta,availableAfter,reservedAfter,consumedAfter,null,createdAt);}}
-    public record Leave(UUID id,UUID tenantId,String businessNo,UUID workflowInstanceId,String workflowInstanceNo,String currentNodeCode,String status,int versionNo,LocalDate businessDate,String subject,String reason,UUID ownerCenterId,UUID ownerEmployeeId,String attendanceType,String changeAction,String changeReason,BigDecimal durationHours,Instant startAt,Instant endAt,UUID handoverAgentId,String quotaAccountId,BigDecimal quotaAmount,Instant actualEndAt,String actualAttendanceSummary,List<Item> items,Instant updatedAt){public Leave metadataOnly(){return new Leave(id,tenantId,businessNo,workflowInstanceId,workflowInstanceNo,currentNodeCode,status,versionNo,businessDate,subject,null,ownerCenterId,ownerEmployeeId,attendanceType,changeAction,null,durationHours,startAt,endAt,null,null,quotaAmount,null,null,List.of(),updatedAt);}}
-    public interface Repository{Optional<UUID> latestPublishedWorkflowVersion(UUID t,String c);Optional<FormRef> latestPublishedForm(UUID t,String f,String p,String n);List<UUID> permissionCandidates(UUID t,String p,UUID o);boolean hasEffectiveOverlap(UUID t,UUID e,Instant s,Instant end,UUID excluded);void insert(Leave v,UUID a);int bindWorkflow(UUID t,UUID id,int version,UUID wf,UUID a);int move(UUID t,UUID id,int version,String status,String result,String attendance,Instant closed,UUID a);void appendEvidence(UUID t,UUID id,String field,JsonNode evidence,UUID a);Optional<String> latestDecision(UUID t,UUID id);void appendQuota(Leave v,String type,BigDecimal available,BigDecimal reserved,BigDecimal consumed,String key,String reason,UUID actor);void recordActualEnd(UUID t,UUID id,Instant end,String action,UUID actor);void setActualHours(UUID t,UUID id,BigDecimal hours,UUID actor);Optional<Leave> find(UUID t,UUID id);List<Leave> list(UUID t);List<QuotaEntry> quotaLedger(UUID t);}
+  private static final Map<String, Set<String>> ACTIONS =
+      Map.ofEntries(
+          Map.entry("S01", Set.of("SUBMIT", "WITHDRAW")),
+          Map.entry("S02", Set.of("RESERVE", "RETURN")),
+          Map.entry("S03", Set.of("CONFIRM_HANDOVER", "RETURN")),
+          Map.entry("S04", Set.of("APPROVE", "REJECT")),
+          Map.entry("S05", Set.of("DEDUCT", "RELEASE")),
+          Map.entry("S06", Set.of("MARK_ATTENDANCE")),
+          Map.entry("S07", Set.of("START_LEAVE")),
+          Map.entry("S08", Set.of("RETURN", "EARLY_RETURN", "CHANGE")),
+          Map.entry("S09", Set.of("ADJUST")),
+          Map.entry("S10", Set.of("CLOSE_DAY")));
+
+  private final TenantTransactionRunner transactions;
+
+  private final IdempotencyRegistry idempotency;
+
+  private final BusinessNumberService numbers;
+
+  private final TransactionalOutboxService outbox;
+
+  private final WorkflowRuntimeService workflow;
+
+  private final WorkflowTaskAssignmentService tasks;
+
+  private final WorkflowFormService forms;
+
+  private final Repository repository;
+
+  private final ObjectMapper mapper;
+
+  public LeaveService(
+      TenantTransactionRunner transactions,
+      IdempotencyRegistry idempotency,
+      BusinessNumberService numbers,
+      TransactionalOutboxService outbox,
+      WorkflowRuntimeService workflow,
+      WorkflowTaskAssignmentService tasks,
+      WorkflowFormService forms,
+      Repository repository,
+      ObjectMapper mapper) {
+    this.transactions = transactions;
+    this.idempotency = idempotency;
+    this.numbers = numbers;
+    this.outbox = outbox;
+    this.workflow = workflow;
+    this.tasks = tasks;
+    this.forms = forms;
+    this.repository = repository;
+    this.mapper = mapper;
+  }
+
+  public Leave create(DatabaseSecurityContext actor, String key, String hash, CreateCommand c) {
+    requireActor(actor);
+    validateCreate(c);
+    return transactions.required(
+        actor,
+        () -> {
+          IdempotencyClaim claim =
+              idempotency.claim(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  key,
+                  hash,
+                  "attendance.leave_request",
+                  UUID.randomUUID(),
+                  IDEMPOTENCY_TTL);
+          if (claim.existing()) {
+            return required(actor.tenantId(), claim.resourceId());
+          }
+          if (repository.hasEffectiveOverlap(
+              actor.tenantId(), actor.employeeId(), c.startAt(), c.endAt(), claim.resourceId())) {
+            throw rejected("leave interval overlaps an effective attendance record");
+          }
+          UUID version =
+              repository
+                  .latestPublishedWorkflowVersion(actor.tenantId(), PROCESS_CODE)
+                  .orElseThrow(() -> rejected("published workflow is not configured"));
+          FormRef form =
+              repository
+                  .latestPublishedForm(actor.tenantId(), INITIAL_FORM_CODE, PROCESS_CODE, "S01")
+                  .orElseThrow(() -> rejected("published initial form is not configured"));
+          List<UUID>
+              managers =
+                  repository.permissionCandidates(
+                      actor.tenantId(), "p008.leave.manage", actor.orgId()),
+              reviewers =
+                  repository.permissionCandidates(
+                      actor.tenantId(), "p008.leave.review", actor.orgId());
+          if (managers.isEmpty() || reviewers.isEmpty()) {
+            throw rejected("eligible leave manager and reviewer are required");
+          }
+          BigDecimal hours = hours(c.startAt(), c.endAt());
+          Leave draft =
+              new Leave(
+                  claim.resourceId(),
+                  actor.tenantId(),
+                  numbers.next(actor.tenantId(), actor.employeeId(), PROCESS_CODE),
+                  null,
+                  null,
+                  "S01",
+                  label("S01"),
+                  0,
+                  c.businessDate(),
+                  c.subject().trim(),
+                  c.reason().trim(),
+                  actor.orgId(),
+                  actor.employeeId(),
+                  c.attendanceType().trim(),
+                  "APPLY",
+                  c.reason().trim(),
+                  hours,
+                  c.startAt(),
+                  c.endAt(),
+                  c.handoverAgentId(),
+                  c.quotaAccountId().trim(),
+                  hours,
+                  null,
+                  null,
+                  List.of(),
+                  Instant.now());
+          repository.insert(draft, actor.employeeId());
+          ObjectNode context = mapper.createObjectNode();
+          context.put("ownerEmployeeId", actor.employeeId().toString());
+          context.put("ownerCenterId", actor.orgId().toString());
+          context.set("targetEmployeeIds", uuidArray(List.of(actor.employeeId())));
+          context.set("managerCandidateIds", uuidArray(managers));
+          context.set("reviewerCandidateIds", uuidArray(reviewers));
+          WorkflowRuntimeService.Result started =
+              workflow.start(
+                  new WorkflowRuntimeService.StartCommand(
+                      actor.tenantId(),
+                      actor.employeeId(),
+                      actor.identityId(),
+                      version,
+                      "attendance.leave_request",
+                      draft.id(),
+                      draft.businessNo(),
+                      draft.subject(),
+                      "NORMAL",
+                      context,
+                      scoped(key, "start")));
+          forms.submit(
+              new WorkflowFormService.SubmitForm(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  actor.identityId(),
+                  started.instance().id(),
+                  null,
+                  form.id(),
+                  form.versionNo(),
+                  initialValues(started.instance(), draft),
+                  scoped(key, "form")));
+          if (repository.bindWorkflow(
+                  actor.tenantId(), draft.id(), 0, started.instance().id(), actor.employeeId())
+              != 1) {
+            throw rejected("concurrent workflow binding conflict");
+          }
+          emit(actor, draft, "S01", "CREATED", "S01", List.of(actor.employeeId()));
+          return required(actor.tenantId(), draft.id());
+        });
+  }
+
+  public Leave act(
+      DatabaseSecurityContext actor,
+      UUID id,
+      String actionCode,
+      String key,
+      String hash,
+      ActionCommand c) {
+    requireActor(actor);
+    Objects.requireNonNull(c, "P008 action command is required");
+    String action = normalize(actionCode);
+    return transactions.required(
+        actor,
+        () -> {
+          IdempotencyClaim claim =
+              idempotency.claim(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  key,
+                  hash,
+                  "attendance.leave_request.action",
+                  id,
+                  IDEMPOTENCY_TTL);
+          if (claim.existing()) {
+            return required(actor.tenantId(), id);
+          }
+          Leave current = required(actor.tenantId(), id);
+          if (current.versionNo() != c.expectedVersion()) {
+            throw rejected("leave version conflict");
+          }
+          WorkflowRuntimeService.Result runtime =
+              workflow.get(actor.tenantId(), current.workflowInstanceId());
+          String node = runtime.instance().currentNodeCode();
+          if (!node.equals(current.currentNodeCode())) {
+            throw rejected("business projection is stale");
+          }
+          if (!ACTIONS.getOrDefault(node, Set.of()).contains(action)) {
+            throw rejected("action is not allowed at " + node);
+          }
+          validateAction(actor, current, node, action, c);
+          if ("S01".equals(node)) {
+            if (!actor.employeeId().equals(current.ownerEmployeeId())) {
+              throw rejected("only the employee may submit or withdraw");
+            }
+          } else {
+            if (runtime.task() == null) {
+              throw rejected("current workflow task is missing");
+            }
+            tasks.claim(
+                new WorkflowTaskAssignmentService.ClaimCommand(
+                    actor.tenantId(), runtime.task().id(), actor.employeeId()));
+          }
+          if ("RESERVE".equals(action)) {
+            if (repository.hasEffectiveOverlap(
+                actor.tenantId(),
+                current.ownerEmployeeId(),
+                current.startAt(),
+                current.endAt(),
+                current.id())) {
+              throw rejected("leave interval overlaps an effective attendance record");
+            }
+            repository.appendQuota(
+                current,
+                "RESERVE",
+                current.quotaAmount().negate(),
+                current.quotaAmount(),
+                BigDecimal.ZERO,
+                scoped(key, "quota"),
+                trim(c.reason()),
+                actor.employeeId());
+          }
+          if ("CONFIRM_HANDOVER".equals(action)) {
+            repository.appendEvidence(
+                actor.tenantId(),
+                id,
+                "handover_items",
+                requiredArray(c.handoverItems(), "handover items"),
+                actor.employeeId());
+          }
+          if ("APPROVE".equals(action) || "REJECT".equals(action)) {
+            repository.appendEvidence(
+                actor.tenantId(),
+                id,
+                "approval_decision",
+                mapper
+                    .createObjectNode()
+                    .put("decision", action)
+                    .put("reason", Objects.toString(trim(c.reason()), ""))
+                    .put("reviewer", actor.employeeId().toString())
+                    .put("recordedAt", Instant.now().toString()),
+                actor.employeeId());
+          }
+          if ("DEDUCT".equals(action)) {
+            if (!"APPROVE".equals(repository.latestDecision(actor.tenantId(), id).orElse(null))) {
+              throw rejected("deduction requires an approval decision");
+            }
+            repository.appendQuota(
+                current,
+                "DEDUCT",
+                BigDecimal.ZERO,
+                current.quotaAmount().negate(),
+                current.quotaAmount(),
+                scoped(key, "quota"),
+                trim(c.reason()),
+                actor.employeeId());
+          }
+          if ("RELEASE".equals(action)) {
+            if (!"REJECT".equals(repository.latestDecision(actor.tenantId(), id).orElse(null))) {
+              throw rejected("release requires a rejection decision");
+            }
+            repository.appendQuota(
+                current,
+                "RELEASE",
+                current.quotaAmount(),
+                current.quotaAmount().negate(),
+                BigDecimal.ZERO,
+                scoped(key, "quota"),
+                trim(c.reason()),
+                actor.employeeId());
+          }
+          if (Set.of("MARK_ATTENDANCE", "START_LEAVE").contains(action)) {
+            repository.appendEvidence(
+                actor.tenantId(),
+                id,
+                action.equals("MARK_ATTENDANCE") ? "attendance_mark" : "leave_start",
+                requiredEvidence(c.evidence(), action),
+                actor.employeeId());
+          }
+          if ("S08".equals(node)) {
+            Instant actualEnd = "RETURN".equals(action) ? current.endAt() : c.actualEndAt();
+            if (actualEnd == null
+                || actualEnd.isBefore(current.startAt())
+                || actualEnd.isAfter(current.endAt())) {
+              throw rejected("return action requires actual end within the approved interval");
+            }
+            repository.recordActualEnd(actor.tenantId(), id, actualEnd, action, actor.employeeId());
+            repository.appendEvidence(
+                actor.tenantId(),
+                id,
+                "return_change",
+                requiredEvidence(c.evidence(), action),
+                actor.employeeId());
+          }
+          if ("ADJUST".equals(action)) {
+            Instant actualEnd =
+                current.actualEndAt() == null ? current.endAt() : current.actualEndAt();
+            BigDecimal actual = hours(current.startAt(), actualEnd),
+                difference = current.quotaAmount().subtract(actual);
+            if (difference.signum() < 0) {
+              throw rejected("actual leave cannot exceed approved quota in this flow");
+            }
+            repository.appendQuota(
+                current,
+                "ADJUST",
+                difference,
+                BigDecimal.ZERO,
+                difference.negate(),
+                scoped(key, "quota"),
+                trim(c.reason()),
+                actor.employeeId());
+            repository.setActualHours(actor.tenantId(), id, actual, actor.employeeId());
+          }
+          if ("CLOSE_DAY".equals(action)) {
+            repository.appendEvidence(
+                actor.tenantId(),
+                id,
+                "day_close",
+                requiredEvidence(c.evidence(), "day close"),
+                actor.employeeId());
+          }
+          WorkflowRuntimeService.Result moved =
+              workflow.act(
+                  new WorkflowRuntimeService.ActionCommand(
+                      actor.tenantId(),
+                      actor.employeeId(),
+                      actor.identityId(),
+                      current.workflowInstanceId(),
+                      runtime.task() == null ? null : runtime.task().id(),
+                      node,
+                      action,
+                      trim(c.reason()),
+                      scoped(key, "workflow")));
+          Instant closed =
+              "END".equals(moved.instance().currentNodeCode())
+                  ? moved.instance().finishedAt()
+                  : null;
+          if (repository.move(
+                  actor.tenantId(),
+                  id,
+                  current.versionNo(),
+                  label(moved.instance().currentNodeCode()),
+                  trim(c.resultSummary()),
+                  trim(c.actualAttendanceSummary()),
+                  closed,
+                  actor.employeeId())
+              != 1) {
+            throw rejected("concurrent leave transition conflict");
+          }
+          Leave result = required(actor.tenantId(), id);
+          emit(actor, result, node, action, moved.instance().currentNodeCode(), recipients(moved));
+          return result;
+        });
+  }
+
+  public Optional<Leave> find(DatabaseSecurityContext a, UUID id) {
+    requireActor(a);
+    return transactions.required(a, () -> repository.find(a.tenantId(), id));
+  }
+
+  public List<Leave> list(DatabaseSecurityContext a) {
+    requireActor(a);
+    return transactions.required(a, () -> repository.list(a.tenantId()));
+  }
+
+  public List<QuotaEntry> quotaLedger(DatabaseSecurityContext a) {
+    requireActor(a);
+    return transactions.required(a, () -> repository.quotaLedger(a.tenantId()));
+  }
+
+  public boolean employeeNode(Leave v) {
+    return v != null && Set.of("S01", "S03", "S08").contains(v.currentNodeCode());
+  }
+
+  public boolean reviewNode(Leave v) {
+    return v != null && "S04".equals(v.currentNodeCode());
+  }
+
+  private void validateAction(
+      DatabaseSecurityContext a, Leave v, String node, String action, ActionCommand c) {
+    if (Set.of("RETURN", "REJECT").contains(action) && trim(c.reason()) == null) {
+      throw rejected("return/rejection requires a reason");
+    }
+    if ("S03".equals(node) && !a.employeeId().equals(v.ownerEmployeeId())) {
+      throw rejected("only the employee may confirm handover");
+    }
+    if ("S04".equals(node) && a.employeeId().equals(v.ownerEmployeeId())) {
+      throw rejected("employee cannot approve their own leave");
+    }
+    if ("S08".equals(node) && !a.employeeId().equals(v.ownerEmployeeId())) {
+      throw rejected("only the employee may return or change leave");
+    }
+    if ("CLOSE_DAY".equals(action) && trim(c.actualAttendanceSummary()) == null) {
+      throw rejected("day close requires actual attendance summary");
+    }
+  }
+
+  private List<WorkflowFormService.FieldValue> initialValues(
+      WorkflowRuntimeService.Instance i, Leave v) {
+    return List.of(
+        text("process_instance_no", i.instanceNo()),
+        text("subject", v.subject()),
+        text("reason", v.reason()),
+        text("owner_employee_id", v.ownerEmployeeId().toString()),
+        text("attendance_type", v.attendanceType()),
+        text("start_at", v.startAt().toString()),
+        text("end_at", v.endAt().toString()),
+        text("quota_account_id", v.quotaAccountId()),
+        number("duration_hours", v.durationHours()),
+        number("quota_amount", v.quotaAmount()));
+  }
+
+  private static WorkflowFormService.FieldValue text(String c, String v) {
+    return new WorkflowFormService.FieldValue(
+        c, "TEXT", v, null, null, null, null, null, "P1", false);
+  }
+
+  private static WorkflowFormService.FieldValue number(String c, BigDecimal v) {
+    return new WorkflowFormService.FieldValue(
+        c, "NUMBER", null, v, null, null, null, null, "P1", false);
+  }
+
+  private void emit(
+      DatabaseSecurityContext a,
+      Leave v,
+      String node,
+      String action,
+      String target,
+      List<UUID> recipients) {
+    ObjectNode p =
+        mapper
+            .createObjectNode()
+            .put("leaveId", v.id().toString())
+            .put("businessNo", v.businessNo())
+            .put(
+                "event",
+                "CREATED".equals(action)
+                    ? "P008.leave.created"
+                    : "P008.stage." + node.substring(1) + ".completed")
+            .put("actionCode", action)
+            .put("nodeCode", target);
+    p.set("recipientEmployeeIds", uuidArray(recipients));
+    int version = Math.max(1, v.versionNo() + 1);
+    outbox.enqueue(
+        new TransactionalOutboxService.Command(
+            a.tenantId(),
+            a.employeeId(),
+            "P008_LEAVE",
+            v.id(),
+            "P008_LEAVE_EVENT",
+            version,
+            json(p),
+            "p008:"
+                + v.id()
+                + ":v"
+                + version
+                + ":"
+                + node.toLowerCase(Locale.ROOT)
+                + ":"
+                + action.toLowerCase(Locale.ROOT)));
+  }
+
+  private List<UUID> recipients(WorkflowRuntimeService.Result r) {
+    if (r.task() == null || r.task().candidateRule() == null) {
+      return List.of();
+    }
+    JsonNode f = r.task().candidateRule().get("field"),
+        v =
+            f == null || r.instance().contextSnapshot() == null
+                ? null
+                : r.instance().contextSnapshot().get(f.asText());
+    List<UUID> ids = new ArrayList<>();
+    if (v != null && v.isArray()) {
+      v.forEach(
+          n -> {
+            try {
+              ids.add(UUID.fromString(n.asText()));
+            } catch (IllegalArgumentException e) {
+              throw rejected("workflow candidate id is invalid");
+            }
+          });
+    }
+    return List.copyOf(ids);
+  }
+
+  private ArrayNode uuidArray(List<UUID> ids) {
+    ArrayNode a = mapper.createArrayNode();
+    ids.stream().distinct().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
+  private Leave required(UUID t, UUID id) {
+    return repository.find(t, id).orElseThrow(() -> rejected("leave not found"));
+  }
+
+  private String json(JsonNode n) {
+    try {
+      return mapper.writeValueAsString(n);
+    } catch (JsonProcessingException e) {
+      throw rejected("event payload cannot be serialized");
+    }
+  }
+
+  private static void validateCreate(CreateCommand c) {
+    if (c == null || c.businessDate() == null || c.startAt() == null || c.endAt() == null) {
+      throw rejected("business date and interval are required");
+    }
+    if (trim(c.subject()) == null || c.subject().trim().length() < 5) {
+      throw rejected("subject requires at least 5 characters");
+    }
+    if (trim(c.reason()) == null || c.reason().trim().length() < 10) {
+      throw rejected("reason requires at least 10 characters");
+    }
+    if (trim(c.attendanceType()) == null || trim(c.quotaAccountId()) == null) {
+      throw rejected("attendance type and quota account are required");
+    }
+    hours(c.startAt(), c.endAt());
+  }
+
+  private static BigDecimal hours(Instant s, Instant e) {
+    if (s == null || e == null || !e.isAfter(s)) {
+      throw rejected("end time must be after start time");
+    }
+    return BigDecimal.valueOf(Duration.between(s, e).toMinutes())
+        .divide(BigDecimal.valueOf(60), 6, RoundingMode.HALF_UP);
+  }
+
+  private static JsonNode requiredEvidence(JsonNode n, String p) {
+    if (n == null || !n.isObject()) {
+      throw rejected(p + " requires immutable evidence");
+    }
+    return n;
+  }
+
+  private static JsonNode requiredArray(JsonNode n, String p) {
+    if (n == null || !n.isArray() || n.isEmpty()) {
+      throw rejected(p + " are required");
+    }
+    return n;
+  }
+
+  private static void requireActor(DatabaseSecurityContext a) {
+    if (a == null
+        || a.tenantId() == null
+        || a.employeeId() == null
+        || a.identityId() == null
+        || a.orgId() == null) {
+      throw rejected("authenticated tenant employee identity is required");
+    }
+  }
+
+  private static String normalize(String v) {
+    String n = v == null ? "" : v.trim().toUpperCase(Locale.ROOT);
+    if (!n.matches("[A-Z0-9_]{1,32}")) {
+      throw rejected("invalid action code");
+    }
+    return n;
+  }
+
+  private static String scoped(String k, String s) {
+    if (k == null || k.isBlank() || k.length() > 160) {
+      throw rejected("valid idempotency key is required");
+    }
+    return k + ":" + s;
+  }
+
+  private static String trim(String v) {
+    return v == null || v.isBlank() ? null : v.trim();
+  }
+
+  private static ProcessRejectedException rejected(String m) {
+    return new ProcessRejectedException("P008 " + m);
+  }
+
+  public static String label(String n) {
+    return switch (n) {
+      case "S01" -> "请假申请";
+      case "S02" -> "假期额度预占";
+      case "S03" -> "工作交接与代理";
+      case "S04" -> "审批";
+      case "S05" -> "预占转扣减/驳回释放";
+      case "S06" -> "排班与考勤标记";
+      case "S07" -> "实际休假";
+      case "S08" -> "销假/提前返岗/变更";
+      case "S09" -> "差额账本调整";
+      case "S10" -> "考勤日结与归档";
+      case "END" -> "已关闭";
+      default -> throw rejected("unknown source node " + n);
+    };
+  }
+
+  public record CreateCommand(
+      LocalDate businessDate,
+      String subject,
+      String reason,
+      String attendanceType,
+      String quotaAccountId,
+      UUID handoverAgentId,
+      Instant startAt,
+      Instant endAt) {}
+
+  public record ActionCommand(
+      int expectedVersion,
+      String reason,
+      String resultSummary,
+      String actualAttendanceSummary,
+      Instant actualEndAt,
+      JsonNode handoverItems,
+      JsonNode evidence) {}
+
+  public record Item(
+      UUID id, String fieldCode, int itemSeq, String itemName, JsonNode value, Instant createdAt) {}
+
+  public record FormRef(UUID id, int versionNo) {}
+
+  public record QuotaEntry(
+      UUID id,
+      UUID employeeId,
+      UUID ownerCenterId,
+      String quotaAccountId,
+      UUID leaveRequestId,
+      String entryType,
+      BigDecimal availableDelta,
+      BigDecimal reservedDelta,
+      BigDecimal consumedDelta,
+      BigDecimal availableAfter,
+      BigDecimal reservedAfter,
+      BigDecimal consumedAfter,
+      String reason,
+      Instant createdAt) {
+
+    public QuotaEntry metadataOnly() {
+      return new QuotaEntry(
+          id,
+          employeeId,
+          ownerCenterId,
+          null,
+          leaveRequestId,
+          entryType,
+          availableDelta,
+          reservedDelta,
+          consumedDelta,
+          availableAfter,
+          reservedAfter,
+          consumedAfter,
+          null,
+          createdAt);
+    }
+  }
+
+  public record Leave(
+      UUID id,
+      UUID tenantId,
+      String businessNo,
+      UUID workflowInstanceId,
+      String workflowInstanceNo,
+      String currentNodeCode,
+      String status,
+      int versionNo,
+      LocalDate businessDate,
+      String subject,
+      String reason,
+      UUID ownerCenterId,
+      UUID ownerEmployeeId,
+      String attendanceType,
+      String changeAction,
+      String changeReason,
+      BigDecimal durationHours,
+      Instant startAt,
+      Instant endAt,
+      UUID handoverAgentId,
+      String quotaAccountId,
+      BigDecimal quotaAmount,
+      Instant actualEndAt,
+      String actualAttendanceSummary,
+      List<Item> items,
+      Instant updatedAt) {
+
+    public Leave metadataOnly() {
+      return new Leave(
+          id,
+          tenantId,
+          businessNo,
+          workflowInstanceId,
+          workflowInstanceNo,
+          currentNodeCode,
+          status,
+          versionNo,
+          businessDate,
+          subject,
+          null,
+          ownerCenterId,
+          ownerEmployeeId,
+          attendanceType,
+          changeAction,
+          null,
+          durationHours,
+          startAt,
+          endAt,
+          null,
+          null,
+          quotaAmount,
+          null,
+          null,
+          List.of(),
+          updatedAt);
+    }
+  }
+
+  public interface Repository {
+
+    Optional<UUID> latestPublishedWorkflowVersion(UUID t, String c);
+
+    Optional<FormRef> latestPublishedForm(UUID t, String f, String p, String n);
+
+    List<UUID> permissionCandidates(UUID t, String p, UUID o);
+
+    boolean hasEffectiveOverlap(UUID t, UUID e, Instant s, Instant end, UUID excluded);
+
+    void insert(Leave v, UUID a);
+
+    int bindWorkflow(UUID t, UUID id, int version, UUID wf, UUID a);
+
+    int move(
+        UUID t,
+        UUID id,
+        int version,
+        String status,
+        String result,
+        String attendance,
+        Instant closed,
+        UUID a);
+
+    void appendEvidence(UUID t, UUID id, String field, JsonNode evidence, UUID a);
+
+    Optional<String> latestDecision(UUID t, UUID id);
+
+    void appendQuota(
+        Leave v,
+        String type,
+        BigDecimal available,
+        BigDecimal reserved,
+        BigDecimal consumed,
+        String key,
+        String reason,
+        UUID actor);
+
+    void recordActualEnd(UUID t, UUID id, Instant end, String action, UUID actor);
+
+    void setActualHours(UUID t, UUID id, BigDecimal hours, UUID actor);
+
+    Optional<Leave> find(UUID t, UUID id);
+
+    List<Leave> list(UUID t);
+
+    List<QuotaEntry> quotaLedger(UUID t);
+  }
 }

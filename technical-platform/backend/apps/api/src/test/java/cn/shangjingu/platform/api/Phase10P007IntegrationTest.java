@@ -36,43 +36,661 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(classes=ApiApplication.class)
+@SpringBootTest(classes = ApiApplication.class)
 @AutoConfigureMockMvc
 class Phase10P007IntegrationTest {
-    private static final UUID TENANT=uuid("00000000-0000-0000-0000-000000002007"),CENTER_A=uuid("10000000-0000-0000-0000-000000003007"),CENTER_B=uuid("10000000-0000-0000-0000-000000003008"),POS_A=uuid("20000000-0000-0000-0000-000000003007"),POS_B=uuid("20000000-0000-0000-0000-000000003008");
-    private static final UUID MANAGER=uuid("30000000-0000-0000-0000-000000003007"),EMPLOYEE=uuid("30000000-0000-0000-0000-000000003008"),REVIEWER=uuid("30000000-0000-0000-0000-000000003009"),TECH=uuid("30000000-0000-0000-0000-000000003010"),OUT=uuid("30000000-0000-0000-0000-000000003011");
-    private static final String PASSWORD="P007-Live-Test-8q!",API_PASSWORD="p007_api_"+shortId(),AUDIT_PASSWORD="p007_audit_"+shortId();
-    private static final PostgreSQLContainer<?> POSTGRES=new PostgreSQLContainer<>("postgres:16.14-alpine3.24").withDatabaseName("postgres").withUsername("postgres").withPassword("bootstrap-"+shortId());
-    private static final GenericContainer<?> REDIS=new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
-    static{POSTGRES.start();REDIS.start();try{prepare();}catch(Exception e){POSTGRES.stop();REDIS.stop();throw new ExceptionInInitializerError(e);}}
-    @Autowired MockMvc mvc;@Autowired ObjectMapper mapper;
-    @DynamicPropertySource static void props(DynamicPropertyRegistry r){r.add("spring.datasource.url",()->url("sjg_oms"));r.add("spring.datasource.username",()->"sjg_api_runtime");r.add("spring.datasource.password",()->API_PASSWORD);r.add("spring.data.redis.host",REDIS::getHost);r.add("spring.data.redis.port",()->REDIS.getMappedPort(6379));r.add("sjg.audit.datasource.url",()->url("sjg_audit"));r.add("sjg.audit.datasource.username",()->"sjg_audit_writer");r.add("sjg.audit.datasource.password",()->AUDIT_PASSWORD);}
-    @AfterAll static void stop(){REDIS.stop();POSTGRES.stop();}
 
-    @Test void realHttpLifecycleEnforcesQualificationHoursOverlapScopeSnapshotsAndEmployeeReviewSeparation()throws Exception{
-        String manager=login("p007.manager"),employee=login("p007.employee"),reviewer=login("p007.reviewer"),tech=login("p007.tech"),out=login("p007.out");Instant start=Instant.now().plus(2,ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES),end=start.plus(8,ChronoUnit.HOURS);
-        ObjectNode create=mapper.createObjectNode().put("businessDate",java.time.LocalDate.now().toString()).put("subject","P007 真实排班与班次调整").put("reason","验证资格连续工时冲突和班次变更闭环").put("ownerEmployeeId",EMPLOYEE.toString()).put("attendanceType","排班").put("changeAction","制定").put("changeReason","依据业务量制定正式排班").put("contentVersion","SAFE-V1").put("periodOrCourseNo","P007-WEEK-1").put("startAt",start.toString()).put("endAt",end.toString());
-        mvc.perform(post("/api/v1/processes/P007/shift-changes").contentType(MediaType.APPLICATION_JSON).content(create.toString()).header("Idempotency-Key","unauth")).andExpect(status().isUnauthorized());
-        ObjectNode tooLong=create.deepCopy().put("endAt",start.plus(13,ChronoUnit.HOURS).toString());mvc.perform(post("/api/v1/processes/P007/shift-changes").header("Authorization",bearer(manager)).header("Idempotency-Key","too-long").contentType(MediaType.APPLICATION_JSON).content(tooLong.toString())).andExpect(status().isConflict());
-        JsonNode current=json(mvc.perform(post("/api/v1/processes/P007/shift-changes").header("Authorization",bearer(manager)).header("Idempotency-Key","create-1").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isOk()).andReturn());String id=current.path("id").asText();assertEquals("S01",current.path("currentNodeCode").asText());assertEquals(8.0,current.path("durationHours").asDouble());
-        assertEquals(id,json(mvc.perform(post("/api/v1/processes/P007/shift-changes").header("Authorization",bearer(manager)).header("Idempotency-Key","create-1").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isOk()).andReturn()).path("id").asText());
-        assertEquals(0,json(mvc.perform(get("/api/v1/processes/P007/shift-changes").header("Authorization",bearer(out))).andExpect(status().isOk()).andReturn()).size());mvc.perform(get("/api/v1/processes/P007/shift-changes/"+id).header("Authorization",bearer(out))).andExpect(status().isForbidden());JsonNode masked=json(mvc.perform(get("/api/v1/processes/P007/shift-changes/"+id).header("Authorization",bearer(tech))).andExpect(status().isOk()).andReturn());assertTrue(masked.path("reason").isNull());assertTrue(masked.path("changeReason").isNull());
-        current=act(manager,id,"SUBMIT_DEMAND",1,null,null,null,null,null,null,"submit");current=act(manager,id,"MATCH_TEMPLATE",2,null,null,null,null,null,null,"template");
-        mvc.perform(post("/api/v1/processes/P007/shift-changes/"+id+"/actions/VALIDATE").header("Authorization",bearer(manager)).header("Idempotency-Key","stale").contentType(MediaType.APPLICATION_JSON).content(action(2,null,null,null,null,null,null,null,null).toString())).andExpect(status().isConflict());
-        current=act(manager,id,"VALIDATE",3,null,null,null,null,null,null,"validate");current=act(manager,id,"PUBLISH",4,null,null,null,null,null,null,"publish");assertEquals("S05",current.path("currentNodeCode").asText());
-        mvc.perform(post("/api/v1/processes/P007/shift-changes/"+id+"/actions/CONFIRM").header("Authorization",bearer(manager)).header("Idempotency-Key","manager-confirm").contentType(MediaType.APPLICATION_JSON).content(action(5,null,null,null,null,null,null,null,evidence("bad")).toString())).andExpect(status().isForbidden());
-        current=act(employee,id,"CONFIRM",5,null,null,null,null,null,evidence("员工确认排班"),"confirm");Instant proposedStart=start.plus(1,ChronoUnit.HOURS),proposedEnd=end.plus(1,ChronoUnit.HOURS);
-        current=act(employee,id,"REQUEST_CHANGE",6,"员工申请换班并完成交接",null,null,proposedStart,proposedEnd,null,"request-change");assertEquals("S07",current.path("currentNodeCode").asText());
-        mvc.perform(post("/api/v1/processes/P007/shift-changes/"+id+"/actions/APPROVE").header("Authorization",bearer(employee)).header("Idempotency-Key","self-review").contentType(MediaType.APPLICATION_JSON).content(action(7,null,null,null,null,null,null,null,null).toString())).andExpect(status().isForbidden());
-        current=act(reviewer,id,"APPROVE",7,"审批人复核资格与冲突通过",null,null,null,null,null,"approve");assertEquals(proposedStart.toString(),current.path("startAt").asText());
-        current=act(manager,id,"LINK",8,null,null,null,null,null,evidence("考勤餐饮班车三方回执"),"link");current=act(manager,id,"CLOSE_DAY",9,null,"日结关闭", "实际出勤8小时，联动结果一致",null,null,evidence("日结核对完成"),"close");assertEquals("END",current.path("currentNodeCode").asText());assertEquals("已日结",current.path("status").asText());
-        JdbcTemplate jdbc=jdbc("sjg_oms",POSTGRES.getUsername(),POSTGRES.getPassword());assertEquals(1,jdbc.queryForObject("select count(*) from attendance.shift_change_request_item where tenant_id=? and master_id=? and field_code='before_snapshot'",Integer.class,TENANT,UUID.fromString(id)));assertEquals(1,jdbc.queryForObject("select count(*) from attendance.shift_change_request_item where tenant_id=? and master_id=? and field_code='after_snapshot'",Integer.class,TENANT,UUID.fromString(id)));assertEquals(1,jdbc.queryForObject("select count(*) from attendance.shift_change_request_item where tenant_id=? and master_id=? and field_code='integration_receipt'",Integer.class,TENANT,UUID.fromString(id)));assertEquals(10,jdbc.queryForObject("select count(*) from core.outbox_event where tenant_id=? and aggregate_id=? and event_type='P007_SHIFT_EVENT'",Integer.class,TENANT,UUID.fromString(id)));assertTrue(jdbc("sjg_audit",POSTGRES.getUsername(),POSTGRES.getPassword()).queryForObject("select count(*) from audit.operation_log where tenant_id=? and resource_id=? and action like 'P007_%'",Integer.class,TENANT,UUID.fromString(id))>=16);
+  private static final UUID TENANT = uuid("00000000-0000-0000-0000-000000002007"),
+      CENTER_A = uuid("10000000-0000-0000-0000-000000003007"),
+      CENTER_B = uuid("10000000-0000-0000-0000-000000003008"),
+      POS_A = uuid("20000000-0000-0000-0000-000000003007"),
+      POS_B = uuid("20000000-0000-0000-0000-000000003008");
+  private static final UUID MANAGER = uuid("30000000-0000-0000-0000-000000003007"),
+      EMPLOYEE = uuid("30000000-0000-0000-0000-000000003008"),
+      REVIEWER = uuid("30000000-0000-0000-0000-000000003009"),
+      TECH = uuid("30000000-0000-0000-0000-000000003010"),
+      OUT = uuid("30000000-0000-0000-0000-000000003011");
+  private static final String PASSWORD = "P007-Live-Test-8q!",
+      API_PASSWORD = "p007_api_" + shortId(),
+      AUDIT_PASSWORD = "p007_audit_" + shortId();
+
+  private static final PostgreSQLContainer<?> POSTGRES =
+      new PostgreSQLContainer<>("postgres:16.14-alpine3.24")
+          .withDatabaseName("postgres")
+          .withUsername("postgres")
+          .withPassword("bootstrap-" + shortId());
+
+  private static final GenericContainer<?> REDIS =
+      new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
+
+  static {
+    POSTGRES.start();
+    REDIS.start();
+    try {
+      prepare();
+    } catch (Exception e) {
+      POSTGRES.stop();
+      REDIS.stop();
+      throw new ExceptionInInitializerError(e);
     }
-    private JsonNode act(String token,String id,String code,int version,String reason,String result,String attendance,Instant start,Instant end,JsonNode evidence,String key)throws Exception{return json(mvc.perform(post("/api/v1/processes/P007/shift-changes/"+id+"/actions/"+code).header("Authorization",bearer(token)).header("Idempotency-Key",key).contentType(MediaType.APPLICATION_JSON).content(action(version,reason,result,attendance,start,end,null,code.equals("REQUEST_CHANGE")?mapper.createArrayNode().add("交接钥匙").add("交接当日任务"):null,evidence).toString())).andExpect(status().isOk()).andReturn());}
-    private ObjectNode action(int version,String reason,String result,String attendance,Instant start,Instant end,UUID substitute,JsonNode handover,JsonNode evidence){ObjectNode n=mapper.createObjectNode().put("expectedVersion",version);put(n,"reason",reason);put(n,"resultSummary",result);put(n,"actualAttendanceSummary",attendance);if(start==null)n.putNull("proposedStartAt");else n.put("proposedStartAt",start.toString());if(end==null)n.putNull("proposedEndAt");else n.put("proposedEndAt",end.toString());if(substitute==null)n.putNull("substituteEmployeeId");else n.put("substituteEmployeeId",substitute.toString());n.set("handoverItems",handover==null?mapper.createArrayNode():handover);if(evidence==null)n.putNull("evidence");else n.set("evidence",evidence);return n;}private static void put(ObjectNode n,String f,String v){if(v==null)n.putNull(f);else n.put(f,v);}private ObjectNode evidence(String note){return mapper.createObjectNode().put("note",note).put("recordedAt",Instant.now().toString());}
-    private String login(String name)throws Exception{ObjectNode n=mapper.createObjectNode().put("tenantCode","PHASE10_P007").put("loginName",name).put("password",PASSWORD);return json(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(n.toString())).andExpect(status().isOk()).andReturn()).path("accessToken").asText();}private JsonNode json(MvcResult r)throws Exception{return mapper.readTree(r.getResponse().getContentAsByteArray());}private static String bearer(String t){return"Bearer "+t;}
-    private static void prepare()throws Exception{Path root=root();Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/cluster")).cleanDisabled(true).load().migrate();try(Connection c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());Statement s=c.createStatement()){s.execute("alter role sjg_api_runtime password '"+API_PASSWORD+"'");s.execute("alter role sjg_audit_writer password '"+AUDIT_PASSWORD+"'");s.execute("create database sjg_oms");s.execute("create database sjg_audit");}Flyway.configure().dataSource(url("sjg_oms"),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/oms"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/oms")).placeholders(Map.of("sjg_tenant_id",TENANT.toString(),"sjg_tenant_code","PHASE10_P007","sjg_tenant_name","P007 Integration Tenant")).cleanDisabled(true).load().migrate();Flyway.configure().dataSource(url("sjg_audit"),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/audit"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/audit")).cleanDisabled(true).load().migrate();seed();}
-    private static void seed()throws Exception{String hash=new BCryptPasswordEncoder(12).encode(PASSWORD);try(Connection c=DriverManager.getConnection(url("sjg_oms"),POSTGRES.getUsername(),POSTGRES.getPassword());Statement s=c.createStatement()){s.execute("insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values ('"+CENTER_A+"','"+TENANT+"','P007_A','P007 Center A','CENTER','p007_a'::ltree,'ACTIVE'),('"+CENTER_B+"','"+TENANT+"','P007_B','P007 Center B','CENTER','p007_b'::ltree,'ACTIVE')");s.execute("insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values ('"+POS_A+"','"+TENANT+"','P007_PA','P007 Position A','"+CENTER_A+"','ACTIVE'),('"+POS_B+"','"+TENANT+"','P007_PB','P007 Position B','"+CENTER_B+"','ACTIVE')");UUID[] es={MANAGER,EMPLOYEE,REVIEWER,TECH,OUT};for(int i=0;i<es.length;i++){UUID center=i==4?CENTER_B:CENTER_A,pos=i==4?POS_B:POS_A;s.execute("insert into org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id) values ('"+es[i]+"','"+TENANT+"','P007-E00"+(i+1)+"','P007 Actor "+i+"','ACTIVE',current_date-30,'"+center+"','"+pos+"')");}s.execute("insert into learning.learning_assignment(id,tenant_id,business_no,status,version_no,created_by,updated_by,owner_center_id,owner_employee_id,content_version,course_team_name,course_version_id,period_or_course_no,practical_result,qualification_effective_date,qualification_expire_date) values (gen_random_uuid(),'"+TENANT+"','P007-QUAL-1','QUALIFIED',1,'"+MANAGER+"','"+MANAGER+"','"+CENTER_A+"','"+EMPLOYEE+"','SAFE-V1','安全值班课程','SAFE-V1','SAFE-COURSE','PASS',current_date-30,current_date+365)");s.execute("insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled) values ('"+TENANT+"','P007_SELF','P007 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"+TENANT+"','P007_CENTER','P007 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");s.execute("insert into iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level) values (gen_random_uuid(),'"+TENANT+"','platform.session.read','Session read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"+TENANT+"','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");String[][] actors={{"manager","CENTER","p007.schedule.read,p007.schedule.manage"},{"employee","SELF","p007.schedule.read,p007.schedule.change"},{"reviewer","CENTER","p007.schedule.read,p007.schedule.review"},{"tech","CENTER","p007.schedule.monitor"},{"out","CENTER","p007.schedule.read"}};for(int i=0;i<actors.length;i++)seedActor(s,i,es[i],actors[i][0],actors[i][1],actors[i][2],hash,i==4?CENTER_B:CENTER_A,i==4?POS_B:POS_A);}}
-    private static void seedActor(Statement s,int i,UUID e,String login,String scope,String permissions,String hash,UUID center,UUID pos)throws Exception{UUID u=derived(4,i),identity=derived(5,i),role=derived(6,i),appointment=derived(7,i);s.execute("insert into org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status) values ('"+appointment+"','"+TENANT+"','"+e+"','"+pos+"','"+center+"',true,current_date-30,'ACTIVE')");s.execute("insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level) values ('"+u+"','"+TENANT+"','p007."+login+"','"+hash+"','ACTIVE',0)");s.execute("insert into iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at) values ('"+identity+"','"+TENANT+"','"+u+"','"+e+"','EMPLOYEE','P007 "+login+"','"+center+"','"+pos+"',true,now()-interval '1 day')");s.execute("insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled) values ('"+role+"','"+TENANT+"','P007_"+login.toUpperCase()+"','P007 "+login+"','PLATFORM','P007_"+scope+"',true)");s.execute("insert into iam.role_permission(tenant_id,role_id,permission_id) select '"+TENANT+"','"+role+"',id from iam.permission where tenant_id='"+TENANT+"' and permission_code in ('platform.session.read','platform.session.logout','"+permissions.replace(",","','")+"') and not is_deleted");s.execute("insert into iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source) values ('"+TENANT+"','"+u+"','"+identity+"','"+role+"',now()-interval '1 day','TEST_ONLY')");}
-    private static JdbcTemplate jdbc(String db,String u,String p){DriverManagerDataSource ds=new DriverManagerDataSource();ds.setDriverClassName("org.postgresql.Driver");ds.setUrl(url(db));ds.setUsername(u);ds.setPassword(p);return new JdbcTemplate(ds);}private static UUID derived(int g,int i){return uuid("%d0000000-0000-0000-0000-%012d".formatted(g,3007+i));}private static UUID uuid(String v){return UUID.fromString(v);}private static String shortId(){return UUID.randomUUID().toString().replace("-","").substring(0,16);}private static String url(String db){String u=POSTGRES.getJdbcUrl();int q=u.indexOf('?');String suffix=q<0?"":u.substring(q),base=q<0?u:u.substring(0,q);return base.substring(0,base.lastIndexOf('/')+1)+db+suffix;}private static Path root(){Path p=Path.of("").toAbsolutePath();while(p!=null){if(Files.exists(p.resolve("AGENT.md")))return p;p=p.getParent();}throw new IllegalStateException("root not found");}
+  }
+
+  @Autowired MockMvc mvc;
+
+  @Autowired ObjectMapper mapper;
+
+  @DynamicPropertySource
+  static void props(DynamicPropertyRegistry r) {
+    r.add("spring.datasource.url", () -> url("sjg_oms"));
+    r.add("spring.datasource.username", () -> "sjg_api_runtime");
+    r.add("spring.datasource.password", () -> API_PASSWORD);
+    r.add("spring.data.redis.host", REDIS::getHost);
+    r.add("spring.data.redis.port", () -> REDIS.getMappedPort(6379));
+    r.add("sjg.audit.datasource.url", () -> url("sjg_audit"));
+    r.add("sjg.audit.datasource.username", () -> "sjg_audit_writer");
+    r.add("sjg.audit.datasource.password", () -> AUDIT_PASSWORD);
+  }
+
+  @AfterAll
+  static void stop() {
+    REDIS.stop();
+    POSTGRES.stop();
+  }
+
+  @Test
+  void realHttpLifecycleEnforcesQualificationHoursOverlapScopeSnapshotsAndEmployeeReviewSeparation()
+      throws Exception {
+    String manager = login("p007.manager"),
+        employee = login("p007.employee"),
+        reviewer = login("p007.reviewer"),
+        tech = login("p007.tech"),
+        out = login("p007.out");
+    Instant start = Instant.now().plus(2, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES),
+        end = start.plus(8, ChronoUnit.HOURS);
+    ObjectNode create =
+        mapper
+            .createObjectNode()
+            .put("businessDate", java.time.LocalDate.now().toString())
+            .put("subject", "P007 真实排班与班次调整")
+            .put("reason", "验证资格连续工时冲突和班次变更闭环")
+            .put("ownerEmployeeId", EMPLOYEE.toString())
+            .put("attendanceType", "排班")
+            .put("changeAction", "制定")
+            .put("changeReason", "依据业务量制定正式排班")
+            .put("contentVersion", "SAFE-V1")
+            .put("periodOrCourseNo", "P007-WEEK-1")
+            .put("startAt", start.toString())
+            .put("endAt", end.toString());
+    mvc.perform(
+            post("/api/v1/processes/P007/shift-changes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(create.toString())
+                .header("Idempotency-Key", "unauth"))
+        .andExpect(status().isUnauthorized());
+    ObjectNode tooLong =
+        create.deepCopy().put("endAt", start.plus(13, ChronoUnit.HOURS).toString());
+    mvc.perform(
+            post("/api/v1/processes/P007/shift-changes")
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "too-long")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(tooLong.toString()))
+        .andExpect(status().isConflict());
+    JsonNode current =
+        json(
+            mvc.perform(
+                    post("/api/v1/processes/P007/shift-changes")
+                        .header("Authorization", bearer(manager))
+                        .header("Idempotency-Key", "create-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(create.toString()))
+                .andExpect(status().isOk())
+                .andReturn());
+    String id = current.path("id").asText();
+    assertEquals("S01", current.path("currentNodeCode").asText());
+    assertEquals(8.0, current.path("durationHours").asDouble());
+    assertEquals(
+        id,
+        json(mvc.perform(
+                    post("/api/v1/processes/P007/shift-changes")
+                        .header("Authorization", bearer(manager))
+                        .header("Idempotency-Key", "create-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(create.toString()))
+                .andExpect(status().isOk())
+                .andReturn())
+            .path("id")
+            .asText());
+    assertEquals(
+        0,
+        json(mvc.perform(
+                    get("/api/v1/processes/P007/shift-changes")
+                        .header("Authorization", bearer(out)))
+                .andExpect(status().isOk())
+                .andReturn())
+            .size());
+    mvc.perform(
+            get("/api/v1/processes/P007/shift-changes/" + id).header("Authorization", bearer(out)))
+        .andExpect(status().isForbidden());
+    JsonNode masked =
+        json(
+            mvc.perform(
+                    get("/api/v1/processes/P007/shift-changes/" + id)
+                        .header("Authorization", bearer(tech)))
+                .andExpect(status().isOk())
+                .andReturn());
+    assertTrue(masked.path("reason").isNull());
+    assertTrue(masked.path("changeReason").isNull());
+    current = act(manager, id, "SUBMIT_DEMAND", 1, null, null, null, null, null, null, "submit");
+    current = act(manager, id, "MATCH_TEMPLATE", 2, null, null, null, null, null, null, "template");
+    mvc.perform(
+            post("/api/v1/processes/P007/shift-changes/" + id + "/actions/VALIDATE")
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "stale")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(action(2, null, null, null, null, null, null, null, null).toString()))
+        .andExpect(status().isConflict());
+    current = act(manager, id, "VALIDATE", 3, null, null, null, null, null, null, "validate");
+    current = act(manager, id, "PUBLISH", 4, null, null, null, null, null, null, "publish");
+    assertEquals("S05", current.path("currentNodeCode").asText());
+    mvc.perform(
+            post("/api/v1/processes/P007/shift-changes/" + id + "/actions/CONFIRM")
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "manager-confirm")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    action(5, null, null, null, null, null, null, null, evidence("bad"))
+                        .toString()))
+        .andExpect(status().isForbidden());
+    current =
+        act(
+            employee,
+            id,
+            "CONFIRM",
+            5,
+            null,
+            null,
+            null,
+            null,
+            null,
+            evidence("员工确认排班"),
+            "confirm");
+    Instant proposedStart = start.plus(1, ChronoUnit.HOURS),
+        proposedEnd = end.plus(1, ChronoUnit.HOURS);
+    current =
+        act(
+            employee,
+            id,
+            "REQUEST_CHANGE",
+            6,
+            "员工申请换班并完成交接",
+            null,
+            null,
+            proposedStart,
+            proposedEnd,
+            null,
+            "request-change");
+    assertEquals("S07", current.path("currentNodeCode").asText());
+    mvc.perform(
+            post("/api/v1/processes/P007/shift-changes/" + id + "/actions/APPROVE")
+                .header("Authorization", bearer(employee))
+                .header("Idempotency-Key", "self-review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(action(7, null, null, null, null, null, null, null, null).toString()))
+        .andExpect(status().isForbidden());
+    current =
+        act(reviewer, id, "APPROVE", 7, "审批人复核资格与冲突通过", null, null, null, null, null, "approve");
+    assertEquals(proposedStart.toString(), current.path("startAt").asText());
+    current =
+        act(manager, id, "LINK", 8, null, null, null, null, null, evidence("考勤餐饮班车三方回执"), "link");
+    current =
+        act(
+            manager,
+            id,
+            "CLOSE_DAY",
+            9,
+            null,
+            "日结关闭",
+            "实际出勤8小时，联动结果一致",
+            null,
+            null,
+            evidence("日结核对完成"),
+            "close");
+    assertEquals("END", current.path("currentNodeCode").asText());
+    assertEquals("已日结", current.path("status").asText());
+    JdbcTemplate jdbc = jdbc("sjg_oms", POSTGRES.getUsername(), POSTGRES.getPassword());
+    assertEquals(
+        1,
+        jdbc.queryForObject(
+            "select count(*) from attendance.shift_change_request_item where tenant_id=? and"
+                + " master_id=? and field_code='before_snapshot'",
+            Integer.class,
+            TENANT,
+            UUID.fromString(id)));
+    assertEquals(
+        1,
+        jdbc.queryForObject(
+            "select count(*) from attendance.shift_change_request_item where tenant_id=? and"
+                + " master_id=? and field_code='after_snapshot'",
+            Integer.class,
+            TENANT,
+            UUID.fromString(id)));
+    assertEquals(
+        1,
+        jdbc.queryForObject(
+            "select count(*) from attendance.shift_change_request_item where tenant_id=? and"
+                + " master_id=? and field_code='integration_receipt'",
+            Integer.class,
+            TENANT,
+            UUID.fromString(id)));
+    assertEquals(
+        10,
+        jdbc.queryForObject(
+            "select count(*) from core.outbox_event where tenant_id=? and aggregate_id=? and"
+                + " event_type='P007_SHIFT_EVENT'",
+            Integer.class,
+            TENANT,
+            UUID.fromString(id)));
+    assertTrue(
+        jdbc("sjg_audit", POSTGRES.getUsername(), POSTGRES.getPassword())
+                .queryForObject(
+                    "select count(*) from audit.operation_log where tenant_id=? and resource_id=?"
+                        + " and action like 'P007_%'",
+                    Integer.class, TENANT, UUID.fromString(id))
+            >= 16);
+  }
+
+  private JsonNode act(
+      String token,
+      String id,
+      String code,
+      int version,
+      String reason,
+      String result,
+      String attendance,
+      Instant start,
+      Instant end,
+      JsonNode evidence,
+      String key)
+      throws Exception {
+    return json(
+        mvc.perform(
+                post("/api/v1/processes/P007/shift-changes/" + id + "/actions/" + code)
+                    .header("Authorization", bearer(token))
+                    .header("Idempotency-Key", key)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        action(
+                                version,
+                                reason,
+                                result,
+                                attendance,
+                                start,
+                                end,
+                                null,
+                                code.equals("REQUEST_CHANGE")
+                                    ? mapper.createArrayNode().add("交接钥匙").add("交接当日任务")
+                                    : null,
+                                evidence)
+                            .toString()))
+            .andExpect(status().isOk())
+            .andReturn());
+  }
+
+  private ObjectNode action(
+      int version,
+      String reason,
+      String result,
+      String attendance,
+      Instant start,
+      Instant end,
+      UUID substitute,
+      JsonNode handover,
+      JsonNode evidence) {
+    ObjectNode n = mapper.createObjectNode().put("expectedVersion", version);
+    put(n, "reason", reason);
+    put(n, "resultSummary", result);
+    put(n, "actualAttendanceSummary", attendance);
+    if (start == null) {
+      n.putNull("proposedStartAt");
+    } else {
+      n.put("proposedStartAt", start.toString());
+    }
+    if (end == null) {
+      n.putNull("proposedEndAt");
+    } else {
+      n.put("proposedEndAt", end.toString());
+    }
+    if (substitute == null) {
+      n.putNull("substituteEmployeeId");
+    } else {
+      n.put("substituteEmployeeId", substitute.toString());
+    }
+    n.set("handoverItems", handover == null ? mapper.createArrayNode() : handover);
+    if (evidence == null) {
+      n.putNull("evidence");
+    } else {
+      n.set("evidence", evidence);
+    }
+    return n;
+  }
+
+  private static void put(ObjectNode n, String f, String v) {
+    if (v == null) {
+      n.putNull(f);
+    } else {
+      n.put(f, v);
+    }
+  }
+
+  private ObjectNode evidence(String note) {
+    return mapper.createObjectNode().put("note", note).put("recordedAt", Instant.now().toString());
+  }
+
+  private String login(String name) throws Exception {
+    ObjectNode n =
+        mapper
+            .createObjectNode()
+            .put("tenantCode", "PHASE10_P007")
+            .put("loginName", name)
+            .put("password", PASSWORD);
+    return json(mvc.perform(
+                post("/api/v1/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(n.toString()))
+            .andExpect(status().isOk())
+            .andReturn())
+        .path("accessToken")
+        .asText();
+  }
+
+  private JsonNode json(MvcResult r) throws Exception {
+    return mapper.readTree(r.getResponse().getContentAsByteArray());
+  }
+
+  private static String bearer(String t) {
+    return "Bearer " + t;
+  }
+
+  private static void prepare() throws Exception {
+    Path root = root();
+    Flyway.configure()
+        .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations("filesystem:" + root.resolve("technical-platform/database/flyway/cluster"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    try (Connection c =
+            DriverManager.getConnection(
+                POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute("alter role sjg_api_runtime password '" + API_PASSWORD + "'");
+      s.execute("alter role sjg_audit_writer password '" + AUDIT_PASSWORD + "'");
+      s.execute("create database sjg_oms");
+      s.execute("create database sjg_audit");
+    }
+    Flyway.configure()
+        .dataSource(url("sjg_oms"), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/oms"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/oms"))
+        .placeholders(
+            Map.of(
+                "sjg_tenant_id",
+                TENANT.toString(),
+                "sjg_tenant_code",
+                "PHASE10_P007",
+                "sjg_tenant_name",
+                "P007 Integration Tenant"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    Flyway.configure()
+        .dataSource(url("sjg_audit"), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/audit"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/audit"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    seed();
+  }
+
+  private static void seed() throws Exception {
+    String hash = new BCryptPasswordEncoder(12).encode(PASSWORD);
+    try (Connection c =
+            DriverManager.getConnection(
+                url("sjg_oms"), POSTGRES.getUsername(), POSTGRES.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute(
+          "insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values"
+              + " ('"
+              + CENTER_A
+              + "','"
+              + TENANT
+              + "','P007_A','P007 Center A','CENTER','p007_a'::ltree,'ACTIVE'),('"
+              + CENTER_B
+              + "','"
+              + TENANT
+              + "','P007_B','P007 Center B','CENTER','p007_b'::ltree,'ACTIVE')");
+      s.execute(
+          "insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values"
+              + " ('"
+              + POS_A
+              + "','"
+              + TENANT
+              + "','P007_PA','P007 Position A','"
+              + CENTER_A
+              + "','ACTIVE'),('"
+              + POS_B
+              + "','"
+              + TENANT
+              + "','P007_PB','P007 Position B','"
+              + CENTER_B
+              + "','ACTIVE')");
+      UUID[] es = {MANAGER, EMPLOYEE, REVIEWER, TECH, OUT};
+      for (int i = 0; i < es.length; i++) {
+        UUID center = i == 4 ? CENTER_B : CENTER_A, pos = i == 4 ? POS_B : POS_A;
+        s.execute(
+            "insert into"
+                + " org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id)"
+                + " values ('"
+                + es[i]
+                + "','"
+                + TENANT
+                + "','P007-E00"
+                + (i + 1)
+                + "','P007 Actor "
+                + i
+                + "','ACTIVE',current_date-30,'"
+                + center
+                + "','"
+                + pos
+                + "')");
+      }
+      s.execute(
+          "insert into"
+              + " learning.learning_assignment(id,tenant_id,business_no,status,version_no,created_by,updated_by,owner_center_id,owner_employee_id,content_version,course_team_name,course_version_id,period_or_course_no,practical_result,qualification_effective_date,qualification_expire_date)"
+              + " values (gen_random_uuid(),'"
+              + TENANT
+              + "','P007-QUAL-1','QUALIFIED',1,'"
+              + MANAGER
+              + "','"
+              + MANAGER
+              + "','"
+              + CENTER_A
+              + "','"
+              + EMPLOYEE
+              + "','SAFE-V1','安全值班课程','SAFE-V1','SAFE-COURSE','PASS',current_date-30,current_date+365)");
+      s.execute(
+          "insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled)"
+              + " values ('"
+              + TENANT
+              + "','P007_SELF','P007 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"
+              + TENANT
+              + "','P007_CENTER','P007 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");
+      s.execute(
+          "insert into"
+              + " iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level)"
+              + " values (gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.read','Session"
+              + " read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");
+      String[][] actors = {
+        {"manager", "CENTER", "p007.schedule.read,p007.schedule.manage"},
+        {"employee", "SELF", "p007.schedule.read,p007.schedule.change"},
+        {"reviewer", "CENTER", "p007.schedule.read,p007.schedule.review"},
+        {"tech", "CENTER", "p007.schedule.monitor"},
+        {"out", "CENTER", "p007.schedule.read"}
+      };
+      for (int i = 0; i < actors.length; i++) {
+        seedActor(
+            s,
+            i,
+            es[i],
+            actors[i][0],
+            actors[i][1],
+            actors[i][2],
+            hash,
+            i == 4 ? CENTER_B : CENTER_A,
+            i == 4 ? POS_B : POS_A);
+      }
+    }
+  }
+
+  private static void seedActor(
+      Statement s,
+      int i,
+      UUID e,
+      String login,
+      String scope,
+      String permissions,
+      String hash,
+      UUID center,
+      UUID pos)
+      throws Exception {
+    UUID u = derived(4, i),
+        identity = derived(5, i),
+        role = derived(6, i),
+        appointment = derived(7, i);
+    s.execute(
+        "insert into"
+            + " org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status)"
+            + " values ('"
+            + appointment
+            + "','"
+            + TENANT
+            + "','"
+            + e
+            + "','"
+            + pos
+            + "','"
+            + center
+            + "',true,current_date-30,'ACTIVE')");
+    s.execute(
+        "insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level)"
+            + " values ('"
+            + u
+            + "','"
+            + TENANT
+            + "','p007."
+            + login
+            + "','"
+            + hash
+            + "','ACTIVE',0)");
+    s.execute(
+        "insert into"
+            + " iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at)"
+            + " values ('"
+            + identity
+            + "','"
+            + TENANT
+            + "','"
+            + u
+            + "','"
+            + e
+            + "','EMPLOYEE','P007 "
+            + login
+            + "','"
+            + center
+            + "','"
+            + pos
+            + "',true,now()-interval '1 day')");
+    s.execute(
+        "insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled)"
+            + " values ('"
+            + role
+            + "','"
+            + TENANT
+            + "','P007_"
+            + login.toUpperCase()
+            + "','P007 "
+            + login
+            + "','PLATFORM','P007_"
+            + scope
+            + "',true)");
+    s.execute(
+        "insert into iam.role_permission(tenant_id,role_id,permission_id) select '"
+            + TENANT
+            + "','"
+            + role
+            + "',id from iam.permission where tenant_id='"
+            + TENANT
+            + "' and permission_code in ('platform.session.read','platform.session.logout','"
+            + permissions.replace(",", "','")
+            + "') and not is_deleted");
+    s.execute(
+        "insert into"
+            + " iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + u
+            + "','"
+            + identity
+            + "','"
+            + role
+            + "',now()-interval '1 day','TEST_ONLY')");
+  }
+
+  private static JdbcTemplate jdbc(String db, String u, String p) {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName("org.postgresql.Driver");
+    ds.setUrl(url(db));
+    ds.setUsername(u);
+    ds.setPassword(p);
+    return new JdbcTemplate(ds);
+  }
+
+  private static UUID derived(int g, int i) {
+    return uuid("%d0000000-0000-0000-0000-%012d".formatted(g, 3007 + i));
+  }
+
+  private static UUID uuid(String v) {
+    return UUID.fromString(v);
+  }
+
+  private static String shortId() {
+    return UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+  }
+
+  private static String url(String db) {
+    String u = POSTGRES.getJdbcUrl();
+    int q = u.indexOf('?');
+    String suffix = q < 0 ? "" : u.substring(q), base = q < 0 ? u : u.substring(0, q);
+    return base.substring(0, base.lastIndexOf('/') + 1) + db + suffix;
+  }
+
+  private static Path root() {
+    Path p = Path.of("").toAbsolutePath();
+    while (p != null) {
+      if (Files.exists(p.resolve("AGENT.md"))) {
+        return p;
+      }
+      p = p.getParent();
+    }
+    throw new IllegalStateException("root not found");
+  }
 }

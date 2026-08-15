@@ -1,0 +1,19 @@
+﻿{
+    "schema_version":  "3.0",
+    "project_source_gate_self_test":  0,
+    "project_local_tools_self_test":  0,
+    "project_source_gate_current":  1,
+    "project_source_gate_current_violation_count":  262,
+    "package_ui_gate_self_test":  0,
+    "package_ui_gate_current":  1,
+    "package_ui_gate_current_error_count":  88,
+    "pnpm_lint":  0,
+    "pnpm_typecheck":  0,
+    "pnpm_test":  0,
+    "pnpm_test_files":  25,
+    "pnpm_test_cases":  106,
+    "pnpm_build_three_portals":  0,
+    "project_round3_post_preflight":  0,
+    "project_round3_post_baseline":  0,
+    "notes":  "Current source/UI FAIL results expose dependency-ordered backlog and are not called PASS. Build retains the existing approximately 2.046 MB chunk warning."
+}

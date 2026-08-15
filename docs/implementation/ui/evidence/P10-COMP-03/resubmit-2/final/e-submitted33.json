@@ -1,0 +1,173 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-03-resubmit-2-submitted33",
+    "file_count":  33,
+    "files":  [
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "sha256":  "F9123E7E093C4E37DFE289D35EEED9B591894C6C9599CEDF6ECAF6C6E3A62232",
+                      "bytes":  2841
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_BLOCKED_CONTRACTS.md",
+                      "sha256":  "408C39BF631BA16037B0FEF4E466FEB2B738A39762A680C909F95B73BFFF5F79",
+                      "bytes":  1399
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+                      "sha256":  "0FE2ACC78B6971650911AA82472A9F0E7143AFC15D0B7BF4EFBB294FA628069C",
+                      "bytes":  20278
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                      "sha256":  "D9AE7D7B510FDA07F92CD2BA5501E79A05268EE479B2C1B2E50A99758CA90866",
+                      "bytes":  85016
+                  },
+                  {
+                      "path":  "scripts/implementation/ui_component_access_gate.py",
+                      "sha256":  "054E01BFF90725C4829001C1CC48ABBAC9BE427540C3CC1803368D51A1378743",
+                      "bytes":  119430
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/ui-component-access.test.ts",
+                      "sha256":  "0BBC9ECBAC03310D6877811B34F9CB92E2247A6ACA788148D146C02707F2EA4C",
+                      "bytes":  2072
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/action-contracts.ts",
+                      "sha256":  "F5531C9BD1955F25A0A7CFFEED8BA45DD1DE54D34D6CDB0BA95908F71E058238",
+                      "bytes":  328
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ConfirmDialog.vue",
+                      "sha256":  "14D769E0262C01E44A42486C4745CC52F3B7CE0D68262EAAADBDDF57EEEB5FF1",
+                      "bytes":  944
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/HighRiskConfirmDialog.vue",
+                      "sha256":  "E118CE3E369867FD8B999B5E030C3C34850AED31632BB755F7844BE76A0FDF70",
+                      "bytes":  1655
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ProcessActionPanel.vue",
+                      "sha256":  "2C4D865D9660661B6A99A17A62322466EE71EAFF776726C26CA819C1BB33B02A",
+                      "bytes":  2884
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts",
+                      "sha256":  "09E52DB0B648FDFE7D8B6B12BC4A08FE075913062C742E1CD91EEE4B77235D59",
+                      "bytes":  5231
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-contracts.ts",
+                      "sha256":  "1EB5148A885094964BDB453F8430F0B1E8B0AFB49D263125148D7F1C73AF827C",
+                      "bytes":  349
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-state.ts",
+                      "sha256":  "FEF79181081DCDE37D2CCA7EEBE4071C37C6DE6A55BF5E454CE84D603D38E085",
+                      "bytes":  397
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/AsyncStateBoundary.vue",
+                      "sha256":  "D798150B78BF6043AAA6B543FA2359AEF83545E8AE5E92065731FDAE49021891",
+                      "bytes":  1390
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts",
+                      "sha256":  "D59C7B251BCDB1E28A580DD5C980DCCE9969B5B8DD03B4609AA913348BB08F49",
+                      "bytes":  5324
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncAction.ts",
+                      "sha256":  "9A07812EAE251020438D21B356EAAF40B3864627B0BFD424D26839EEF8E356AA",
+                      "bytes":  2105
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncResource.ts",
+                      "sha256":  "DCC711DFD4961FC686FDDFB1EBEF4589ED5E0D6E084D47DD408EFB69BDBF1408",
+                      "bytes":  2085
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ApiErrorNotice.vue",
+                      "sha256":  "00A4AA7DC8489F9EDECEDF31CF5A7F43287F1359C40BE99C0183A21E522F7062",
+                      "bytes":  956
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/FormErrorSummary.vue",
+                      "sha256":  "FDE9C7E896A2713276B4DB0854F5FAA97DCCBE26C08B1DEAC0BD602A9FDC2BD2",
+                      "bytes":  923
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/map-api-error.ts",
+                      "sha256":  "90B96C208C83ACF96D75EF852FFC60C47465B362CC30E6BBA36BEF4ADAC7584A",
+                      "bytes":  2320
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts",
+                      "sha256":  "EC2BD5C73DFEAC29CFFD773A5A5A396BCDD2529C1170100B6978EE344EDAC88D",
+                      "bytes":  2160
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ui-error.ts",
+                      "sha256":  "0DEFBE5B5D3AC748EA3FD46A233B7619ABA97E8842663E97E5188A089A88F5A8",
+                      "bytes":  487
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/VersionConflictPanel.vue",
+                      "sha256":  "7F4D137D481D1A531F66ADB76D4DEC5866D91CB1E77E51F6A213D8407982779B",
+                      "bytes":  949
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/DateTimeRangeField.vue",
+                      "sha256":  "AEE45B634719723041042F8047877B60F06AC6A8C35A7B740771600D01210567",
+                      "bytes":  1105
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/shared-components.test.ts",
+                      "sha256":  "8E54EDEED127A763A93F4858F199B7F11E1CF17F76C721B9D6898CF0CD11F9F3",
+                      "bytes":  885
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+                      "sha256":  "0B9544983922DDDDC2CDB671F1AC14C6C0A7D3A5A35BCB3F3EAFF22600D076CC",
+                      "bytes":  1588
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                      "sha256":  "F32004A39A6CABBD083CC036D94DBEE7C8554357B847B87F089723A6D6B0EDE5",
+                      "bytes":  5182
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DescriptionList.vue",
+                      "sha256":  "2A293C28D5A1A9FAD73B8E0C6051B6CEA6E3F5CCBED108311FDFCA0891C7A35B",
+                      "bytes":  663
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessRecordMeta.vue",
+                      "sha256":  "07490DEB51C02BB8598EF060E9915A8F4CA01C5E0E61FD8005462E43B8FC94A4",
+                      "bytes":  917
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessTimeline.vue",
+                      "sha256":  "B8A0A0485AD55EEFFB4635E291D8A8817DA7BA7431E8A59D6B772F6FDAF73B06",
+                      "bytes":  764
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                      "sha256":  "6AA0309E634308788B655CA95A443744979DFCB73818AC82A7CF0B1DF1C557DC",
+                      "bytes":  7537
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/PermissionGate.vue",
+                      "sha256":  "A8688170613BE17579A99F4A786E0496C8FC64E2E7C5BAD50DDC51635DD09614",
+                      "bytes":  588
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/shared-components.test.ts",
+                      "sha256":  "D232153E9777BFA24EEE2426FA41CB5E3AA459980D0AAF66C7633A12060503D8",
+                      "bytes":  1134
+                  }
+              ],
+    "disk_mismatch_count":  0
+}

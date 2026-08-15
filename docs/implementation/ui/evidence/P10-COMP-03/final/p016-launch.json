@@ -1,0 +1,15 @@
+﻿{
+    "launcher_pid":  46820,
+    "started_utc":  "2026-08-13T10:46:27.9524125Z",
+    "stdout":  "I:\\PublicCompany_source_codex\\docs\\implementation\\ui\\evidence\\P10-COMP-03\\final\\p016-browser-fixture.log",
+    "stderr":  "I:\\PublicCompany_source_codex\\docs\\implementation\\ui\\evidence\\P10-COMP-03\\final\\p016-browser-fixture.err.log",
+    "preexisting_runtime":  [
+                                35248,
+                                43248,
+                                44872,
+                                41392,
+                                36432,
+                                15196,
+                                40796
+                            ]
+}

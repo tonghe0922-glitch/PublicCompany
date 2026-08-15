@@ -26,13 +26,201 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/processes/P016/care-cases")
 public final class P016CareController {
-    private static final String READ="p016.welfare.read",MANAGE="p016.welfare.manage",MONITOR="p016.welfare.monitor";
-    private final P016CareService care;private final AuthorizationService authorization;private final JdbcSecurityAuditService audit;private final ObjectMapper mapper;
-    public P016CareController(P016CareService care,AuthorizationService authorization,JdbcSecurityAuditService audit,ObjectMapper mapper){this.care=care;this.authorization=authorization;this.audit=audit;this.mapper=mapper;}
-    @PostMapping public P016CareService.CareCase create(@AuthenticationPrincipal SessionPrincipal p,@RequestHeader("Idempotency-Key")String key,@RequestBody P016CareService.CreateCommand c){String permission=createPermission(p);require(authorization.authorizeData(p.context(),permission,new AuthorizationTarget(p.context().tenantId(),c.affectedEmployeeId(),p.context().orgId(),null,c.affectedEmployeeId())));requireBusinessActor(p);audit.recordOperation(p.context(),"P016_CREATE_ATTEMPT","welfare.care_case",null);var r=care.create(context(p),key,hash(c),c);audit.recordOperation(p.context(),"P016_CREATED","welfare.care_case",r.id());return view(p,r);}
-    @GetMapping("/{id}") public P016CareService.CareCase get(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id){String permission=readPermission(p);var v=care.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P016 care case not found"));require(authorization.authorizeData(p.context(),permission,target(v)));audit.recordOperation(p.context(),"P016_READ","welfare.care_case",id);return view(p,v);}
-    @GetMapping public List<P016CareService.CareCase> list(@AuthenticationPrincipal SessionPrincipal p){String permission=readPermission(p);var values=care.list(context(p)).stream().filter(v->authorization.authorizeData(p.context(),permission,target(v)).allowed()).map(v->view(p,v)).toList();audit.recordOperation(p.context(),"P016_LIST","welfare.care_case",null);return values;}
-    @PostMapping("/{id}/actions/{actionCode}") public P016CareService.CareCase act(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id,@PathVariable String actionCode,@RequestHeader("Idempotency-Key")String key,@RequestBody P016CareService.ActionCommand c){var current=care.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P016 care case not found"));String action=safe(actionCode),permission=care.permissionForAction(action);require(authorization.authorizeAction(p.context(),permission));require(authorization.authorizeData(p.context(),permission,target(current)));requireBusinessActor(p);audit.recordOperation(p.context(),"P016_ACTION_ATTEMPT_"+action,"welfare.care_case",id);var r=care.act(context(p),id,action,key,hash(Map.of("actionCode",action,"body",c)),c);audit.recordOperation(p.context(),"P016_ACTION_"+action,"welfare.care_case",id);return view(p,r);}
-    private String createPermission(SessionPrincipal p){if(authorization.authorizeAction(p.context(),MANAGE).allowed())return MANAGE;require(authorization.authorizeAction(p.context(),READ));return READ;}private String readPermission(SessionPrincipal p){if(authorization.authorizeAction(p.context(),READ).allowed())return READ;require(authorization.authorizeAction(p.context(),MONITOR));return MONITOR;}private P016CareService.CareCase view(SessionPrincipal p,P016CareService.CareCase v){return authorization.authorizeAction(p.context(),MONITOR).allowed()&&!authorization.authorizeAction(p.context(),READ).allowed()?v.metadataOnly():v;}private void requireBusinessActor(SessionPrincipal p){if(authorization.authorizeAction(p.context(),MONITOR).allowed()&&!authorization.authorizeAction(p.context(),READ).allowed())throw new AccessDeniedException("P016 technical monitor cannot perform business actions");}
-    private static AuthorizationTarget target(P016CareService.CareCase v){return new AuthorizationTarget(v.tenantId(),v.affectedEmployeeId(),v.ownerCenterId(),null,v.affectedEmployeeId());}private static DatabaseSecurityContext context(SessionPrincipal p){var s=p.context();return new DatabaseSecurityContext(s.tenantId(),s.userId(),s.identityId(),s.employeeId(),s.appointmentId(),s.orgId(),s.positionId());}private static void require(AuthorizationDecision d){if(!d.allowed())throw new AccessDeniedException("P016 authorization denied: "+d.reason());}private static String safe(String v){if(v==null)return"INVALID";String n=v.trim().toUpperCase();return n.matches("[A-Z0-9_]{1,32}")?n:"INVALID";}private String hash(Object v){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));}catch(Exception e){throw new IllegalArgumentException("P016 request cannot be hashed",e);}}
+
+  private static final String READ = "p016.welfare.read",
+      MANAGE = "p016.welfare.manage",
+      MONITOR = "p016.welfare.monitor";
+
+  private final P016CareService care;
+
+  private final Phase11AvailableActionProjectionService projections;
+
+  private final AuthorizationService authorization;
+
+  private final JdbcSecurityAuditService audit;
+
+  private final ObjectMapper mapper;
+
+  public P016CareController(
+      P016CareService care,
+      Phase11AvailableActionProjectionService projections,
+      AuthorizationService authorization,
+      JdbcSecurityAuditService audit,
+      ObjectMapper mapper) {
+    this.care = care;
+    this.projections = projections;
+    this.authorization = authorization;
+    this.audit = audit;
+    this.mapper = mapper;
+  }
+
+  @PostMapping
+  public Phase11AvailableActionProjectionService.RecordView<P016CareService.CareCase> create(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody P016CareService.CreateCommand c) {
+    String permission = createPermission(p);
+    require(
+        authorization.authorizeData(
+            p.context(),
+            permission,
+            new AuthorizationTarget(
+                p.context().tenantId(),
+                c.affectedEmployeeId(),
+                p.context().orgId(),
+                null,
+                c.affectedEmployeeId())));
+    requireBusinessActor(p);
+    audit.recordOperationOnce(p.context(), "P016_CREATE_ATTEMPT", "welfare.care_case", null, key);
+    var r = care.create(context(p), key, hash(c), c);
+    audit.recordOperationOnce(p.context(), "P016_CREATED", "welfare.care_case", r.id(), key);
+    return view(p, r);
+  }
+
+  @GetMapping("/monitor-projections")
+  public List<P016CareService.MonitorProjection> monitor(
+      @AuthenticationPrincipal SessionPrincipal p) {
+    require(authorization.authorizeAction(p.context(), MONITOR));
+    var values =
+        care.list(context(p)).stream()
+            .filter(v -> authorization.authorizeData(p.context(), MONITOR, target(v)).allowed())
+            .map(P016CareService.CareCase::monitorProjection)
+            .toList();
+    audit.recordOperation(p.context(), "P016_MONITOR_LIST", "welfare.care_case", null);
+    return values;
+  }
+
+  @GetMapping("/{id}")
+  public Phase11AvailableActionProjectionService.RecordView<P016CareService.CareCase> get(
+      @AuthenticationPrincipal SessionPrincipal p, @PathVariable UUID id) {
+    String permission = readPermission(p);
+    var v =
+        care.find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P016 care case not found"));
+    require(authorization.authorizeData(p.context(), permission, target(v)));
+    audit.recordOperation(p.context(), "P016_READ", "welfare.care_case", id);
+    return view(p, v);
+  }
+
+  @GetMapping
+  public List<Phase11AvailableActionProjectionService.RecordView<P016CareService.CareCase>> list(
+      @AuthenticationPrincipal SessionPrincipal p) {
+    String permission = readPermission(p);
+    var values =
+        care.list(context(p)).stream()
+            .filter(v -> authorization.authorizeData(p.context(), permission, target(v)).allowed())
+            .map(v -> view(p, v))
+            .toList();
+    audit.recordOperation(p.context(), "P016_LIST", "welfare.care_case", null);
+    return values;
+  }
+
+  @PostMapping("/{id}/actions/{actionCode}")
+  public Phase11AvailableActionProjectionService.RecordView<P016CareService.CareCase> act(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @PathVariable UUID id,
+      @PathVariable String actionCode,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody P016CareService.ActionCommand c) {
+    var current =
+        care.find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P016 care case not found"));
+    String action = safe(actionCode), permission = care.permissionForAction(action);
+    require(authorization.authorizeAction(p.context(), permission));
+    require(authorization.authorizeData(p.context(), permission, target(current)));
+    requireBusinessActor(p);
+    audit.recordOperationOnce(
+        p.context(), "P016_ACTION_ATTEMPT_" + action, "welfare.care_case", id, key);
+    var r = care.act(context(p), id, action, key, hash(Map.of("actionCode", action, "body", c)), c);
+    audit.recordOperationOnce(p.context(), "P016_ACTION_" + action, "welfare.care_case", id, key);
+    return view(p, r);
+  }
+
+  private String createPermission(SessionPrincipal p) {
+    if (authorization.authorizeAction(p.context(), MANAGE).allowed()) {
+      return MANAGE;
+    }
+    require(authorization.authorizeAction(p.context(), READ));
+    return READ;
+  }
+
+  private String readPermission(SessionPrincipal p) {
+    if (authorization.authorizeAction(p.context(), READ).allowed()) {
+      return READ;
+    }
+    require(authorization.authorizeAction(p.context(), MONITOR));
+    return MONITOR;
+  }
+
+  private Phase11AvailableActionProjectionService.RecordView<P016CareService.CareCase> view(
+      SessionPrincipal p, P016CareService.CareCase v) {
+    boolean monitorOnly =
+        authorization.authorizeAction(p.context(), MONITOR).allowed()
+            && !authorization.authorizeAction(p.context(), READ).allowed();
+    var record = monitorOnly ? v.metadataOnly() : v;
+    return projections.project(
+        p,
+        record,
+        v.workflowInstanceId(),
+        v.versionNo(),
+        () -> care.availableActionCodes(context(p), v),
+        code -> false,
+        code -> actionPermission(p, v, code),
+        target(v),
+        monitorOnly);
+  }
+
+  private String actionPermission(SessionPrincipal p, P016CareService.CareCase v, String action) {
+    return "SUBMIT_APPLICATION".equals(action)
+            && p.context().employeeId().equals(v.affectedEmployeeId())
+        ? READ
+        : care.permissionForAction(action);
+  }
+
+  private void requireBusinessActor(SessionPrincipal p) {
+    if (authorization.authorizeAction(p.context(), MONITOR).allowed()
+        && !authorization.authorizeAction(p.context(), READ).allowed()) {
+      throw new AccessDeniedException("P016 technical monitor cannot perform business actions");
+    }
+  }
+
+  private static AuthorizationTarget target(P016CareService.CareCase v) {
+    return new AuthorizationTarget(
+        v.tenantId(), v.affectedEmployeeId(), v.ownerCenterId(), null, v.affectedEmployeeId());
+  }
+
+  private static DatabaseSecurityContext context(SessionPrincipal p) {
+    var s = p.context();
+    return new DatabaseSecurityContext(
+        s.tenantId(),
+        s.userId(),
+        s.identityId(),
+        s.employeeId(),
+        s.appointmentId(),
+        s.orgId(),
+        s.positionId());
+  }
+
+  private static void require(AuthorizationDecision d) {
+    if (!d.allowed()) {
+      throw new AccessDeniedException("P016 authorization denied: " + d.reason());
+    }
+  }
+
+  private static String safe(String v) {
+    if (v == null) {
+      return "INVALID";
+    }
+    String n = v.trim().toUpperCase();
+    return n.matches("[A-Z0-9_]{1,32}") ? n : "INVALID";
+  }
+
+  private String hash(Object v) {
+    try {
+      return HexFormat.of()
+          .formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));
+    } catch (Exception e) {
+      throw new IllegalArgumentException("P016 request cannot be hashed", e);
+    }
+  }
 }

@@ -1,0 +1,5 @@
+Command: pnpm quality:deadcode (inside a compressed PowerShell logging wrapper)
+Observed package output: knip --config knip.json; no unused-file findings were printed.
+Wrapper result: exit 1 after the package command because Join-Path and exit tokens lost required spaces.
+Classification: orchestration/logging failure; not accepted as the authoritative Knip result.
+Repository candidate changes caused by this wrapper: none.

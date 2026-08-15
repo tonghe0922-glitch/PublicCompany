@@ -1,0 +1,23 @@
+﻿{
+    "json":  "PASS",
+    "process_codes":  [
+                          "P004",
+                          "P005",
+                          "P006",
+                          "P007",
+                          "P010",
+                          "P011",
+                          "P012",
+                          "P013",
+                          "P014"
+                      ],
+    "component_refs":  [
+                           "platform.monitor-panel",
+                           "platform.async-state-boundary",
+                           "platform.permission-gate",
+                           "platform.api-error-notice",
+                           "platform.monitor-panel"
+                       ],
+    "bad_refs":  0,
+    "internal_refs":  0
+}

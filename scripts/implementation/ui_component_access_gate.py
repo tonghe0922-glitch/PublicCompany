@@ -214,7 +214,11 @@ def scan_js_non_code(text: str) -> tuple[str, list[str]]:
                     masked[offset] = " "
             index = end
             continue
-        if char == "/" and following not in {"/", "*"} and previous_code in {"", "=", "(", "[", "{", ",", ":", ";", "!", "?", "&", "|"}:
+        regex_prefix = "".join(masked[:index]) if char == "/" else ""
+        regex_context = previous_code in {"", "=", "(", "[", "{", ",", ":", ";", "!", "?", "&", "|"} or bool(
+            re.search(r"(?:=>|\breturn)[ \t]*$", regex_prefix)
+        )
+        if char == "/" and following not in {"/", "*"} and regex_context:
             end = index + 1
             in_class = False
             while end < len(text):
@@ -937,12 +941,28 @@ def source_files(root: Path, scope: str, changed_file: Path | None) -> list[Path
     if scope == "changed":
         if changed_file is None or not changed_file.is_file():
             raise ValueError("--scope changed requires --changed-files")
-        result = []
+        source_extensions = {".vue", ".ts", ".tsx", ".js", ".jsx"}
+        repository_root = root.resolve()
+        governed = tuple((root / item).resolve() for item in GOVERNED_COMPONENT_ROOTS)
+        result: set[Path] = set()
         for value in read_text(changed_file).splitlines():
-            candidate = root / value.strip()
-            if candidate.is_file() and candidate.suffix.lower() in {".vue", ".ts", ".tsx", ".js", ".jsx"}:
-                result.append(candidate)
-        return sorted(set(result))
+            entry = value.strip()
+            if not entry:
+                continue
+            declared = Path(entry)
+            if declared.suffix.lower() not in source_extensions:
+                continue
+            candidate = (declared if declared.is_absolute() else root / declared).resolve()
+            if not candidate.is_relative_to(repository_root):
+                raise ValueError(f"changed source escapes repository: {entry}")
+            if not candidate.exists():
+                raise ValueError(f"changed source does not exist: {entry}")
+            if not candidate.is_file():
+                raise ValueError(f"changed source is not a file: {entry}")
+            if any(candidate.is_relative_to(directory) for directory in governed):
+                continue
+            result.add(candidate)
+        return sorted(result)
     src = root / "technical-platform/web/src"
     governed = tuple((root / item).resolve() for item in GOVERNED_COMPONENT_ROOTS)
     result = {
@@ -1816,6 +1836,39 @@ def make_fixture(root: Path) -> None:
         write(root / PLANS_REL / f"{page}.ui-plan.json", json.dumps(plan, indent=2))
 
 
+def add_fixture_input_component(root: Path) -> None:
+    input_path = "technical-platform/web/src/design-system/components/Input.vue"
+    runtime_test = "technical-platform/web/src/design-system/component-runtime.test.ts"
+    write(root / input_path, "<template><input /></template>\n")
+    write(root / DESIGN_INDEX_REL, read_text(root / DESIGN_INDEX_REL) + "export { default as SgjInput } from './components/Input.vue'\n")
+    alias_test = root / ALIAS_TEST_REL
+    write(alias_test, read_text(alias_test).replace(
+        "['SgjButton','SgjFormPageTemplate']",
+        "['SgjButton','SgjFormPageTemplate','SgjInput']",
+    ))
+    runtime_path = root / runtime_test
+    write(
+        runtime_path,
+        read_text(runtime_path)
+        .replace("import Button from './components/Button.vue'", "import Button from './components/Button.vue'\nimport Input from './components/Input.vue'")
+        .replace("expect(mount(Button).exists()).toBe(true);", "expect(mount(Button).exists()).toBe(true);expect(mount(Input).exists()).toBe(true);"),
+    )
+    registry = read_json(root / REGISTRY_REL)
+    assert isinstance(registry, dict) and isinstance(registry.get("components"), list)
+    registry["components"].append({
+        "id": "ui.input", "name": "SgjInput", "layer": "design-system",
+        "status": "existing-stable", "public": True, "public_import": "@sgj/ui",
+        "implementation_path": input_path, "export_name": "SgjInput", "required_tests": [runtime_test],
+    })
+    write(root / REGISTRY_REL, json.dumps(registry, indent=2))
+
+
+def scan_changed_fixture(root: Path, *paths: str) -> dict[str, object]:
+    manifest = root / "changed-files.txt"
+    write(manifest, "\n".join(paths) + "\n")
+    return scan_repository(root, "changed", manifest)
+
+
 def expect_code(root: Path, code: str) -> None:
     payload = scan_repository(root)
     codes = {str(item["code"]) for item in payload["findings"]}
@@ -1992,6 +2045,8 @@ def mutate_fixture_component_borrows_runtime_name(root: Path) -> None:
 
 def run_self_test() -> int:
     cases: list[str] = []
+    grammar_failures: list[dict[str, str]] = []
+    changed_scope_errors: list[str] = []
     with tempfile.TemporaryDirectory() as temp:
         base = Path(temp)
 
@@ -2106,6 +2161,111 @@ def run_self_test() -> int:
             mutate(root)
             expect_code(root, expected)
             cases.append(name)
+
+        governed_changed = base / "changed-governed-implementations"
+        make_fixture(governed_changed)
+        add_fixture_input_component(governed_changed)
+        governed_payload = scan_changed_fixture(
+            governed_changed,
+            "technical-platform/web/src/design-system/components/Button.vue",
+            "technical-platform/web/src/design-system/components/Input.vue",
+        )
+        if governed_payload["status"] != "PASS" or governed_payload["error_count"] != 0:
+            changed_scope_errors.append(
+                f"canonical governed implementations were treated as consumers: {governed_payload['findings']}"
+            )
+
+        raw_changed = base / "changed-platform-raw"
+        make_fixture(raw_changed)
+        raw_path = "technical-platform/web/src/platform/pages/P006MeetingPage.vue"
+        write(raw_changed / raw_path, "<template><button>bad</button></template>\n")
+        raw_payload = scan_changed_fixture(raw_changed, raw_path)
+        raw_codes = {str(item["code"]) for item in raw_payload["findings"]}
+        if raw_payload["status"] != "FAIL" or "RAW_INTERACTIVE_ELEMENT" not in raw_codes:
+            changed_scope_errors.append(f"non-governed raw control was not rejected: {raw_payload}")
+
+        grammar_changed = base / "changed-test-grammar"
+        make_fixture(grammar_changed)
+        grammar_path = "technical-platform/web/src/platform/phase11/process-complexity.test.ts"
+        write(grammar_changed / grammar_path, "const matches = line => /\\bcomputed\\s*\\(/u.test(line)\n")
+        grammar_payload = scan_changed_fixture(grammar_changed, grammar_path)
+        if grammar_payload["status"] != "PASS" or grammar_payload["scanned_source_file_count"] != 1:
+            changed_scope_errors.append(f"valid changed test grammar was not scanned cleanly: {grammar_payload}")
+
+        invalid_changed = base / "changed-test-invalid-grammar"
+        make_fixture(invalid_changed)
+        write(invalid_changed / grammar_path, "const invalid = /unterminated\n")
+        invalid_payload = scan_changed_fixture(invalid_changed, grammar_path)
+        invalid_codes = {str(item["code"]) for item in invalid_payload["findings"]}
+        if invalid_payload["status"] != "FAIL" or "IMPORT_GRAMMAR_UNSUPPORTED" not in invalid_codes:
+            changed_scope_errors.append(f"invalid changed test grammar did not fail closed: {invalid_payload}")
+
+        missing_manifest = base / "changed-manifest-missing"
+        make_fixture(missing_manifest)
+        missing_payload = scan_repository(missing_manifest, "changed", missing_manifest / "absent.txt")
+        missing_codes = {str(item["code"]) for item in missing_payload["findings"]}
+        if missing_payload["status"] != "FAIL" or "SCOPE_ARGUMENT_INVALID" not in missing_codes:
+            changed_scope_errors.append(f"missing changed manifest did not fail closed: {missing_payload}")
+
+        unknown_changed = base / "changed-entry-missing"
+        make_fixture(unknown_changed)
+        unknown_payload = scan_changed_fixture(
+            unknown_changed,
+            "technical-platform/web/src/platform/pages/MissingPage.vue",
+        )
+        if unknown_payload["status"] != "FAIL" or unknown_payload["scanned_source_file_count"] != 0:
+            changed_scope_errors.append(f"missing changed source entry was silently accepted: {unknown_payload}")
+
+        if changed_scope_errors:
+            grammar_failures.append({"case": "changed-scope-parity", "error": "; ".join(changed_scope_errors)})
+        else:
+            cases.append("changed-scope-parity")
+        grammar_valid = (
+            "const single = line => /\\bcomputed\\s*\\(/u.test(line);\n"
+            "const parenthesized = (line) => /[()[\\]\\\\/]+/giu.test(line);\n"
+            "function returned(){ return /value(?:-[a-z]+)?/iu; }\n"
+            "const assigned = /a\\/b[0-9]+/g;\n"
+            "const selected = flag ? /yes/i : /no/i;\n"
+            "const divided = total / count;\n"
+        )
+        try:
+            grammar_masked, _ = scan_js_non_code(grammar_valid)
+            js_top_level_statements(grammar_valid)
+            if grammar_masked.count("/") != 1 or "total / count" not in grammar_masked:
+                raise AssertionError("regex literals were not masked independently from division")
+            cases.append("grammar-valid-regex-contexts")
+        except (AssertionError, ValueError) as exc:
+            grammar_failures.append({"case": "grammar-valid-regex-contexts", "error": str(exc)})
+
+        grammar_invalid = {
+            "grammar-missing-right-parenthesis": "const value = (1 + 2;\n",
+            "grammar-unterminated-regex": "const value = /unterminated\n",
+            "grammar-unterminated-regex-class": "const value = /[abc/;\n",
+            "grammar-unterminated-string": "const value = 'unterminated\n",
+            "grammar-unterminated-comment": "const value = 1; /* unterminated\n",
+        }
+        for name, source in grammar_invalid.items():
+            try:
+                js_top_level_statements(source)
+            except ValueError:
+                cases.append(name)
+            else:
+                grammar_failures.append({"case": name, "error": "invalid grammar was accepted"})
+    if grammar_failures:
+        print(
+            json.dumps(
+                {
+                    "status": "FAIL",
+                    "case_count": len(cases) + len(grammar_failures),
+                    "passed_case_count": len(cases),
+                    "failure_count": len(grammar_failures),
+                    "failures": grammar_failures,
+                    "cases": cases,
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 1
     print(json.dumps({"status": "PASS", "case_count": len(cases), "cases": cases}, ensure_ascii=False))
     return 0
 

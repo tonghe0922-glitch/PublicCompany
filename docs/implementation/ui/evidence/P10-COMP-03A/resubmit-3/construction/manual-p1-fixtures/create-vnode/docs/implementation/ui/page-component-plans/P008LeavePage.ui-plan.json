@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "page": "P008LeavePage",
+  "implementation_path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+  "portal_codes": [
+    "employee"
+  ],
+  "route_paths": [
+    "/fixture"
+  ],
+  "process_codes": [
+    "P008"
+  ],
+  "page_type": "form",
+  "page_template": "ui.template.form-page",
+  "source_facts": {
+    "permissions": [
+      "fixture.read"
+    ],
+    "states": [
+      "ready"
+    ],
+    "actions": [
+      "SUBMIT"
+    ]
+  },
+  "field_component_map": [],
+  "state_component_map": [],
+  "action_component_map": [
+    {
+      "action": "SUBMIT",
+      "component_id": "ui.button"
+    }
+  ],
+  "responsive_projection": {
+    "desktop": "single column",
+    "mobile": "single column"
+  },
+  "gaps": [],
+  "native_element_exceptions": [],
+  "decision": "reuse-only",
+  "tests": [
+    "fixture"
+  ],
+  "updated_at": "2026-08-13T00:00:00+08:00"
+}

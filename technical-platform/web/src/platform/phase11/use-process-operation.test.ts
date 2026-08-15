@@ -8,19 +8,6 @@ interface OperationContext {
   requestId: string
 }
 
-interface OperationResult<T> {
-  ok: boolean
-  outcome?: 'cancelled' | 'failed' | 'in-flight'
-  data?: T
-}
-
-interface ExpectedOperations {
-  resourceState: (key: string) => { phase: string; data?: unknown; requestId?: string; failure: string }
-  actionState: (key: string) => { phase: string; data?: unknown; requestId?: string; failure: string }
-  runResource: <T>(key: string, loader: (context?: OperationContext) => Promise<T>) => Promise<OperationResult<T>>
-  runAction: <T>(key: string, action: (context?: OperationContext) => Promise<T>, message?: string) => Promise<OperationResult<T>>
-}
-
 function deferred<T>() {
   let resolve!: (value: T) => void
   let reject!: (cause: unknown) => void
@@ -31,7 +18,7 @@ function deferred<T>() {
   return { promise, resolve, reject }
 }
 
-function expectedOperations(): ExpectedOperations {
+function expectedOperations() {
   return useProcessOperation()
 }
 

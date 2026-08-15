@@ -50,6 +50,7 @@ const expectedUiExports = [
 const expectedPlatformExports = [
   'ApiErrorNotice',
   'AsyncStateBoundary',
+  'AttendanceWorkflowMonitorFeature',
   'ConfirmDialog',
   'DataTable',
   'DateTimeRangeField',
@@ -58,7 +59,9 @@ const expectedPlatformExports = [
   'HighRiskConfirmDialog',
   'MonitorPanel',
   'PermissionGate',
+  'PhaseWorkflowMonitorFeature',
   'ProcessActionPanel',
+  'ProcessMetadataMonitorFeature',
   'ProcessRecordMeta',
   'ProcessTimeline',
   'VersionConflictPanel',
@@ -124,5 +127,32 @@ describe('public UI component aliases', () => {
     expect(table?.required_tests).toContain(
       'technical-platform/web/src/platform/processes/shared/monitoring/monitor-components.test.ts',
     )
+  })
+
+  it('keeps the public workflow monitor feature registry contracts closed', () => {
+    const attendance = registry.components.find(component => component.id === 'platform.attendance-workflow-monitor-feature')
+    const hub = registry.components.find(component => component.id === 'platform.phase-workflow-monitor-feature')
+    const generic = registry.components.find(component => component.id === 'platform.process-metadata-monitor-feature')
+    expect(attendance).toMatchObject({
+      status: 'existing-stable', public: true, public_import: '@sgj/platform-ui',
+      implementation_path: 'technical-platform/web/src/platform/processes/shared/monitoring/AttendanceWorkflowMonitorFeature.vue',
+      export_name: 'AttendanceWorkflowMonitorFeature',
+    })
+    expect(attendance?.required_tests).toContain(
+      'technical-platform/web/src/platform/processes/shared/monitoring/monitor-page.test.ts',
+    )
+    expect(hub).toMatchObject({
+      status: 'existing-stable', public: true, public_import: '@sgj/platform-ui',
+      implementation_path: 'technical-platform/web/src/platform/processes/shared/monitoring/PhaseWorkflowMonitorFeature.vue',
+      export_name: 'PhaseWorkflowMonitorFeature',
+    })
+    expect(generic).toMatchObject({
+      status: 'existing-stable', public: true, public_import: '@sgj/platform-ui',
+      implementation_path: 'technical-platform/web/src/platform/processes/shared/monitoring/ProcessMetadataMonitorFeature.vue',
+      export_name: 'ProcessMetadataMonitorFeature',
+    })
+    expect(PlatformUi.PhaseWorkflowMonitorFeature).toBeDefined()
+    expect(PlatformUi.AttendanceWorkflowMonitorFeature).toBeDefined()
+    expect(PlatformUi.ProcessMetadataMonitorFeature).toBeDefined()
   })
 })

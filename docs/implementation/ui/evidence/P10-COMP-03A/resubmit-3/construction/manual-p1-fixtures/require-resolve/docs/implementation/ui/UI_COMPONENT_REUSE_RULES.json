@@ -1,0 +1,1 @@
+{"approved_imports": ["@sgj/ui", "@sgj/platform-ui", "process-local public index.ts"], "decision_flow": ["exact", "compose", "platform", "domain", "new-design", "blocked"]}

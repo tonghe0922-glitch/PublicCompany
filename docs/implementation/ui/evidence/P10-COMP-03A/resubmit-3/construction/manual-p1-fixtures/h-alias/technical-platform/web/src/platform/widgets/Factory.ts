@@ -1,0 +1,1 @@
+import { h } from 'vue';const renderNode=h;export const node=()=>renderNode('button')

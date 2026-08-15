@@ -24,6 +24,7 @@ export default defineConfig({
   ],
   webServer: servers.map((server) => ({
     ...server,
+    env: { SJG_LOCAL_API_PROXY_TARGET: 'http://127.0.0.1:18081' },
     reuseExistingServer: false,
     timeout: 120_000,
   })),

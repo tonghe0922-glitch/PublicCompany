@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>企划中心 · 员工工作台</title>
+<style>
+  :root{
+    --fs:1;
+    --bg:#eceef2; --surface:#ffffff; --surface-2:#f4f6f9; --surface-3:#e9ecf2;
+    --ink:#161a22; --ink-2:#525a6b; --ink-3:#8b93a5;
+    --line:#e3e6ec; --line-2:#eef1f6;
+    --accent:#5b5bd6; --accent-ink:#ffffff; --accent-soft:#ececfb;
+    --emerald:#0f9d76; --emerald-soft:#e4f6ef;
+    --tangerine:#e8730a; --tangerine-soft:#fdf0e3;
+    --amber:#c98a00; --amber-soft:#fbf2da;
+    --rose:#d63a52; --rose-soft:#fce7eb;
+    --shadow:0 1px 2px rgba(16,20,34,.05),0 8px 24px -12px rgba(16,20,34,.16);
+    --shadow-lg:0 2px 4px rgba(16,20,34,.06),0 24px 48px -20px rgba(16,20,34,.28);
+    --r:18px; --r-sm:12px; --r-xs:9px;
+    --side-w:236px; --rail-w:340px;
+    font-size:calc(16px*var(--fs));
+  }
+  [data-theme="dark"]{
+    --bg:#0e1014; --surface:#171a20; --surface-2:#1d212a; --surface-3:#232833;
+    --ink:#f1f3f8; --ink-2:#aab2c2; --ink-3:#767e90;
+    --line:#272c37; --line-2:#1f242e;
+    --accent:#8b8bf0; --accent-ink:#14131f; --accent-soft:#232242;
+    --emerald:#2fc79a; --emerald-soft:#103029;
+    --tangerine:#f08a2c; --tangerine-soft:#2e1e0e;
+    --amber:#e0a93a; --amber-soft:#2c2310;
+    --rose:#ee6a80; --rose-soft:#2e1119;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.4),0 28px 56px -22px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;
+    -webkit-font-smoothing:antialiased;letter-spacing:.01em;
+  }
+  .app{display:flex;min-height:100vh}
+
+  /* ---------- Sidebar ---------- */
+  .side{width:var(--side-w);flex:0 0 var(--side-w);background:var(--surface);
+    border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:.6rem;padding:1.2rem 1.25rem;border-bottom:1px solid var(--line-2)}
+  .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#8b8bf0);
+    color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.05rem;flex:0 0 auto}
+  .brand b{font-size:1.02rem;letter-spacing:.02em}
+  .brand span{display:block;font-size:.74rem;color:var(--ink-3);font-weight:500}
+  .nav{padding:.7rem .7rem;flex:1;overflow:auto;display:flex;flex-direction:column;gap:.2rem}
+  .nav .grp{font-size:.7rem;color:var(--ink-3);font-weight:700;letter-spacing:.1em;padding:.9rem .8rem .4rem}
+  .nav a{display:flex;align-items:center;gap:.75rem;padding:.62rem .8rem;border-radius:var(--r-sm);
+    color:var(--ink-2);text-decoration:none;font-size:.92rem;font-weight:500;transition:.15s}
+  .nav a .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;
+    background:var(--surface-3);color:var(--ink-2)}
+  .nav a:hover{background:var(--surface-2);color:var(--ink)}
+  .nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .nav a.on .ic{background:var(--accent);color:var(--accent-ink)}
+  .me{padding:.8rem 1rem;border-top:1px solid var(--line-2);display:flex;align-items:center;gap:.7rem}
+  .me .av{width:38px;height:38px;border-radius:50%;background:var(--emerald);color:#fff;display:grid;place-items:center;font-weight:700;flex:0 0 auto}
+  .me b{font-size:.88rem}.me span{font-size:.72rem;color:var(--ink-3);display:block}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:1rem;padding:.85rem 1.6rem}
+  .topbar h1{font-size:1.08rem;font-weight:800;letter-spacing:.02em}
+  .topbar .sub{font-size:.76rem;color:var(--ink-3);font-weight:500}
+  .search{flex:1;max-width:420px;margin-left:auto;display:flex;align-items:center;gap:.5rem;
+    background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.5rem .9rem;color:var(--ink-3)}
+  .search input{border:0;background:0;outline:0;flex:1;font:inherit;color:var(--ink);font-size:.88rem}
+  .ctrl{display:flex;gap:.4rem;align-items:center}
+  .btn-ico{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink-2);display:grid;place-items:center;cursor:pointer;transition:.15s;font-size:.95rem}
+  .btn-ico:hover{color:var(--ink);border-color:var(--ink-3)}
+  .fontctl{display:flex;align-items:center;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--surface)}
+  .fontctl button{width:34px;height:38px;border:0;background:0;color:var(--ink-2);cursor:pointer;font-weight:700;font-size:.9rem}
+  .fontctl button:hover{background:var(--surface-2);color:var(--ink)}
+
+  .content{padding:1.5rem 1.6rem 3rem;max-width:1320px;width:100%;margin:0 auto}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:1.5rem 1.6rem;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;align-items:center;gap:1.4rem;
+    position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle,var(--accent-soft),transparent 70%);opacity:.7}
+  .hero .hi{position:relative;z-index:1;flex:1;min-width:240px}
+  .hero .hi .date{font-size:.8rem;color:var(--ink-3);font-weight:600;letter-spacing:.04em}
+  .hero .hi h2{font-size:1.75rem;font-weight:850;margin:.25rem 0 .4rem;letter-spacing:.01em}
+  .hero .hi p{color:var(--ink-2);font-size:.92rem;max-width:46ch}
+  .hero .hi .focus{display:inline-flex;align-items:center;gap:.45rem;margin-top:.7rem;background:var(--amber-soft);
+    color:var(--amber);font-size:.8rem;font-weight:700;padding:.4rem .7rem;border-radius:999px}
+  .kpis{position:relative;z-index:1;display:flex;gap:.9rem;flex-wrap:wrap}
+  .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:.85rem 1.15rem;min-width:118px}
+  .kpi .n{font-size:1.7rem;font-weight:850;line-height:1;letter-spacing:-.02em}
+  .kpi .l{font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:.4rem}
+  .kpi.em .n{color:var(--emerald)} .kpi.ac .n{color:var(--accent)} .kpi.am .n{color:var(--amber)}
+
+  /* ---------- Section ---------- */
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) var(--rail-w);gap:1.4rem;margin-top:1.4rem;align-items:start}
+  .sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:1.3rem 1.4rem}
+  .sec + .sec{margin-top:1.4rem}
+  .sec-h{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem}
+  .sec-h .tag{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:0 0 auto}
+  .sec-h h3{font-size:1.06rem;font-weight:800}
+  .sec-h .more{margin-left:auto;font-size:.8rem;color:var(--accent);font-weight:700;cursor:pointer;background:0;border:0}
+  .sec-h .cnt{font-size:.74rem;color:var(--ink-3);font-weight:600}
+
+  /* projects */
+  .proj{border:1px solid var(--line);border-radius:var(--r-sm);padding:1.1rem 1.15rem;transition:.18s}
+  .proj + .proj{margin-top:.9rem}
+  .proj:hover{box-shadow:var(--shadow);border-color:var(--line-2)}
+  .proj .top{display:flex;align-items:flex-start;gap:.8rem}
+  .proj .nm{font-weight:750;font-size:1.02rem;flex:1;min-width:0}
+  .proj .own{font-size:.76rem;color:var(--ink-3);margin-top:.15rem}
+  .badge{font-size:.72rem;font-weight:700;padding:.28rem .6rem;border-radius:999px;white-space:nowrap}
+  .b-low{background:var(--emerald-soft);color:var(--emerald)}
+  .b-mid{background:var(--amber-soft);color:var(--amber)}
+  .b-urge{background:var(--rose-soft);color:var(--rose)}
+  .steps{display:flex;align-items:center;gap:0;margin:.9rem 0 .7rem;overflow:hidden}
+  .steps .st{display:flex;align-items:center;flex:1}
+  .steps .dot{width:22px;height:22px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);
+    display:grid;place-items:center;font-size:.7rem;font-weight:700;flex:0 0 auto;z-index:1;border:2px solid var(--surface)}
+  .steps .ln{flex:1;height:3px;background:var(--surface-3)}
+  .steps .st.done .dot{background:var(--accent);color:var(--accent-ink)}
+  .steps .st.done .ln{background:var(--accent)}
+  .steps .st.cur .dot{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 4px var(--accent-soft)}
+  .proj .meta{display:flex;flex-wrap:wrap;gap:.5rem .9rem;font-size:.8rem;color:var(--ink-2)}
+  .proj .meta b{color:var(--ink);font-weight:700}
+  .proj .bar{height:7px;border-radius:999px;background:var(--surface-3);overflow:hidden;margin-top:.7rem}
+  .proj .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--emerald),#34d6a8)}
+  .proj .acts{display:flex;gap:.5rem;margin-top:.85rem}
+  .proj .acts button{font:inherit;font-size:.78rem;font-weight:600;padding:.4rem .8rem;border-radius:999px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink-2);cursor:pointer}
+  .proj .acts button:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* pipeline */
+  .pipe{display:flex;gap:.8rem;overflow-x:auto;padding-bottom:.4rem}
+  .pipe::-webkit-scrollbar{height:8px}.pipe::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+  .pcol{flex:0 0 200px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:.7rem}
+  .pcol h4{font-size:.82rem;font-weight:800;display:flex;align-items:center;gap:.4rem;margin-bottom:.7rem}
+  .pcol h4 .d{width:9px;height:9px;border-radius:50%}
+  .pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xs);padding:.65rem .7rem;margin-bottom:.6rem}
+  .pcard .t{font-size:.84rem;font-weight:650;line-height:1.35}
+  .pcard .f{display:flex;align-items:center;gap:.4rem;margin-top:.45rem;font-size:.7rem;color:var(--ink-3)}
+  .pcard .ft{font-size:.66rem;font-weight:700;padding:.16rem .45rem;border-radius:6px;background:var(--surface-3);color:var(--ink-2)}
+  .dot-em{background:var(--emerald)} .dot-tn{background:var(--tangerine)} .dot-am{background:var(--amber)} .dot-ac{background:var(--accent)} .dot-ro{background:var(--rose)}
+
+  /* todo timeline */
+  .tl{position:relative;padding-left:1.4rem}
+  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .ti{position:relative;padding:0 0 1.05rem}
+  .ti:last-child{padding-bottom:0}
+  .ti .pt{position:absolute;left:-1.4rem;top:4px;width:16px;height:16px;border-radius:50%;
+    background:var(--surface);border:3px solid var(--accent);z-index:1}
+  .ti.urg .pt{border-color:var(--rose)}
+  .ti .tm{font-size:.74rem;font-weight:700;color:var(--accent)}
+  .ti.urg .tm{color:var(--rose)}
+  .ti .tt{font-weight:650;font-size:.92rem;margin-top:.1rem}
+  .ti .td{font-size:.78rem;color:var(--ink-3);margin-top:.1rem}
+  .ti .src{display:inline-block;margin-top:.35rem;font-size:.68rem;font-weight:700;color:var(--ink-2);
+    background:var(--surface-2);border:1px solid var(--line);padding:.16rem .5rem;border-radius:6px}
+
+  /* tools */
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  .tool{display:flex;align-items:center;gap:.6rem;padding:.7rem .8rem;border:1px solid var(--line);
+    border-radius:var(--r-sm);background:var(--surface);cursor:pointer;transition:.15s;text-decoration:none;color:inherit}
+  .tool:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+  .tool .ic{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto}
+  .tool b{font-size:.82rem;font-weight:650;display:block}.tool span{font-size:.68rem;color:var(--ink-3)}
+
+  /* account */
+  .acc{display:flex;flex-direction:column;gap:.7rem}
+  .acc .row{display:flex;align-items:center;gap:.7rem;font-size:.86rem}
+  .acc .row .ic{width:32px;height:32px;border-radius:9px;background:var(--surface-2);color:var(--ink-2);display:grid;place-items:center;flex:0 0 auto}
+  .acc .row b{font-weight:650}.acc .row span{font-size:.74rem;color:var(--ink-3);display:block}
+  .acc .row .st{margin-left:auto;font-size:.74rem;font-weight:700;color:var(--emerald)}
+  .acc .row .st.warn{color:var(--amber)}
+
+  /* FAB */
+  .fab{position:fixed;right:1.6rem;bottom:1.6rem;width:60px;height:60px;border-radius:50%;border:0;
+    background:var(--accent);color:var(--accent-ink);font-size:1.6rem;display:grid;place-items:center;cursor:pointer;
+    box-shadow:var(--shadow-lg);z-index:40;transition:.2s}
+  .fab:hover{transform:scale(1.06)}
+  .fabmenu{position:fixed;right:1.6rem;bottom:5.6rem;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow-lg);padding:.5rem;z-index:40;display:none;flex-direction:column;min-width:200px}
+  .fabmenu.show{display:flex;animation:pop .15s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .fabmenu button{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;border:0;background:0;
+    padding:.7rem .8rem;border-radius:var(--r-sm);cursor:pointer;font:inherit;color:var(--ink);font-size:.9rem;font-weight:600}
+  .fabmenu button:hover{background:var(--accent-soft);color:var(--accent)}
+  .fabmenu .ic{width:30px;height:30px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+
+  /* bottom nav (mobile) */
+  .bottomnav{display:none}
+
+  @media(max-width:1080px){
+    .cols{grid-template-columns:1fr}
+    :root{--rail-w:auto}
+  }
+  @media(max-width:768px){
+    .side{display:none}
+    .topbar{padding:.7rem 1rem;gap:.6rem}
+    .topbar h1{font-size:1rem}
+    .search{display:none}
+    .content{padding:1rem 1rem 5rem}
+    .hero{padding:1.2rem;gap:1rem}
+    .hero .hi h2{font-size:1.4rem}
+    .kpis{width:100%}.kpi{flex:1;min-width:0}
+    .bottomnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+      background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(16px);
+      border-top:1px solid var(--line);padding:.35rem .3rem calc(.35rem + env(safe-area-inset-bottom));
+      justify-content:space-around}
+    .bottomnav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;
+      color:var(--ink-3);text-decoration:none;font-size:.66rem;font-weight:600;padding:.3rem 0;position:relative}
+    .bottomnav a.on{color:var(--accent)}
+    .bottomnav a.on::before{content:"";position:absolute;top:0;width:26px;height:3px;border-radius:99px;background:var(--accent)}
+    .bottomnav a .ic{width:24px;height:24px;display:grid;place-items:center;font-size:1.15rem}
+    .fab{right:1rem;bottom:4.6rem;width:54px;height:54px}
+    .fabmenu{right:1rem;bottom:9.4rem}
+    .tools{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">云</div>
+      <div><b>云栖谷</b><span>企划中心工作台</span></div>
+    </div>
+    <nav class="nav">
+      <div class="grp">工作</div>
+      <a class="on" href="#"><span class="ic">🏠</span>工作台首页</a>
+      <a href="#"><span class="ic">📋</span>策划项目管理</a>
+      <a href="#"><span class="ic">🎨</span>企宣内容管线</a>
+      <a href="#"><span class="ic">✅</span>协同与待办</a>
+      <div class="grp">资源</div>
+      <a href="#"><span class="ic">🗂️</span>素材中心</a>
+      <a href="#"><span class="ic">📐</span>品牌规范库</a>
+      <div class="grp">我的</div>
+      <a href="#"><span class="ic">🔐</span>账号与安全</a>
+      <a href="#"><span class="ic">⚙️</span>偏好设置</a>
+    </nav>
+    <div class="me">
+      <div class="av">林</div>
+      <div><b>林知遥</b><span>策划部 · 策划专员</span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>工作台</h1>
+        <div class="sub">2026年8月13日 · 星期四 · 早班 09:00–18:00</div>
+      </div>
+      <div class="search">🔍<input placeholder="搜索项目、内容、素材、申请单…"></div>
+      <div class="ctrl">
+        <div class="fontctl"><button id="fsDn" title="缩小字体">A−</button><button id="fsUp" title="放大字体">A＋</button></div>
+        <button class="btn-ico" id="themeBtn" title="切换深/浅色">🌙</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hi">
+          <div class="date">早上好，新的一天</div>
+          <h2>林知遥，今天有 1 个里程碑临近</h2>
+          <p>你负责 4 个进行中的策划项目，本周还有 12 项企宣内容在管线中流转。先把临近评审的方案收尾。</p>
+          <div class="focus">⚠️ 秋日非遗市集 · 8/18 方案评审，剩 5 天</div>
+        </div>
+        <div class="kpis">
+          <div class="kpi em"><div class="n">4</div><div class="l">进行中项目</div></div>
+          <div class="kpi ac"><div class="n">12</div><div class="l">本周内容产出</div></div>
+          <div class="kpi am"><div class="n">5</div><div class="l">待我处理</div></div>
+        </div>
+      </section>
+
+      <div class="cols">
+        <!-- MAIN COLUMN -->
+        <div>
+          <!-- Projects -->
+          <section class="sec">
+            <div class="sec-h">
+              <div class="tag" style="background:var(--emerald)">📊</div>
+              <h3>进行中的策划项目</h3>
+              <span class="cnt">策划部 · 4</span>
+              <button class="more">查看全部 →</button>
+            </div>
+
+            <div class="proj">
+              <div class="top">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">云栖谷·秋日非遗市集整体策划</div>
+                  <div class="own">负责人 林知遥 · 协同 周慕白、陈砚</div>
+                </div>
+                <span class="badge b-low">风险低</span>
+              </div>
+              <div class="steps" data-cur="3">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前阶段：<b>方案研究 · 版本评审</b></span>
+                <span>下个里程碑：<b>8/18 方案评审</b></span>
+                <span>进度：<b>68%</b></span>
+              </div>
+              <div class="bar"><i style="width:68%"></i></div>
+              <div class="acts"><button>版本与评审</button><button>变更控制</button><button>移交执行中心</button></div>
+            </div>
+
+            <div class="proj">
+              <div class="top">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">研学产品「小小自然学家」线路策划</div>
+                  <div class="own">负责人 周慕白 · 协同 林知遥</div>
+                </div>
+                <span class="badge b-mid">风险中</span>
+              </div>
+              <div class="steps" data-cur="4">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前阶段：<b>预算·资源·时间计划</b></span>
+                <span>下个里程碑：<b>8/20 预算确认</b></span>
+                <span>进度：<b>45%</b></span>
+                <span style="color:var(--amber);font-weight:700">⚠ 供应商报价超预算 12%</span>
+              </div>
+              <div class="bar"><i style="width:45%"></i></div>
+              <div class="acts"><button>预算计划</button><button>变更控制</button><button>移交执行中心</button></div>
+            </div>
+
+            <div class="proj">
+              <div class="top">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">夜游经济·光影剧本游策划</div>
+                  <div class="own">负责人 林知遥</div>
+                </div>
+                <span class="badge b-low">风险低</span>
+              </div>
+              <div class="steps" data-cur="1">
+                <div class="st cur"><span class="dot">1</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">2</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前阶段：<b>需求受理 · 价值评估</b></span>
+                <span>下个里程碑：<b>8/15 价值评估会</b></span>
+                <span>进度：<b>15%</b></span>
+              </div>
+              <div class="bar"><i style="width:15%"></i></div>
+              <div class="acts"><button>需求与评估</button><button>立项</button><button>方案研究</button></div>
+            </div>
+
+            <div class="proj">
+              <div class="top">
+                <div style="flex:1;min-width:0">
+                  <div class="nm">跨年灯会主题策划</div>
+                  <div class="own">负责人 周慕白</div>
+                </div>
+                <span class="badge b-low">风险低</span>
+              </div>
+              <div class="steps" data-cur="2">
+                <div class="st done"><span class="dot">✓</span><span class="ln"></span></div>
+                <div class="st cur"><span class="dot">2</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">3</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">4</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">5</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">6</span><span class="ln"></span></div>
+                <div class="st"><span class="dot">7</span></div>
+              </div>
+              <div class="meta">
+                <span>当前阶段：<b>立项 · 目标与范围</b></span>
+                <span>下个里程碑：<b>8/22 立项评审</b></span>
+                <span>进度：<b>30%</b></span>
+              </div>
+              <div class="bar"><i style="width:30%"></i></div>
+              <div class="acts"><button>立项与责任</button><button>方案研究</button><button>复盘沉淀</button></div>
+            </div>
+          </section>
+
+          <!-- Pipeline -->
+          <section class="sec">
+            <div class="sec-h">
+              <div class="tag" style="background:var(--tangerine)">🎨</div>
+              <h3>企宣内容管线</h3>
+              <span class="cnt">企宣部 · 本周 12 项</span>
+              <button class="more">排期看板 →</button>
+            </div>
+            <div class="pipe">
+              <div class="pcol">
+                <h4><span class="d dot-ac"></span>需求受理</h4>
+                <div class="pcard"><div class="t">「七夕限定」活动主视觉需求</div>
+                  <div class="f"><span class="ft">排期</span>交付 8/14</div></div>
+                <div class="pcard"><div class="t">研学产品详情页文案需求</div>
+                  <div class="f"><span class="ft">排期</span>待优先级</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dot-tn"></span>制作中</h4>
+                <div class="pcard"><div class="t">抖音探店短视频脚本 v2</div>
+                  <div class="f"><span class="ft">视频</span>交付 8/15</div></div>
+                <div class="pcard"><div class="t">公众号《秋日漫游指南》推文</div>
+                  <div class="f"><span class="ft">图文</span>交付 8/16</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dot-am"></span>审核定稿</h4>
+                <div class="pcard"><div class="t">小红书种草图文 3 组</div>
+                  <div class="f"><span class="ft">图文</span>待审 2 项</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dot-em"></span>交付</h4>
+                <div class="pcard"><div class="t">户外 LED 大屏素材包</div>
+                  <div class="f"><span class="ft">物料</span>格式校验中</div></div>
+              </div>
+              <div class="pcol">
+                <h4><span class="d dot-ro"></span>移交</h4>
+                <div class="pcard"><div class="t">国庆预热话题包</div>
+                  <div class="f"><span class="ft">移交</span>→ 新媒体运营</div></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RAIL -->
+        <div>
+          <section class="sec">
+            <div class="sec-h">
+              <div class="tag" style="background:var(--accent)">⏱️</div>
+              <h3>今日待办</h3>
+              <span class="cnt">协同 · 6</span>
+            </div>
+            <div class="tl">
+              <div class="ti"><span class="pt"></span><div class="tm">09:30</div>
+                <div class="tt">策划周会</div><div class="td">周会材料与上周行动项回顾</div>
+                <span class="src">会议详情与材料</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">10:00</div>
+                <div class="tt">提交预算资源计划</div><div class="td">秋日市集 · 人员/时间/预算表</div>
+                <span class="src">预算·资源·时间计划</span></div>
+              <div class="ti urg"><span class="pt"></span><div class="tm">11:30</div>
+                <div class="tt">审批 周慕白的临时权限申请</div><div class="td">需 2 项景区后台数据权限</div>
+                <span class="src">通用申请与审批 · 临时权限</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">14:00</div>
+                <div class="tt">行动项：更新事实核验清单</div><div class="td">品牌规范 · 敏感内容与事实核验</div>
+                <span class="src">我的行动项</span></div>
+              <div class="ti"><span class="pt"></span><div class="tm">16:00</div>
+                <div class="tt">与执行中心对齐移交清单</div><div class="td">秋日市集任务与验收标准</div>
+                <span class="src">向执行中心移交</span></div>
+              <div class="ti urg"><span class="pt"></span><div class="tm">待处理</div>
+                <div class="tt">换班申请</div><div class="td">与替班 张三 对调 8/16 早班</div>
+                <span class="src">换班申请</span></div>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-h">
+              <div class="tag" style="background:var(--emerald)">🧰</div>
+              <h3>快捷工具</h3>
+            </div>
+            <div class="tools">
+              <a class="tool"><span class="ic">🔎</span><span><b>素材库检索</b>标签 / 复用 / 到期</span></a>
+              <a class="tool"><span class="ic">📐</span><span><b>品牌规范</b>敏感 / 事实核验</span></a>
+              <a class="tool"><span class="ic">➕</span><span><b>新建策划需求</b>受理与评估</span></a>
+              <a class="tool"><span class="ic">🔑</span><span><b>权限申请</b>临时 / 项目</span></a>
+              <a class="tool"><span class="ic">📢</span><span><b>制度通知</b>回执与执行</span></a>
+              <a class="tool"><span class="ic">👤</span><span><b>资料变更</b>个人档案</span></a>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-h">
+              <div class="tag" style="background:var(--ink-2)">🔐</div>
+              <h3>账号与安全</h3>
+            </div>
+            <div class="acc">
+              <div class="row"><span class="ic">🛡️</span><div><b>多因子认证 (MFA)</b><span>已开启 · 上次验证 今天 08:52</span></div><span class="st">安全</span></div>
+              <div class="row"><span class="ic">💻</span><div><b>登录设备与会话</b><span>2 台 · 1 台为新设备</span></div><span class="st warn">待确认</span></div>
+              <div class="row"><span class="ic">👤</span><div><b>个人资料</b><span>联系方式 90 天未更新</span></div><span class="st warn">待更新</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab">＋</button>
+<div class="fabmenu" id="fabmenu">
+  <button><span class="ic">📋</span>新建策划需求</button>
+  <button><span class="ic">🎨</span>新建宣传需求</button>
+  <button><span class="ic">📝</span>通用申请</button>
+</div>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottomnav">
+  <a class="on" href="#"><span class="ic">🏠</span>首页</a>
+  <a href="#"><span class="ic">📋</span>策划</a>
+  <a href="#"><span class="ic">🎨</span>企宣</a>
+  <a href="#"><span class="ic">⏱️</span>待办</a>
+  <a href="#"><span class="ic">👤</span>我的</a>
+</nav>
+
+<script>
+  // theme
+  const root=document.documentElement, themeBtn=document.getElementById('themeBtn');
+  themeBtn.onclick=()=>{
+    const d=root.getAttribute('data-theme')==='dark';
+    root.setAttribute('data-theme',d?'light':'dark');
+    themeBtn.textContent=d?'🌙':'☀️';
+  };
+  // font scale
+  let fs=1; const cap=(v)=>Math.max(.85,Math.min(1.3,v));
+  document.getElementById('fsUp').onclick=()=>{fs=cap(fs+.1);root.style.setProperty('--fs',fs)};
+  document.getElementById('fsDn').onclick=()=>{fs=cap(fs-.1);root.style.setProperty('--fs',fs)};
+  // fab menu
+  const fab=document.getElementById('fab'),menu=document.getElementById('fabmenu');
+  fab.onclick=()=>menu.classList.toggle('show');
+  document.addEventListener('click',e=>{if(!fab.contains(e.target)&&!menu.contains(e.target))menu.classList.remove('show')});
+  // render stepper states from data-cur
+  document.querySelectorAll('.steps').forEach(s=>{
+    const cur=+s.dataset.cur, sts=[...s.children];
+    sts.forEach((st,i)=>{
+      if(i<cur)st.classList.add('done');
+      else if(i===cur)st.classList.add('cur');
+    });
+  });
+  // nav active (visual)
+  document.querySelectorAll('.nav a').forEach(a=>a.onclick=function(e){e.preventDefault();
+    document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));this.classList.add('on')});
+  document.querySelectorAll('.bottomnav a').forEach(a=>a.onclick=function(e){e.preventDefault();
+    document.querySelectorAll('.bottomnav a').forEach(x=>x.classList.remove('on'));this.classList.add('on')});
+</script>
+</body>
+</html>

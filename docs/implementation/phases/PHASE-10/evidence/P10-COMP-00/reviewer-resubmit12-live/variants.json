@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "review_round": "RESUBMIT-12",
+  "probe_count": 4,
+  "fail_open_count": 0,
+  "results": [
+    {
+      "probe": "meta-interpolated-permission",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "meta-interpolated-permissions-array",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "redirect-interpolated-template",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "props-reassigned-portal-shorthand",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    }
+  ]
+}

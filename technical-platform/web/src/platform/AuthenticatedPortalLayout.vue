@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { ApiClientError } from '../api'
-import { SgjPortalShell, SgjStatusChip } from '../design-system'
+import { SgjPortalShell, SgjStatusChip } from '@sgj/ui'
 import PortalNavigation from '../router/PortalNavigation.vue'
 import { safeInternalRedirect } from '../router/redirect'
 import { usePortalSessionStore } from '../session'

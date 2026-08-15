@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "review_round": "RESUBMIT-13",
+  "probe_count": 4,
+  "fail_open_count": 0,
+  "results": [
+    {
+      "probe": "portal-method-call",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "portal-prefix-property-update",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "portal-property-constructor",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "tagged-dynamic-template",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+import { createVNode } from 'vue';export const node=()=>createVNode('button')

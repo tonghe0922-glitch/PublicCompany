@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "taskkillCommand": "taskkill /PID 47468 /F /T",
+  "taskkillExit": 0,
+  "postgresContainerId": "966f2d9826bfa93a073bed60932828f9cd33bebb9eb8181c3a52999e185b7931",
+  "postgresInspectExit": 1,
+  "redisContainerId": "6685f28216cc7d34fcd96ca22067452b1b13b9012a4eb233207f67e9c05894f8",
+  "redisInspectExit": 1,
+  "runningTestcontainersCount": 0,
+  "runningRyukCount": 0,
+  "listenerPorts": [18093, 5370, 5371, 5372],
+  "listenerCount": 0,
+  "newProcessCount": 0,
+  "originalRuntimeCount": 7,
+  "originalRuntimePids": [15196, 35248, 36432, 40796, 41392, 43248, 44872]
+}

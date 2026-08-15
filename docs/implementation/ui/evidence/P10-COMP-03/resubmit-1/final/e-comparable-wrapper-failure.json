@@ -1,0 +1,44 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-03-resubmit-1-comparable",
+    "report_excluded":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+    "pre":  {
+                "raw_workspace_id":  "C28742FEB27279A28529B87F10AF3709EE05269706FC34A8F93667BEA0DFCBA5",
+                "raw_workspace_count":  1542,
+                "raw_task_id":  "28DAC914909E09342312237921492AE01275AE3403D36F1C67D563EC9ACE7E51",
+                "raw_task_count":  33,
+                "workspace_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                "workspace_count":  0,
+                "task_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                "task_count":  0,
+                "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                "metadata_count":  0
+            },
+    "post":  {
+                 "raw_workspace_id":  "5D2435E5DEC1EDB913F7E32F95FA5A11A58EDC00C786483BB799790A1547402D",
+                 "raw_workspace_count":  1542,
+                 "raw_task_id":  "43BB7B9FB35948E42A43A5007E237412F92177F143E17B2AD3F6AADDBE881B23",
+                 "raw_task_count":  33,
+                 "workspace_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                 "workspace_count":  0,
+                 "task_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                 "task_count":  0,
+                 "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+                 "metadata_count":  0
+             },
+    "scoped":  {
+                   "task_count":  0,
+                   "unrelated_count":  0,
+                   "concurrent_count":  0,
+                   "metadata_count":  0,
+                   "task_changes":  [
+
+                                    ],
+                   "unrelated_changes":  [
+
+                                         ],
+                   "metadata_changes":  [
+
+                                        ]
+               }
+}

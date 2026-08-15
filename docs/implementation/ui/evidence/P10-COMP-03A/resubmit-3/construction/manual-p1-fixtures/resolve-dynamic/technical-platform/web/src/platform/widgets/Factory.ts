@@ -1,0 +1,1 @@
+import { resolveDynamicComponent } from 'vue';export const node=()=>resolveDynamicComponent('input')

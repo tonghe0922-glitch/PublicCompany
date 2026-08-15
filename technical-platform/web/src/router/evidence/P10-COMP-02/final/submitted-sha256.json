@@ -1,0 +1,265 @@
+﻿{
+    "schema_version":  "1.0",
+    "task_id":  "P10-COMP-02",
+    "generated_at_utc":  "2026-08-12T23:54:07.6693140Z",
+    "file_count":  43,
+    "files":  [
+                  {
+                      "path":  "technical-platform/web/src/router/route-meta.d.ts",
+                      "exists":  true,
+                      "sha256":  "384E4F88DD8C2CB3804DFD3F378F0DE35E324D43C52CEC45653C830DD3F1C0DE",
+                      "bytes":  387
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/portal-router.ts",
+                      "exists":  true,
+                      "sha256":  "A636061E5B6C46BED8C95117A4118D8EBFDEBCC3C792ADDE81E0CC70EA74C4AF",
+                      "bytes":  25380
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/portal-router.test.ts",
+                      "exists":  true,
+                      "sha256":  "8DA7C395EE5907846C5778E99560DEBCDE53143E627557C6631DDE562EC1A121",
+                      "bytes":  7746
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/route-semantics.test.ts",
+                      "exists":  true,
+                      "sha256":  "3AAB047D97317F6830376F64A606E323ED4671D9885ED385FDCFDE37661CCDE0",
+                      "bytes":  4160
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/AuthenticatedPortalLayout.vue",
+                      "exists":  true,
+                      "sha256":  "FD55C25647A955B59588E3FD1CF228A871405989A90209D5861552791C64A103",
+                      "bytes":  2976
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/PageTemplateFrame.vue",
+                      "exists":  true,
+                      "sha256":  "114F62AED9BE188D3668A9B9900B8275D5D16FF8B258F3D14506A8079838DA5D",
+                      "bytes":  917
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/ApprovalPageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "2CDAF1B4DD067B601284AD11A0A258D983D7F5109D062E5130A7F0A80315FE93",
+                      "bytes":  787
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/DashboardPageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "D0D76DE9F5C33B6CD6B4A1658DE89B66C7367E9CFFF2E8BEB0B58D59A347A829",
+                      "bytes":  690
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/DetailPageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "1DCD90A1B8778C730BF941A867EC7A2D7CAABEAB16E37E7DC88785B54CD0A98D",
+                      "bytes":  797
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/FormPageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "E3BCDD8E5349C2ABC585E26890F4B1C444F4BE30750187E6889A5D8A3DF3A27F",
+                      "bytes":  632
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/ListPageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "8923C6B5F8EA9E4EFC7D8ABF3526562272ECA5B2012A259B7B6CF995C7A7FDE1",
+                      "bytes":  654
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/TimelinePageTemplate.vue",
+                      "exists":  true,
+                      "sha256":  "6D18B68DC92E73E2F754A5C909584519659925076DD891BC207FBF75A703C714",
+                      "bytes":  575
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/templates/PageTemplateFrame.test.ts",
+                      "exists":  true,
+                      "sha256":  "0AC58D6438AB8FFBD3707A9EB8639DB1BB3FE321201A080C8244EB24CC7637FA",
+                      "bytes":  1625
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/layout/PortalShell.landmark.test.ts",
+                      "exists":  true,
+                      "sha256":  "7D3FB32A4D67F6D9AB076C99322017CFF8C6788D5DEFAA6D4127117F2B28AD2E",
+                      "bytes":  2045
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+                      "exists":  true,
+                      "sha256":  "BE7FA47054C7EAC3A78B1A9ECC06E2F1D572DDE1546B5A10CF33B855E13E7D72",
+                      "bytes":  8561
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+                      "exists":  true,
+                      "sha256":  "0CAE3878E607C03C5159D19379E341F2240EDA782730BA95DB42355CF3C55536",
+                      "bytes":  13504
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+                      "exists":  true,
+                      "sha256":  "90EE414E091E8BC3CB5E0B14B0B750E0418A0A35F37EB1D2DF01BA336BFF1BFD",
+                      "bytes":  10020
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+                      "exists":  true,
+                      "sha256":  "19AA533C19F9539B8C1C03FA939C0C98FE0800894A2057D82466DF6D8A84E7FC",
+                      "bytes":  14117
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+                      "exists":  true,
+                      "sha256":  "660D5B568D8463365352918FACDA5B62ADF4F132DA3211021CC11A27D4F89075",
+                      "bytes":  19004
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+                      "exists":  true,
+                      "sha256":  "5BB734E39BA760BA53B0823F77E1A2006C4F062B0C1E72335AC0ED30087BFBD9",
+                      "bytes":  10325
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+                      "exists":  true,
+                      "sha256":  "5D8D485A5338570588B875A9F82A55F3C96A9E2F2B679A3A7908BE0B869F50EB",
+                      "bytes":  10039
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+                      "exists":  true,
+                      "sha256":  "69AF05C4A646F67611BCF8DB7539DB30FA972AC35977842C0D050222ED6A0874",
+                      "bytes":  11933
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+                      "exists":  true,
+                      "sha256":  "D3BA2C2DEA9B6286DC23A55F4DAA3B7B838EDD3130E774969910B6636E82FF2A",
+                      "bytes":  11007
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+                      "exists":  true,
+                      "sha256":  "9B2965D8337E71F53F9908778F91DE13666E890FDE0358CEA57B551FEB2B2A1C",
+                      "bytes":  9242
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.vue",
+                      "exists":  true,
+                      "sha256":  "A0CD2F0952E785B6F76B2B1960BDC6E0B2168AE750782B88ADF223AB676C9498",
+                      "bytes":  2209
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+                      "exists":  true,
+                      "sha256":  "4094A55AC81B14DECE25FB2E24A6CBC48E8B3A31ABA58B7A5EBD74D32952FAB8",
+                      "bytes":  2734
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+                      "exists":  true,
+                      "sha256":  "2287051E408066A51B148FEFA8DE62B4B72CCB91AF41BBD5B29553E4E700520C",
+                      "bytes":  765
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/ForbiddenPage.vue",
+                      "exists":  true,
+                      "sha256":  "47EFF13C4FE7A075C7B08AE038B3BFEA9C4565C08920C79EBAFE009EFDA01C43",
+                      "bytes":  427
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P001IdentityPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "8BEB1B0D001581B2C09E04A102047361B8BBF9B9FE9807BD3DBE2E8E4DACEA67",
+                      "bytes":  3262
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P002PermissionRequestPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "DA7E90C6EAF743BBE1E9C63777D59824CCFA1A17DE862AE8576DC7D54737E1BB",
+                      "bytes":  3387
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P003ProfileChangePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "0B5232764B60C467B895D874F88A84EF0EBEAD84F7CD83638469C121B4A95497",
+                      "bytes":  3287
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P004GenericRequestPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "154A0DF111F1A2F66987B8EAFF8CF8DBDF9B502259F4BA3D58847838BBB68FDA",
+                      "bytes":  3178
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P005NoticePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "A5E0DBA489135D179C6BE2A71D356C04F648EF7416FEFF9960CD9324BA33339F",
+                      "bytes":  3503
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P006MeetingPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "414154DBD89B1E16E73AC5DB5E7FEA2A7E1608A023A9787755A10DDA1B7E66B6",
+                      "bytes":  3595
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P007SchedulePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "C1ABFE41A74E7A39B6469E7FDA885F45C97EC0A4F532D811AEBA8D7119A113A5",
+                      "bytes":  3518
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P008LeavePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "F0E212A91DF2FF288174B61B3EE9949A6DEE03CBD8C892916DF1E282F1D00B0A",
+                      "bytes":  3495
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P009OvertimePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "046F6B0F4DF2697DF428210D054102EA758F487CA3C5D86EDD169A01F930CAF0",
+                      "bytes":  3571
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P010LearningPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "B7F63423231A21024517035B588B34EF7B57641C7AC26AEB096AFDCCD99C7190",
+                      "bytes":  3682
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "E1A22FC3A64DB829FC2F7C876E94926562E3E60385D7184E7125A8874806140A",
+                      "bytes":  3024
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "C11CB76324AB7E891C5AFC5107DAE494F2402883802653E6D06A8EB03137CEA4",
+                      "bytes":  3199
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "3737FC1798E1A0C9624FD2EE5428712FD99A79AC40A067864E7A79BBB0F239F1",
+                      "bytes":  2852
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/ForbiddenPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "8EE81D3EFB669F6FFC25F526C37A5B7A5D1E36A27DCC6AA7972A52FE90941D4B",
+                      "bytes":  2681
+                  },
+                  {
+                      "path":  "technical-platform/web/src/router/evidence/P10-COMP-02/P10-COMP-02_REPORT.md",
+                      "sha256":  "A46C55BCDC7437C2A854514B2D7996C31A79AFE0B18C3E61183AA0C3C7A910B1",
+                      "bytes":  5984
+                  }
+              ]
+}

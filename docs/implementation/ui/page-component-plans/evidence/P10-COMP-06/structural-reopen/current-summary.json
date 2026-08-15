@@ -1,0 +1,12 @@
+﻿{
+    "gate_exit":  1,
+    "status":  "FAIL",
+    "errors":  92,
+    "scanned":  106,
+    "raw":  80,
+    "legacy":  12,
+    "structural":  0,
+    "structural_codes":  [
+
+                         ]
+}

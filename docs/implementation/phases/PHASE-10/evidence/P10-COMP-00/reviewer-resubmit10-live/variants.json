@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "review_round": "RESUBMIT-10",
+  "probe_count": 4,
+  "fail_open_count": 0,
+  "results": [
+    {
+      "probe": "options-registry-mutated-before-export",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "COMPONENT_GRAPH_CUSTOM_BINDING_MISSING",
+        "COMPONENT_GRAPH_OPTIONS_COMPONENTS_UNRESOLVED"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "duplicate-path-runtime-override",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "duplicate-component-runtime-override",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "dynamic-route-property-call",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    }
+  ]
+}

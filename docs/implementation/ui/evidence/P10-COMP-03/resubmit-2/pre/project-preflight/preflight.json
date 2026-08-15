@@ -1,0 +1,72 @@
+﻿{
+    "schema_version":  "2.0",
+    "kind":  "phase10-component-preflight",
+    "repository_root":  "I:\\PublicCompany_source_codex",
+    "timestamp_utc":  "2026-08-13T11:27:04.5000680Z",
+    "status":  "PASS",
+    "git_present":  false,
+    "git_status":  "ABSENT",
+    "powershell_version":  "5.1.19041.6456",
+    "required_files":  [
+                           {
+                               "path":  "AGENT.md",
+                               "readable":  true,
+                               "sha256":  "9F2ECFF73550311276E0FE69A60BF4EA84A3D93A5F83FD2A26671CC69F1738E4"
+                           },
+                           {
+                               "path":  "DESIGN.md",
+                               "readable":  true,
+                               "sha256":  "039CC1500878E82D1C7F610FDA90EA1EE6D2EBEA497BFA4849BFA587A5204CFA"
+                           },
+                           {
+                               "path":  "technical-platform/web/package.json",
+                               "readable":  true,
+                               "sha256":  "64AF8C277CC1C583908D3DFC21786711243FAAEFE2F84F39C984945238B08BD0"
+                           },
+                           {
+                               "path":  "docs/implementation/phases/PHASE-07/SOURCE_CONTRACT.md",
+                               "readable":  true,
+                               "sha256":  "3DB407FA776A6859DA622F1DE9249A3C3DA9FE73C6EAE0E50AE82CB92AAC9681"
+                           },
+                           {
+                               "path":  "docs/implementation/phases/PHASE-07/ADR_DESIGN_SYSTEM_BOUNDARY.md",
+                               "readable":  true,
+                               "sha256":  "C945F588678EED8E86CAC9ABB704C7B97D0B317A9471163496257B54F7CF00EE"
+                           },
+                           {
+                               "path":  "docs/implementation/phases/PHASE-10/SOURCE_CONTRACT.md",
+                               "readable":  true,
+                               "sha256":  "32702C17B02E8D9BE729D24896308A1C4E9335453E633C3E213F39B20A17EF14"
+                           },
+                           {
+                               "path":  "docs/implementation/phases/PHASE-10/START_CHECKLIST.md",
+                               "readable":  true,
+                               "sha256":  "5D93A03E4E69E0E9DC8010323827312A1D9AAF9EC1DBD37AA0BADAA166CD8FAB"
+                           },
+                           {
+                               "path":  "docs/implementation/phases/PHASE-10/PHASE_GATE.md",
+                               "readable":  true,
+                               "sha256":  "C5B529ABA25CA4ABE6929D7D3FE4453939794E32FDB09F571630ACD687F525A0"
+                           }
+                       ],
+    "tools":  [
+                  {
+                      "tool":  "python",
+                      "exit_code":  0,
+                      "version":  "Python 3.12.10"
+                  },
+                  {
+                      "tool":  "node",
+                      "exit_code":  0,
+                      "version":  "v24.15.0"
+                  },
+                  {
+                      "tool":  "pnpm",
+                      "exit_code":  0,
+                      "version":  "10.34.0"
+                  }
+              ],
+    "findings":  [
+
+                 ]
+}

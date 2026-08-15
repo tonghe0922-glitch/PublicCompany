@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { SgjButton, SgjInput, SgjSelect, SgjTextarea } from '@sgj/ui'
 import { usePortalSessionStore } from '../../session'
 import type { PortalDefinition } from '../portal-config'
 
@@ -259,41 +260,46 @@ onMounted(() => { void run(load) })
       <h2>发布制度/通知版本</h2>
       <p v-if="!canPublish">当前身份没有 p005.notice.publish 权限。</p>
       <div class="form-grid">
-        <label>制度编码<input v-model="policyCode" :disabled="busy || !canPublish" required /></label>
-        <label>正式类型<input v-model="officialType" :disabled="busy || !canPublish" required /></label>
-        <label>期次/课程编号<input v-model="periodOrCourseNo" :disabled="busy || !canPublish" required /></label>
-        <label>可见级别
-          <select v-model="visibilityLevel" :disabled="busy || !canPublish"><option>公开</option><option>内部</option><option>秘密</option><option>机密</option></select>
-        </label>
-        <label>目标中心<input :value="targetCenterId" disabled /></label>
-        <label>目标岗位编码（可选）<input v-model="targetPositionCode" :disabled="busy || !canPublish" /></label>
-        <label>理解验证通过分<input v-model.number="understandingPassScore" type="number" min="0" max="100" :disabled="busy || !canPublish" /></label>
-        <label>业务日期<input v-model="businessDate" type="date" :disabled="busy || !canPublish" /></label>
-        <label>发布/送达渠道<input v-model="venueChannel" :disabled="busy || !canPublish" /></label>
-        <label>生效开始<input v-model="effectiveStartAt" type="datetime-local" :disabled="busy || !canPublish" /></label>
-        <label>生效结束<input v-model="effectiveEndAt" type="datetime-local" :disabled="busy || !canPublish" /></label>
-        <label>执行截止<input v-model="executionDueAt" type="datetime-local" :disabled="busy || !canPublish" /></label>
-        <label class="wide">正式主题<input v-model="officialSubject" :disabled="busy || !canPublish" required /></label>
-        <label class="wide">正式正文<textarea v-model="officialContent" :disabled="busy || !canPublish" required /></label>
+        <SgjInput v-model="policyCode" label="制度编码" :disabled="busy || !canPublish" required />
+        <SgjInput v-model="officialType" label="正式类型" :disabled="busy || !canPublish" required />
+        <SgjInput v-model="periodOrCourseNo" label="期次/课程编号" :disabled="busy || !canPublish" required />
+        <SgjSelect v-model="visibilityLevel" label="可见级别" :options="[
+          { value: '公开', label: '公开' },
+          { value: '内部', label: '内部' },
+          { value: '秘密', label: '秘密' },
+          { value: '机密', label: '机密' },
+        ]" :disabled="busy || !canPublish" />
+        <SgjInput label="目标中心" :model-value="targetCenterId" disabled />
+        <SgjInput v-model="targetPositionCode" label="目标岗位编码（可选）" :disabled="busy || !canPublish" />
+        <SgjInput :model-value="String(understandingPassScore)" label="理解验证通过分" type="number" min="0" max="100"
+          :disabled="busy || !canPublish" @update:model-value="understandingPassScore = Number($event)" />
+        <SgjInput v-model="businessDate" label="业务日期" type="date" :disabled="busy || !canPublish" />
+        <SgjInput v-model="venueChannel" label="发布/送达渠道" :disabled="busy || !canPublish" />
+        <SgjInput v-model="effectiveStartAt" label="生效开始" type="datetime-local" :disabled="busy || !canPublish" />
+        <SgjInput v-model="effectiveEndAt" label="生效结束" type="datetime-local" :disabled="busy || !canPublish" />
+        <SgjInput v-model="executionDueAt" label="执行截止" type="datetime-local" :disabled="busy || !canPublish" />
+        <SgjInput v-model="officialSubject" class="wide" label="正式主题" :disabled="busy || !canPublish" required />
+        <SgjTextarea v-model="officialContent" class="wide" label="正式正文" :disabled="busy || !canPublish" required />
       </div>
-      <button type="button" :disabled="busy || !canPublish || !policyCode.trim() || !officialSubject.trim() || !officialContent.trim() || !periodOrCourseNo.trim()" @click="publish">发布制度通知</button>
+      <SgjButton type="button" :disabled="busy || !canPublish || !policyCode.trim() || !officialSubject.trim() || !officialContent.trim() || !periodOrCourseNo.trim()" @click="publish">发布制度通知</SgjButton>
     </section>
 
     <section v-if="isEmployee" class="phase09-card compact-controls">
       <h2>回执填写</h2>
-      <label>理解验证分数<input v-model.number="understandingScore" type="number" min="0" max="100" :disabled="busy" /></label>
-      <label>执行结果摘要<textarea v-model="executionSummary" :disabled="busy" placeholder="到执行任务节点后填写" /></label>
+      <SgjInput :model-value="String(understandingScore)" label="理解验证分数" type="number" min="0" max="100" :disabled="busy"
+        @update:model-value="understandingScore = Number($event)" />
+      <SgjTextarea v-model="executionSummary" label="执行结果摘要" :disabled="busy" placeholder="到执行任务节点后填写" />
     </section>
 
     <section v-if="isCenter" class="phase09-card compact-controls">
       <h2>验收/归档说明</h2>
-      <label>处理说明<textarea v-model="manageReason" :disabled="busy" /></label>
+      <SgjTextarea v-model="manageReason" label="处理说明" :disabled="busy" />
     </section>
 
     <section class="phase09-card">
       <div class="section-head">
         <h2>{{ isEmployee ? '我的制度通知' : isCenter ? '已发布制度通知' : 'P005 运行监控' }}</h2>
-        <button type="button" :disabled="busy || !canList" @click="() => run(load)">刷新</button>
+        <SgjButton type="button" :disabled="busy || !canList" @click="() => run(load)">刷新</SgjButton>
       </div>
       <p v-if="!canList">当前身份没有 P005 读取、管理或监控权限。</p>
       <div v-if="views.length" class="record-list">
@@ -327,10 +333,10 @@ onMounted(() => { void run(load) })
           </template>
           <p v-else class="metadata-note">技术监控按最小必要原则隐藏正式主题、正文、期次、渠道、发布人及全部收件人回执明细。</p>
           <div v-if="receiptAction(view)" class="actions">
-            <button type="button" :disabled="busy" @click="receipt(view, receiptAction(view)!)">{{ receiptLabel(receiptAction(view)!) }}</button>
+            <SgjButton type="button" :disabled="busy" @click="receipt(view, receiptAction(view)!)">{{ receiptLabel(receiptAction(view)!) }}</SgjButton>
           </div>
           <div v-if="manageActions(view).length" class="actions">
-            <button v-for="action in manageActions(view)" :key="action.code" type="button" :disabled="busy" @click="manage(view, action.code)">{{ action.label }}</button>
+            <SgjButton v-for="action in manageActions(view)" :key="action.code" type="button" :disabled="busy" @click="manage(view, action.code)">{{ action.label }}</SgjButton>
           </div>
         </article>
       </div>

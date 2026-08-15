@@ -1,0 +1,64 @@
+﻿{
+    "postgres_id":  "81202d9a83d64a9f7eb5486433eb4b38c1f04019c377959b8f9d8af25b03674a",
+    "redis_id":  "6dc29121cd2ca7c779ae6c5fa7413e20c49f9607fec5bd81bfa7007703772314",
+    "exact_container_ids_present":  0,
+    "running_testcontainers_ryuk":  0,
+    "fresh_listener_count":  0,
+    "known_new_process_count":  0,
+    "old_runtime_present":  7,
+    "old_runtime":  [
+                        {
+                            "Id":  35248,
+                            "ProcessName":  "cmd",
+                            "StartTime":  "\/Date(1786599120228)\/"
+                        },
+                        {
+                            "Id":  44872,
+                            "ProcessName":  "cmd",
+                            "StartTime":  "\/Date(1786599152362)\/"
+                        },
+                        {
+                            "Id":  41392,
+                            "ProcessName":  "java",
+                            "StartTime":  "\/Date(1786599152679)\/"
+                        },
+                        {
+                            "Id":  43248,
+                            "ProcessName":  "java",
+                            "StartTime":  "\/Date(1786599120533)\/"
+                        },
+                        {
+                            "Id":  15196,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786599296496)\/"
+                        },
+                        {
+                            "Id":  36432,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786599296454)\/"
+                        },
+                        {
+                            "Id":  40796,
+                            "ProcessName":  "node",
+                            "StartTime":  "\/Date(1786597904012)\/"
+                        }
+                    ],
+    "legacy_listener_count":  3,
+    "legacy_listeners":  [
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5175,
+                                 "OwningProcess":  15196
+                             },
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5174,
+                                 "OwningProcess":  36432
+                             },
+                             {
+                                 "LocalAddress":  "127.0.0.1",
+                                 "LocalPort":  5173,
+                                 "OwningProcess":  40796
+                             }
+                         ]
+}

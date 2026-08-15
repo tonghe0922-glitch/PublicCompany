@@ -30,9 +30,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = WorkflowRuntimeController.class)
@@ -53,13 +53,13 @@ class WorkflowApiSecurityTest {
 
     @Autowired MockMvc mockMvc;
 
-    @MockBean WorkflowRuntimeService runtime;
-    @MockBean WorkflowTaskAssignmentService assignments;
-    @MockBean WorkflowFormService forms;
-    @MockBean AuthorizationService authorization;
-    @MockBean JdbcSecurityAuditService audit;
-    @MockBean SessionService sessions;
-    @MockBean IdentityDirectoryService identities;
+    @MockitoBean WorkflowRuntimeService runtime;
+    @MockitoBean WorkflowTaskAssignmentService assignments;
+    @MockitoBean WorkflowFormService forms;
+    @MockitoBean AuthorizationService authorization;
+    @MockitoBean JdbcSecurityAuditService audit;
+    @MockitoBean SessionService sessions;
+    @MockitoBean IdentityDirectoryService identities;
 
     @Test
     void unauthenticatedWorkflowRouteIs401() throws Exception {

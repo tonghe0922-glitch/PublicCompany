@@ -1,0 +1,14 @@
+﻿{
+    "launcher_pid":  15984,
+    "descendant_pids":  [
+                            15984,
+                            46708,
+                            48020
+                        ],
+    "api_listener_pid":  46708,
+    "api_listener_in_launcher_tree":  true,
+    "runtime_fresh":  true,
+    "postgres_id_matches_running":  false,
+    "redis_id_matches_running":  false,
+    "ready_marker":  true
+}

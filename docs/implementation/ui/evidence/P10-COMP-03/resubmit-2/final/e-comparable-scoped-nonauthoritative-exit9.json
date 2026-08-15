@@ -1,0 +1,48 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-03-resubmit-2-comparable",
+    "pre":  {
+                "workspace_source_id":  "32C7D820B62597FA13C7100AAC206CFB8A5E629EB82F33E7C80DFDD5BA6E2BF4",
+                "workspace_count":  1541,
+                "task_source_id":  "09065B3F69C1E682F0DB20BE42E007898EB76A3017D64463594BC1196C3E7773",
+                "task_count":  32,
+                "evidence_metadata_id":  "26D332552926C8AD13361D16798BA1029C53767A383ABC48FEFF87E33CFCA185",
+                "metadata_count":  1
+            },
+    "post":  {
+                 "workspace_source_id":  "471F1B300B3FFCB1E08CB6811EB6429AE261FA51D96E41CC08082CDEB97A744F",
+                 "workspace_count":  1541,
+                 "task_source_id":  "DE1EFD918C68AD4977B4678FD5F67AFBDE8309A345567F5A3B4006380C325F0E",
+                 "task_count":  32,
+                 "evidence_metadata_id":  "870EF45E776BBF94B53301B60F6CE2F7688CE123C60E1141E0E67DD4556D55FD",
+                 "metadata_count":  1
+             },
+    "scoped":  {
+                   "task_changes":  [
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                                            "change":  "modified"
+                                        },
+                                        {
+                                            "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                                            "change":  "modified"
+                                        }
+                                    ],
+                   "unrelated_workspace_changes":  [
+
+                                                   ],
+                   "concurrent_core":  [
+
+                                       ],
+                   "metadata_changes":  {
+                                            "path":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+                                            "change":  "modified"
+                                        },
+                   "counts":  {
+                                  "task":  2,
+                                  "unrelated":  0,
+                                  "concurrent":  0,
+                                  "metadata":  null
+                              }
+               }
+}

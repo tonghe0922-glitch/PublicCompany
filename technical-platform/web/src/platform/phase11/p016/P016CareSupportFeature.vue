@@ -1,30 +1,35 @@
 <script setup lang="ts">
+import { toRef } from 'vue'
+
 import {
   SgjButton, SgjCard, SgjConflict, SgjEmpty, SgjError, SgjInput,
   SgjListPageTemplate, SgjLoading, SgjNoPermission, SgjRecordCard,
   SgjSelect, SgjStatusChip, SgjTextarea,
 } from '@sgj/ui'
-import P014DisciplinePage from '../../pages/P014DisciplinePage.vue'
 import { isPending } from '../process-state'
 import { useP016CareSupport } from './use-p016-care-support'
 import type { P016Props } from './use-p016-care-support'
 
-const props = defineProps<P016Props>()
+interface P016FeatureProps extends P016Props {
+  headingLevel?: 1 | 2 | 3
+}
+
+const props = withDefaults(defineProps<P016FeatureProps>(), { headingLevel: 1 })
+const headingLevel = toRef(props, 'headingLevel')
 const {
   cases, affectedEmployeeId, sourceFactKey, subject, reason, careType,
   requestedAmount, currency, costCenterId, externalBusinessRef, factSummary,
   authorityReference, consentScope, consentHash, approvedAmount, executionKind,
   externalReference, executedAmount, invoiceCode, invoiceNumber, invoiceAmount,
   invoiceImageSha256, confirmationOutcome, reconciliationOutcome, resultSummary,
-  evidenceNote, isTech, canRead, canManage, showCare, showDiscipline, listState,
+  evidenceNote, isTech, canRead, canManage, listState,
   createState, careTypeOptions, executionKindOptions, confirmationOptions,
-  reconciliationOptions, load, createCase, perform, actions, actionState,
+  reconciliationOptions, load, createCase, perform, actions, actionState, recordPending,
 } = useP016CareSupport(props)
 </script>
 
 <template>
-  <P014DisciplinePage v-if="showDiscipline" :portal="props.portal" mode="center" />
-  <SgjListPageTemplate v-if="showCare" data-testid="p016-page" :title="isTech ? '员工关怀流程技术监控' : '员工关怀与福利支持'" :description="isTech ? '仅显示流程编号、节点和状态；员工、金额、材料、票据与证据均被屏蔽。' : '平台只记录人类授权决定和外部执行回执，不发起付款或代替审批。'">
+  <SgjListPageTemplate data-testid="p016-page" :heading-level="headingLevel" :title="isTech ? '员工关怀流程技术监控' : '员工关怀与福利支持'" :description="isTech ? '仅显示流程编号、节点和状态；员工、金额、材料、票据与证据均被屏蔽。' : '平台只记录人类授权决定和外部执行回执，不发起付款或代替审批。'">
     <template #actions><SgjButton variant="secondary" :disabled="!canRead" :loading="isPending(listState)" @click="load">刷新</SgjButton></template>
     <SgjNoPermission v-if="!canRead" />
     <template v-else>
@@ -86,7 +91,7 @@ const {
             </template>
           </template>
           <p v-else>员工、金额、材料、票据、来源事实和事件证据已屏蔽；技术端仅显示流程元数据。</p>
-          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
+          <template #actions><SgjButton v-for="candidate in actions(item)" :key="candidate.code" :data-action="candidate.code" :disabled="recordPending(item)" :loading="isPending(actionState(item, candidate))" @click="perform(item, candidate)">{{ candidate.label }}</SgjButton></template>
         </SgjRecordCard>
       </div>
       <SgjError v-if="['error', 'no-permission'].includes(createState.failure)" title="创建关怀事项失败" :description="createState.message" :error-code="createState.errorCode" :trace-id="createState.traceId" />

@@ -1,0 +1,57 @@
+﻿{
+    "schema_version":  "1.0",
+    "classification":  "pre-existing active runtime / source-baseline non-writer",
+    "process_count":  6,
+    "processes":  [
+                      {
+                          "Name":  "cmd.exe",
+                          "ProcessId":  35248,
+                          "ParentProcessId":  40240,
+                          "CreationDate":  "\/Date(1786599120228)\/",
+                          "CommandLine":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run \""
+                      },
+                      {
+                          "Name":  "java.exe",
+                          "ProcessId":  43248,
+                          "ParentProcessId":  35248,
+                          "CreationDate":  "\/Date(1786599120533)\/",
+                          "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "Name":  "cmd.exe",
+                          "ProcessId":  44872,
+                          "ParentProcessId":  42648,
+                          "CreationDate":  "\/Date(1786599152362)\/",
+                          "CommandLine":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run \""
+                      },
+                      {
+                          "Name":  "java.exe",
+                          "ProcessId":  41392,
+                          "ParentProcessId":  44872,
+                          "CreationDate":  "\/Date(1786599152679)\/",
+                          "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "Name":  "node.exe",
+                          "ProcessId":  36432,
+                          "ParentProcessId":  6700,
+                          "CreationDate":  "\/Date(1786599296454)\/",
+                          "CommandLine":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode center --host 127.0.0.1 --port 5174 --strictPort "
+                      },
+                      {
+                          "Name":  "node.exe",
+                          "ProcessId":  15196,
+                          "ParentProcessId":  6700,
+                          "CreationDate":  "\/Date(1786599296496)\/",
+                          "CommandLine":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode admin --host 127.0.0.1 --port 5175 --strictPort "
+                      }
+                  ],
+    "reviewer_two_point_sample":  {
+                                      "sample_interval_seconds":  8,
+                                      "file_count":  878,
+                                      "bytes":  260581647,
+                                      "max_write_utc":  "2026-08-13T08:29:09.2047109Z",
+                                      "stable":  true
+                                  },
+    "prohibited_gate_evidence_use":  true
+}

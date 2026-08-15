@@ -44,6 +44,7 @@ const routeProductionFiles = [
   new URL('./core-routes.ts', import.meta.url),
   new URL('./phase09-routes.ts', import.meta.url),
   new URL('./phase10-routes.ts', import.meta.url),
+  new URL('./phase11-routes.ts', import.meta.url),
 ] as const
 
 describe('portal route module boundary', () => {
@@ -82,11 +83,26 @@ describe('portal route module boundary', () => {
     expect(routeContracts).not.toHaveProperty('processCodeForRoute')
   })
 
+  it('separates the Phase 11 route contributor and composes it in core routes', () => {
+    const phase11Path = new URL('./phase11-routes.ts', import.meta.url)
+    expect(existsSync(phase11Path), 'phase11-routes.ts must exist').toBe(true)
+    if (!existsSync(phase11Path)) return
+    const phase10Source = readFileSync(new URL('./phase10-routes.ts', import.meta.url), 'utf8')
+    const phase11Source = readFileSync(phase11Path, 'utf8')
+    const coreSource = readFileSync(new URL('./core-routes.ts', import.meta.url), 'utf8')
+
+    expect(phase10Source).not.toMatch(/phase11P01[1-6]Routes|P01[1-6].*Page/u)
+    expect(phase11Source).toContain('export function createPhase11Routes')
+    expect(phase11Source).toContain('Phase11DisciplineCareSupervisionPage')
+    expect(coreSource).toContain("from './phase11-routes'")
+    expect(coreSource).toContain('createPhase11Routes(portal)')
+  })
+
   it('moves task-owned permission literals out of route production modules', () => {
     const existingSources = routeProductionFiles
       .filter((path) => existsSync(path))
       .map((path) => readFileSync(path, 'utf8'))
-    expect(existingSources).toHaveLength(4)
+    expect(existingSources).toHaveLength(5)
     for (const source of existingSources) {
       expect(source).not.toMatch(/['"]p\d{3}\.[a-z][a-z0-9.-]*['"]/i)
     }

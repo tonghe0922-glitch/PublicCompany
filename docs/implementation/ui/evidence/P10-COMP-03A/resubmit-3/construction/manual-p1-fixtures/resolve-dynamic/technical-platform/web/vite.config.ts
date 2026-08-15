@@ -1,0 +1,1 @@
+const publicComponentAliases={'@sgj/ui':resolve(import.meta.dirname,'src/design-system/index.ts'),'@sgj/platform-ui':resolve(import.meta.dirname,'src/platform/processes/shared/index.ts')}; const modes=[{resolve:{alias:publicComponentAliases}},{resolve:{alias:publicComponentAliases}},{resolve:{alias:publicComponentAliases}}]

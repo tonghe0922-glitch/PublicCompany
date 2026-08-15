@@ -1,0 +1,4 @@
+﻿GATE_MATRIX_WRAPPER_FAILURE
+All five Gate commands completed and wrote exit 0 logs.
+The enclosing PowerShell wrapper then exited 1 because its final token was `exit$x` instead of `exit $x`.
+This is not a Gate result and is retained without rerunning or altering source.

@@ -1,0 +1,5 @@
+﻿{
+    "orchestration_note":  "first redirection attempt did not start tools because target directory was absent; final recorded run explicitly used the existing directory",
+    "preflight_exit":  0,
+    "baseline_exit":  0
+}

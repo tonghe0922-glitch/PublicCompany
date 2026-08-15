@@ -1,0 +1,18 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-07-report-excluded-comparable",
+    "generated_at_utc":  "2026-08-13T22:12:35.9082801Z",
+    "excluded_report":  "docs/implementation/ui/page-component-plans/P10-COMP-07_REPORT.md",
+    "pre":  {
+                "workspace_id":  "A23C0D5819A30788FEBE1C24AB07389E0D3101A0AAD2516EB6641893F861420A",
+                "workspace_count":  1635,
+                "task_id":  "F9118A442B44D473D903F952505243754BECB1CEE2C1C0C8733658CB44E9D942",
+                "task_count":  12
+            },
+    "post":  {
+                 "workspace_id":  "B03E702B4B6293DB8AE809EAE6F599A6C478AB91EB390EF80265F1CC61ACFAC7",
+                 "workspace_count":  1640,
+                 "task_id":  "E2DB4F2F651FDC240A9B52CD2539F979D6693F2138F3C87F45DC14112DC11F15",
+                 "task_count":  12
+             }
+}

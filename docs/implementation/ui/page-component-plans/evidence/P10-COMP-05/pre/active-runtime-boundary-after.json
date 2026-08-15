@@ -1,0 +1,106 @@
+﻿{
+    "captured_at_utc":  "2026-08-13T15:05:59.4889557Z",
+    "classification":  "pre-existing active runtime / source-baseline non-writer",
+    "expected_process_ids":  [
+                                 15196,
+                                 35248,
+                                 36432,
+                                 40796,
+                                 41392,
+                                 43248,
+                                 44872
+                             ],
+    "process_count":  7,
+    "processes":  [
+                      {
+                          "pid":  15196,
+                          "parent_pid":  6700,
+                          "name":  "node.exe",
+                          "created":  "2026-08-13T05:34:56.4965210Z",
+                          "command_line":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode admin --host 127.0.0.1 --port 5175 --strictPort "
+                      },
+                      {
+                          "pid":  35248,
+                          "parent_pid":  40240,
+                          "name":  "cmd.exe",
+                          "created":  "2026-08-13T05:32:00.2283350Z",
+                          "command_line":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run \""
+                      },
+                      {
+                          "pid":  36432,
+                          "parent_pid":  6700,
+                          "name":  "node.exe",
+                          "created":  "2026-08-13T05:34:56.4542350Z",
+                          "command_line":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode center --host 127.0.0.1 --port 5174 --strictPort "
+                      },
+                      {
+                          "pid":  40796,
+                          "parent_pid":  33932,
+                          "name":  "node.exe",
+                          "created":  "2026-08-13T05:11:44.0128210Z",
+                          "command_line":  "C:\\Users\\Administrator\\.workbuddy\\binaries\\node\\versions\\22.22.2\\node.exe node_modules/vite/bin/vite.js --mode employee --host 127.0.0.1 --port 5173"
+                      },
+                      {
+                          "pid":  41392,
+                          "parent_pid":  44872,
+                          "name":  "java.exe",
+                          "created":  "2026-08-13T05:32:32.6796610Z",
+                          "command_line":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "pid":  43248,
+                          "parent_pid":  35248,
+                          "name":  "java.exe",
+                          "created":  "2026-08-13T05:32:00.5332030Z",
+                          "command_line":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "pid":  44872,
+                          "parent_pid":  42648,
+                          "name":  "cmd.exe",
+                          "created":  "2026-08-13T05:32:32.3622570Z",
+                          "command_line":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run \""
+                      }
+                  ],
+    "listener_count":  3,
+    "listeners":  [
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5173,
+                          "pid":  40796
+                      },
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5174,
+                          "pid":  36432
+                      },
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5175,
+                          "pid":  15196
+                      }
+                  ],
+    "fresh_ports":  [
+                        18088,
+                        5316,
+                        5317,
+                        5318,
+                        18089,
+                        5326,
+                        5327,
+                        5328,
+                        18090,
+                        5330,
+                        5331,
+                        5332
+                    ],
+    "fresh_listener_count":  0,
+    "running_testcontainers_count":  0,
+    "running_testcontainers":  [
+
+                               ],
+    "running_ryuk_count":  0,
+    "running_ryuk":  [
+
+                     ]
+}

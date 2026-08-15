@@ -30,6 +30,10 @@ function permissionsSatisfied(required: readonly string[], granted: ReadonlySet<
   return required.every((permission) => granted.has(permission))
 }
 
+function anyPermissionSatisfied(required: readonly string[] | undefined, granted: ReadonlySet<string>): boolean {
+  return required === undefined || required.length === 0 || required.some((permission) => granted.has(permission))
+}
+
 function availableOnDevice(entry: NavigationSourceEntry, mobile: boolean): boolean {
   return !mobile || entry.mobileAccess !== 'no'
 }
@@ -45,6 +49,7 @@ function isActiveEntry(
     && options.implementedRoutePaths.has(entry.routePath)
     && availableOnDevice(entry, options.mobile)
     && permissionsSatisfied(entry.permissionCodes, options.permissions)
+    && anyPermissionSatisfied(entry.permissionCodesAny, options.permissions)
 }
 
 export function projectActiveNavigation(

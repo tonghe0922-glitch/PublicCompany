@@ -3,14 +3,14 @@
   "schema_version": "1.0",
   "page": "P016CareSupportPage",
   "implementation_path": "technical-platform/web/src/platform/pages/P016CareSupportPage.vue",
-  "portal_codes": ["employee", "center", "tech"],
-  "route_paths": ["/employee/03/06/01", "/employee/03/06/05", "/center/06/03/09", "/center/08/08/05", "/tech/05/03/01"],
+  "portal_codes": ["employee", "center"],
+  "route_paths": ["/employee/03/06/01", "/employee/03/06/05", "/center/08/08/05"],
   "process_codes": ["P016"],
   "page_type": "mixed",
   "page_template": "ui.template.list-page",
   "source_facts": {
     "permissions": ["p016.welfare.read", "p016.welfare.manage", "p016.welfare.approve", "p016.welfare.execute", "p016.welfare.reconcile", "p016.welfare.monitor"],
-    "data_scope": "Affected employee SELF, CENTER separated eligibility/approval/execution/reconciliation, metadata-only tech; backend remains authoritative",
+    "data_scope": "Affected employee SELF and CENTER-separated eligibility/approval/execution/reconciliation; backend remains authoritative. Technical monitoring uses the separate P016CareMonitorFeature three-field endpoint.",
     "states": ["S01-S08", "idle", "loading", "success", "empty", "error", "cancelled", "permission-denied", "conflict"],
     "actions": ["SUBMIT_APPLICATION", "CONFIRM_ELIGIBILITY", "REJECT_ELIGIBILITY", "AUTHORIZE_PRIVACY", "APPROVE_CARE", "REJECT_CARE", "RECORD_EXECUTION", "CONFIRM_RECEIPT", "RECONCILE", "ARCHIVE"]
   },
@@ -34,6 +34,6 @@
   "native_element_exceptions": [],
   "decision": "new-domain-feature",
   "registry_updates": [],
-  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "scope dispose cancels active load", "tech projection hides employee, amount, material, invoice and evidence"],
+  "tests": ["route shell and feature mount", "empty, 403, error and conflict projection", "scope dispose cancels active load", "the full care feature never owns the technical monitor or the shared P014 supervision page"],
   "updated_at": "2026-08-14T00:00:00+08:00"
 }

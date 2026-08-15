@@ -1,0 +1,83 @@
+﻿[
+    {
+        "step":  "targeted-tests",
+        "exit":  0,
+        "result":  "3 files / 16 tests PASS"
+    },
+    {
+        "step":  "project-source-self-test",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "project-source-current",
+        "exit":  1,
+        "result":  "FAIL 361 violations / 7 routed pages / 46 actions"
+    },
+    {
+        "step":  "package-ui-self-test",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "package-ui-current",
+        "exit":  1,
+        "result":  "FAIL 88 errors"
+    },
+    {
+        "step":  "lint",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "typecheck",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "full-unit",
+        "exit":  0,
+        "result":  "29 files / 133 tests PASS"
+    },
+    {
+        "step":  "build",
+        "exit":  0,
+        "result":  "employee/center/admin PASS; approximately 2.078 MB chunk warnings retained"
+    },
+    {
+        "step":  "knip",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "p016-browser-fixture-ready",
+        "exit":  0,
+        "result":  "READY real Spring/PG16.14/Redis7.4"
+    },
+    {
+        "step":  "p016-playwright",
+        "exit":  0,
+        "result":  "desktop-chromium 1/1 PASS; 13.3s test / 18.0s total"
+    },
+    {
+        "step":  "p016-controlled-shutdown",
+        "exit":  1,
+        "expected":  true,
+        "result":  "Ctrl+C terminates deliberate infinite wait"
+    },
+    {
+        "step":  "p016-cleanup",
+        "exit":  0,
+        "result":  "exact PG/Redis ABSENT; Ryuk absent; workspace processes 0"
+    },
+    {
+        "step":  "post-project-preflight",
+        "exit":  0,
+        "result":  "PASS"
+    },
+    {
+        "step":  "post-baseline",
+        "exit":  0,
+        "result":  "PASS and deterministic recheck"
+    }
+]

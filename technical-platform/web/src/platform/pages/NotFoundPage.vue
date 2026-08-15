@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import type { PortalDefinition } from '../portal-config'
-import { SgjButton, SgjEmpty, SgjPortalShell } from '../../design-system'
+import { SgjButton, SgjEmpty, SgjPortalShell } from '@sgj/ui'
 
 defineProps<{ portal: PortalDefinition }>()
 const router = useRouter()

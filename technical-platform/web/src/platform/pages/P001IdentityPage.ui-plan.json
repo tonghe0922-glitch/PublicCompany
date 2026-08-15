@@ -38,10 +38,16 @@
   },
   "field_component_map": [
     {
-      "field": "session/device/security-event",
-      "component_id": "ui.list",
-      "reason": "Existing session and security event projection; landmark-only change does not alter data contract",
-      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+      "field": "issuer|accountName|currentPassword|code|expectedVersion|targetUserId",
+      "component_id": "ui.input",
+      "reason": "CXR-08 uses the public input contract while preserving the existing IAM payload",
+      "editable_when": "Existing server-defined state and permission contract"
+    },
+    {
+      "field": "sessions",
+      "component_id": "ui.table",
+      "reason": "CXR-08 uses the public semantic table for the server-filtered session projection",
+      "editable_when": "Read-only server projection"
     }
   ],
   "state_component_map": [
@@ -77,14 +83,7 @@
     "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
     "limited_actions": []
   },
-  "gaps": [
-    {
-      "id": "UI-GAP-P001IdentityPage-LANDMARK-SCOPE",
-      "classification": "deferred-existing-debt",
-      "status": "not-expanded",
-      "reason": "P001 interaction primitives remain legacy debt outside P10-COMP-02; this task only removes nested landmark/title authority."
-    }
-  ],
+  "gaps": [],
   "native_element_exceptions": [],
   "decision": "reuse-only",
   "registry_updates": [],
@@ -92,7 +91,8 @@
     "exactly one rendered main under authenticated shell",
     "exactly one accessible h1 sourced from route metadata",
     "desktop and mobile route title semantics",
+    "CXR-08 public component migration and raw interactive element count zero",
     "existing permission/action/data-scope behavior remains unchanged"
   ],
-  "updated_at": "2026-08-13T00:00:00+08:00"
+  "updated_at": "2026-08-15T00:00:00+08:00"
 }

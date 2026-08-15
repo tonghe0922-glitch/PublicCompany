@@ -1,0 +1,2234 @@
+{
+  "schema_version": "2.0",
+  "gate": "phase10-component-source",
+  "repository_root": "I:\\PublicCompany_source_codex",
+  "status": "FAIL",
+  "violation_count": 361,
+  "violations": [
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 27
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 28
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 36
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 35
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 37
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 37
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 15
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 17,
+      "action": "SUBMIT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 17,
+      "action": "WITHDRAW"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18,
+      "action": "ACCEPT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 18,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19,
+      "action": "PUBLISH"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 19,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 20,
+      "action": "RECORD_ATTENDANCE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 20,
+      "action": "CONVENE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 21,
+      "action": "CONFIRM_MINUTES"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 21,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 22,
+      "action": "GENERATE_ACTIONS"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 22,
+      "action": "SUBMIT_EXECUTION"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 23,
+      "action": "ACCEPT_RESULT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 23,
+      "action": "REWORK"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 24,
+      "action": "ACKNOWLEDGE_OVERDUE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 24,
+      "action": "ARCHIVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "GENERATE_ACTIONS"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "SUBMIT_EXECUTION"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "ACCEPT_RESULT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "REWORK"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "ACKNOWLEDGE_OVERDUE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 29,
+      "action": "ARCHIVE"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": 34
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 15
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 15
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 16
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 22
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "SUBMIT_DEMAND"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "WITHDRAW"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "MATCH_TEMPLATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "VALIDATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "PUBLISH"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "CONFIRM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "REQUEST_CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "NO_CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "APPROVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "LINK"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 14,
+      "action": "CLOSE_DAY"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17,
+      "action": "REQUEST_CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17,
+      "action": "CONFIRM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17,
+      "action": "LINK"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 17,
+      "action": "CLOSE_DAY"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": 21
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 58
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 59
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 65
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 82
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 95
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 94
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 96
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 96
+    },
+    {
+      "code": "RAW_TABLE",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 97
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 36
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 36
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 37
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 40
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 41
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 42
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 43
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 44
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 45
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 46
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 48
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 49
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 40,
+      "action": "SUBMIT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 40,
+      "action": "WITHDRAW"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 41,
+      "action": "RESERVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 41,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 42,
+      "action": "CONFIRM_HANDOVER"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 42,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 43,
+      "action": "APPROVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 43,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 44,
+      "action": "DEDUCT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 44,
+      "action": "RELEASE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 45,
+      "action": "MARK_ATTENDANCE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 46,
+      "action": "START_LEAVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47,
+      "action": "EARLY_RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 47,
+      "action": "CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 48,
+      "action": "ADJUST"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 49,
+      "action": "CLOSE_DAY"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "MARK_ATTENDANCE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "START_LEAVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "EARLY_RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 72,
+      "action": "CLOSE_DAY"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 78,
+      "action": "EARLY_RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 78,
+      "action": "CHANGE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 79,
+      "action": "CONFIRM_HANDOVER"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": 92
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 32
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 33
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 38
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_SELECT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 47
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 46
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 48
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 48
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 17
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 21
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 22
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 25
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 26
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 27
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 19,
+      "action": "SUBMIT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 19,
+      "action": "WITHDRAW"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 20,
+      "action": "VALIDATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 20,
+      "action": "RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 21,
+      "action": "APPROVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 21,
+      "action": "REJECT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 22,
+      "action": "RECORD_FACT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 23,
+      "action": "ACCEPT_RESULT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 23,
+      "action": "REWORK"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 24,
+      "action": "HR_CONFIRM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 24,
+      "action": "HR_RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 25,
+      "action": "CONFIRM_SCHEME"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 26,
+      "action": "RECORD_RECEIPT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 27,
+      "action": "ARCHIVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 34,
+      "action": "RECORD_FACT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 35,
+      "action": "RECORD_RECEIPT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 36,
+      "action": "RECORD_RECEIPT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "RECORD_FACT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "HR_CONFIRM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "HR_RETURN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "CONFIRM_SCHEME"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "RECORD_RECEIPT"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 37,
+      "action": "ARCHIVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 38,
+      "action": "HR_CONFIRM"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": 44
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 15
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 16
+    },
+    {
+      "code": "API_PATH",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_INPUT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_TEXTAREA",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 24
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 23
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 25
+    },
+    {
+      "code": "RAW_BUTTON",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 25
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 13
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "PUBLISH"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "ASSIGN"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "COMPLETE_LEARNING"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "SUBMIT_EXAM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "RECORD_PRACTICAL"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "CERTIFY"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "ACTIVATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "LINK_PERMISSION"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "SCHEDULE_RECERTIFICATION"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 14,
+      "action": "ARCHIVE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17,
+      "action": "SUBMIT_EXAM"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17,
+      "action": "RECORD_PRACTICAL"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17,
+      "action": "ACTIVATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17,
+      "action": "ACTIVATE"
+    },
+    {
+      "code": "BARE_ACTION",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 17,
+      "action": "SCHEDULE_RECERTIFICATION"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": 22
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 30
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 31
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 32
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 33
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 34
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 35
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 36
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 37
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 38
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 19
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 20
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 21
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue"
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": 29
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 14
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 10
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 11
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "NESTED_COMPONENT_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": null,
+      "component_path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "main_count": 1
+    },
+    {
+      "code": "PAGE_MAIN",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 14
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "line": null,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+      "line": null,
+      "actual": 7,
+      "expected": 1
+    },
+    {
+      "code": "ROUTE_MAIN_COUNT",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": null,
+      "actual": 4,
+      "expected": 1
+    }
+  ],
+  "discovered_route_pages": [
+    "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+    "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+    "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+    "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+    "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+    "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+    "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue"
+  ],
+  "derived_action_codes": [
+    "ACCEPT",
+    "ACCEPT_RESULT",
+    "ACKNOWLEDGE_OVERDUE",
+    "ACTIVATE",
+    "ADJUST",
+    "APPROVE",
+    "ARCHIVE",
+    "ASSIGN",
+    "CERTIFY",
+    "CHANGE",
+    "CLOSE_DAY",
+    "COMPLETE_LEARNING",
+    "CONFIRM",
+    "CONFIRM_HANDOVER",
+    "CONFIRM_MINUTES",
+    "CONFIRM_SCHEME",
+    "CONVENE",
+    "DEDUCT",
+    "EARLY_RETURN",
+    "GENERATE_ACTIONS",
+    "HR_CONFIRM",
+    "HR_RETURN",
+    "LINK",
+    "LINK_PERMISSION",
+    "MARK_ATTENDANCE",
+    "MATCH_TEMPLATE",
+    "NO_CHANGE",
+    "PUBLISH",
+    "RECORD_ATTENDANCE",
+    "RECORD_FACT",
+    "RECORD_PRACTICAL",
+    "RECORD_RECEIPT",
+    "REJECT",
+    "RELEASE",
+    "REQUEST_CHANGE",
+    "RESERVE",
+    "RETURN",
+    "REWORK",
+    "SCHEDULE_RECERTIFICATION",
+    "START_LEAVE",
+    "SUBMIT",
+    "SUBMIT_DEMAND",
+    "SUBMIT_EXAM",
+    "SUBMIT_EXECUTION",
+    "VALIDATE",
+    "WITHDRAW"
+  ],
+  "action_contract_sources": {
+    "P006": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V115__phase10_p006_meeting_action.sql",
+      "service": "technical-platform/backend/modules/collaboration/src/main/java/cn/shangjingu/platform/collaboration/MeetingService.java",
+      "sql_actions": [
+        "ACCEPT",
+        "ACCEPT_RESULT",
+        "ACKNOWLEDGE_OVERDUE",
+        "ARCHIVE",
+        "CONFIRM_MINUTES",
+        "CONVENE",
+        "GENERATE_ACTIONS",
+        "PUBLISH",
+        "RECORD_ATTENDANCE",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "SUBMIT_EXECUTION",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ACCEPT",
+        "ACCEPT_RESULT",
+        "ACKNOWLEDGE_OVERDUE",
+        "ARCHIVE",
+        "CONFIRM_MINUTES",
+        "CONVENE",
+        "GENERATE_ACTIONS",
+        "PUBLISH",
+        "RECORD_ATTENDANCE",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "SUBMIT_EXECUTION",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P007": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V116__phase10_p007_shift_change.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/ShiftChangeService.java",
+      "sql_actions": [
+        "APPROVE",
+        "CLOSE_DAY",
+        "CONFIRM",
+        "LINK",
+        "MATCH_TEMPLATE",
+        "NO_CHANGE",
+        "PUBLISH",
+        "REJECT",
+        "REQUEST_CHANGE",
+        "RETURN",
+        "SUBMIT_DEMAND",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "APPROVE",
+        "CLOSE_DAY",
+        "CONFIRM",
+        "LINK",
+        "MATCH_TEMPLATE",
+        "NO_CHANGE",
+        "PUBLISH",
+        "REJECT",
+        "REQUEST_CHANGE",
+        "RETURN",
+        "SUBMIT_DEMAND",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P008": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V117__phase10_p008_leave_quota.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/LeaveService.java",
+      "sql_actions": [
+        "ADJUST",
+        "APPROVE",
+        "CHANGE",
+        "CLOSE_DAY",
+        "CONFIRM_HANDOVER",
+        "DEDUCT",
+        "EARLY_RETURN",
+        "MARK_ATTENDANCE",
+        "REJECT",
+        "RELEASE",
+        "RESERVE",
+        "RETURN",
+        "START_LEAVE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ADJUST",
+        "APPROVE",
+        "CHANGE",
+        "CLOSE_DAY",
+        "CONFIRM_HANDOVER",
+        "DEDUCT",
+        "EARLY_RETURN",
+        "MARK_ATTENDANCE",
+        "REJECT",
+        "RELEASE",
+        "RESERVE",
+        "RETURN",
+        "START_LEAVE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P009": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V118__phase10_p009_overtime_flow.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/OvertimeService.java",
+      "sql_actions": [
+        "ACCEPT_RESULT",
+        "APPROVE",
+        "ARCHIVE",
+        "CONFIRM_SCHEME",
+        "HR_CONFIRM",
+        "HR_RETURN",
+        "RECORD_FACT",
+        "RECORD_RECEIPT",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ACCEPT_RESULT",
+        "APPROVE",
+        "ARCHIVE",
+        "CONFIRM_SCHEME",
+        "HR_CONFIRM",
+        "HR_RETURN",
+        "RECORD_FACT",
+        "RECORD_RECEIPT",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P010": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V119__phase10_p010_learning_qualification_flow.sql",
+      "service": "technical-platform/backend/modules/learning/src/main/java/cn/shangjingu/platform/learning/LearningAssignmentService.java",
+      "sql_actions": [
+        "ACTIVATE",
+        "ARCHIVE",
+        "ASSIGN",
+        "CERTIFY",
+        "COMPLETE_LEARNING",
+        "LINK_PERMISSION",
+        "PUBLISH",
+        "RECORD_PRACTICAL",
+        "SCHEDULE_RECERTIFICATION",
+        "SUBMIT_EXAM"
+      ],
+      "service_actions": [
+        "ACTIVATE",
+        "ARCHIVE",
+        "ASSIGN",
+        "CERTIFY",
+        "COMPLETE_LEARNING",
+        "LINK_PERMISSION",
+        "PUBLISH",
+        "RECORD_PRACTICAL",
+        "SCHEDULE_RECERTIFICATION",
+        "SUBMIT_EXAM"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    }
+  },
+  "remote_operations_performed": false
+}

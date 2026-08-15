@@ -1,0 +1,18 @@
+P10-COMP-03 RESUBMIT-2 post wrapper failure (non-authoritative)
+Date: 2026-08-13 Asia/Shanghai
+
+The first post/comparable command completed its disk scan and emitted raw facts,
+but PowerShell unrolled the single metadata change object. Consequently
+`$metadataChanges.Count` was null, scoped metadata was serialized as null, and
+the final assertion exited 9.
+
+This was an evidence-wrapper semantic failure, not a Gate, test, Browser, or
+source failure. It caused no candidate write. The report was already the sole
+authorized hand-written E-stage change.
+
+The non-authoritative JSON files were preserved with the suffix
+`-nonauthoritative-exit9.json`. With reviewer authorization, one mechanical
+correction wrapped the result as `$metadataChanges = @(Get-Changes ...)` and
+regenerated all post/comparable/scoped/submitted evidence. The corrected
+command exited 0 with scoped task/unrelated/concurrent/metadata = 2/0/0/1 and
+submitted mismatch = 0.

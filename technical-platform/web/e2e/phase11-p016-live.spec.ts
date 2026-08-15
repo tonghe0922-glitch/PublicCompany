@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Page, type Request } from '@playwright/test';
 const tenantCode = required('PHASE11_P016_TENANT'), managerLogin = required('PHASE11_P016_LOGIN'), password = required('PHASE11_P016_PASSWORD');
 const affectedLogin = 'p016.browser.affected', approverLogin = 'p016.browser.approver', executorLogin = 'p016.browser.executor', reconcilerLogin = 'p016.browser.reconciler', techLogin = 'p016.browser.tech', outsiderLogin = 'p016.browser.out';
 const api = 'http://127.0.0.1:18090', employeeBase = 'http://127.0.0.1:5360/employee.html', centerBase = 'http://127.0.0.1:5361/center.html', techBase = 'http://127.0.0.1:5362/admin.html', affectedId = '30000000-0000-0000-0000-000000003726';
@@ -7,6 +7,7 @@ interface CareCase {
     id: string;
     businessNo: string;
     currentNodeCode: string;
+    status: string;
     versionNo: number;
     subject: string;
     affectedEmployeeId: string | null;
@@ -50,9 +51,6 @@ function required(name: string) {
 function headers(token: string) {
     return { Authorization: `Bearer ${token}` };
 }
-function evidence(note: string) {
-    return { note, recordedAt: new Date().toISOString() };
-}
 async function apiLogin(request: APIRequestContext, name: string) {
     const response = await request.post(`${api}/api/v1/auth/login`, {
         data: { tenantCode, loginName: name, password },
@@ -79,7 +77,7 @@ async function getCare(request: APIRequestContext, token: string, id: string) {
     return (await response.json()) as CareCase;
 }
 function actionBody(version: number, data: Record<string, unknown> = {}) {
-    return { expectedVersion: version, resultSummary: 'P016 browser verified', evidence: evidence(`immutable lifecycle v${version}`), ...data };
+    return { expectedVersion: version, resultSummary: 'P016 browser verified', evidence: { note: `immutable lifecycle v${version}`, recordedAt: new Date().toISOString() }, ...data };
 }
 async function act(request: APIRequestContext, token: string, id: string, code: string, version: number, data: Record<string, unknown> = {}) {
     const response = await request.post(`${api}/api/v1/processes/P016/care-cases/${id}/actions/${code}`, {
@@ -164,7 +162,7 @@ async function approveAndExecute(context: ScenarioContext, id: string, execution
     return current;
 }
 async function confirmReconcileAndVerify(context: ScenarioContext, id: string, executionRef: string, current: CareCase): Promise<void> {
-    const { page, request, manager, executor, reconciler, tech } = context;
+    const { page, request, manager, executor, reconciler } = context;
     expect((await act(request, manager, id, 'CONFIRM_RECEIPT', current.versionNo, { confirmationOutcome: 'CONFIRMED', occurredAt: new Date().toISOString() })).status).toBe(409);
     await page.goto(`${employeeBase}#/employee/03/06/01`);
     await page.getByRole('button', { name: '刷新' }).click();
@@ -179,10 +177,43 @@ async function confirmReconcileAndVerify(context: ScenarioContext, id: string, e
     expect(current.reconciliation?.outcome).toBe('MATCHED');
     current = await move(request, manager, id, 'ARCHIVE', current.versionNo);
     expect(current.currentNodeCode).toBe('END');
+    await verifyTechMonitor(context, id, executionRef, current);
+}
+async function verifyTechMonitor(context: ScenarioContext, id: string, executionRef: string, current: CareCase): Promise<void> {
+    const { page, request, tech } = context;
     await login(page, techBase, techLogin);
-    await page.goto(`${techBase}#/tech/05/03/01`);
-    await expect(page.getByTestId('phase09-tech-workflow-monitor')).toBeVisible();
-    await expect(page).toHaveURL(/#\/tech\/05\/03\/01$/u);
+    const monitorMutations: string[] = [];
+    const monitorRequestListener = (pageRequest: Request): void => {
+        const method = pageRequest.method();
+        const url = new URL(pageRequest.url());
+        if (url.pathname.startsWith('/api/v1/processes/') && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+            monitorMutations.push(`${method} ${url.pathname}`);
+        }
+    };
+    page.on('request', monitorRequestListener);
+    try {
+        await page.goto(`${techBase}#/tech/05/03/01`);
+        await expect(page.getByTestId('phase09-tech-workflow-monitor')).toBeVisible();
+        await expect(page).toHaveURL(/#\/tech\/05\/03\/01$/u);
+        const monitorSection = page.getByTestId('p016-monitor-section');
+        await expect(monitorSection).toBeVisible();
+        await expect(monitorSection).toContainText(current.businessNo);
+        await expect(monitorSection).toContainText(current.currentNodeCode);
+        await expect(monitorSection).toContainText(current.status);
+        const rendered = `${await monitorSection.innerText()}\n${await monitorSection.evaluate(node => node.outerHTML)}`;
+        for (const sensitive of [
+            current.subject, current.affectedEmployeeId, current.sourceFactKey, executionRef,
+            'INV-P016', 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        ]) {
+            if (sensitive) {
+                expect(rendered).not.toContain(sensitive);
+            }
+        }
+        await expect(monitorSection.locator('[data-action]')).toHaveCount(0);
+        expect(monitorMutations).toEqual([]);
+    } finally {
+        page.off('request', monitorRequestListener);
+    }
     const masked = await getCare(request, tech, id);
     expect(masked.subject).toBe('Restricted welfare case');
     expect(masked.events).toEqual([]);
@@ -207,7 +238,7 @@ test('P016 real browser separates human authority, external execution and techni
     await confirmReconcileAndVerify(context, id, executionRef, current);
 });
 function createBody(source: string) {
-    return { businessDate: new Date().toISOString().slice(0, 10), subject: 'P016 duplicate or forbidden care', reason: 'Source-backed care requires independent human authority', affectedEmployeeId: affectedId, sourceFactKey: source, careType: 'HARDSHIP', benefitAmount: 1000, currency: 'CNY', costCenterId: 'P016-COST', externalBusinessRef: `P016-${randomUUID()}`, factOccurredAt: new Date().toISOString(), factSummary: 'Verified welfare event retained as immutable source evidence', evidence: evidence('source package') };
+    return { businessDate: new Date().toISOString().slice(0, 10), subject: 'P016 duplicate or forbidden care', reason: 'Source-backed care requires independent human authority', affectedEmployeeId: affectedId, sourceFactKey: source, careType: 'HARDSHIP', benefitAmount: 1000, currency: 'CNY', costCenterId: 'P016-COST', externalBusinessRef: `P016-${randomUUID()}`, factOccurredAt: new Date().toISOString(), factSummary: 'Verified welfare event retained as immutable source evidence', evidence: { note: 'source package', recordedAt: new Date().toISOString() } };
 }
 function execution(externalReference: string) {
     return { executionKind: 'PAYMENT_RECEIPT', externalReference, occurredAt: new Date().toISOString(), executedAmount: 800, currency: 'CNY', invoiceCode: 'INV-P016', invoiceNumber: externalReference, invoiceDate: new Date().toISOString().slice(0, 10), invoiceAmount: 800, invoiceImageSha256: 'b'.repeat(64) };

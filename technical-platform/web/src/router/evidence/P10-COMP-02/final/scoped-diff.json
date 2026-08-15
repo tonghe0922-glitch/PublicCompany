@@ -1,0 +1,263 @@
+﻿{
+    "schema_version":  "1.0",
+    "pre_workspace_source_id":  "1A74EC9C380056C5F85051294F51FE0CE7DE0772D0BD51E13B104F502E55DDB5",
+    "post_workspace_source_id":  "15386900B9E4ABB1BEA05B02ACB5BDBE794059A786DEED81ACBCEE7B9792E885",
+    "ui_task_count":  41,
+    "concurrent_core_count":  8,
+    "unrelated_count":  0,
+    "metadata_count":  1,
+    "changes":  [
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p011-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p012-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p013-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p014-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p015-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/e2e/phase11-p016-live.spec.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/layout/PortalShell.landmark.test.ts",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/ApprovalPageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/DashboardPageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/DetailPageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/FormPageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/ListPageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/PageTemplateFrame.test.ts",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/PageTemplateFrame.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/design-system/templates/TimelinePageTemplate.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/AuthenticatedPortalLayout.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/ForbiddenPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/ForbiddenPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P001IdentityPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P002PermissionRequestPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P003ProfileChangePage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P004GenericRequestPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P005NoticePage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P006MeetingPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P007SchedulePage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P008LeavePage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P009OvertimePage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P010LearningPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/P011PerformancePage.vue",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase09CenterInboxPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase09TechWorkflowMonitorPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.ui-plan.json",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/platform/phase11/process-pages.test.ts",
+                        "change":  "modified",
+                        "classification":  "concurrent_core"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/router/portal-router.ts",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/router/route-meta.d.ts",
+                        "change":  "modified",
+                        "classification":  "ui_task"
+                    },
+                    {
+                        "path":  "technical-platform/web/src/router/route-semantics.test.ts",
+                        "change":  "added",
+                        "classification":  "ui_task"
+                    }
+                ],
+    "evidence_metadata":  [
+                              {
+                                  "path":  "technical-platform/web/src/router/evidence/P10-COMP-02/P10-COMP-02_REPORT.md",
+                                  "sha256":  "A46C55BCDC7437C2A854514B2D7996C31A79AFE0B18C3E61183AA0C3C7A910B1",
+                                  "bytes":  5984
+                              }
+                          ]
+}

@@ -1,0 +1,8 @@
+﻿{
+    "patches":  [
+                    "CONTRACT-PATCH-03",
+                    "CONTRACT-PATCH-04"
+                ],
+    "classification":  "external_authorized_contract_patch",
+    "workspace_task":  false
+}

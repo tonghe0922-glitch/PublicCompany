@@ -1,0 +1,20 @@
+﻿{
+    "before_process_count":  7,
+    "after_process_count":  7,
+    "same_process_ids":  "False",
+    "before_listener_count":  3,
+    "after_listener_count":  3,
+    "same_listener_owners":  "False",
+    "fresh_listener_count":  0,
+    "running_testcontainers_count":  0,
+    "running_ryuk_count":  0,
+    "workspace_source_id":  "4B28E8298C33B2D9D6D65F9956FBDF9FF1D3CA606B1445A2C6988A36F1BCE05F",
+    "workspace_file_count":  1578,
+    "task_source_id":  "0675F607C9E4E93C2A71D76281520CA22A8979E339FE1556128866CDAF6BDA0C",
+    "task_source_path_count":  33,
+    "task_existing":  33,
+    "task_missing":  0,
+    "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+    "metadata_count":  0,
+    "git_status":  "ABSENT"
+}

@@ -6,9 +6,10 @@ import { PORTALS } from '../platform/portal-config'
 import { createPortalRouter, type PortalRouterSession } from './portal-router'
 
 class Session implements PortalRouterSession {
+  constructor(private readonly permissions = new Set(['p005.notice.monitor'])) {}
   authenticated = true
   restore = () => Promise.resolve(true)
-  can = (permission: string) => permission === 'p005.notice.monitor'
+  can = (permission: string) => this.permissions.has(permission)
 }
 
 describe('Phase10 shared technical monitor route', () => {
@@ -45,5 +46,23 @@ describe('Phase10 shared technical monitor route', () => {
       const router = createPortalRouter(portal, new Session(), createMemoryHistory())
       expect(router.getRoutes().some(candidate => candidate.name === 'p004-workflow-instance-monitor')).toBe(false)
     }
+  })
+
+  it('admits a P016-monitor-only session and binds a thin monitor hub shell', async () => {
+    const router = createPortalRouter(
+      PORTALS.tech,
+      new Session(new Set(['p016.welfare.monitor'])),
+      createMemoryHistory(),
+    )
+    await router.push('/tech/05/03/01')
+    await router.isReady()
+    expect(router.currentRoute.value.name).toBe('p004-workflow-instance-monitor')
+
+    const pageSource = readFileSync(
+      new URL('../platform/pages/Phase10TechMonitorPage.vue', import.meta.url),
+      'utf8',
+    )
+    expect(pageSource).toContain('PhaseWorkflowMonitorFeature')
+    expect(pageSource).not.toMatch(/import\s+\w+Page\s+from/u)
   })
 })

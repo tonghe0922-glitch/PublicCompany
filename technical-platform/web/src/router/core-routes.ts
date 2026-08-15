@@ -9,6 +9,7 @@ import NotFoundPage from '../platform/pages/NotFoundPage.vue'
 import { PORTAL_IA_NAVIGATION } from './navigation-source'
 import { createPhase09Routes } from './phase09-routes'
 import { createPhase10Routes } from './phase10-routes'
+import { createPhase11Routes } from './phase11-routes'
 
 function authoritativeRouteMeta(portal: PortalDefinition, routeName: string, routePath: string): RouteMeta {
   if (routeName === 'portal-home') return {
@@ -73,7 +74,7 @@ export function createCoreRoutes(portal: PortalDefinition): RouteRecordRaw[] {
       requiresAuth: true, portalCode: portal.code, dataScope: CORE_ROUTE_META.authenticatedLayout.dataScope,
     }, children: [
       { path: '', name: 'portal-home', component: PlatformShell, props: { portal } },
-      ...createPhase09Routes(portal), ...createPhase10Routes(portal),
+      ...createPhase09Routes(portal), ...createPhase10Routes(portal), ...createPhase11Routes(portal),
       { path: '/forbidden', name: 'forbidden', component: ForbiddenPage, props: { portal } },
     ] },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage, props: { portal }, meta: {

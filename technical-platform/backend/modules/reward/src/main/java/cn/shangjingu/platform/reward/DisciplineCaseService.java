@@ -33,77 +33,936 @@ import org.springframework.stereotype.Service;
 /** P014 records human-authorized discipline facts without calculating sanctions or liability. */
 @Service
 public final class DisciplineCaseService {
-    public static final String PROCESS_CODE="P014",INITIAL_FORM_CODE="CTR-P014-F01";
-    private static final Duration TTL=Duration.ofHours(24);
-    private static final Map<String,Set<String>> ACTIONS=Map.ofEntries(
-        Map.entry("S01",Set.of("REGISTER_CLUE")),Map.entry("S02",Set.of("RECORD_SAFEGUARD")),
-        Map.entry("S03",Set.of("COMPLETE_INVESTIGATION")),Map.entry("S04",Set.of("SUBMIT_STATEMENT")),
-        Map.entry("S05",Set.of("COMPLETE_RESPONSIBILITY_REVIEW")),Map.entry("S06",Set.of("RECORD_DECISION")),
-        Map.entry("S07",Set.of("CONFIRM_SERVICE")),Map.entry("S08",Set.of("RECORD_IMPACT","RECORD_RECEIPT","COMPLETE_IMPACTS")),
-        Map.entry("S09",Set.of("SUBMIT_APPEAL","REVIEW_APPEAL")),Map.entry("S10",Set.of("CLOSE_CORE")),
-        Map.entry("S11",Set.of("VERIFY_REMEDIATION")),Map.entry("S12",Set.of("SUPPLEMENT_ARCHIVE")));
-    private final TenantTransactionRunner transactions;private final IdempotencyRegistry idempotency;private final BusinessNumberService numbers;private final TransactionalOutboxService outbox;private final WorkflowRuntimeService workflow;private final WorkflowTaskAssignmentService tasks;private final WorkflowFormService forms;private final Repository repository;private final ObjectMapper mapper;
-    public DisciplineCaseService(TenantTransactionRunner transactions,IdempotencyRegistry idempotency,BusinessNumberService numbers,TransactionalOutboxService outbox,WorkflowRuntimeService workflow,WorkflowTaskAssignmentService tasks,WorkflowFormService forms,Repository repository,ObjectMapper mapper){this.transactions=transactions;this.idempotency=idempotency;this.numbers=numbers;this.outbox=outbox;this.workflow=workflow;this.tasks=tasks;this.forms=forms;this.repository=repository;this.mapper=mapper;}
 
-    public DisciplineCase create(DatabaseSecurityContext actor,String key,String hash,CreateCommand c){requireActor(actor);validateCreate(c);return transactions.required(actor,()->{
-        IdempotencyClaim claim=idempotency.claim(actor.tenantId(),actor.employeeId(),key,hash,"reward.discipline_case",UUID.randomUUID(),TTL);if(claim.existing())return required(actor.tenantId(),claim.resourceId());
-        Target target=repository.target(actor.tenantId(),c.affectedEmployeeId()).orElseThrow(()->rejected("active affected employee is required"));
-        UUID version=repository.latestPublishedWorkflowVersion(actor.tenantId(),PROCESS_CODE).orElseThrow(()->rejected("published workflow is not configured"));
-        FormRef form=repository.latestPublishedForm(actor.tenantId(),INITIAL_FORM_CODE,PROCESS_CODE,"S01").orElseThrow(()->rejected("published initial form is not configured"));
-        List<UUID> managers=candidates(actor,"p014.discipline.manage",target.centerId()),investigators=candidates(actor,"p014.discipline.investigate",target.centerId()),deciders=candidates(actor,"p014.discipline.decide",target.centerId()),appealReviewers=candidates(actor,"p014.discipline.appeal",target.centerId()).stream().filter(x->!x.equals(target.employeeId())).toList();
-        if(appealReviewers.isEmpty())throw rejected("independent appeal reviewer is required");
-        DisciplineCase draft=new DisciplineCase(claim.resourceId(),actor.tenantId(),numbers.next(actor.tenantId(),actor.employeeId(),PROCESS_CODE),null,null,"S01",status("S01"),0,c.businessDate(),c.subject().trim(),trim(c.reason()),target.centerId(),target.employeeId(),c.sourceFactKey().trim(),c.businessObjectType().trim(),c.businessObjectNo().trim(),c.businessObjectName().trim(),c.employeeEventType().trim(),c.factOccurredAt(),c.factSummary().trim(),c.impactLevel().trim(),List.of(),List.of(),List.of(),List.of(),Instant.now());
-        try{repository.insert(draft,actor.employeeId());}catch(DataIntegrityViolationException conflict){throw new ProcessRejectedException("P014 discipline source fact or business object is invalid",conflict);}
-        ObjectNode context=mapper.createObjectNode();context.put("affectedEmployeeId",target.employeeId().toString());context.put("ownerCenterId",target.centerId().toString());context.set("affectedCandidateIds",uuids(List.of(target.employeeId())));context.set("managerCandidateIds",uuids(managers));context.set("investigatorCandidateIds",uuids(investigators));context.set("reviewerCandidateIds",uuids(investigators));context.set("deciderCandidateIds",uuids(deciders));context.set("appealReviewerCandidateIds",uuids(appealReviewers));context.set("observerCandidateIds",uuids(managers));
-        WorkflowRuntimeService.Result started=workflow.start(new WorkflowRuntimeService.StartCommand(actor.tenantId(),actor.employeeId(),actor.identityId(),version,"reward.discipline_case",draft.id(),draft.businessNo(),draft.subject(),"CRITICAL",context,scoped(key,"start")));
-        forms.submit(new WorkflowFormService.SubmitForm(actor.tenantId(),actor.employeeId(),actor.identityId(),started.instance().id(),null,form.id(),form.versionNo(),initial(started.instance(),draft),scoped(key,"form")));
-        if(repository.bindWorkflow(actor.tenantId(),draft.id(),0,started.instance().id(),actor.employeeId())!=1)throw rejected("concurrent workflow binding conflict");
-        repository.appendEvent(actor.tenantId(),draft.id(),"CASE_CREATED",evidence("created",c.evidence(),actor.employeeId()),actor.employeeId());DisciplineCase result=required(actor.tenantId(),draft.id());emit(actor,result,"S01","CREATED","S01",List.of(actor.employeeId()));return result;
-    });}
+  public static final String PROCESS_CODE = "P014", INITIAL_FORM_CODE = "CTR-P014-F01";
 
-    public DisciplineCase act(DatabaseSecurityContext actor,UUID id,String actionCode,String key,String hash,ActionCommand c){requireActor(actor);Objects.requireNonNull(c,"P014 action command is required");String action=normalize(actionCode);return transactions.required(actor,()->{
-        IdempotencyClaim claim=idempotency.claim(actor.tenantId(),actor.employeeId(),key,hash,"reward.discipline_case.action",id,TTL);if(claim.existing())return required(actor.tenantId(),id);
-        DisciplineCase current=required(actor.tenantId(),id);if(current.versionNo()!=c.expectedVersion())throw rejected("discipline case version conflict");WorkflowRuntimeService.Result runtime=workflow.get(actor.tenantId(),current.workflowInstanceId());String node=runtime.instance().currentNodeCode();if(!node.equals(current.currentNodeCode()))throw rejected("business projection is stale");if(!ACTIONS.getOrDefault(node,Set.of()).contains(action))throw rejected("action is not allowed at "+node);validateAction(actor,current,action,c);JsonNode immutable=requiredEvidence(c.evidence(),action.toLowerCase(Locale.ROOT));
-        try{
-            if("RECORD_DECISION".equals(action))repository.appendDecision(actor.tenantId(),id,"ORIGINAL","RECORDED",c.authorityReference().trim(),c.decidedAt(),immutable,actor.employeeId());
-            if("REVIEW_APPEAL".equals(action))repository.appendDecision(actor.tenantId(),id,"APPEAL",normalize(c.decisionOutcome()),c.authorityReference().trim(),c.decidedAt(),immutable,actor.employeeId());
-            if("RECORD_IMPACT".equals(action))repository.appendImpact(actor.tenantId(),id,normalize(c.impactType()),c.authorityReference().trim(),immutable,actor.employeeId());
-            if("RECORD_RECEIPT".equals(action))repository.appendReceipt(actor.tenantId(),id,c.instructionId(),normalize(c.receiptType()),c.externalReference().trim(),c.externalOccurredAt(),immutable,actor.employeeId());
-            repository.appendEvent(actor.tenantId(),id,action,actionEvidence(action,c,immutable,actor.employeeId()),actor.employeeId());
-        }catch(DataIntegrityViolationException conflict){throw new ProcessRejectedException("P014 discipline fact conflicts with persisted lifecycle",conflict);}
-        if("SUBMIT_APPEAL".equals(action)){
-            if(repository.touch(actor.tenantId(),id,current.versionNo(),actor.employeeId())!=1)throw rejected("concurrent appeal submission conflict");DisciplineCase result=required(actor.tenantId(),id);emit(actor,result,node,action,node,repository.eventRecipients(actor.tenantId(),id,"COMPLETE_RESPONSIBILITY_REVIEW","RECORD_DECISION"));return result;
-        }
-        if(runtime.task()!=null)tasks.claim(new WorkflowTaskAssignmentService.ClaimCommand(actor.tenantId(),runtime.task().id(),actor.employeeId()));WorkflowRuntimeService.Result moved=workflow.act(new WorkflowRuntimeService.ActionCommand(actor.tenantId(),actor.employeeId(),actor.identityId(),current.workflowInstanceId(),runtime.task()==null?null:runtime.task().id(),node,action,trim(c.resultSummary()),scoped(key,"workflow")));
-        Instant closed="END".equals(moved.instance().currentNodeCode())?moved.instance().finishedAt():null;if(repository.move(actor.tenantId(),id,current.versionNo(),status(moved.instance().currentNodeCode()),trim(c.resultSummary()),closed,actor.employeeId())!=1)throw rejected("concurrent discipline transition conflict");DisciplineCase result=required(actor.tenantId(),id);emit(actor,result,node,action,moved.instance().currentNodeCode(),recipients(moved));return result;
-    });}
+  private static final Duration TTL = Duration.ofHours(24);
 
-    public Optional<DisciplineCase> find(DatabaseSecurityContext actor,UUID id){requireActor(actor);return transactions.required(actor,()->repository.find(actor.tenantId(),id));}public List<DisciplineCase> list(DatabaseSecurityContext actor){requireActor(actor);return transactions.required(actor,()->repository.list(actor.tenantId()));}
-    public String permissionForAction(DisciplineCase value,String actionCode){String action=normalize(actionCode);return switch(action){case"COMPLETE_INVESTIGATION","COMPLETE_RESPONSIBILITY_REVIEW"->"p014.discipline.investigate";case"RECORD_DECISION"->"p014.discipline.decide";case"SUBMIT_STATEMENT","CONFIRM_SERVICE","SUBMIT_APPEAL","REVIEW_APPEAL"->"p014.discipline.appeal";default->"p014.discipline.manage";};}
-    private void validateAction(DatabaseSecurityContext actor,DisciplineCase value,String action,ActionCommand c){boolean affected=actor.employeeId().equals(value.affectedEmployeeId());Set<String> affectedActions=Set.of("SUBMIT_STATEMENT","CONFIRM_SERVICE","SUBMIT_APPEAL");if(affectedActions.contains(action)&&!affected)throw rejected("only the affected employee may perform "+action);if(!affectedActions.contains(action)&&affected)throw rejected("affected employee cannot investigate, review, decide, execute, close or observe their own case");
-        if("COMPLETE_RESPONSIBILITY_REVIEW".equals(action))different(actor,"COMPLETE_INVESTIGATION","responsibility reviewer must be independent from investigator",value.id());
-        if("RECORD_DECISION".equals(action)){if(trim(c.authorityReference())==null||c.decidedAt()==null)throw rejected("external decision authority reference and decision time are required");different(actor,"COMPLETE_INVESTIGATION","decider must be independent from investigator",value.id());different(actor,"COMPLETE_RESPONSIBILITY_REVIEW","decider must be independent from responsibility reviewer",value.id());}
-        if("RECORD_IMPACT".equals(action)){String type=normalize(c.impactType());if(!Set.of("HR_DISCIPLINE","POINT_ADJUSTMENT","REMEDIATION").contains(type)||trim(c.authorityReference())==null)throw rejected("supported impact type and external authority reference are required");}
-        if("RECORD_RECEIPT".equals(action)&&(c.instructionId()==null||trim(c.receiptType())==null||trim(c.externalReference())==null||c.externalOccurredAt()==null))throw rejected("instruction, receipt type, external reference and occurrence time are required");
-        if("COMPLETE_IMPACTS".equals(action)&&!repository.allInstructionsReceipted(actor.tenantId(),value.id()))throw rejected("every impact instruction requires its authoritative downstream receipt");
-        if("SUBMIT_APPEAL".equals(action)){if(c.appealRequested()==null)throw rejected("appeal request or explicit waiver is required");if(repository.hasEvent(actor.tenantId(),value.id(),"SUBMIT_APPEAL"))throw rejected("appeal choice is append-only and already submitted");}
-        if("REVIEW_APPEAL".equals(action)){different(actor,"COMPLETE_INVESTIGATION","appeal reviewer must be independent from investigator",value.id());different(actor,"COMPLETE_RESPONSIBILITY_REVIEW","appeal reviewer must be independent from responsibility reviewer",value.id());different(actor,"RECORD_DECISION","appeal reviewer must be independent from decider",value.id());Boolean requested=repository.appealRequested(actor.tenantId(),value.id()).orElseThrow(()->rejected("affected employee appeal choice is required"));String outcome=normalize(c.decisionOutcome());if(requested&&!Set.of("UPHELD","AMENDED","REVOKED").contains(outcome))throw rejected("appeal review outcome must be upheld, amended or revoked");if(!requested&&!"NOT_APPLICABLE".equals(outcome))throw rejected("appeal waiver requires NOT_APPLICABLE review outcome");if(trim(c.authorityReference())==null||c.decidedAt()==null)throw rejected("external appeal authority reference and decision time are required");}
-        if("CLOSE_CORE".equals(action)&&(!repository.hasDecision(actor.tenantId(),value.id(),"ORIGINAL")||!repository.hasDecision(actor.tenantId(),value.id(),"APPEAL")||!repository.allInstructionsReceipted(actor.tenantId(),value.id())))throw rejected("core closure requires original and appeal decisions plus all impact receipts");
-        if("VERIFY_REMEDIATION".equals(action)){for(String prior:List.of("COMPLETE_INVESTIGATION","COMPLETE_RESPONSIBILITY_REVIEW","RECORD_DECISION","REVIEW_APPEAL"))different(actor,prior,"remediation observer must be independent from case decision chain",value.id());if(trim(c.authorityReference())==null)throw rejected("external remediation verification reference is required");}
+  private static final Map<String, Set<String>> ACTIONS =
+      Map.ofEntries(
+          Map.entry("S01", Set.of("REGISTER_CLUE")),
+          Map.entry("S02", Set.of("RECORD_SAFEGUARD")),
+          Map.entry("S03", Set.of("COMPLETE_INVESTIGATION")),
+          Map.entry("S04", Set.of("SUBMIT_STATEMENT")),
+          Map.entry("S05", Set.of("COMPLETE_RESPONSIBILITY_REVIEW")),
+          Map.entry("S06", Set.of("RECORD_DECISION")),
+          Map.entry("S07", Set.of("CONFIRM_SERVICE")),
+          Map.entry("S08", Set.of("RECORD_IMPACT", "RECORD_RECEIPT", "COMPLETE_IMPACTS")),
+          Map.entry("S09", Set.of("SUBMIT_APPEAL", "REVIEW_APPEAL")),
+          Map.entry("S10", Set.of("CLOSE_CORE")),
+          Map.entry("S11", Set.of("VERIFY_REMEDIATION")),
+          Map.entry("S12", Set.of("SUPPLEMENT_ARCHIVE")));
+
+  private final TenantTransactionRunner transactions;
+
+  private final IdempotencyRegistry idempotency;
+
+  private final BusinessNumberService numbers;
+
+  private final TransactionalOutboxService outbox;
+
+  private final WorkflowRuntimeService workflow;
+
+  private final WorkflowTaskAssignmentService tasks;
+
+  private final WorkflowFormService forms;
+
+  private final Repository repository;
+
+  private final ObjectMapper mapper;
+
+  public DisciplineCaseService(
+      TenantTransactionRunner transactions,
+      IdempotencyRegistry idempotency,
+      BusinessNumberService numbers,
+      TransactionalOutboxService outbox,
+      WorkflowRuntimeService workflow,
+      WorkflowTaskAssignmentService tasks,
+      WorkflowFormService forms,
+      Repository repository,
+      ObjectMapper mapper) {
+    this.transactions = transactions;
+    this.idempotency = idempotency;
+    this.numbers = numbers;
+    this.outbox = outbox;
+    this.workflow = workflow;
+    this.tasks = tasks;
+    this.forms = forms;
+    this.repository = repository;
+    this.mapper = mapper;
+  }
+
+  public DisciplineCase create(
+      DatabaseSecurityContext actor, String key, String hash, CreateCommand c) {
+    requireActor(actor);
+    validateCreate(c);
+    return transactions.required(
+        actor,
+        () -> {
+          IdempotencyClaim claim =
+              idempotency.claim(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  key,
+                  hash,
+                  "reward.discipline_case",
+                  UUID.randomUUID(),
+                  TTL);
+          if (claim.existing()) {
+            return required(actor.tenantId(), claim.resourceId());
+          }
+          Target target =
+              repository
+                  .target(actor.tenantId(), c.affectedEmployeeId())
+                  .orElseThrow(() -> rejected("active affected employee is required"));
+          UUID version =
+              repository
+                  .latestPublishedWorkflowVersion(actor.tenantId(), PROCESS_CODE)
+                  .orElseThrow(() -> rejected("published workflow is not configured"));
+          FormRef form =
+              repository
+                  .latestPublishedForm(actor.tenantId(), INITIAL_FORM_CODE, PROCESS_CODE, "S01")
+                  .orElseThrow(() -> rejected("published initial form is not configured"));
+          List<UUID> managers = candidates(actor, "p014.discipline.manage", target.centerId()),
+              investigators = candidates(actor, "p014.discipline.investigate", target.centerId()),
+              deciders = candidates(actor, "p014.discipline.decide", target.centerId()),
+              appealReviewers =
+                  candidates(actor, "p014.discipline.appeal", target.centerId()).stream()
+                      .filter(x -> !x.equals(target.employeeId()))
+                      .toList();
+          if (appealReviewers.isEmpty()) {
+            throw rejected("independent appeal reviewer is required");
+          }
+          DisciplineCase draft =
+              new DisciplineCase(
+                  claim.resourceId(),
+                  actor.tenantId(),
+                  numbers.next(actor.tenantId(), actor.employeeId(), PROCESS_CODE),
+                  null,
+                  null,
+                  "S01",
+                  status("S01"),
+                  0,
+                  c.businessDate(),
+                  c.subject().trim(),
+                  trim(c.reason()),
+                  target.centerId(),
+                  target.employeeId(),
+                  c.sourceFactKey().trim(),
+                  c.businessObjectType().trim(),
+                  c.businessObjectNo().trim(),
+                  c.businessObjectName().trim(),
+                  c.employeeEventType().trim(),
+                  c.factOccurredAt(),
+                  c.factSummary().trim(),
+                  c.impactLevel().trim(),
+                  List.of(),
+                  List.of(),
+                  List.of(),
+                  List.of(),
+                  Instant.now());
+          try {
+            repository.insert(draft, actor.employeeId());
+          } catch (DataIntegrityViolationException conflict) {
+            throw new ProcessRejectedException(
+                "P014 discipline source fact or business object is invalid", conflict);
+          }
+          ObjectNode context = mapper.createObjectNode();
+          context.put("affectedEmployeeId", target.employeeId().toString());
+          context.put("ownerCenterId", target.centerId().toString());
+          context.set("affectedCandidateIds", uuids(List.of(target.employeeId())));
+          context.set("managerCandidateIds", uuids(managers));
+          context.set("investigatorCandidateIds", uuids(investigators));
+          context.set("reviewerCandidateIds", uuids(investigators));
+          context.set("deciderCandidateIds", uuids(deciders));
+          context.set("appealReviewerCandidateIds", uuids(appealReviewers));
+          context.set("observerCandidateIds", uuids(managers));
+          WorkflowRuntimeService.Result started =
+              workflow.start(
+                  new WorkflowRuntimeService.StartCommand(
+                      actor.tenantId(),
+                      actor.employeeId(),
+                      actor.identityId(),
+                      version,
+                      "reward.discipline_case",
+                      draft.id(),
+                      draft.businessNo(),
+                      draft.subject(),
+                      "CRITICAL",
+                      context,
+                      scoped(key, "start")));
+          forms.submit(
+              new WorkflowFormService.SubmitForm(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  actor.identityId(),
+                  started.instance().id(),
+                  null,
+                  form.id(),
+                  form.versionNo(),
+                  initial(started.instance(), draft),
+                  scoped(key, "form")));
+          if (repository.bindWorkflow(
+                  actor.tenantId(), draft.id(), 0, started.instance().id(), actor.employeeId())
+              != 1) {
+            throw rejected("concurrent workflow binding conflict");
+          }
+          repository.appendEvent(
+              actor.tenantId(),
+              draft.id(),
+              "CASE_CREATED",
+              evidence("created", c.evidence(), actor.employeeId()),
+              actor.employeeId());
+          DisciplineCase result = required(actor.tenantId(), draft.id());
+          emit(actor, result, "S01", "CREATED", "S01", List.of(actor.employeeId()));
+          return result;
+        });
+  }
+
+  public DisciplineCase act(
+      DatabaseSecurityContext actor,
+      UUID id,
+      String actionCode,
+      String key,
+      String hash,
+      ActionCommand c) {
+    requireActor(actor);
+    Objects.requireNonNull(c, "P014 action command is required");
+    String action = normalize(actionCode);
+    return transactions.required(
+        actor,
+        () -> {
+          IdempotencyClaim claim =
+              idempotency.claim(
+                  actor.tenantId(),
+                  actor.employeeId(),
+                  key,
+                  hash,
+                  "reward.discipline_case.action",
+                  id,
+                  TTL);
+          if (claim.existing()) {
+            return required(actor.tenantId(), id);
+          }
+          DisciplineCase current = required(actor.tenantId(), id);
+          if (current.versionNo() != c.expectedVersion()) {
+            throw rejected("discipline case version conflict");
+          }
+          WorkflowRuntimeService.Result runtime =
+              workflow.get(actor.tenantId(), current.workflowInstanceId());
+          String node = runtime.instance().currentNodeCode();
+          if (!node.equals(current.currentNodeCode())) {
+            throw rejected("business projection is stale");
+          }
+          if (!ACTIONS.getOrDefault(node, Set.of()).contains(action)) {
+            throw rejected("action is not allowed at " + node);
+          }
+          validateAction(actor, current, action, c);
+          JsonNode immutable = requiredEvidence(c.evidence(), action.toLowerCase(Locale.ROOT));
+          try {
+            if ("RECORD_DECISION".equals(action)) {
+              repository.appendDecision(
+                  actor.tenantId(),
+                  id,
+                  "ORIGINAL",
+                  "RECORDED",
+                  c.authorityReference().trim(),
+                  c.decidedAt(),
+                  immutable,
+                  actor.employeeId());
+            }
+            if ("REVIEW_APPEAL".equals(action)) {
+              repository.appendDecision(
+                  actor.tenantId(),
+                  id,
+                  "APPEAL",
+                  normalize(c.decisionOutcome()),
+                  c.authorityReference().trim(),
+                  c.decidedAt(),
+                  immutable,
+                  actor.employeeId());
+            }
+            if ("RECORD_IMPACT".equals(action)) {
+              repository.appendImpact(
+                  actor.tenantId(),
+                  id,
+                  normalize(c.impactType()),
+                  c.authorityReference().trim(),
+                  immutable,
+                  actor.employeeId());
+            }
+            if ("RECORD_RECEIPT".equals(action)) {
+              repository.appendReceipt(
+                  actor.tenantId(),
+                  id,
+                  c.instructionId(),
+                  normalize(c.receiptType()),
+                  c.externalReference().trim(),
+                  c.externalOccurredAt(),
+                  immutable,
+                  actor.employeeId());
+            }
+            repository.appendEvent(
+                actor.tenantId(),
+                id,
+                action,
+                actionEvidence(action, c, immutable, actor.employeeId()),
+                actor.employeeId());
+          } catch (DataIntegrityViolationException conflict) {
+            throw new ProcessRejectedException(
+                "P014 discipline fact conflicts with persisted lifecycle", conflict);
+          }
+          if ("SUBMIT_APPEAL".equals(action)) {
+            if (repository.touch(actor.tenantId(), id, current.versionNo(), actor.employeeId())
+                != 1) {
+              throw rejected("concurrent appeal submission conflict");
+            }
+            DisciplineCase result = required(actor.tenantId(), id);
+            emit(
+                actor,
+                result,
+                node,
+                action,
+                node,
+                repository.eventRecipients(
+                    actor.tenantId(), id, "COMPLETE_RESPONSIBILITY_REVIEW", "RECORD_DECISION"));
+            return result;
+          }
+          if (runtime.task() != null) {
+            tasks.claim(
+                new WorkflowTaskAssignmentService.ClaimCommand(
+                    actor.tenantId(), runtime.task().id(), actor.employeeId()));
+          }
+          WorkflowRuntimeService.Result moved =
+              workflow.act(
+                  new WorkflowRuntimeService.ActionCommand(
+                      actor.tenantId(),
+                      actor.employeeId(),
+                      actor.identityId(),
+                      current.workflowInstanceId(),
+                      runtime.task() == null ? null : runtime.task().id(),
+                      node,
+                      action,
+                      trim(c.resultSummary()),
+                      scoped(key, "workflow")));
+          Instant closed =
+              "END".equals(moved.instance().currentNodeCode())
+                  ? moved.instance().finishedAt()
+                  : null;
+          if (repository.move(
+                  actor.tenantId(),
+                  id,
+                  current.versionNo(),
+                  status(moved.instance().currentNodeCode()),
+                  trim(c.resultSummary()),
+                  closed,
+                  actor.employeeId())
+              != 1) {
+            throw rejected("concurrent discipline transition conflict");
+          }
+          DisciplineCase result = required(actor.tenantId(), id);
+          emit(actor, result, node, action, moved.instance().currentNodeCode(), recipients(moved));
+          return result;
+        });
+  }
+
+  public Optional<DisciplineCase> find(DatabaseSecurityContext actor, UUID id) {
+    requireActor(actor);
+    return transactions.required(actor, () -> repository.find(actor.tenantId(), id));
+  }
+
+  public List<DisciplineCase> list(DatabaseSecurityContext actor) {
+    requireActor(actor);
+    return transactions.required(actor, () -> repository.list(actor.tenantId()));
+  }
+
+  public String permissionForAction(DisciplineCase value, String actionCode) {
+    String action = normalize(actionCode);
+    return switch (action) {
+      case "COMPLETE_INVESTIGATION", "COMPLETE_RESPONSIBILITY_REVIEW" ->
+          "p014.discipline.investigate";
+      case "RECORD_DECISION" -> "p014.discipline.decide";
+      case "SUBMIT_STATEMENT", "CONFIRM_SERVICE", "SUBMIT_APPEAL", "REVIEW_APPEAL" ->
+          "p014.discipline.appeal";
+      default -> "p014.discipline.manage";
+    };
+  }
+
+  public boolean isTaskIndependentAction(String actionCode) {
+    return "SUBMIT_APPEAL".equals(normalize(actionCode));
+  }
+
+  public List<String> availableActionCodes(DatabaseSecurityContext actor, DisciplineCase value) {
+    requireActor(actor);
+    return ACTIONS.getOrDefault(value.currentNodeCode(), Set.of()).stream()
+        .filter(action -> actorAndStateViolation(actor, value, action).isEmpty())
+        .sorted()
+        .toList();
+  }
+
+  private void validateAction(
+      DatabaseSecurityContext actor, DisciplineCase value, String action, ActionCommand c) {
+    actorAndStateViolation(actor, value, action)
+        .ifPresent(
+            message -> {
+              throw rejected(message);
+            });
+    if ("RECORD_DECISION".equals(action)
+        && (trim(c.authorityReference()) == null || c.decidedAt() == null)) {
+      throw rejected("external decision authority reference and decision time are required");
     }
-    private void different(DatabaseSecurityContext actor,String event,String message,UUID id){UUID prior=repository.eventActor(actor.tenantId(),id,event).orElseThrow(()->rejected(event+" actor is missing"));if(prior.equals(actor.employeeId()))throw rejected(message);}
-    private List<UUID> candidates(DatabaseSecurityContext actor,String permission,UUID center){List<UUID> values=repository.permissionCandidates(actor.tenantId(),permission,center);if(values.isEmpty())throw rejected("eligible candidate is required for "+permission);return values;}
-    private List<WorkflowFormService.FieldValue> initial(WorkflowRuntimeService.Instance i,DisciplineCase v){return List.of(text("process_instance_no",i.instanceNo()),text("subject",v.subject()),text("affected_employee_id",v.affectedEmployeeId().toString()),text("source_fact_key",v.sourceFactKey()),text("business_object_no",v.businessObjectNo()),text("fact_summary",v.factSummary()));}private static WorkflowFormService.FieldValue text(String c,String v){return new WorkflowFormService.FieldValue(c,"TEXT",v,null,null,null,null,null,"P3",false);}
-    private ObjectNode actionEvidence(String action,ActionCommand c,JsonNode supplied,UUID actor){ObjectNode n=evidence(action,supplied,actor);if("SUBMIT_APPEAL".equals(action))n.put("appealRequested",Boolean.TRUE.equals(c.appealRequested()));if(Set.of("RECORD_DECISION","REVIEW_APPEAL","RECORD_IMPACT","VERIFY_REMEDIATION").contains(action))n.put("authorityReference",c.authorityReference());return n;}private ObjectNode evidence(String event,JsonNode supplied,UUID actor){ObjectNode n=mapper.createObjectNode().put("event",event).put("actorEmployeeId",actor.toString()).put("recordedAt",Instant.now().toString());n.set("sourceEvidence",requiredEvidence(supplied,event));return n;}
-    private void emit(DatabaseSecurityContext actor,DisciplineCase value,String node,String action,String target,List<UUID> recipientIds){ObjectNode payload=mapper.createObjectNode().put("disciplineCaseId",value.id().toString()).put("businessNo",value.businessNo()).put("event","CREATED".equals(action)?"P014.discipline.created":"P014.stage."+node.substring(1)+".completed").put("actionCode",action).put("nodeCode",target);payload.set("recipientEmployeeIds",uuids(recipientIds));int version=Math.max(1,value.versionNo()+1);outbox.enqueue(new TransactionalOutboxService.Command(actor.tenantId(),actor.employeeId(),"P014_DISCIPLINE",value.id(),"P014_DISCIPLINE_EVENT",version,json(payload),"p014:"+value.id()+":v"+version+":"+node.toLowerCase(Locale.ROOT)+":"+action.toLowerCase(Locale.ROOT)));}
-    private List<UUID> recipients(WorkflowRuntimeService.Result r){if(r.task()==null||r.task().candidateRule()==null)return List.of();JsonNode f=r.task().candidateRule().get("field"),v=f==null||r.instance().contextSnapshot()==null?null:r.instance().contextSnapshot().get(f.asText());List<UUID> ids=new ArrayList<>();if(v!=null&&v.isArray())v.forEach(n->{try{ids.add(UUID.fromString(n.asText()));}catch(IllegalArgumentException e){throw rejected("workflow candidate id is invalid");}});return List.copyOf(ids);}
-    private ArrayNode uuids(List<UUID> ids){ArrayNode result=mapper.createArrayNode();new LinkedHashSet<>(ids).forEach(x->result.add(x.toString()));return result;}private DisciplineCase required(UUID tenant,UUID id){return repository.find(tenant,id).orElseThrow(()->rejected("discipline case not found"));}private String json(JsonNode n){try{return mapper.writeValueAsString(n);}catch(JsonProcessingException e){throw rejected("event payload cannot be serialized");}}
-    private static void validateCreate(CreateCommand c){if(c==null||c.businessDate()==null||c.affectedEmployeeId()==null||c.factOccurredAt()==null)throw rejected("business date, affected employee and fact time are required");if(trim(c.subject())==null||c.subject().trim().length()<5)throw rejected("subject requires at least 5 characters");if(trim(c.reason())==null||c.reason().trim().length()<10)throw rejected("reason requires at least 10 characters");if(trim(c.sourceFactKey())==null||trim(c.businessObjectType())==null||trim(c.businessObjectNo())==null||trim(c.businessObjectName())==null||trim(c.employeeEventType())==null||trim(c.factSummary())==null||c.factSummary().trim().length()<10||trim(c.impactLevel())==null)throw rejected("source, business object and fact fields are required");if(!Set.of("L1","L2","L3","L4").contains(normalize(c.impactLevel())))throw rejected("impact level must be L1, L2, L3 or L4");requiredEvidence(c.evidence(),"discipline clue");}
-    private static JsonNode requiredEvidence(JsonNode n,String purpose){if(n==null||!n.isObject()||n.isEmpty())throw rejected(purpose+" requires immutable evidence");return n;}private static void requireActor(DatabaseSecurityContext a){if(a==null||a.tenantId()==null||a.employeeId()==null||a.identityId()==null||a.orgId()==null)throw rejected("authenticated tenant employee identity is required");}private static String normalize(String v){String n=v==null?"":v.trim().toUpperCase(Locale.ROOT);if(!n.matches("[A-Z0-9_]{1,32}"))throw rejected("invalid code");return n;}private static String scoped(String k,String suffix){if(k==null||k.isBlank()||k.length()>160)throw rejected("valid idempotency key is required");return k+":"+suffix;}private static String trim(String v){return v==null||v.isBlank()?null:v.trim();}private static ProcessRejectedException rejected(String m){return new ProcessRejectedException("P014 "+m);}
-    public static String label(String n){return switch(n){case"S01"->"Clue registration";case"S02"->"Temporary safeguard";case"S03"->"Formal investigation";case"S04"->"Employee statement";case"S05"->"Responsibility review";case"S06"->"Decision record";case"S07"->"Service confirmation";case"S08"->"Impact execution";case"S09"->"Appeal review";case"S10"->"Core case closure";case"S11"->"Independent remediation observation";case"S12"->"Supplementary archive";case"END"->"Closed";default->throw rejected("unknown source node "+n);};}private static String status(String n){return label(n);}
-    public record CreateCommand(LocalDate businessDate,String subject,String reason,UUID affectedEmployeeId,String sourceFactKey,String businessObjectType,String businessObjectNo,String businessObjectName,String employeeEventType,Instant factOccurredAt,String factSummary,String impactLevel,JsonNode evidence){}
-    public record ActionCommand(int expectedVersion,String decisionOutcome,String authorityReference,Instant decidedAt,String impactType,UUID instructionId,String receiptType,String externalReference,Instant externalOccurredAt,Boolean appealRequested,String resultSummary,JsonNode evidence){}
-    public record Event(UUID id,int eventSeq,String eventType,JsonNode evidence,UUID actorEmployeeId,Instant createdAt){}public record DecisionFact(UUID id,String decisionKind,String outcome,String authorityReference,Instant decidedAt,JsonNode evidence,UUID recordedBy,Instant recordedAt){}public record ImpactInstruction(UUID id,String impactType,String authorityReference,JsonNode evidence,UUID instructedBy,Instant instructedAt){}public record ImpactReceipt(UUID id,UUID instructionId,String receiptType,String externalReference,Instant externalOccurredAt,JsonNode evidence,UUID receivedBy,Instant receivedAt){}public record Target(UUID employeeId,UUID centerId,UUID userId,UUID identityId){}public record FormRef(UUID id,int versionNo){}
-    public record DisciplineCase(UUID id,UUID tenantId,String businessNo,UUID workflowInstanceId,String workflowInstanceNo,String currentNodeCode,String status,int versionNo,LocalDate businessDate,String subject,String reason,UUID ownerCenterId,UUID affectedEmployeeId,String sourceFactKey,String businessObjectType,String businessObjectNo,String businessObjectName,String employeeEventType,Instant factOccurredAt,String factSummary,String impactLevel,List<Event> events,List<DecisionFact> decisions,List<ImpactInstruction> impacts,List<ImpactReceipt> receipts,Instant updatedAt){public DisciplineCase metadataOnly(){return new DisciplineCase(id,tenantId,businessNo,workflowInstanceId,workflowInstanceNo,currentNodeCode,status,versionNo,businessDate,"Restricted discipline case",null,ownerCenterId,null,null,businessObjectType,null,null,null,null,null,impactLevel,List.of(),List.of(),List.of(),List.of(),updatedAt);}}
-    public interface Repository{Optional<UUID> latestPublishedWorkflowVersion(UUID t,String c);Optional<FormRef> latestPublishedForm(UUID t,String f,String p,String n);Optional<Target> target(UUID t,UUID employee);List<UUID> permissionCandidates(UUID t,String p,UUID center);void insert(DisciplineCase v,UUID actor);int bindWorkflow(UUID t,UUID id,int version,UUID wf,UUID actor);int move(UUID t,UUID id,int version,String status,String result,Instant closed,UUID actor);int touch(UUID t,UUID id,int version,UUID actor);void appendEvent(UUID t,UUID id,String type,JsonNode evidence,UUID actor);Optional<UUID> eventActor(UUID t,UUID id,String type);boolean hasEvent(UUID t,UUID id,String type);Optional<Boolean> appealRequested(UUID t,UUID id);List<UUID> eventRecipients(UUID t,UUID id,String... types);void appendDecision(UUID t,UUID id,String kind,String outcome,String reference,Instant decidedAt,JsonNode evidence,UUID actor);boolean hasDecision(UUID t,UUID id,String kind);void appendImpact(UUID t,UUID id,String type,String reference,JsonNode evidence,UUID actor);void appendReceipt(UUID t,UUID id,UUID instruction,String type,String reference,Instant occurredAt,JsonNode evidence,UUID actor);boolean allInstructionsReceipted(UUID t,UUID id);Optional<DisciplineCase> find(UUID t,UUID id);List<DisciplineCase> list(UUID t);}
+    if ("RECORD_IMPACT".equals(action)) {
+      String type = normalize(c.impactType());
+      if (!Set.of("HR_DISCIPLINE", "POINT_ADJUSTMENT", "REMEDIATION").contains(type)
+          || trim(c.authorityReference()) == null) {
+        throw rejected("supported impact type and external authority reference are required");
+      }
+    }
+    if ("RECORD_RECEIPT".equals(action)
+        && (c.instructionId() == null
+            || trim(c.receiptType()) == null
+            || trim(c.externalReference()) == null
+            || c.externalOccurredAt() == null)) {
+      throw rejected(
+          "instruction, receipt type, external reference and occurrence time are required");
+    }
+    if ("SUBMIT_APPEAL".equals(action) && c.appealRequested() == null) {
+      throw rejected("appeal request or explicit waiver is required");
+    }
+    if ("REVIEW_APPEAL".equals(action)) {
+      Boolean requested =
+          repository
+              .appealRequested(actor.tenantId(), value.id())
+              .orElseThrow(() -> rejected("affected employee appeal choice is required"));
+      String outcome = normalize(c.decisionOutcome());
+      if (requested && !Set.of("UPHELD", "AMENDED", "REVOKED").contains(outcome)) {
+        throw rejected("appeal review outcome must be upheld, amended or revoked");
+      }
+      if (!requested && !"NOT_APPLICABLE".equals(outcome)) {
+        throw rejected("appeal waiver requires NOT_APPLICABLE review outcome");
+      }
+      if (trim(c.authorityReference()) == null || c.decidedAt() == null) {
+        throw rejected("external appeal authority reference and decision time are required");
+      }
+    }
+    if ("VERIFY_REMEDIATION".equals(action) && trim(c.authorityReference()) == null) {
+      throw rejected("external remediation verification reference is required");
+    }
+  }
+
+  private Optional<String> actorAndStateViolation(
+      DatabaseSecurityContext actor, DisciplineCase value, String action) {
+    boolean affected = actor.employeeId().equals(value.affectedEmployeeId());
+    Set<String> affectedActions = Set.of("SUBMIT_STATEMENT", "CONFIRM_SERVICE", "SUBMIT_APPEAL");
+    if (affectedActions.contains(action) && !affected) {
+      return Optional.of("only the affected employee may perform " + action);
+    }
+    if (!affectedActions.contains(action) && affected) {
+      return Optional.of(
+          "affected employee cannot investigate, review, decide, execute, close or observe their"
+              + " own case");
+    }
+    if ("SUBMIT_APPEAL".equals(action)
+        && repository.hasEvent(actor.tenantId(), value.id(), "SUBMIT_APPEAL")) {
+      return Optional.of("appeal choice is append-only and already submitted");
+    }
+    if ("COMPLETE_RESPONSIBILITY_REVIEW".equals(action)) {
+      return differentViolation(
+          actor,
+          "COMPLETE_INVESTIGATION",
+          "responsibility reviewer must be independent from investigator",
+          value.id());
+    }
+    if ("RECORD_DECISION".equals(action)) {
+      Optional<String> violation =
+          differentViolation(
+              actor,
+              "COMPLETE_INVESTIGATION",
+              "decider must be independent from investigator",
+              value.id());
+      if (violation.isPresent()) {
+        return violation;
+      }
+      return differentViolation(
+          actor,
+          "COMPLETE_RESPONSIBILITY_REVIEW",
+          "decider must be independent from responsibility reviewer",
+          value.id());
+    }
+    if ("COMPLETE_IMPACTS".equals(action)
+        && !repository.allInstructionsReceipted(actor.tenantId(), value.id())) {
+      return Optional.of("every impact instruction requires its authoritative downstream receipt");
+    }
+    if ("REVIEW_APPEAL".equals(action)) {
+      for (String prior :
+          List.of("COMPLETE_INVESTIGATION", "COMPLETE_RESPONSIBILITY_REVIEW", "RECORD_DECISION")) {
+        Optional<String> violation =
+            differentViolation(
+                actor,
+                prior,
+                "appeal reviewer must be independent from case decision chain",
+                value.id());
+        if (violation.isPresent()) {
+          return violation;
+        }
+      }
+      if (repository.appealRequested(actor.tenantId(), value.id()).isEmpty()) {
+        return Optional.of("affected employee appeal choice is required");
+      }
+    }
+    if ("CLOSE_CORE".equals(action)
+        && (!repository.hasDecision(actor.tenantId(), value.id(), "ORIGINAL")
+            || !repository.hasDecision(actor.tenantId(), value.id(), "APPEAL")
+            || !repository.allInstructionsReceipted(actor.tenantId(), value.id()))) {
+      return Optional.of(
+          "core closure requires original and appeal decisions plus all impact receipts");
+    }
+    if ("VERIFY_REMEDIATION".equals(action)) {
+      for (String prior :
+          List.of(
+              "COMPLETE_INVESTIGATION",
+              "COMPLETE_RESPONSIBILITY_REVIEW",
+              "RECORD_DECISION",
+              "REVIEW_APPEAL")) {
+        Optional<String> violation =
+            differentViolation(
+                actor,
+                prior,
+                "remediation observer must be independent from case decision chain",
+                value.id());
+        if (violation.isPresent()) {
+          return violation;
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> differentViolation(
+      DatabaseSecurityContext actor, String event, String message, UUID id) {
+    Optional<UUID> prior = repository.eventActor(actor.tenantId(), id, event);
+    if (prior.isEmpty()) {
+      return Optional.of(event + " actor is missing");
+    }
+    return prior.get().equals(actor.employeeId()) ? Optional.of(message) : Optional.empty();
+  }
+
+  private void different(DatabaseSecurityContext actor, String event, String message, UUID id) {
+    UUID prior =
+        repository
+            .eventActor(actor.tenantId(), id, event)
+            .orElseThrow(() -> rejected(event + " actor is missing"));
+    if (prior.equals(actor.employeeId())) {
+      throw rejected(message);
+    }
+  }
+
+  private List<UUID> candidates(DatabaseSecurityContext actor, String permission, UUID center) {
+    List<UUID> values = repository.permissionCandidates(actor.tenantId(), permission, center);
+    if (values.isEmpty()) {
+      throw rejected("eligible candidate is required for " + permission);
+    }
+    return values;
+  }
+
+  private List<WorkflowFormService.FieldValue> initial(
+      WorkflowRuntimeService.Instance i, DisciplineCase v) {
+    return List.of(
+        text("process_instance_no", i.instanceNo()),
+        text("subject", v.subject()),
+        text("affected_employee_id", v.affectedEmployeeId().toString()),
+        text("source_fact_key", v.sourceFactKey()),
+        text("business_object_no", v.businessObjectNo()),
+        text("fact_summary", v.factSummary()));
+  }
+
+  private static WorkflowFormService.FieldValue text(String c, String v) {
+    return new WorkflowFormService.FieldValue(
+        c, "TEXT", v, null, null, null, null, null, "P3", false);
+  }
+
+  private ObjectNode actionEvidence(String action, ActionCommand c, JsonNode supplied, UUID actor) {
+    ObjectNode n = evidence(action, supplied, actor);
+    if ("SUBMIT_APPEAL".equals(action)) {
+      n.put("appealRequested", Boolean.TRUE.equals(c.appealRequested()));
+    }
+    if (Set.of("RECORD_DECISION", "REVIEW_APPEAL", "RECORD_IMPACT", "VERIFY_REMEDIATION")
+        .contains(action)) {
+      n.put("authorityReference", c.authorityReference());
+    }
+    return n;
+  }
+
+  private ObjectNode evidence(String event, JsonNode supplied, UUID actor) {
+    ObjectNode n =
+        mapper
+            .createObjectNode()
+            .put("event", event)
+            .put("actorEmployeeId", actor.toString())
+            .put("recordedAt", Instant.now().toString());
+    n.set("sourceEvidence", requiredEvidence(supplied, event));
+    return n;
+  }
+
+  private void emit(
+      DatabaseSecurityContext actor,
+      DisciplineCase value,
+      String node,
+      String action,
+      String target,
+      List<UUID> recipientIds) {
+    ObjectNode payload =
+        mapper
+            .createObjectNode()
+            .put("disciplineCaseId", value.id().toString())
+            .put("businessNo", value.businessNo())
+            .put(
+                "event",
+                "CREATED".equals(action)
+                    ? "P014.discipline.created"
+                    : "P014.stage." + node.substring(1) + ".completed")
+            .put("actionCode", action)
+            .put("nodeCode", target);
+    payload.set("recipientEmployeeIds", uuids(recipientIds));
+    int version = Math.max(1, value.versionNo() + 1);
+    outbox.enqueue(
+        new TransactionalOutboxService.Command(
+            actor.tenantId(),
+            actor.employeeId(),
+            "P014_DISCIPLINE",
+            value.id(),
+            "P014_DISCIPLINE_EVENT",
+            version,
+            json(payload),
+            "p014:"
+                + value.id()
+                + ":v"
+                + version
+                + ":"
+                + node.toLowerCase(Locale.ROOT)
+                + ":"
+                + action.toLowerCase(Locale.ROOT)));
+  }
+
+  private List<UUID> recipients(WorkflowRuntimeService.Result r) {
+    if (r.task() == null || r.task().candidateRule() == null) {
+      return List.of();
+    }
+    JsonNode f = r.task().candidateRule().get("field"),
+        v =
+            f == null || r.instance().contextSnapshot() == null
+                ? null
+                : r.instance().contextSnapshot().get(f.asText());
+    List<UUID> ids = new ArrayList<>();
+    if (v != null && v.isArray()) {
+      v.forEach(
+          n -> {
+            try {
+              ids.add(UUID.fromString(n.asText()));
+            } catch (IllegalArgumentException e) {
+              throw rejected("workflow candidate id is invalid");
+            }
+          });
+    }
+    return List.copyOf(ids);
+  }
+
+  private ArrayNode uuids(List<UUID> ids) {
+    ArrayNode result = mapper.createArrayNode();
+    new LinkedHashSet<>(ids).forEach(x -> result.add(x.toString()));
+    return result;
+  }
+
+  private DisciplineCase required(UUID tenant, UUID id) {
+    return repository.find(tenant, id).orElseThrow(() -> rejected("discipline case not found"));
+  }
+
+  private String json(JsonNode n) {
+    try {
+      return mapper.writeValueAsString(n);
+    } catch (JsonProcessingException e) {
+      throw rejected("event payload cannot be serialized");
+    }
+  }
+
+  private static void validateCreate(CreateCommand c) {
+    if (c == null
+        || c.businessDate() == null
+        || c.affectedEmployeeId() == null
+        || c.factOccurredAt() == null) {
+      throw rejected("business date, affected employee and fact time are required");
+    }
+    if (trim(c.subject()) == null || c.subject().trim().length() < 5) {
+      throw rejected("subject requires at least 5 characters");
+    }
+    if (trim(c.reason()) == null || c.reason().trim().length() < 10) {
+      throw rejected("reason requires at least 10 characters");
+    }
+    if (trim(c.sourceFactKey()) == null
+        || trim(c.businessObjectType()) == null
+        || trim(c.businessObjectNo()) == null
+        || trim(c.businessObjectName()) == null
+        || trim(c.employeeEventType()) == null
+        || trim(c.factSummary()) == null
+        || c.factSummary().trim().length() < 10
+        || trim(c.impactLevel()) == null) {
+      throw rejected("source, business object and fact fields are required");
+    }
+    if (!Set.of("L1", "L2", "L3", "L4").contains(normalize(c.impactLevel()))) {
+      throw rejected("impact level must be L1, L2, L3 or L4");
+    }
+    requiredEvidence(c.evidence(), "discipline clue");
+  }
+
+  private static JsonNode requiredEvidence(JsonNode n, String purpose) {
+    if (n == null || !n.isObject() || n.isEmpty()) {
+      throw rejected(purpose + " requires immutable evidence");
+    }
+    return n;
+  }
+
+  private static void requireActor(DatabaseSecurityContext a) {
+    if (a == null
+        || a.tenantId() == null
+        || a.employeeId() == null
+        || a.identityId() == null
+        || a.orgId() == null) {
+      throw rejected("authenticated tenant employee identity is required");
+    }
+  }
+
+  private static String normalize(String v) {
+    String n = v == null ? "" : v.trim().toUpperCase(Locale.ROOT);
+    if (!n.matches("[A-Z0-9_]{1,32}")) {
+      throw rejected("invalid code");
+    }
+    return n;
+  }
+
+  private static String scoped(String k, String suffix) {
+    if (k == null || k.isBlank() || k.length() > 160) {
+      throw rejected("valid idempotency key is required");
+    }
+    return k + ":" + suffix;
+  }
+
+  private static String trim(String v) {
+    return v == null || v.isBlank() ? null : v.trim();
+  }
+
+  private static ProcessRejectedException rejected(String m) {
+    return new ProcessRejectedException("P014 " + m);
+  }
+
+  public static String label(String n) {
+    return switch (n) {
+      case "S01" -> "Clue registration";
+      case "S02" -> "Temporary safeguard";
+      case "S03" -> "Formal investigation";
+      case "S04" -> "Employee statement";
+      case "S05" -> "Responsibility review";
+      case "S06" -> "Decision record";
+      case "S07" -> "Service confirmation";
+      case "S08" -> "Impact execution";
+      case "S09" -> "Appeal review";
+      case "S10" -> "Core case closure";
+      case "S11" -> "Independent remediation observation";
+      case "S12" -> "Supplementary archive";
+      case "END" -> "Closed";
+      default -> throw rejected("unknown source node " + n);
+    };
+  }
+
+  private static String status(String n) {
+    return label(n);
+  }
+
+  public record CreateCommand(
+      LocalDate businessDate,
+      String subject,
+      String reason,
+      UUID affectedEmployeeId,
+      String sourceFactKey,
+      String businessObjectType,
+      String businessObjectNo,
+      String businessObjectName,
+      String employeeEventType,
+      Instant factOccurredAt,
+      String factSummary,
+      String impactLevel,
+      JsonNode evidence) {}
+
+  public record ActionCommand(
+      int expectedVersion,
+      String decisionOutcome,
+      String authorityReference,
+      Instant decidedAt,
+      String impactType,
+      UUID instructionId,
+      String receiptType,
+      String externalReference,
+      Instant externalOccurredAt,
+      Boolean appealRequested,
+      String resultSummary,
+      JsonNode evidence) {}
+
+  public record Event(
+      UUID id,
+      int eventSeq,
+      String eventType,
+      JsonNode evidence,
+      UUID actorEmployeeId,
+      Instant createdAt) {}
+
+  public record DecisionFact(
+      UUID id,
+      String decisionKind,
+      String outcome,
+      String authorityReference,
+      Instant decidedAt,
+      JsonNode evidence,
+      UUID recordedBy,
+      Instant recordedAt) {}
+
+  public record ImpactInstruction(
+      UUID id,
+      String impactType,
+      String authorityReference,
+      JsonNode evidence,
+      UUID instructedBy,
+      Instant instructedAt) {}
+
+  public record ImpactReceipt(
+      UUID id,
+      UUID instructionId,
+      String receiptType,
+      String externalReference,
+      Instant externalOccurredAt,
+      JsonNode evidence,
+      UUID receivedBy,
+      Instant receivedAt) {}
+
+  public record Target(UUID employeeId, UUID centerId, UUID userId, UUID identityId) {}
+
+  public record FormRef(UUID id, int versionNo) {}
+
+  public record DisciplineCase(
+      UUID id,
+      UUID tenantId,
+      String businessNo,
+      UUID workflowInstanceId,
+      String workflowInstanceNo,
+      String currentNodeCode,
+      String status,
+      int versionNo,
+      LocalDate businessDate,
+      String subject,
+      String reason,
+      UUID ownerCenterId,
+      UUID affectedEmployeeId,
+      String sourceFactKey,
+      String businessObjectType,
+      String businessObjectNo,
+      String businessObjectName,
+      String employeeEventType,
+      Instant factOccurredAt,
+      String factSummary,
+      String impactLevel,
+      List<Event> events,
+      List<DecisionFact> decisions,
+      List<ImpactInstruction> impacts,
+      List<ImpactReceipt> receipts,
+      Instant updatedAt) {
+
+    public DisciplineCase metadataOnly() {
+      return new DisciplineCase(
+          id,
+          tenantId,
+          businessNo,
+          workflowInstanceId,
+          workflowInstanceNo,
+          currentNodeCode,
+          status,
+          versionNo,
+          businessDate,
+          "Restricted discipline case",
+          null,
+          ownerCenterId,
+          null,
+          null,
+          businessObjectType,
+          null,
+          null,
+          null,
+          null,
+          null,
+          impactLevel,
+          List.of(),
+          List.of(),
+          List.of(),
+          List.of(),
+          updatedAt);
+    }
+  }
+
+  public interface Repository {
+
+    Optional<UUID> latestPublishedWorkflowVersion(UUID t, String c);
+
+    Optional<FormRef> latestPublishedForm(UUID t, String f, String p, String n);
+
+    Optional<Target> target(UUID t, UUID employee);
+
+    List<UUID> permissionCandidates(UUID t, String p, UUID center);
+
+    void insert(DisciplineCase v, UUID actor);
+
+    int bindWorkflow(UUID t, UUID id, int version, UUID wf, UUID actor);
+
+    int move(
+        UUID t, UUID id, int version, String status, String result, Instant closed, UUID actor);
+
+    int touch(UUID t, UUID id, int version, UUID actor);
+
+    void appendEvent(UUID t, UUID id, String type, JsonNode evidence, UUID actor);
+
+    Optional<UUID> eventActor(UUID t, UUID id, String type);
+
+    boolean hasEvent(UUID t, UUID id, String type);
+
+    Optional<Boolean> appealRequested(UUID t, UUID id);
+
+    List<UUID> eventRecipients(UUID t, UUID id, String... types);
+
+    void appendDecision(
+        UUID t,
+        UUID id,
+        String kind,
+        String outcome,
+        String reference,
+        Instant decidedAt,
+        JsonNode evidence,
+        UUID actor);
+
+    boolean hasDecision(UUID t, UUID id, String kind);
+
+    void appendImpact(
+        UUID t, UUID id, String type, String reference, JsonNode evidence, UUID actor);
+
+    void appendReceipt(
+        UUID t,
+        UUID id,
+        UUID instruction,
+        String type,
+        String reference,
+        Instant occurredAt,
+        JsonNode evidence,
+        UUID actor);
+
+    boolean allInstructionsReceipted(UUID t, UUID id);
+
+    Optional<DisciplineCase> find(UUID t, UUID id);
+
+    List<DisciplineCase> list(UUID t);
+  }
 }

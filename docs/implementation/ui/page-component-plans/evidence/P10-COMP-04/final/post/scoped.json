@@ -1,0 +1,36 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-04-final-scoped",
+    "pre_comparable_workspace_id":  "EA2B6A196571388E41B423A10BAEB5B7F2E7052B9105C6DB741507C0623536E5",
+    "post_comparable_workspace_id":  "7465ED49DF13EDDFB93E3901E73EFF8E3660A0A8F51AD30E2700CEC0809CF31F",
+    "pre_comparable_task_id":  "97DB7AD4F9EE2CE5B41A4BA1D9E7223F9FCDF7B7383904D6E2C2642CBCD2C2B5",
+    "post_comparable_task_id":  "63BB05FBF1C7747AC86DE0246E7068D5DCB4BAF7B9EC3D60C0C3FC136A262DF3",
+    "task_changes":  [
+                         {
+                             "path":  "technical-platform/web/e2e/phase10-p006-live.spec.ts",
+                             "change":  "modified",
+                             "before_sha256":  "17D4ECD34C4C679458D334D5D5FF1A1B29E00BA7864901872AE2F43219A496C6",
+                             "after_sha256":  "257CB34DF660FBED41521383F1128DB8358EC7CA66C450E4EAA7CD581B8F40EA"
+                         }
+                     ],
+    "task_change_count":  1,
+    "unrelated_changes":  [
+
+                          ],
+    "unrelated_change_count":  0,
+    "concurrent_changes":  [
+
+                           ],
+    "concurrent_change_count":  0,
+    "metadata_changes":  [
+                             {
+                                 "path":  "docs/implementation/ui/page-component-plans/P10-COMP-04_REPORT.md",
+                                 "change":  "modified",
+                                 "before_sha256":  "6665FF6E3C10434FB889620640FB7D9380ED143874F5F5CEA9F25F11BCB8A198",
+                                 "after_sha256":  "EA560E91F373A2D1E02A9D15ABF22D120393C43DAB19BD635D044A2CA6DC8567"
+                             }
+                         ],
+    "metadata_change_count":  1,
+    "expected":  "1/0/0/1",
+    "actual":  "1/0/0/1"
+}

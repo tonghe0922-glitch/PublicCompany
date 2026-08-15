@@ -1,0 +1,29 @@
+﻿{
+    "attempt":  2,
+    "exits":  {
+                  "source-self":  0,
+                  "reviewer-resubmit4-fixtures":  0,
+                  "reviewer-resubmit5-variants":  0,
+                  "reviewer-resubmit6-variants":  0,
+                  "reviewer-resubmit7-variants":  0,
+                  "reviewer-resubmit8-variants":  0,
+                  "reviewer-resubmit9b-variants":  0,
+                  "reviewer-resubmit10-variants":  0,
+                  "reviewer-resubmit11-variants":  0,
+                  "reviewer-resubmit12-variants":  0,
+                  "local-tools-self":  0,
+                  "source-current":  1,
+                  "ui-self":  0,
+                  "ui-current":  1,
+                  "lint":  0,
+                  "typecheck":  0,
+                  "test":  0,
+                  "build":  0
+              },
+    "source_status":  "FAIL",
+    "source_violations":  357,
+    "source_pages":  7,
+    "source_actions":  46,
+    "ui_status":  "FAIL",
+    "ui_errors":  88
+}

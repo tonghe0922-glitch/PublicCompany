@@ -1,0 +1,34 @@
+﻿{
+    "raw_workspace_id":  "3F7C7DAF59044D2418B4B6853498C179907136A9F81BF27F3ED25F8330F92CAD",
+    "raw_workspace_count":  1542,
+    "raw_task_id":  "F26DAA8F498F0801C82C3E821E47D424036ED4CC9D71678800AC95F486B3A8AA",
+    "raw_task_count":  33,
+    "raw_metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+    "raw_metadata_count":  0,
+    "pre_comparable":  {
+                           "workspace_source_id":  "32C7D820B62597FA13C7100AAC206CFB8A5E629EB82F33E7C80DFDD5BA6E2BF4",
+                           "workspace_count":  1541,
+                           "task_source_id":  "09065B3F69C1E682F0DB20BE42E007898EB76A3017D64463594BC1196C3E7773",
+                           "task_count":  32,
+                           "evidence_metadata_id":  "26D332552926C8AD13361D16798BA1029C53767A383ABC48FEFF87E33CFCA185",
+                           "metadata_count":  1
+                       },
+    "post_comparable":  {
+                            "workspace_source_id":  "471F1B300B3FFCB1E08CB6811EB6429AE261FA51D96E41CC08082CDEB97A744F",
+                            "workspace_count":  1541,
+                            "task_source_id":  "DE1EFD918C68AD4977B4678FD5F67AFBDE8309A345567F5A3B4006380C325F0E",
+                            "task_count":  32,
+                            "evidence_metadata_id":  "870EF45E776BBF94B53301B60F6CE2F7688CE123C60E1141E0E67DD4556D55FD",
+                            "metadata_count":  1
+                        },
+    "scoped":  {
+                   "task":  2,
+                   "unrelated":  0,
+                   "concurrent":  0,
+                   "metadata":  1
+               },
+    "submitted_count":  33,
+    "submitted_mismatch":  0,
+    "report_sha":  "0FE2ACC78B6971650911AA82472A9F0E7143AFC15D0B7BF4EFBB294FA628069C",
+    "report_bytes":  20278
+}

@@ -1,0 +1,39 @@
+{
+  "counts": {
+    "core_databases": 3,
+    "ddl_create_index_unique": 1019,
+    "ddl_create_table_unique": 265,
+    "ddl_physical_schemas": 46,
+    "index_catalog_unique": 1024,
+    "table_catalog_unique": 265
+  },
+  "index_diff": {
+    "catalog_only": [
+      "audit.access_log|idx_audit_access_log_tenant",
+      "audit.data_change_log|idx_audit_data_change_log_tenant",
+      "audit.operation_log|idx_audit_operation_log_tenant",
+      "audit.rule_execution_log|idx_audit_rule_execution_log_tenant",
+      "audit.security_event|idx_audit_security_event_tenant"
+    ],
+    "catalog_only_count": 5,
+    "ddl_only": [],
+    "ddl_only_count": 0
+  },
+  "interpretation": {
+    "index_difference_policy": "report source/catalog mismatch; do not invent or delete indexes without a later approved database decision",
+    "schema_gate": "current approved DDL must declare 46 physical database+schema pairs",
+    "table_difference_policy": "report source/catalog mismatch; do not mutate approved DDL in PHASE-03 merely to force count equality"
+  },
+  "phase": "PHASE-03",
+  "sources": {
+    "ddl_root": "Knowledge Base/03 数据库需求规则/03_SQL_DDL",
+    "index_catalog": "Knowledge Base/03 数据库需求规则/02_数据字典/06_索引设计.csv",
+    "table_catalog": "Knowledge Base/03 数据库需求规则/02_数据字典/03_全量表清单.csv"
+  },
+  "table_diff": {
+    "catalog_only": [],
+    "catalog_only_count": 0,
+    "ddl_only": [],
+    "ddl_only_count": 0
+  }
+}

@@ -1,0 +1,1 @@
+const Button=require.resolve('../../design-system/components/Button.vue');void Button

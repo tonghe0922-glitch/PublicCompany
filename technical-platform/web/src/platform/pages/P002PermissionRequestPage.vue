@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { SgjButton, SgjInput, SgjSelect, SgjTextarea } from '@sgj/ui'
 import { usePortalSessionStore } from '../../session'
 import type { PortalDefinition } from '../portal-config'
 
@@ -233,28 +234,28 @@ onMounted(() => { void run(load) })
       <h2>新建{{ requestKind === 'PROJECT_PERMISSION' ? '项目' : '临时' }}权限申请</h2>
       <p v-if="!canSubmit">当前身份没有 p002.request.submit 权限。</p>
       <div class="form-grid">
-        <label>申请角色 ID<input v-model="requestedRoleId" :disabled="busy || !canSubmit" required /></label>
-        <label>生效时间<input v-model="effectiveStartAt" type="datetime-local" :disabled="busy || !canSubmit" required /></label>
-        <label>结束时间<input v-model="effectiveEndAt" type="datetime-local" :disabled="busy || !canSubmit" required /></label>
-        <label>业务对象编号<input v-model="businessObjectNo" :disabled="busy || !canSubmit" required /></label>
-        <label>业务对象名称<input v-model="businessObjectName" :disabled="busy || !canSubmit" /></label>
-        <label>业务范围 ID<input v-model="businessScopeId" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">主题<input v-model="subject" :disabled="busy || !canSubmit" required /></label>
-        <label class="wide">申请原因<textarea v-model="reason" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">期望结果<textarea v-model="expectedResult" :disabled="busy || !canSubmit" /></label>
-        <label>优先级<select v-model="priority" :disabled="busy || !canSubmit"><option>NORMAL</option><option>HIGH</option></select></label>
-        <label>外部引用号<input v-model="externalReferenceNo" :disabled="busy || !canSubmit" /></label>
+        <SgjInput v-model="requestedRoleId" label="申请角色 ID" :disabled="busy || !canSubmit" required />
+        <SgjInput v-model="effectiveStartAt" label="生效时间" type="datetime-local" :disabled="busy || !canSubmit" required />
+        <SgjInput v-model="effectiveEndAt" label="结束时间" type="datetime-local" :disabled="busy || !canSubmit" required />
+        <SgjInput v-model="businessObjectNo" label="业务对象编号" :disabled="busy || !canSubmit" required />
+        <SgjInput v-model="businessObjectName" label="业务对象名称" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="businessScopeId" label="业务范围 ID" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="subject" class="wide" label="主题" :disabled="busy || !canSubmit" required />
+        <SgjTextarea v-model="reason" class="wide" label="申请原因" :disabled="busy || !canSubmit" />
+        <SgjTextarea v-model="expectedResult" class="wide" label="期望结果" :disabled="busy || !canSubmit" />
+        <SgjSelect v-model="priority" label="优先级" :options="[{ value: 'NORMAL', label: 'NORMAL' }, { value: 'HIGH', label: 'HIGH' }]" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="externalReferenceNo" label="外部引用号" :disabled="busy || !canSubmit" />
       </div>
-      <button type="button" :disabled="busy || !canSubmit || !requestedRoleId || !effectiveStartAt || !effectiveEndAt || !businessObjectNo || !subject" @click="submit">提交权限申请</button>
+      <SgjButton type="button" :disabled="busy || !canSubmit || !requestedRoleId || !effectiveStartAt || !effectiveEndAt || !businessObjectNo || !subject" @click="submit">提交权限申请</SgjButton>
     </section>
 
     <section class="phase09-card">
       <div class="section-head">
         <h2>{{ isEmployee ? '我的权限申请' : isCenter ? '可见审批申请' : '可见授权申请' }}</h2>
-        <button type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</button>
+        <SgjButton type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</SgjButton>
       </div>
       <p v-if="!canRead">当前身份没有 p002.request.read 权限，服务端列表不会被读取。</p>
-      <label v-if="isCenter || isTech">本次操作说明<textarea v-model="actionReason" :disabled="busy" /></label>
+      <SgjTextarea v-if="isCenter || isTech" v-model="actionReason" label="本次操作说明" :disabled="busy" />
       <div v-if="records.length" class="record-list">
         <article v-for="record in records" :key="record.id" class="record" :data-request-id="record.id">
           <div class="record-title">
@@ -271,17 +272,17 @@ onMounted(() => { void run(load) })
           </dl>
           <div v-if="isCenter && canReview" class="phase09-actions">
             <template v-if="reviewable(record)">
-              <button type="button" :disabled="busy" @click="review(record, 'APPROVE')">通过当前复核</button>
-              <button type="button" :disabled="busy" @click="review(record, 'REJECT')">驳回</button>
+              <SgjButton type="button" :disabled="busy" @click="review(record, 'APPROVE')">通过当前复核</SgjButton>
+              <SgjButton type="button" :disabled="busy" @click="review(record, 'REJECT')">驳回</SgjButton>
             </template>
             <template v-else-if="record.status === '定期复核'">
-              <button type="button" :disabled="busy" @click="review(record, 'KEEP')">继续保留</button>
-              <button type="button" :disabled="busy" @click="review(record, 'REVOKE')">进入回收</button>
+              <SgjButton type="button" :disabled="busy" @click="review(record, 'KEEP')">继续保留</SgjButton>
+              <SgjButton type="button" :disabled="busy" @click="review(record, 'REVOKE')">进入回收</SgjButton>
             </template>
           </div>
           <div v-if="isTech" class="phase09-actions">
-            <button v-if="canExecute && record.status === '权限生效'" type="button" :disabled="busy" @click="execute(record)">执行授权</button>
-            <button v-if="canRevoke && ['定期复核','到期/调岗/离职回收'].includes(record.status)" type="button" :disabled="busy" @click="revoke(record)">执行回收</button>
+            <SgjButton v-if="canExecute && record.status === '权限生效'" type="button" :disabled="busy" @click="execute(record)">执行授权</SgjButton>
+            <SgjButton v-if="canRevoke && ['定期复核','到期/调岗/离职回收'].includes(record.status)" type="button" :disabled="busy" @click="revoke(record)">执行回收</SgjButton>
           </div>
         </article>
       </div>

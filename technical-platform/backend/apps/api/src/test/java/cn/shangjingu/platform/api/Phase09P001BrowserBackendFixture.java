@@ -3,9 +3,11 @@ package cn.shangjingu.platform.api;
 import cn.shangjingu.platform.iam.session.SessionService;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -60,6 +62,7 @@ public final class Phase09P001BrowserBackendFixture {
         String tenantCode = requiredEnv("PHASE09_P001_TENANT");
         String monitorLogin = requiredEnv("PHASE09_P001_LOGIN");
         String password = requiredEnv("PHASE09_P001_PASSWORD");
+        String mfaMasterKey = ephemeralMfaMasterKey();
         PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(POSTGRES_IMAGE)
                 .withDatabaseName("postgres")
                 .withUsername("postgres")
@@ -68,7 +71,7 @@ public final class Phase09P001BrowserBackendFixture {
         postgres.start();
         redis.start();
         prepareDatabases(postgres, tenantCode, monitorLogin, password);
-        ConfigurableApplicationContext context = startApi(postgres, redis);
+        ConfigurableApplicationContext context = startApi(postgres, redis, mfaMasterKey);
         seedTargetSessions(context);
         writeRuntimeFacts(postgres, redis);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -82,7 +85,8 @@ public final class Phase09P001BrowserBackendFixture {
 
     private static ConfigurableApplicationContext startApi(
             PostgreSQLContainer<?> postgres,
-            GenericContainer<?> redis) {
+            GenericContainer<?> redis,
+            String mfaMasterKey) {
         SpringApplication application = new SpringApplication(ApiApplication.class);
         return application.run(
                 "--server.port=18081",
@@ -95,9 +99,16 @@ public final class Phase09P001BrowserBackendFixture {
                 "--sjg.audit.datasource.url=" + jdbcUrl(postgres, "sjg_audit"),
                 "--sjg.audit.datasource.username=sjg_audit_writer",
                 "--sjg.audit.datasource.password=" + AUDIT_PASSWORD,
+                "--sjg.security.mfa.master-key-base64=" + mfaMasterKey,
                 "--sjg.security.session.access-ttl=PT10M",
                 "--sjg.security.session.refresh-ttl=PT20M",
                 "--sjg.security.step-up.ticket-ttl=PT5M");
+    }
+
+    private static String ephemeralMfaMasterKey() {
+        byte[] key = new byte[32];
+        new SecureRandom().nextBytes(key);
+        return Base64.getEncoder().encodeToString(key);
     }
 
     private static void seedTargetSessions(ConfigurableApplicationContext context) {

@@ -1,0 +1,11 @@
+{
+  "pnpm_lint": 0,
+  "pnpm_typecheck": 0,
+  "pnpm_test": 0,
+  "test_files": 26,
+  "test_cases": 109,
+  "pnpm_build": 0,
+  "build_targets": ["employee", "center", "admin"],
+  "largest_chunk_kb": 2057.01,
+  "chunk_warning_retained": true
+}

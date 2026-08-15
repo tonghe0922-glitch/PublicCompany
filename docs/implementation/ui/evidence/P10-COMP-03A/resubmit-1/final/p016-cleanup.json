@@ -1,0 +1,15 @@
+﻿{
+    "fixture_ready":  true,
+    "playwright_exit":  0,
+    "controlled_ctrl_c":  true,
+    "fixture_exit":  1,
+    "fixture_exit_expected_after_ctrl_c":  true,
+    "postgres_id":  "a34f513923afb63866c185e9fc712efe4eea4474b5f10f73eaf2a50dbc8fa010",
+    "redis_id":  "2dd1ae51285f0e2d2f43d68282bf4954f86af707762dcb460f2b7424dab10c59",
+    "remaining_exact_ids":  [
+
+                            ],
+    "ryuk_count":  0,
+    "listener_count":  0,
+    "workspace_process_count":  0
+}

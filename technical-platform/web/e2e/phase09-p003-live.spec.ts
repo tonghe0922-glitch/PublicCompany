@@ -95,7 +95,7 @@ test('P003 real P3 profile change, reviewer separation, encryption, scope and th
 
   await loginPortal(page, employeeBase, applicantLogin, '员工工作入口')
   await page.goto(`${employeeBase}#/employee/03/03/01`)
-  await expect(page.getByRole('heading', { name: '个人资料变更', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '个人资料变更', level: 2 })).toBeVisible()
   await page.getByLabel('变更字段').selectOption('id_no')
   await page.getByLabel('新值').fill(syntheticIdNo)
   await page.getByLabel('证明引用').fill(proofReference)
@@ -150,7 +150,7 @@ test('P003 real P3 profile change, reviewer separation, encryption, scope and th
 
   await loginPortal(page, centerBase, reviewer1Login, '中心管理工作入口')
   await page.goto(`${centerBase}#/center/03/02/01`)
-  await expect(page.getByRole('heading', { name: '个人资料变更复核', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '个人资料变更复核', level: 2 })).toBeVisible()
   const centerRecord = page.locator(`article[data-request-id="${id}"]`)
   await expect(centerRecord).toContainText('字段敏感级别校验')
   await expect(centerRecord).toContainText('********1234')
@@ -187,7 +187,7 @@ test('P003 real P3 profile change, reviewer separation, encryption, scope and th
 
   await loginPortal(page, techBase, techLogin, '技术运行工作入口')
   await page.goto(`${techBase}#/tech/04/01/01`)
-  await expect(page.getByRole('heading', { name: '个人资料权威更新与同步', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '个人资料权威更新与同步', level: 2 })).toBeVisible()
   const techRecord = page.locator(`article[data-request-id="${id}"]`)
   await expect(techRecord).toContainText('权威主档更新')
   await expect(techRecord).toContainText('********1234')

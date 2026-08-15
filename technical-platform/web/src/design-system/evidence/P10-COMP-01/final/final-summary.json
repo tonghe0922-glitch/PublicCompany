@@ -1,0 +1,32 @@
+﻿{
+    "workspace_source_id":  "616FF54061F0B0BB01A348C17B5C4F359D72661877A4A8717A5E66F8E083B083",
+    "workspace_count":  1464,
+    "task_source_id":  "007C80DEB48AD75992B285F65F22E28E778743AC34FD9ABEA98490BDB4F1E996",
+    "task_count":  10,
+    "evidence_metadata_id":  "74DBEC9E71C9256FCC3C14ACBA90AF4DFAAABA2E33120FBA2E49AA74442E7752",
+    "evidence_metadata_count":  1,
+    "scoped":  {
+                   "task":  7,
+                   "concurrent_core":  12,
+                   "unrelated":  0,
+                   "metadata":  1
+               },
+    "current_source":  {
+                           "status":  "FAIL",
+                           "exit":  1,
+                           "violations":  361,
+                           "route_pages":  7,
+                           "actions":  46
+                       },
+    "current_ui":  {
+                       "status":  "FAIL",
+                       "exit":  1,
+                       "errors":  88
+                   },
+    "submitted_count":  11,
+    "report":  {
+                   "path":  "technical-platform/web/src/design-system/evidence/P10-COMP-01/P10-COMP-01_REPORT.md",
+                   "sha256":  "0B195B2675966BE5639E3AB179FCCC8EC745187F1504EB16BA52D05F7F60CF90",
+                   "bytes":  6037
+               }
+}

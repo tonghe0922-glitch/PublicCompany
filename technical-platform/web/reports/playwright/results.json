@@ -1,0 +1,193 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--list"
+    ],
+    "configFile": "I:\\PublicCompany_source_codex\\technical-platform\\web\\playwright.config.ts",
+    "rootDir": "I:/PublicCompany_source_codex/technical-platform/web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "I:/PublicCompany_source_codex/technical-platform/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "I:/PublicCompany_source_codex/technical-platform/web/e2e",
+        "testIgnore": [
+          "phase08-live-session.spec.ts",
+          "phase09-p001-live.spec.ts",
+          "phase09-p002-live.spec.ts",
+          "phase09-p003-live.spec.ts",
+          "phase09-p004-live.spec.ts",
+          "phase09-p005-live.spec.ts",
+          "phase10-p006-live.spec.ts",
+          "phase10-p007-live.spec.ts",
+          "phase10-p008-live.spec.ts"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "I:/PublicCompany_source_codex/technical-platform/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "mobile-chromium",
+        "name": "mobile-chromium",
+        "testDir": "I:/PublicCompany_source_codex/technical-platform/web/e2e",
+        "testIgnore": [
+          "phase08-live-session.spec.ts",
+          "phase09-p001-live.spec.ts",
+          "phase09-p002-live.spec.ts",
+          "phase09-p003-live.spec.ts",
+          "phase09-p004-live.spec.ts",
+          "phase09-p005-live.spec.ts",
+          "phase10-p006-live.spec.ts",
+          "phase10-p007-live.spec.ts",
+          "phase10-p008-live.spec.ts"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "reports/playwright/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 -m http.server 4173 --directory dist",
+      "url": "http://127.0.0.1:4173/employee/employee.html",
+      "reuseExistingServer": false,
+      "timeout": 30000
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: required E2E environment missing: PHASE10_P009_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE10_P009_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p009-live.spec.ts:32:21)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p009-live.spec.ts:4:20",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p009-live.spec.ts",
+        "column": 21,
+        "line": 32
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase10-p009-live.spec.ts:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39m string)\u001b[33m:\u001b[39m string {\n \u001b[90m 31 |\u001b[39m   \u001b[36mconst\u001b[39m value \u001b[33m=\u001b[39m process\u001b[33m.\u001b[39menv[name]\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mvalue) \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m   \u001b[36mreturn\u001b[39m value\n \u001b[90m 34 |\u001b[39m }\n \u001b[90m 35 |\u001b[39m \u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39m string)\u001b[33m:\u001b[39m { \u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m string } { \u001b[36mreturn\u001b[39m { \u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m \u001b[32m`Bearer ${token}`\u001b[39m } }\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE10_P010_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE10_P010_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p010-live.spec.ts:39:21)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p010-live.spec.ts:6:20",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase10-p010-live.spec.ts",
+        "column": 21,
+        "line": 39
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase10-p010-live.spec.ts:39\n\n\u001b[0m \u001b[90m 37 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39m string)\u001b[33m:\u001b[39m string {\n \u001b[90m 38 |\u001b[39m   \u001b[36mconst\u001b[39m value \u001b[33m=\u001b[39m process\u001b[33m.\u001b[39menv[name]\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 39 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mvalue) \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[36mreturn\u001b[39m value\n \u001b[90m 41 |\u001b[39m }\n \u001b[90m 42 |\u001b[39m \u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39m string)\u001b[33m:\u001b[39m { \u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m string } {\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P011_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P011_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p011-live.spec.ts:34:21)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p011-live.spec.ts:4:20",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p011-live.spec.ts",
+        "column": 21,
+        "line": 34
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p011-live.spec.ts:34\n\n\u001b[0m \u001b[90m 32 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39m string) {\n \u001b[90m 33 |\u001b[39m   \u001b[36mconst\u001b[39m value \u001b[33m=\u001b[39m process\u001b[33m.\u001b[39menv[name]\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 34 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mvalue) \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 35 |\u001b[39m   \u001b[36mreturn\u001b[39m value\n \u001b[90m 36 |\u001b[39m }\n \u001b[90m 37 |\u001b[39m\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P012_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P012_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p012-live.spec.ts:8:78)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p012-live.spec.ts:4:18",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p012-live.spec.ts",
+        "column": 78,
+        "line": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p012-live.spec.ts:8\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[36mconst\u001b[39m api\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:18090'\u001b[39m\u001b[33m,\u001b[39memployeeBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5330/employee.html'\u001b[39m\u001b[33m,\u001b[39mcenterBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5331/center.html'\u001b[39m\u001b[33m,\u001b[39mtechBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5332/admin.html'\u001b[39m\u001b[33m,\u001b[39mownerId\u001b[33m=\u001b[39m\u001b[32m'30000000-0000-0000-0000-000000003422'\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mPromotion\u001b[39m { id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m businessNo\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m currentNodeCode\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m versionNo\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39m reason\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m personName\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m personNo\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m score1000\u001b[33m:\u001b[39mnumber\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m events\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39m executions\u001b[33m:\u001b[39m\u001b[33mArray\u001b[39m\u001b[33m<\u001b[39m{executionType\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mexternalReference\u001b[33m:\u001b[39mstring}\u001b[33m>\u001b[39m }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m value\u001b[33m=\u001b[39mprocess\u001b[33m.\u001b[39menv[name]\u001b[33m;\u001b[39m\u001b[36mif\u001b[39m(\u001b[33m!\u001b[39mvalue)\u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m value}\n \u001b[90m    |\u001b[39m                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m \u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{\u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m\u001b[32m`Bearer ${token}`\u001b[39m}}\n \u001b[90m 10 |\u001b[39m \u001b[36mfunction\u001b[39m evidence(note\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{note\u001b[33m,\u001b[39mrecordedAt\u001b[33m:\u001b[39m\u001b[36mnew\u001b[39m \u001b[33mDate\u001b[39m()\u001b[33m.\u001b[39mtoISOString()}}\n \u001b[90m 11 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m apiLogin(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${api}/api/v1/auth/login`\u001b[39m\u001b[33m,\u001b[39m{data\u001b[33m:\u001b[39m{tenantCode\u001b[33m,\u001b[39mloginName\u001b[33m:\u001b[39mname\u001b[33m,\u001b[39mpassword}})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m((\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m{accessToken\u001b[33m:\u001b[39mstring})\u001b[33m.\u001b[39maccessToken}\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P013_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P013_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p013-live.spec.ts:9:78)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p013-live.spec.ts:4:18",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p013-live.spec.ts",
+        "column": 78,
+        "line": 9
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p013-live.spec.ts:9\n\n\u001b[0m \u001b[90m  7 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mImpact\u001b[39m { id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m impactType\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m requestedPoints\u001b[33m:\u001b[39mnumber\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m approvedAmount\u001b[33m:\u001b[39mnumber\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m authorityReference\u001b[33m:\u001b[39mstring }\n \u001b[90m  8 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mReward\u001b[39m { id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m businessNo\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m currentNodeCode\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39m versionNo\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39m reason\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m factSummary\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m recommendedRewardLevel\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m approvedRewardLevel\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m benefitAmount\u001b[33m:\u001b[39mnumber\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m events\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39m impacts\u001b[33m:\u001b[39m\u001b[33mImpact\u001b[39m[]\u001b[33m;\u001b[39m receipts\u001b[33m:\u001b[39munknown[] }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m value\u001b[33m=\u001b[39mprocess\u001b[33m.\u001b[39menv[name]\u001b[33m;\u001b[39m\u001b[36mif\u001b[39m(\u001b[33m!\u001b[39mvalue)\u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m value}\n \u001b[90m    |\u001b[39m                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m \u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{\u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m\u001b[32m`Bearer ${token}`\u001b[39m}}\n \u001b[90m 11 |\u001b[39m \u001b[36mfunction\u001b[39m evidence(note\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{note\u001b[33m,\u001b[39mrecordedAt\u001b[33m:\u001b[39m\u001b[36mnew\u001b[39m \u001b[33mDate\u001b[39m()\u001b[33m.\u001b[39mtoISOString()}}\n \u001b[90m 12 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m apiLogin(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${api}/api/v1/auth/login`\u001b[39m\u001b[33m,\u001b[39m{data\u001b[33m:\u001b[39m{tenantCode\u001b[33m,\u001b[39mloginName\u001b[33m:\u001b[39mname\u001b[33m,\u001b[39mpassword}})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m((\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m{accessToken\u001b[33m:\u001b[39mstring})\u001b[33m.\u001b[39maccessToken}\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P014_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P014_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p014-live.spec.ts:8:78)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p014-live.spec.ts:4:18",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p014-live.spec.ts",
+        "column": 78,
+        "line": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p014-live.spec.ts:8\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[36mconst\u001b[39m api\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:18090'\u001b[39m\u001b[33m,\u001b[39memployeeBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5340/employee.html'\u001b[39m\u001b[33m,\u001b[39mcenterBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5341/center.html'\u001b[39m\u001b[33m,\u001b[39mtechBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5342/admin.html'\u001b[39m\u001b[33m,\u001b[39maffectedId\u001b[33m=\u001b[39m\u001b[32m'30000000-0000-0000-0000-000000003524'\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mImpact\u001b[39m {id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mimpactType\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mauthorityReference\u001b[33m:\u001b[39mstring}\u001b[36minterface\u001b[39m \u001b[33mDiscipline\u001b[39m {id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mbusinessNo\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mcurrentNodeCode\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mversionNo\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39mreason\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39maffectedEmployeeId\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39msourceFactKey\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mfactSummary\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mevents\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39mdecisions\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39mimpacts\u001b[33m:\u001b[39m\u001b[33mImpact\u001b[39m[]\u001b[33m;\u001b[39mreceipts\u001b[33m:\u001b[39munknown[]}\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m value\u001b[33m=\u001b[39mprocess\u001b[33m.\u001b[39menv[name]\u001b[33m;\u001b[39m\u001b[36mif\u001b[39m(\u001b[33m!\u001b[39mvalue)\u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m value}\u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{\u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m\u001b[32m`Bearer ${token}`\u001b[39m}}\u001b[36mfunction\u001b[39m evidence(note\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{note\u001b[33m,\u001b[39mrecordedAt\u001b[33m:\u001b[39m\u001b[36mnew\u001b[39m \u001b[33mDate\u001b[39m()\u001b[33m.\u001b[39mtoISOString()}}\n \u001b[90m    |\u001b[39m                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m apiLogin(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${api}/api/v1/auth/login`\u001b[39m\u001b[33m,\u001b[39m{data\u001b[33m:\u001b[39m{tenantCode\u001b[33m,\u001b[39mloginName\u001b[33m:\u001b[39mname\u001b[33m,\u001b[39mpassword}})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m((\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m{accessToken\u001b[33m:\u001b[39mstring})\u001b[33m.\u001b[39maccessToken}\n \u001b[90m 10 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m login(page\u001b[33m:\u001b[39m\u001b[33mPage\u001b[39m\u001b[33m,\u001b[39mbase\u001b[33m:\u001b[39mstring\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(base)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(()\u001b[33m=>\u001b[39msessionStorage\u001b[33m.\u001b[39mclear())\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mreload()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${base}#/login`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"tenantCode\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(tenantCode)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"username\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(name)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"password\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(password)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form button[type=\"submit\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/#\\/login/u\u001b[39m)}\n \u001b[90m 11 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getCase(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mtoken\u001b[33m:\u001b[39mstring\u001b[33m,\u001b[39mid\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${api}/api/v1/processes/P014/discipline-cases/${id}`\u001b[39m\u001b[33m,\u001b[39m{headers\u001b[33m:\u001b[39mheaders(token)})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m(\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m \u001b[33mDiscipline\u001b[39m}\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P015_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P015_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p015-live.spec.ts:8:78)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p015-live.spec.ts:4:18",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p015-live.spec.ts",
+        "column": 78,
+        "line": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p015-live.spec.ts:8\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[36mconst\u001b[39m api\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:18090'\u001b[39m\u001b[33m,\u001b[39memployeeBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5350/employee.html'\u001b[39m\u001b[33m,\u001b[39mcenterBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5351/center.html'\u001b[39m\u001b[33m,\u001b[39mtechBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5352/admin.html'\u001b[39m\u001b[33m,\u001b[39maffectedId\u001b[33m=\u001b[39m\u001b[32m'30000000-0000-0000-0000-000000003625'\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mPointTransaction\u001b[39m{id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mbusinessNo\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mcurrentNodeCode\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mversionNo\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39maffectedEmployeeId\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39msourceFactKey\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mcalculatedPoints\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39mcappedPoints\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39mevents\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39mposting\u001b[33m:\u001b[39m{postedPoints\u001b[33m:\u001b[39mnumber}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mbalance\u001b[33m:\u001b[39m{effectiveBalance\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39mrankCode\u001b[33m:\u001b[39mstring}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m}\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m value\u001b[33m=\u001b[39mprocess\u001b[33m.\u001b[39menv[name]\u001b[33m;\u001b[39m\u001b[36mif\u001b[39m(\u001b[33m!\u001b[39mvalue)\u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m value}\u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{\u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m\u001b[32m`Bearer ${token}`\u001b[39m}}\u001b[36mfunction\u001b[39m evidence(note\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{note\u001b[33m,\u001b[39mrecordedAt\u001b[33m:\u001b[39m\u001b[36mnew\u001b[39m \u001b[33mDate\u001b[39m()\u001b[33m.\u001b[39mtoISOString()}}\n \u001b[90m    |\u001b[39m                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m apiLogin(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${api}/api/v1/auth/login`\u001b[39m\u001b[33m,\u001b[39m{data\u001b[33m:\u001b[39m{tenantCode\u001b[33m,\u001b[39mloginName\u001b[33m:\u001b[39mname\u001b[33m,\u001b[39mpassword}})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m((\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m{accessToken\u001b[33m:\u001b[39mstring})\u001b[33m.\u001b[39maccessToken}\n \u001b[90m 10 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m login(page\u001b[33m:\u001b[39m\u001b[33mPage\u001b[39m\u001b[33m,\u001b[39mbase\u001b[33m:\u001b[39mstring\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(base)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(()\u001b[33m=>\u001b[39msessionStorage\u001b[33m.\u001b[39mclear())\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mreload()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${base}#/login`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"tenantCode\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(tenantCode)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"username\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(name)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"password\"]'\u001b[39m)\u001b[33m.\u001b[39mfill(password)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form button[type=\"submit\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/#\\/login/u\u001b[39m)}\n \u001b[90m 11 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getPoint(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mtoken\u001b[33m:\u001b[39mstring\u001b[33m,\u001b[39mid\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${api}/api/v1/processes/P015/point-transactions/${id}`\u001b[39m\u001b[33m,\u001b[39m{headers\u001b[33m:\u001b[39mheaders(token)})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m(\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m \u001b[33mPointTransaction\u001b[39m}\u001b[0m"
+    },
+    {
+      "message": "Error: required E2E environment missing: PHASE11_P016_TENANT",
+      "stack": "Error: required E2E environment missing: PHASE11_P016_TENANT\n    at required (I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p016-live.spec.ts:8:78)\n    at I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p016-live.spec.ts:4:18",
+      "location": {
+        "file": "I:\\PublicCompany_source_codex\\technical-platform\\web\\e2e\\phase11-p016-live.spec.ts",
+        "column": 78,
+        "line": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mphase11-p016-live.spec.ts:8\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[36mconst\u001b[39m api\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:18090'\u001b[39m\u001b[33m,\u001b[39memployeeBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5360/employee.html'\u001b[39m\u001b[33m,\u001b[39mcenterBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5361/center.html'\u001b[39m\u001b[33m,\u001b[39mtechBase\u001b[33m=\u001b[39m\u001b[32m'http://127.0.0.1:5362/admin.html'\u001b[39m\u001b[33m,\u001b[39maffectedId\u001b[33m=\u001b[39m\u001b[32m'30000000-0000-0000-0000-000000003726'\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36minterface\u001b[39m \u001b[33mCareCase\u001b[39m{id\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mbusinessNo\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mcurrentNodeCode\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mversionNo\u001b[33m:\u001b[39mnumber\u001b[33m;\u001b[39msubject\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39maffectedEmployeeId\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39msourceFactKey\u001b[33m:\u001b[39mstring\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mrequestedAmount\u001b[33m:\u001b[39mnumber\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mevents\u001b[33m:\u001b[39munknown[]\u001b[33m;\u001b[39meligibility\u001b[33m:\u001b[39m{outcome\u001b[33m:\u001b[39mstring}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mapproval\u001b[33m:\u001b[39m{approvedAmount\u001b[33m:\u001b[39mnumber}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mexecution\u001b[33m:\u001b[39m{executionKind\u001b[33m:\u001b[39mstring\u001b[33m;\u001b[39mexternalReference\u001b[33m:\u001b[39mstring}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mconfirmation\u001b[33m:\u001b[39m{outcome\u001b[33m:\u001b[39mstring}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m\u001b[33m;\u001b[39mreconciliation\u001b[33m:\u001b[39m{outcome\u001b[33m:\u001b[39mstring}\u001b[33m|\u001b[39m\u001b[36mnull\u001b[39m}\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m \u001b[36mfunction\u001b[39m required(name\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m value\u001b[33m=\u001b[39mprocess\u001b[33m.\u001b[39menv[name]\u001b[33m;\u001b[39m\u001b[36mif\u001b[39m(\u001b[33m!\u001b[39mvalue)\u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`required E2E environment missing: ${name}`\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m value}\n \u001b[90m    |\u001b[39m                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m \u001b[36mfunction\u001b[39m headers(token\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{\u001b[33mAuthorization\u001b[39m\u001b[33m:\u001b[39m\u001b[32m`Bearer ${token}`\u001b[39m}}\n \u001b[90m 10 |\u001b[39m \u001b[36mfunction\u001b[39m evidence(note\u001b[33m:\u001b[39mstring){\u001b[36mreturn\u001b[39m{note\u001b[33m,\u001b[39mrecordedAt\u001b[33m:\u001b[39m\u001b[36mnew\u001b[39m \u001b[33mDate\u001b[39m()\u001b[33m.\u001b[39mtoISOString()}}\n \u001b[90m 11 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m apiLogin(request\u001b[33m:\u001b[39m\u001b[33mAPIRequestContext\u001b[39m\u001b[33m,\u001b[39mname\u001b[33m:\u001b[39mstring){\u001b[36mconst\u001b[39m response\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${api}/api/v1/auth/login`\u001b[39m\u001b[33m,\u001b[39m{data\u001b[33m:\u001b[39m{tenantCode\u001b[33m,\u001b[39mloginName\u001b[33m:\u001b[39mname\u001b[33m,\u001b[39mpassword}})\u001b[33m;\u001b[39mexpect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m((\u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson())\u001b[36mas\u001b[39m{accessToken\u001b[33m:\u001b[39mstring})\u001b[33m.\u001b[39maccessToken}\u001b[0m"
+    }
+  ],
+  "stats": {
+    "startTime": "2026-08-13T22:17:34.496Z",
+    "duration": 225.75400000000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

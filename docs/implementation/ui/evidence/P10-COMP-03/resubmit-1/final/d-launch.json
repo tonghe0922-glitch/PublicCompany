@@ -1,0 +1,15 @@
+﻿{
+    "launcher_pid":  43872,
+    "started_utc":  "2026-08-13T11:15:17.8388201Z",
+    "stdout":  "I:\\PublicCompany_source_codex\\docs\\implementation\\ui\\evidence\\P10-COMP-03\\resubmit-1\\final\\d-fixture.log",
+    "stderr":  "I:\\PublicCompany_source_codex\\docs\\implementation\\ui\\evidence\\P10-COMP-03\\resubmit-1\\final\\d-fixture.err.log",
+    "old_runtime_ids":  [
+                            35248,
+                            43248,
+                            44872,
+                            41392,
+                            36432,
+                            15196,
+                            40796
+                        ]
+}

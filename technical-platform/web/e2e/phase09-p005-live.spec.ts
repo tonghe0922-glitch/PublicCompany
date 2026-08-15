@@ -105,7 +105,7 @@ async function postReceipt(
   return { status: response.status(), ...(response.ok() ? { body: await response.json() as NoticeView } : {}) }
 }
 async function refreshRecord(page: Page, id: string): Promise<Locator> {
-  const p005 = page.locator('main[data-testid="p005-page"]')
+  const p005 = page.locator('section[data-testid="p005-page"]')
   await p005.getByRole('button', { name: '刷新' }).click()
   const record = p005.locator(`article[data-notice-id="${id}"]`)
   await expect(record).toBeVisible()
@@ -121,7 +121,7 @@ test('P005 real notice delivery keeps read distinct from confirm and closes thre
 
   await loginPortal(page, centerBase, publisherLogin, '中心管理工作入口')
   await page.goto(`${centerBase}#/center/13/01/05`)
-  await expect(page.getByRole('heading', { name: '制度通知发布与验收', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '制度通知发布与验收', level: 2 })).toBeVisible()
   await page.getByLabel('制度编码').fill(policyCode)
   await page.getByLabel('目标岗位编码（可选）').fill('P005_RECIPIENT')
   await page.getByLabel('理解验证通过分').fill('80')
@@ -172,7 +172,7 @@ test('P005 real notice delivery keeps read distinct from confirm and closes thre
 
   await loginPortal(page, employeeBase, recipient1Login, '员工工作入口')
   await page.goto(`${employeeBase}#/employee/13/01/05`)
-  await expect(page.getByRole('heading', { name: '制度通知与执行回执', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '制度通知与执行回执', level: 2 })).toBeVisible()
   let employeeRecord = page.locator(`article[data-notice-id="${id}"]`)
   await expect(employeeRecord).toContainText('送达：DELIVERED')
   await employeeRecord.getByRole('button', { name: '标记已阅读' }).click()
@@ -244,12 +244,23 @@ test('P005 real notice delivery keeps read distinct from confirm and closes thre
 
   await loginPortal(page, techBase, techLogin, '技术运行工作入口')
   await page.goto(`${techBase}#/tech/05/03/01`)
-  await expect(page.getByRole('heading', { name: '制度通知与执行回执监控', level: 1 })).toBeVisible()
-  const techRecord = page.locator(`article[data-notice-id="${id}"]`)
+  await expect(page.getByRole('heading', { name: 'P005 通知监控', level: 3, exact: true })).toBeVisible()
+  const monitorSection = page.locator('section[data-monitor-process="P005"]')
+  const monitorTable = monitorSection.getByRole('table', { name: 'P005 通知监控投影' })
+  const techRecord = monitorTable.getByRole('row').filter({ hasText: managerView.notice.businessNo })
+  await expect(techRecord).toHaveCount(1)
+  await expect(techRecord).toContainText('P005')
+  await expect(techRecord).toContainText('END')
   await expect(techRecord).toContainText('已关闭')
   await expect(techRecord).not.toContainText(privateSubject)
   await expect(techRecord).not.toContainText(privateContent)
-  await expect(techRecord).toContainText('技术监控按最小必要原则')
+  await expect(techRecord.getByRole('cell', { name: String(managerView.acceptedCount), exact: true })).toHaveCount(1)
+  await expect(monitorSection).not.toContainText(privateSubject)
+  await expect(monitorSection).not.toContainText(privateContent)
+  await expect(page.locator('main')).not.toContainText(privateSubject)
+  await expect(page.locator('main')).not.toContainText(privateContent)
+  await expect(techRecord.getByRole('button')).toHaveCount(0)
+  await expect(monitorSection.locator('[data-action], [data-business-mutation]')).toHaveCount(0)
 
   await page.goto(`${employeeBase}#/employee/13/01/05`)
   const closedEmployeeRecord = page.locator(`article[data-notice-id="${id}"]`)

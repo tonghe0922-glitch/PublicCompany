@@ -19,28 +19,480 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 class Phase11P016DatabaseIT {
-    private static final UUID TENANT=id("00000000-0000-0000-0000-000000001116"),OTHER=id("00000000-0000-0000-0000-000000009116"),CENTER=id("11000000-0000-0000-0000-000000001116"),OTHER_CENTER=id("11000000-0000-0000-0000-000000009116"),AFFECTED=id("10000000-0000-0000-0000-000000001116"),ELIGIBILITY=id("10000000-0000-0000-0000-000000001117"),APPROVER=id("10000000-0000-0000-0000-000000001118"),EXECUTOR=id("10000000-0000-0000-0000-000000001119"),RECONCILER=id("10000000-0000-0000-0000-000000001120"),OTHER_ACTOR=id("10000000-0000-0000-0000-000000009116"),CASE=id("40000000-0000-0000-0000-000000001116"),CASE_TWO=id("40000000-0000-0000-0000-000000001117"),CASE_THREE=id("40000000-0000-0000-0000-000000001118");
-    private static final PostgreSQLContainer<?> POSTGRES=new PostgreSQLContainer<>("postgres:16.14-alpine3.24").withDatabaseName("postgres").withUsername("postgres").withPassword("phase11-p016-bootstrap");
-    private static String omsUrl;
 
-    @BeforeAll static void migrate()throws Exception{POSTGRES.start();Path root=root();Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/cluster")).cleanDisabled(true).load().migrate();try(Connection c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());Statement s=c.createStatement()){s.execute("create database sjg_oms");}omsUrl="jdbc:postgresql://"+POSTGRES.getHost()+":"+POSTGRES.getMappedPort(5432)+"/sjg_oms";Flyway f=Flyway.configure().dataSource(omsUrl,POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/oms"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/oms")).placeholders(Map.of("sjg_tenant_id",TENANT.toString(),"sjg_tenant_code","PHASE11_P016","sjg_tenant_name","P016 database test")).cleanDisabled(true).load();assertTrue(f.migrate().success);f.validate();assertEquals(0,f.migrate().migrationsExecuted);seed();}
-    @AfterAll static void stop(){POSTGRES.stop();}
+  private static final UUID TENANT = id("00000000-0000-0000-0000-000000001116"),
+      OTHER = id("00000000-0000-0000-0000-000000009116"),
+      CENTER = id("11000000-0000-0000-0000-000000001116"),
+      OTHER_CENTER = id("11000000-0000-0000-0000-000000009116"),
+      AFFECTED = id("10000000-0000-0000-0000-000000001116"),
+      ELIGIBILITY = id("10000000-0000-0000-0000-000000001117"),
+      APPROVER = id("10000000-0000-0000-0000-000000001118"),
+      EXECUTOR = id("10000000-0000-0000-0000-000000001119"),
+      RECONCILER = id("10000000-0000-0000-0000-000000001120"),
+      OTHER_ACTOR = id("10000000-0000-0000-0000-000000009116"),
+      CASE = id("40000000-0000-0000-0000-000000001116"),
+      CASE_TWO = id("40000000-0000-0000-0000-000000001117"),
+      CASE_THREE = id("40000000-0000-0000-0000-000000001118");
 
-    @Test void migrationPublishesSourceWorkflowPermissionsFormsAndAppendOnlyGrants()throws Exception{try(Connection c=connection();Statement s=c.createStatement()){assertEquals(1,scalar(s,"select count(*) from flyway_schema_history where version='125' and success"));assertEquals(9,scalar(s,workflowCount("wf_node")));assertEquals(10,scalar(s,workflowCount("wf_transition")));assertEquals(2,scalar(s,"select count(*) from workflow.wf_node n join workflow.wf_version v on v.tenant_id=n.tenant_id and v.id=n.version_id join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id where n.tenant_id='"+TENANT+"' and d.process_code='P016' and v.status='PUBLISHED' and n.node_code in ('S02','S08') and n.actor_rule @> '{\"resolver\":\"CONTEXT_EMPLOYEE_IDS\",\"field\":\"managerCandidateIds\",\"allowInitiator\":true}'::jsonb and not n.is_deleted"));assertEquals(6,scalar(s,"select count(*) from iam.permission where tenant_id='"+TENANT+"' and permission_code like 'p016.welfare.%' and not is_deleted"));assertEquals(1,scalar(s,"select count(*) from workflow.wf_form_definition where tenant_id='"+TENANT+"' and form_code='CTR-P016-F01' and process_code='P016' and not is_deleted"));assertEquals(7,scalar(s,"select count(distinct table_name) from information_schema.role_table_grants where grantee='sjg_api_runtime' and table_schema='welfare' and table_name in ('care_case_event','care_eligibility_fact','care_privacy_consent','care_approval_fact','care_execution_receipt','care_employee_confirmation','care_reconciliation_fact') and privilege_type='INSERT'"));assertEquals(0,scalar(s,"select count(*) from information_schema.role_table_grants where grantee in ('sjg_api_runtime','sjg_worker_runtime') and table_schema='welfare' and table_name in ('care_case_event','care_eligibility_fact','care_privacy_consent','care_approval_fact','care_execution_receipt','care_employee_confirmation','care_reconciliation_fact') and privilege_type in ('UPDATE','DELETE','TRUNCATE')"));}}
+  private static final PostgreSQLContainer<?> POSTGRES =
+      new PostgreSQLContainer<>("postgres:16.14-alpine3.24")
+          .withDatabaseName("postgres")
+          .withUsername("postgres")
+          .withPassword("phase11-p016-bootstrap");
 
-    @Test void lifecycleStoresEligibilityConsentApprovalExternalReceiptConfirmationAndReconciliationSeparately()throws Exception{try(Connection c=connection();Statement s=c.createStatement()){assertEquals(1,scalar(s,"select count(*) from welfare.care_case where id='"+CASE+"' and affected_employee_id='"+AFFECTED+"' and source_fact_key='SOURCE-P016-001' and privacy_required"));assertEquals(1,scalar(s,"select count(*) from welfare.care_eligibility_fact where care_case_id='"+CASE+"' and outcome='ELIGIBLE' and checked_by='"+ELIGIBILITY+"'"));assertEquals(1,scalar(s,"select count(*) from welfare.care_privacy_consent where care_case_id='"+CASE+"' and consented_by='"+AFFECTED+"'"));assertEquals(1,scalar(s,"select count(*) from welfare.care_approval_fact where care_case_id='"+CASE+"' and outcome='APPROVED' and approved_amount=800"));assertEquals(1,scalar(s,"select count(*) from welfare.care_execution_receipt where care_case_id='"+CASE+"' and execution_kind='PAYMENT_RECEIPT' and external_reference='EXT-P016-001' and invoice_code='INV-P016'"));assertEquals(1,scalar(s,"select count(*) from welfare.care_employee_confirmation where care_case_id='"+CASE+"' and outcome='CONFIRMED' and confirmed_by='"+AFFECTED+"'"));assertEquals(1,scalar(s,"select count(*) from welfare.care_reconciliation_fact where care_case_id='"+CASE+"' and outcome='MATCHED' and reconciled_by='"+RECONCILER+"'"));}}
+  private static String omsUrl;
 
-    @Test void sourceExternalReceiptInvoiceTenantAndAffectedEmployeeBoundariesFailClosed(){assertSqlState("23505",caseSql(id("40000000-0000-0000-0000-000000001199"),"P016-DUP-SOURCE","SOURCE-P016-001",AFFECTED));assertSqlState("23505",executionSql(CASE_TWO,"EXT-P016-001","INV-OTHER","NUM-OTHER"));assertSqlState("23505",executionSql(CASE_THREE,"EXT-P016-003","INV-P016","NUM-001"));assertSqlState("23514","insert into welfare.care_case_event(tenant_id,care_case_id,event_seq,event_type,evidence,actor_employee_id) values ('"+TENANT+"','"+CASE_TWO+"',1,'CROSS_TENANT_ACTOR','{}','"+OTHER_ACTOR+"')");assertSqlState("23514","insert into welfare.care_privacy_consent(tenant_id,care_case_id,consent_scope,consent_hash,consented_at,evidence,consented_by) values ('"+TENANT+"','"+CASE_TWO+"','WELFARE_CASE','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',now(),'{}','"+APPROVER+"')");assertSqlState("23514","insert into welfare.care_employee_confirmation(tenant_id,care_case_id,outcome,confirmed_at,evidence,confirmed_by) values ('"+TENANT+"','"+CASE_TWO+"','CONFIRMED',now(),'{}','"+APPROVER+"')");}
+  @BeforeAll
+  static void migrate() throws Exception {
+    POSTGRES.start();
+    Path root = root();
+    Flyway.configure()
+        .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations("filesystem:" + root.resolve("technical-platform/database/flyway/cluster"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    try (Connection c =
+            DriverManager.getConnection(
+                POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute("create database sjg_oms");
+    }
+    omsUrl =
+        "jdbc:postgresql://" + POSTGRES.getHost() + ":" + POSTGRES.getMappedPort(5432) + "/sjg_oms";
+    Flyway f =
+        Flyway.configure()
+            .dataSource(omsUrl, POSTGRES.getUsername(), POSTGRES.getPassword())
+            .locations(
+                "filesystem:" + root.resolve("technical-platform/database/flyway/oms"),
+                "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/oms"))
+            .placeholders(
+                Map.of(
+                    "sjg_tenant_id",
+                    TENANT.toString(),
+                    "sjg_tenant_code",
+                    "PHASE11_P016",
+                    "sjg_tenant_name",
+                    "P016 database test"))
+            .cleanDisabled(true)
+            .load();
+    assertTrue(f.migrate().success);
+    f.validate();
+    assertEquals(0, f.migrate().migrationsExecuted);
+    seed();
+  }
 
-    @Test void allLifecycleFactsAreImmutable(){assertSqlState("55000","update welfare.care_case_event set event_type='TAMPERED' where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_eligibility_fact where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_privacy_consent where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_approval_fact where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_execution_receipt where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_employee_confirmation where care_case_id='"+CASE+"'");assertSqlState("55000","delete from welfare.care_reconciliation_fact where care_case_id='"+CASE+"'");}
+  @AfterAll
+  static void stop() {
+    POSTGRES.stop();
+  }
 
-    private static void seed()throws Exception{try(Connection c=connection();Statement s=c.createStatement()){s.execute("insert into core.tenant(id,tenant_code,tenant_name,status) values ('"+OTHER+"','P016_OTHER','P016 Other','ACTIVE')");s.execute("insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values ('"+CENTER+"','"+TENANT+"','P016_CENTER','P016 Center','CENTER','p016_center'::ltree,'ACTIVE'),('"+OTHER_CENTER+"','"+OTHER+"','P016_OTHER','P016 Other','CENTER','p016_other'::ltree,'ACTIVE')");s.execute("insert into org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id) values ('"+AFFECTED+"','"+TENANT+"','P016-E01','P016 Affected','ACTIVE',current_date-90,'"+CENTER+"'),('"+ELIGIBILITY+"','"+TENANT+"','P016-E02','P016 Eligibility','ACTIVE',current_date-90,'"+CENTER+"'),('"+APPROVER+"','"+TENANT+"','P016-E03','P016 Approver','ACTIVE',current_date-90,'"+CENTER+"'),('"+EXECUTOR+"','"+TENANT+"','P016-E04','P016 Executor','ACTIVE',current_date-90,'"+CENTER+"'),('"+RECONCILER+"','"+TENANT+"','P016-E05','P016 Reconciler','ACTIVE',current_date-90,'"+CENTER+"'),('"+OTHER_ACTOR+"','"+OTHER+"','P016-X01','P016 Other','ACTIVE',current_date-90,'"+OTHER_CENTER+"')");s.execute(caseSql(CASE,"P016-DB-001","SOURCE-P016-001",AFFECTED));s.execute(caseSql(CASE_TWO,"P016-DB-002","SOURCE-P016-002",AFFECTED));s.execute(caseSql(CASE_THREE,"P016-DB-003","SOURCE-P016-003",AFFECTED));s.execute("insert into welfare.care_case_event(tenant_id,care_case_id,event_seq,event_type,evidence,actor_employee_id) values ('"+TENANT+"','"+CASE+"',1,'APPLICATION_SUBMITTED','{\"source\":\"verified\"}','"+ELIGIBILITY+"')");s.execute("insert into welfare.care_eligibility_fact(tenant_id,care_case_id,outcome,authority_reference,checked_at,evidence,checked_by) values ('"+TENANT+"','"+CASE+"','ELIGIBLE','AUTH-P016-ELIGIBILITY',now(),'{\"verified\":true}','"+ELIGIBILITY+"')");s.execute("insert into welfare.care_privacy_consent(tenant_id,care_case_id,consent_scope,consent_hash,consented_at,evidence,consented_by) values ('"+TENANT+"','"+CASE+"','WELFARE_CASE','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',now(),'{\"method\":\"employee-confirmed\"}','"+AFFECTED+"')");s.execute("insert into welfare.care_approval_fact(tenant_id,care_case_id,outcome,authority_reference,approved_amount,decided_at,evidence,decided_by) values ('"+TENANT+"','"+CASE+"','APPROVED','AUTH-P016-APPROVAL',800,now(),'{\"decision\":\"authorized\"}','"+APPROVER+"')");s.execute(executionSql(CASE,"EXT-P016-001","INV-P016","NUM-001"));s.execute("insert into welfare.care_employee_confirmation(tenant_id,care_case_id,outcome,confirmed_at,evidence,confirmed_by) values ('"+TENANT+"','"+CASE+"','CONFIRMED',now(),'{\"receipt\":\"confirmed\"}','"+AFFECTED+"')");s.execute("insert into welfare.care_reconciliation_fact(tenant_id,care_case_id,outcome,external_reference,reconciled_at,evidence,reconciled_by) values ('"+TENANT+"','"+CASE+"','MATCHED','EXT-P016-001',now(),'{\"externalReceiptMatched\":true}','"+RECONCILER+"')");}}
-    private static String caseSql(UUID id,String no,String source,UUID affected){return "insert into welfare.care_case(id,tenant_id,business_no,status,created_by,updated_by,source_channel,business_date,subject,reason,priority,risk_level,owner_center_id,owner_employee_id,actual_amount,benefit_amount,cost_center_id,currency,employee_event_type,fact_occurred_at,fact_summary,impact_level,source_fact_key,affected_employee_id,care_type,privacy_required) values ('"+id+"','"+TENANT+"','"+no+"','APPLICATION','"+ELIGIBILITY+"','"+ELIGIBILITY+"','TEST',current_date,'P016 welfare case','Source-backed application','NORMAL','L2','"+CENTER+"','"+ELIGIBILITY+"',0,1000,'P016-COST','CNY','WELFARE_CARE',now(),'Verified welfare event','L2','"+source+"','"+affected+"','HARDSHIP',true)";}
-    private static String executionSql(UUID careCase,String external,String invoiceCode,String invoiceNumber){return "insert into welfare.care_execution_receipt(tenant_id,care_case_id,execution_kind,external_reference,external_occurred_at,executed_amount,currency,invoice_code,invoice_number,invoice_date,invoice_amount,invoice_image_sha256,evidence,recorded_by) values ('"+TENANT+"','"+careCase+"','PAYMENT_RECEIPT','"+external+"',now(),800,'CNY','"+invoiceCode+"','"+invoiceNumber+"',current_date,800,'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','{\"externalAuthorization\":true}','"+EXECUTOR+"')";}
-    private static void assertSqlState(String expected,String sql){SQLException e=assertThrows(SQLException.class,()->{try(Connection c=connection();Statement s=c.createStatement()){s.execute(sql);}});assertEquals(expected,e.getSQLState());}
-    private static String workflowCount(String table){return "select count(*) from workflow."+table+" x join workflow.wf_version v on v.id=x.version_id and v.tenant_id=x.tenant_id join workflow.wf_definition d on d.id=v.definition_id and d.tenant_id=v.tenant_id where d.process_code='P016' and v.status='PUBLISHED' and x.tenant_id='"+TENANT+"' and not x.is_deleted";}
-    private static long scalar(Statement s,String sql)throws SQLException{try(var r=s.executeQuery(sql)){r.next();return r.getLong(1);}}
-    private static Connection connection()throws SQLException{return DriverManager.getConnection(omsUrl,POSTGRES.getUsername(),POSTGRES.getPassword());}
-    private static UUID id(String value){return UUID.fromString(value);}
-    private static Path root(){Path p=Path.of("").toAbsolutePath();while(p!=null){if(Files.exists(p.resolve("AGENT.md")))return p;p=p.getParent();}throw new IllegalStateException("repository root not found");}
+  @Test
+  void migrationPublishesSourceWorkflowPermissionsFormsAndAppendOnlyGrants() throws Exception {
+    try (Connection c = connection();
+        Statement s = c.createStatement()) {
+      assertEquals(
+          1,
+          scalar(s, "select count(*) from flyway_schema_history where version='125' and success"));
+      assertEquals(9, scalar(s, workflowCount("wf_node")));
+      assertEquals(10, scalar(s, workflowCount("wf_transition")));
+      assertEquals(
+          2,
+          scalar(
+              s,
+              "select count(*) from workflow.wf_node n join workflow.wf_version v on"
+                  + " v.tenant_id=n.tenant_id and v.id=n.version_id join workflow.wf_definition d"
+                  + " on d.tenant_id=v.tenant_id and d.id=v.definition_id where n.tenant_id='"
+                  + TENANT
+                  + "' and d.process_code='P016' and v.status='PUBLISHED' and n.node_code in"
+                  + " ('S02','S08') and n.actor_rule @>"
+                  + " '{\"resolver\":\"CONTEXT_EMPLOYEE_IDS\",\"field\":\"managerCandidateIds\",\"allowInitiator\":true}'::jsonb"
+                  + " and not n.is_deleted"));
+      assertEquals(
+          6,
+          scalar(
+              s,
+              "select count(*) from iam.permission where tenant_id='"
+                  + TENANT
+                  + "' and permission_code like 'p016.welfare.%' and not is_deleted"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from workflow.wf_form_definition where tenant_id='"
+                  + TENANT
+                  + "' and form_code='CTR-P016-F01' and process_code='P016' and not is_deleted"));
+      assertEquals(
+          7,
+          scalar(
+              s,
+              "select count(distinct table_name) from information_schema.role_table_grants where"
+                  + " grantee='sjg_api_runtime' and table_schema='welfare' and table_name in"
+                  + " ('care_case_event','care_eligibility_fact','care_privacy_consent','care_approval_fact','care_execution_receipt','care_employee_confirmation','care_reconciliation_fact')"
+                  + " and privilege_type='INSERT'"));
+      assertEquals(
+          0,
+          scalar(
+              s,
+              "select count(*) from information_schema.role_table_grants where grantee in"
+                  + " ('sjg_api_runtime','sjg_worker_runtime') and table_schema='welfare' and"
+                  + " table_name in"
+                  + " ('care_case_event','care_eligibility_fact','care_privacy_consent','care_approval_fact','care_execution_receipt','care_employee_confirmation','care_reconciliation_fact')"
+                  + " and privilege_type in ('UPDATE','DELETE','TRUNCATE')"));
+    }
+  }
+
+  @Test
+  void
+      lifecycleStoresEligibilityConsentApprovalExternalReceiptConfirmationAndReconciliationSeparately()
+          throws Exception {
+    try (Connection c = connection();
+        Statement s = c.createStatement()) {
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_case where id='"
+                  + CASE
+                  + "' and affected_employee_id='"
+                  + AFFECTED
+                  + "' and source_fact_key='SOURCE-P016-001' and privacy_required"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_eligibility_fact where care_case_id='"
+                  + CASE
+                  + "' and outcome='ELIGIBLE' and checked_by='"
+                  + ELIGIBILITY
+                  + "'"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_privacy_consent where care_case_id='"
+                  + CASE
+                  + "' and consented_by='"
+                  + AFFECTED
+                  + "'"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_approval_fact where care_case_id='"
+                  + CASE
+                  + "' and outcome='APPROVED' and approved_amount=800"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_execution_receipt where care_case_id='"
+                  + CASE
+                  + "' and execution_kind='PAYMENT_RECEIPT' and external_reference='EXT-P016-001'"
+                  + " and invoice_code='INV-P016'"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_employee_confirmation where care_case_id='"
+                  + CASE
+                  + "' and outcome='CONFIRMED' and confirmed_by='"
+                  + AFFECTED
+                  + "'"));
+      assertEquals(
+          1,
+          scalar(
+              s,
+              "select count(*) from welfare.care_reconciliation_fact where care_case_id='"
+                  + CASE
+                  + "' and outcome='MATCHED' and reconciled_by='"
+                  + RECONCILER
+                  + "'"));
+    }
+  }
+
+  @Test
+  void sourceExternalReceiptInvoiceTenantAndAffectedEmployeeBoundariesFailClosed() {
+    assertSqlState(
+        "23505",
+        caseSql(
+            id("40000000-0000-0000-0000-000000001199"),
+            "P016-DUP-SOURCE",
+            "SOURCE-P016-001",
+            AFFECTED));
+    assertSqlState("23505", executionSql(CASE_TWO, "EXT-P016-001", "INV-OTHER", "NUM-OTHER"));
+    assertSqlState("23505", executionSql(CASE_THREE, "EXT-P016-003", "INV-P016", "NUM-001"));
+    assertSqlState(
+        "23514",
+        "insert into"
+            + " welfare.care_case_event(tenant_id,care_case_id,event_seq,event_type,evidence,actor_employee_id)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + CASE_TWO
+            + "',1,'CROSS_TENANT_ACTOR','{}','"
+            + OTHER_ACTOR
+            + "')");
+    assertSqlState(
+        "23514",
+        "insert into"
+            + " welfare.care_privacy_consent(tenant_id,care_case_id,consent_scope,consent_hash,consented_at,evidence,consented_by)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + CASE_TWO
+            + "','WELFARE_CASE','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',now(),'{}','"
+            + APPROVER
+            + "')");
+    assertSqlState(
+        "23514",
+        "insert into"
+            + " welfare.care_employee_confirmation(tenant_id,care_case_id,outcome,confirmed_at,evidence,confirmed_by)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + CASE_TWO
+            + "','CONFIRMED',now(),'{}','"
+            + APPROVER
+            + "')");
+  }
+
+  @Test
+  void allLifecycleFactsAreImmutable() {
+    assertSqlState(
+        "55000",
+        "update welfare.care_case_event set event_type='TAMPERED' where care_case_id='"
+            + CASE
+            + "'");
+    assertSqlState(
+        "55000", "delete from welfare.care_eligibility_fact where care_case_id='" + CASE + "'");
+    assertSqlState(
+        "55000", "delete from welfare.care_privacy_consent where care_case_id='" + CASE + "'");
+    assertSqlState(
+        "55000", "delete from welfare.care_approval_fact where care_case_id='" + CASE + "'");
+    assertSqlState(
+        "55000", "delete from welfare.care_execution_receipt where care_case_id='" + CASE + "'");
+    assertSqlState(
+        "55000",
+        "delete from welfare.care_employee_confirmation where care_case_id='" + CASE + "'");
+    assertSqlState(
+        "55000", "delete from welfare.care_reconciliation_fact where care_case_id='" + CASE + "'");
+  }
+
+  private static void seed() throws Exception {
+    try (Connection c = connection();
+        Statement s = c.createStatement()) {
+      s.execute(
+          "insert into core.tenant(id,tenant_code,tenant_name,status) values ('"
+              + OTHER
+              + "','P016_OTHER','P016 Other','ACTIVE')");
+      s.execute(
+          "insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values"
+              + " ('"
+              + CENTER
+              + "','"
+              + TENANT
+              + "','P016_CENTER','P016 Center','CENTER','p016_center'::ltree,'ACTIVE'),('"
+              + OTHER_CENTER
+              + "','"
+              + OTHER
+              + "','P016_OTHER','P016 Other','CENTER','p016_other'::ltree,'ACTIVE')");
+      s.execute(
+          "insert into"
+              + " org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id)"
+              + " values ('"
+              + AFFECTED
+              + "','"
+              + TENANT
+              + "','P016-E01','P016 Affected','ACTIVE',current_date-90,'"
+              + CENTER
+              + "'),('"
+              + ELIGIBILITY
+              + "','"
+              + TENANT
+              + "','P016-E02','P016 Eligibility','ACTIVE',current_date-90,'"
+              + CENTER
+              + "'),('"
+              + APPROVER
+              + "','"
+              + TENANT
+              + "','P016-E03','P016 Approver','ACTIVE',current_date-90,'"
+              + CENTER
+              + "'),('"
+              + EXECUTOR
+              + "','"
+              + TENANT
+              + "','P016-E04','P016 Executor','ACTIVE',current_date-90,'"
+              + CENTER
+              + "'),('"
+              + RECONCILER
+              + "','"
+              + TENANT
+              + "','P016-E05','P016 Reconciler','ACTIVE',current_date-90,'"
+              + CENTER
+              + "'),('"
+              + OTHER_ACTOR
+              + "','"
+              + OTHER
+              + "','P016-X01','P016 Other','ACTIVE',current_date-90,'"
+              + OTHER_CENTER
+              + "')");
+      s.execute(caseSql(CASE, "P016-DB-001", "SOURCE-P016-001", AFFECTED));
+      s.execute(caseSql(CASE_TWO, "P016-DB-002", "SOURCE-P016-002", AFFECTED));
+      s.execute(caseSql(CASE_THREE, "P016-DB-003", "SOURCE-P016-003", AFFECTED));
+      s.execute(
+          "insert into"
+              + " welfare.care_case_event(tenant_id,care_case_id,event_seq,event_type,evidence,actor_employee_id)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "',1,'APPLICATION_SUBMITTED','{\"source\":\"verified\"}','"
+              + ELIGIBILITY
+              + "')");
+      s.execute(
+          "insert into"
+              + " welfare.care_eligibility_fact(tenant_id,care_case_id,outcome,authority_reference,checked_at,evidence,checked_by)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "','ELIGIBLE','AUTH-P016-ELIGIBILITY',now(),'{\"verified\":true}','"
+              + ELIGIBILITY
+              + "')");
+      s.execute(
+          "insert into"
+              + " welfare.care_privacy_consent(tenant_id,care_case_id,consent_scope,consent_hash,consented_at,evidence,consented_by)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "','WELFARE_CASE','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',now(),'{\"method\":\"employee-confirmed\"}','"
+              + AFFECTED
+              + "')");
+      s.execute(
+          "insert into"
+              + " welfare.care_approval_fact(tenant_id,care_case_id,outcome,authority_reference,approved_amount,decided_at,evidence,decided_by)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "','APPROVED','AUTH-P016-APPROVAL',800,now(),'{\"decision\":\"authorized\"}','"
+              + APPROVER
+              + "')");
+      s.execute(executionSql(CASE, "EXT-P016-001", "INV-P016", "NUM-001"));
+      s.execute(
+          "insert into"
+              + " welfare.care_employee_confirmation(tenant_id,care_case_id,outcome,confirmed_at,evidence,confirmed_by)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "','CONFIRMED',now(),'{\"receipt\":\"confirmed\"}','"
+              + AFFECTED
+              + "')");
+      s.execute(
+          "insert into"
+              + " welfare.care_reconciliation_fact(tenant_id,care_case_id,outcome,external_reference,reconciled_at,evidence,reconciled_by)"
+              + " values ('"
+              + TENANT
+              + "','"
+              + CASE
+              + "','MATCHED','EXT-P016-001',now(),'{\"externalReceiptMatched\":true}','"
+              + RECONCILER
+              + "')");
+    }
+  }
+
+  private static String caseSql(UUID id, String no, String source, UUID affected) {
+    return "insert into"
+               + " welfare.care_case(id,tenant_id,business_no,status,created_by,updated_by,source_channel,business_date,subject,reason,priority,risk_level,owner_center_id,owner_employee_id,actual_amount,benefit_amount,cost_center_id,currency,employee_event_type,fact_occurred_at,fact_summary,impact_level,source_fact_key,affected_employee_id,care_type,privacy_required)"
+               + " values ('"
+        + id
+        + "','"
+        + TENANT
+        + "','"
+        + no
+        + "','APPLICATION','"
+        + ELIGIBILITY
+        + "','"
+        + ELIGIBILITY
+        + "','TEST',current_date,'P016 welfare case','Source-backed application','NORMAL','L2','"
+        + CENTER
+        + "','"
+        + ELIGIBILITY
+        + "',0,1000,'P016-COST','CNY','WELFARE_CARE',now(),'Verified welfare event','L2','"
+        + source
+        + "','"
+        + affected
+        + "','HARDSHIP',true)";
+  }
+
+  private static String executionSql(
+      UUID careCase, String external, String invoiceCode, String invoiceNumber) {
+    return "insert into"
+               + " welfare.care_execution_receipt(tenant_id,care_case_id,execution_kind,external_reference,external_occurred_at,executed_amount,currency,invoice_code,invoice_number,invoice_date,invoice_amount,invoice_image_sha256,evidence,recorded_by)"
+               + " values ('"
+        + TENANT
+        + "','"
+        + careCase
+        + "','PAYMENT_RECEIPT','"
+        + external
+        + "',now(),800,'CNY','"
+        + invoiceCode
+        + "','"
+        + invoiceNumber
+        + "',current_date,800,'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','{\"externalAuthorization\":true}','"
+        + EXECUTOR
+        + "')";
+  }
+
+  private static void assertSqlState(String expected, String sql) {
+    SQLException e =
+        assertThrows(
+            SQLException.class,
+            () -> {
+              try (Connection c = connection();
+                  Statement s = c.createStatement()) {
+                s.execute(sql);
+              }
+            });
+    assertEquals(expected, e.getSQLState());
+  }
+
+  private static String workflowCount(String table) {
+    return "select count(*) from workflow."
+        + table
+        + " x join workflow.wf_version v on v.id=x.version_id and v.tenant_id=x.tenant_id join"
+        + " workflow.wf_definition d on d.id=v.definition_id and d.tenant_id=v.tenant_id where"
+        + " d.process_code='P016' and v.status='PUBLISHED' and x.tenant_id='"
+        + TENANT
+        + "' and not x.is_deleted";
+  }
+
+  private static long scalar(Statement s, String sql) throws SQLException {
+    try (var r = s.executeQuery(sql)) {
+      r.next();
+      return r.getLong(1);
+    }
+  }
+
+  private static Connection connection() throws SQLException {
+    return DriverManager.getConnection(omsUrl, POSTGRES.getUsername(), POSTGRES.getPassword());
+  }
+
+  private static UUID id(String value) {
+    return UUID.fromString(value);
+  }
+
+  private static Path root() {
+    Path p = Path.of("").toAbsolutePath();
+    while (p != null) {
+      if (Files.exists(p.resolve("AGENT.md"))) {
+        return p;
+      }
+      p = p.getParent();
+    }
+    throw new IllegalStateException("repository root not found");
+  }
 }

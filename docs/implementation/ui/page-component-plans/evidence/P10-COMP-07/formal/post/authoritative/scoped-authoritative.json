@@ -1,0 +1,87 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-07-authoritative-scoped-diff",
+    "generated_at_utc":  "2026-08-13T22:12:36.1571421Z",
+    "counts":  {
+                   "task":  12,
+                   "unrelated":  0,
+                   "concurrent":  0,
+                   "metadata":  1
+               },
+    "task":  [
+                 {
+                     "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "scripts/implementation/phase08_portal_contract.py",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/contracts/index.ts",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/contracts/route.ts",
+                     "kind":  "added",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/core-routes.ts",
+                     "kind":  "added",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/phase09-routes.ts",
+                     "kind":  "added",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/phase10-routes.ts",
+                     "kind":  "added",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/phase10-tech-monitor-router.test.ts",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/portal-router.ts",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/route-meta.d.ts",
+                     "kind":  "modified",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/route-module-boundary.test.ts",
+                     "kind":  "added",
+                     "task":  true
+                 },
+                 {
+                     "path":  "technical-platform/web/src/router/route-semantics.test.ts",
+                     "kind":  "modified",
+                     "task":  true
+                 }
+             ],
+    "unrelated":  [
+
+                  ],
+    "concurrent":  [
+
+                   ],
+    "metadata":  [
+                     {
+                         "path":  "docs/implementation/ui/page-component-plans/P10-COMP-07_REPORT.md",
+                         "kind":  "metadata",
+                         "sha256":  "DB6CE4C79C7E5C49DFE76879D259377D1F765A3A6E55F4AC0765EDDA5F529081",
+                         "bytes":  15479
+                     }
+                 ]
+}

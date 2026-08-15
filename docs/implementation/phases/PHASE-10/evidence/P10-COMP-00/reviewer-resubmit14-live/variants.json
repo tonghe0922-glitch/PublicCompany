@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "review_round": "RESUBMIT-14",
+  "probe_count": 9,
+  "fail_open_count": 0,
+  "results": [
+    {
+      "probe": "computed-code-read",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "optional-code-read",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "code-member-call",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "code-member-chain",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "compound-assignment",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "object-spread-escape",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_BINDING_MISSING",
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "reflect-get-escape",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "object-keys-escape",
+      "expected": "FAIL",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "readonly-dot-code-guard",
+      "expected": "PASS",
+      "gate_exit": 0,
+      "gate_status": "PASS",
+      "finding_codes": [],
+      "fail_open": false
+    }
+  ]
+}

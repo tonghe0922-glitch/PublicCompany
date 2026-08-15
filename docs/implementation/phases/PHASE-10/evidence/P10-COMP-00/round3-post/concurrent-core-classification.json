@@ -1,0 +1,18 @@
+﻿{
+    "schema_version":  "1.0",
+    "round3_pre_release_source_or_docs_changes":  [
+
+                                                  ],
+    "excluded_concurrent_core_generated_outputs":  [
+                                                       ".runlogs/phase11-p015-web-lint.log",
+                                                       ".runlogs/phase11-p015-web-typecheck.log",
+                                                       ".runlogs/phase11-p015-web-test.log",
+                                                       ".runlogs/phase11-p015-web-knip.log",
+                                                       ".runlogs/phase11-p015-web-build.log",
+                                                       "technical-platform/web/dist/employee/**",
+                                                       "technical-platform/web/dist/center/**",
+                                                       "technical-platform/web/dist/admin/**"
+                                                   ],
+    "classification":  "concurrent_core_excluded_generated",
+    "attributed_to_ui_task_source":  false
+}

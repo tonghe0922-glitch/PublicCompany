@@ -33,13 +33,236 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 class Phase10P008NotificationDatabaseIT {
-    private static final UUID TENANT=id("00000000-0000-0000-0000-000000002018"),RECIPIENT=id("30000000-0000-0000-0000-000000002018"),AGGREGATE=id("90000000-0000-0000-0000-000000002038"),EVENT=id("90000000-0000-0000-0000-000000002039");
-    private static final String PRIVATE="P008-PRIVATE-REASON-QUOTA-ACCOUNT-MUST-NOT-LEAK",WORKER_PASSWORD="p10_p008_notify_"+shortId();private static PostgreSQLContainer<?> postgres;private static Path root;private static TenantTransactionRunner transactions;private static Phase10P008NotificationHandler handler;
-    @BeforeAll static void install()throws Exception{root=findRoot();postgres=new PostgreSQLContainer<>("postgres:16.14-alpine3.24").withDatabaseName("postgres").withUsername("postgres").withPassword("phase10-p008-notify-"+UUID.randomUUID());postgres.start();migrate("postgres","cluster",null);try(Connection c=admin("postgres");Statement s=c.createStatement()){s.execute("alter role sjg_worker_runtime password '"+WORKER_PASSWORD+"'");s.execute("create database sjg_oms");}migrate("sjg_oms","oms","oms");DriverManagerDataSource ds=new DriverManagerDataSource();ds.setDriverClassName("org.postgresql.Driver");ds.setUrl(url("sjg_oms"));ds.setUsername("sjg_worker_runtime");ds.setPassword(WORKER_PASSWORD);JdbcTemplate jdbc=new JdbcTemplate(ds);transactions=new TenantTransactionRunner(jdbc,new DataSourceTransactionManager(ds));ObjectMapper mapper=new ObjectMapper();handler=new Phase10P008NotificationHandler(new NotificationService(jdbc,new TransactionalOutboxService(jdbc),new NotificationTemplateRenderer(mapper)),jdbc,mapper);}
-    @AfterAll static void stop(){if(postgres!=null)postgres.stop();}
-    @Test void leaveEventCreatesOneSanitizedNotificationAcrossExactReplay()throws Exception{PlatformOutboxEvent e=event(EVENT,"{\"businessNo\":\"P008-NOTIFY-001\",\"event\":\"P008.stage.08.completed\",\"nodeCode\":\"S09\",\"recipientEmployeeIds\":[\""+RECIPIENT+"\",\""+RECIPIENT+"\"],\"reason\":\""+PRIVATE+"\",\"quotaAccountId\":\"PRIVATE-ANNUAL\"}");handle(e);handle(e);assertEquals(1,scalar("select count(*) from notification.message where tenant_id='"+TENANT+"' and recipient_id='"+RECIPIENT+"' and channel='IN_APP' and not is_deleted"));assertTrue(text("select body from notification.message where tenant_id='"+TENANT+"' and recipient_id='"+RECIPIENT+"' and not is_deleted").contains("P008-NOTIFY-001"));assertEquals(0,scalar("select count(*) from notification.message where tenant_id='"+TENANT+"' and row_to_json(message)::text like '%"+PRIVATE+"%'"));assertEquals(1,scalar("select count(*) from core.outbox_event where tenant_id='"+TENANT+"' and aggregate_type='NOTIFICATION_MESSAGE' and event_type='NOTIFICATION_SEND' and not is_deleted"));assertEquals(0,scalar("select count(*) from core.outbox_event where tenant_id='"+TENANT+"' and payload::text like '%"+PRIVATE+"%'"));}
-    @Test void unsupportedNodeFailsClosedWithoutDurableSideEffects(){PlatformOutboxEvent bad=event(id("90000000-0000-0000-0000-000000002040"),"{\"businessNo\":\"P008-NOTIFY-BAD\",\"event\":\"BROKEN\",\"nodeCode\":\"S99\",\"recipientEmployeeIds\":[\""+RECIPIENT+"\"]}");assertThrows(IllegalArgumentException.class,()->handle(bad));assertEquals(0,scalar("select count(*) from notification.message where tenant_id='"+TENANT+"' and body like '%P008-NOTIFY-BAD%'"));}
-    private static void handle(PlatformOutboxEvent e){transactions.required(TENANT,()->{handler.handle(e);return null;});}private static PlatformOutboxEvent event(UUID event,String payload){Instant now=Instant.now();return new PlatformOutboxEvent(event,TENANT,Phase10P008NotificationHandler.AGGREGATE_TYPE,AGGREGATE,Phase10P008NotificationHandler.EVENT_TYPE,1,payload,"p008-notification-it:"+event,null,null,0,now,now);}
-    private static void migrate(String database,String generated,String overlay){List<String> locations=new ArrayList<>();locations.add("filesystem:"+root.resolve("technical-platform/database/flyway").resolve(generated));if(overlay!=null)locations.add("filesystem:"+root.resolve("technical-platform/database/flyway-overlays").resolve(overlay));Flyway f=Flyway.configure().dataSource(url(database),postgres.getUsername(),postgres.getPassword()).locations(locations.toArray(String[]::new)).placeholders(Map.of("sjg_tenant_id",TENANT.toString(),"sjg_tenant_code","PHASE10_P008_NOTIFY","sjg_tenant_name","P008 Notification Tenant")).cleanDisabled(true).load();assertTrue(f.migrate().success);f.validate();}
-    private static long scalar(String sql){try(Connection c=admin("sjg_oms");Statement s=c.createStatement();ResultSet r=s.executeQuery(sql)){assertTrue(r.next());return r.getLong(1);}catch(SQLException e){throw new IllegalStateException(e);}}private static String text(String sql)throws SQLException{try(Connection c=admin("sjg_oms");Statement s=c.createStatement();ResultSet r=s.executeQuery(sql)){assertTrue(r.next());return r.getString(1);}}private static Connection admin(String db)throws SQLException{return DriverManager.getConnection(url(db),postgres.getUsername(),postgres.getPassword());}private static String url(String db){String u=postgres.getJdbcUrl();int q=u.indexOf('?');String suffix=q<0?"":u.substring(q),base=q<0?u:u.substring(0,q);return base.substring(0,base.lastIndexOf('/')+1)+db+suffix;}private static Path findRoot(){Path p=Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();while(p!=null){if(Files.isRegularFile(p.resolve("AGENT.md"))&&Files.isDirectory(p.resolve("Knowledge Base")))return p;p=p.getParent();}throw new IllegalStateException("root not found");}private static String shortId(){return UUID.randomUUID().toString().replace("-","").substring(0,10);}private static UUID id(String v){return UUID.fromString(v);}
+
+  private static final UUID TENANT = id("00000000-0000-0000-0000-000000002018"),
+      RECIPIENT = id("30000000-0000-0000-0000-000000002018"),
+      AGGREGATE = id("90000000-0000-0000-0000-000000002038"),
+      EVENT = id("90000000-0000-0000-0000-000000002039");
+  private static final String PRIVATE = "P008-PRIVATE-REASON-QUOTA-ACCOUNT-MUST-NOT-LEAK",
+      WORKER_PASSWORD = "p10_p008_notify_" + shortId();
+
+  private static PostgreSQLContainer<?> postgres;
+
+  private static Path root;
+
+  private static TenantTransactionRunner transactions;
+
+  private static Phase10P008NotificationHandler handler;
+
+  @BeforeAll
+  static void install() throws Exception {
+    root = findRoot();
+    postgres =
+        new PostgreSQLContainer<>("postgres:16.14-alpine3.24")
+            .withDatabaseName("postgres")
+            .withUsername("postgres")
+            .withPassword("phase10-p008-notify-" + UUID.randomUUID());
+    postgres.start();
+    migrate("postgres", "cluster", null);
+    try (Connection c = admin("postgres");
+        Statement s = c.createStatement()) {
+      s.execute("alter role sjg_worker_runtime password '" + WORKER_PASSWORD + "'");
+      s.execute("create database sjg_oms");
+    }
+    migrate("sjg_oms", "oms", "oms");
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName("org.postgresql.Driver");
+    ds.setUrl(url("sjg_oms"));
+    ds.setUsername("sjg_worker_runtime");
+    ds.setPassword(WORKER_PASSWORD);
+    JdbcTemplate jdbc = new JdbcTemplate(ds);
+    transactions = new TenantTransactionRunner(jdbc, new DataSourceTransactionManager(ds));
+    ObjectMapper mapper = new ObjectMapper();
+    handler =
+        new Phase10P008NotificationHandler(
+            new NotificationService(
+                jdbc,
+                new TransactionalOutboxService(jdbc),
+                new NotificationTemplateRenderer(mapper)),
+            jdbc,
+            mapper);
+  }
+
+  @AfterAll
+  static void stop() {
+    if (postgres != null) {
+      postgres.stop();
+    }
+  }
+
+  @Test
+  void leaveEventCreatesOneSanitizedNotificationAcrossExactReplay() throws Exception {
+    PlatformOutboxEvent e =
+        event(
+            EVENT,
+            "{\"businessNo\":\"P008-NOTIFY-001\",\"event\":\"P008.stage.08.completed\",\"nodeCode\":\"S09\",\"recipientEmployeeIds\":[\""
+                + RECIPIENT
+                + "\",\""
+                + RECIPIENT
+                + "\"],\"reason\":\""
+                + PRIVATE
+                + "\",\"quotaAccountId\":\"PRIVATE-ANNUAL\"}");
+    handle(e);
+    handle(e);
+    assertEquals(
+        1,
+        scalar(
+            "select count(*) from notification.message where tenant_id='"
+                + TENANT
+                + "' and recipient_id='"
+                + RECIPIENT
+                + "' and channel='IN_APP' and not is_deleted"));
+    assertTrue(
+        text("select body from notification.message where tenant_id='"
+                + TENANT
+                + "' and recipient_id='"
+                + RECIPIENT
+                + "' and not is_deleted")
+            .contains("P008-NOTIFY-001"));
+    assertEquals(
+        0,
+        scalar(
+            "select count(*) from notification.message where tenant_id='"
+                + TENANT
+                + "' and row_to_json(message)::text like '%"
+                + PRIVATE
+                + "%'"));
+    assertEquals(
+        1,
+        scalar(
+            "select count(*) from core.outbox_event where tenant_id='"
+                + TENANT
+                + "' and aggregate_type='NOTIFICATION_MESSAGE' and event_type='NOTIFICATION_SEND'"
+                + " and not is_deleted"));
+    assertEquals(
+        0,
+        scalar(
+            "select count(*) from core.outbox_event where tenant_id='"
+                + TENANT
+                + "' and payload::text like '%"
+                + PRIVATE
+                + "%'"));
+  }
+
+  @Test
+  void unsupportedNodeFailsClosedWithoutDurableSideEffects() {
+    PlatformOutboxEvent bad =
+        event(
+            id("90000000-0000-0000-0000-000000002040"),
+            "{\"businessNo\":\"P008-NOTIFY-BAD\",\"event\":\"BROKEN\",\"nodeCode\":\"S99\",\"recipientEmployeeIds\":[\""
+                + RECIPIENT
+                + "\"]}");
+    assertThrows(IllegalArgumentException.class, () -> handle(bad));
+    assertEquals(
+        0,
+        scalar(
+            "select count(*) from notification.message where tenant_id='"
+                + TENANT
+                + "' and body like '%P008-NOTIFY-BAD%'"));
+  }
+
+  private static void handle(PlatformOutboxEvent e) {
+    transactions.required(
+        TENANT,
+        () -> {
+          handler.handle(e);
+          return null;
+        });
+  }
+
+  private static PlatformOutboxEvent event(UUID event, String payload) {
+    Instant now = Instant.now();
+    return new PlatformOutboxEvent(
+        event,
+        TENANT,
+        Phase10P008NotificationHandler.AGGREGATE_TYPE,
+        AGGREGATE,
+        Phase10P008NotificationHandler.EVENT_TYPE,
+        1,
+        payload,
+        "p008-notification-it:" + event,
+        null,
+        null,
+        0,
+        now,
+        now);
+  }
+
+  private static void migrate(String database, String generated, String overlay) {
+    List<String> locations = new ArrayList<>();
+    locations.add(
+        "filesystem:" + root.resolve("technical-platform/database/flyway").resolve(generated));
+    if (overlay != null) {
+      locations.add(
+          "filesystem:"
+              + root.resolve("technical-platform/database/flyway-overlays").resolve(overlay));
+    }
+    Flyway f =
+        Flyway.configure()
+            .dataSource(url(database), postgres.getUsername(), postgres.getPassword())
+            .locations(locations.toArray(String[]::new))
+            .placeholders(
+                Map.of(
+                    "sjg_tenant_id",
+                    TENANT.toString(),
+                    "sjg_tenant_code",
+                    "PHASE10_P008_NOTIFY",
+                    "sjg_tenant_name",
+                    "P008 Notification Tenant"))
+            .cleanDisabled(true)
+            .load();
+    assertTrue(f.migrate().success);
+    f.validate();
+  }
+
+  private static long scalar(String sql) {
+    try (Connection c = admin("sjg_oms");
+        Statement s = c.createStatement();
+        ResultSet r = s.executeQuery(sql)) {
+      assertTrue(r.next());
+      return r.getLong(1);
+    } catch (SQLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private static String text(String sql) throws SQLException {
+    try (Connection c = admin("sjg_oms");
+        Statement s = c.createStatement();
+        ResultSet r = s.executeQuery(sql)) {
+      assertTrue(r.next());
+      return r.getString(1);
+    }
+  }
+
+  private static Connection admin(String db) throws SQLException {
+    return DriverManager.getConnection(url(db), postgres.getUsername(), postgres.getPassword());
+  }
+
+  private static String url(String db) {
+    String u = postgres.getJdbcUrl();
+    int q = u.indexOf('?');
+    String suffix = q < 0 ? "" : u.substring(q), base = q < 0 ? u : u.substring(0, q);
+    return base.substring(0, base.lastIndexOf('/') + 1) + db + suffix;
+  }
+
+  private static Path findRoot() {
+    Path p = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
+    while (p != null) {
+      if (Files.isRegularFile(p.resolve("AGENT.md"))
+          && Files.isDirectory(p.resolve("Knowledge Base"))) {
+        return p;
+      }
+      p = p.getParent();
+    }
+    throw new IllegalStateException("root not found");
+  }
+
+  private static String shortId() {
+    return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+  }
+
+  private static UUID id(String v) {
+    return UUID.fromString(v);
+  }
 }

@@ -1,0 +1,1257 @@
+{
+  "duplicates": [
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 6,
+          "line": 58,
+          "position": 1735
+        },
+        "name": "design-system\\components\\Dialog.vue:html",
+        "start": 42,
+        "startLoc": {
+          "column": 6,
+          "line": 42,
+          "position": 1032
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 17,
+      "secondFile": {
+        "end": 62,
+        "endLoc": {
+          "column": 6,
+          "line": 62,
+          "position": 1880
+        },
+        "name": "design-system\\components\\Drawer.vue:html",
+        "start": 46,
+        "startLoc": {
+          "column": 6,
+          "line": 46,
+          "position": 1177
+        }
+      },
+      "tokens": 150
+    },
+    {
+      "firstFile": {
+        "end": 37,
+        "endLoc": {
+          "column": 9,
+          "line": 37,
+          "position": 1013
+        },
+        "name": "design-system\\components\\Input.vue:typescript",
+        "start": 26,
+        "startLoc": {
+          "column": 14,
+          "line": 26,
+          "position": 740
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 31,
+        "endLoc": {
+          "column": 9,
+          "line": 31,
+          "position": 710
+        },
+        "name": "design-system\\components\\Textarea.vue:typescript",
+        "start": 20,
+        "startLoc": {
+          "column": 9,
+          "line": 20,
+          "position": 437
+        }
+      },
+      "tokens": 75
+    },
+    {
+      "firstFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 4,
+          "line": 38,
+          "position": 848
+        },
+        "name": "design-system\\components\\OrganizationPicker.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 38,
+      "secondFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 4,
+          "line": 38,
+          "position": 848
+        },
+        "name": "design-system\\components\\PersonPicker.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "tokens": 72
+    },
+    {
+      "firstFile": {
+        "end": 127,
+        "endLoc": {
+          "column": 22,
+          "line": 127,
+          "position": 3727
+        },
+        "name": "platform\\pages\\P002PermissionRequestPage.vue:typescript",
+        "start": 111,
+        "startLoc": {
+          "column": 0,
+          "line": 111,
+          "position": 3364
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 17,
+      "secondFile": {
+        "end": 124,
+        "endLoc": {
+          "column": 42,
+          "line": 124,
+          "position": 4437
+        },
+        "name": "platform\\pages\\P004GenericRequestPage.vue:typescript",
+        "start": 115,
+        "startLoc": {
+          "column": 0,
+          "line": 115,
+          "position": 4094
+        }
+      },
+      "tokens": 91
+    },
+    {
+      "firstFile": {
+        "end": 124,
+        "endLoc": {
+          "column": 7,
+          "line": 124,
+          "position": 4402
+        },
+        "name": "platform\\pages\\P004GenericRequestPage.vue:typescript",
+        "start": 113,
+        "startLoc": {
+          "column": 112,
+          "line": 113,
+          "position": 4076
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 155,
+        "endLoc": {
+          "column": 7,
+          "line": 155,
+          "position": 5478
+        },
+        "name": "platform\\pages\\P005NoticePage.vue:typescript",
+        "start": 144,
+        "startLoc": {
+          "column": 124,
+          "line": 144,
+          "position": 5152
+        }
+      },
+      "tokens": 83
+    },
+    {
+      "firstFile": {
+        "end": 24,
+        "endLoc": {
+          "column": 88,
+          "line": 24,
+          "position": 1312
+        },
+        "name": "platform\\pages\\P008LeavePage.vue:typescript",
+        "start": 15,
+        "startLoc": {
+          "column": 53,
+          "line": 15,
+          "position": 780
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 24,
+        "endLoc": {
+          "column": 88,
+          "line": 24,
+          "position": 1362
+        },
+        "name": "platform\\pages\\P009OvertimePage.vue:typescript",
+        "start": 15,
+        "startLoc": {
+          "column": 56,
+          "line": 15,
+          "position": 830
+        }
+      },
+      "tokens": 131
+    },
+    {
+      "firstFile": {
+        "end": 46,
+        "endLoc": {
+          "column": 31,
+          "line": 46,
+          "position": 2588
+        },
+        "name": "platform\\pages\\P008LeavePage.vue:typescript",
+        "start": 37,
+        "startLoc": {
+          "column": 55,
+          "line": 37,
+          "position": 2130
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 40,
+        "endLoc": {
+          "column": 31,
+          "line": 40,
+          "position": 2318
+        },
+        "name": "platform\\pages\\P009OvertimePage.vue:typescript",
+        "start": 31,
+        "startLoc": {
+          "column": 58,
+          "line": 31,
+          "position": 1860
+        }
+      },
+      "tokens": 95
+    },
+    {
+      "firstFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 23,
+          "line": 64,
+          "position": 3581
+        },
+        "name": "platform\\pages\\P008LeavePage.vue:typescript",
+        "start": 50,
+        "startLoc": {
+          "column": 77,
+          "line": 50,
+          "position": 2843
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 15,
+      "secondFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 23,
+          "line": 58,
+          "position": 3337
+        },
+        "name": "platform\\pages\\P009OvertimePage.vue:typescript",
+        "start": 44,
+        "startLoc": {
+          "column": 77,
+          "line": 44,
+          "position": 2599
+        }
+      },
+      "tokens": 157
+    },
+    {
+      "firstFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 23,
+          "line": 64,
+          "position": 3581
+        },
+        "name": "platform\\pages\\P008LeavePage.vue:typescript",
+        "start": 50,
+        "startLoc": {
+          "column": 77,
+          "line": 50,
+          "position": 2843
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 15,
+      "secondFile": {
+        "end": 46,
+        "endLoc": {
+          "column": 23,
+          "line": 46,
+          "position": 2446
+        },
+        "name": "platform\\pages\\P010LearningPage.vue:typescript",
+        "start": 32,
+        "startLoc": {
+          "column": 77,
+          "line": 32,
+          "position": 1708
+        }
+      },
+      "tokens": 157
+    },
+    {
+      "firstFile": {
+        "end": 73,
+        "endLoc": {
+          "column": 66,
+          "line": 73,
+          "position": 4064
+        },
+        "name": "platform\\pages\\P008LeavePage.vue:typescript",
+        "start": 64,
+        "startLoc": {
+          "column": 41,
+          "line": 64,
+          "position": 3599
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 67,
+        "endLoc": {
+          "column": 66,
+          "line": 67,
+          "position": 3869
+        },
+        "name": "platform\\pages\\P009OvertimePage.vue:typescript",
+        "start": 58,
+        "startLoc": {
+          "column": 91,
+          "line": 58,
+          "position": 3405
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 110,
+        "endLoc": {
+          "column": 46,
+          "line": 110,
+          "position": 5940
+        },
+        "name": "platform\\phase11\\p011\\P011PerformanceFeature.vue:html",
+        "start": 85,
+        "startLoc": {
+          "column": 102,
+          "line": 85,
+          "position": 4738
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 26,
+      "secondFile": {
+        "end": 82,
+        "endLoc": {
+          "column": 277,
+          "line": 82,
+          "position": 6977
+        },
+        "name": "platform\\phase11\\p013\\P013RewardFeature.vue:html",
+        "start": 75,
+        "startLoc": {
+          "column": 170,
+          "line": 75,
+          "position": 5996
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 108,
+        "endLoc": {
+          "column": 23,
+          "line": 108,
+          "position": 5813
+        },
+        "name": "platform\\phase11\\p011\\P011PerformanceFeature.vue:html",
+        "start": 86,
+        "startLoc": {
+          "column": 16,
+          "line": 86,
+          "position": 4762
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 23,
+      "secondFile": {
+        "end": 114,
+        "endLoc": {
+          "column": 23,
+          "line": 114,
+          "position": 6916
+        },
+        "name": "platform\\phase11\\p012\\P012PromotionFeature.vue:html",
+        "start": 95,
+        "startLoc": {
+          "column": 67,
+          "line": 95,
+          "position": 5908
+        }
+      },
+      "tokens": 81
+    },
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 85,
+          "line": 58,
+          "position": 3270
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 49,
+        "startLoc": {
+          "column": 21,
+          "line": 49,
+          "position": 2907
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 85,
+          "line": 64,
+          "position": 3635
+        },
+        "name": "platform\\phase11\\p012\\use-p012-promotion.ts",
+        "start": 55,
+        "startLoc": {
+          "column": 23,
+          "line": 55,
+          "position": 3272
+        }
+      },
+      "tokens": 94
+    },
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 85,
+          "line": 58,
+          "position": 3270
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 49,
+        "startLoc": {
+          "column": 25,
+          "line": 49,
+          "position": 2911
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 77,
+        "endLoc": {
+          "column": 85,
+          "line": 77,
+          "position": 4181
+        },
+        "name": "platform\\phase11\\p013\\use-p013-reward.ts",
+        "start": 67,
+        "startLoc": {
+          "column": 61,
+          "line": 67,
+          "position": 3818
+        }
+      },
+      "tokens": 92
+    },
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 30,
+          "line": 58,
+          "position": 3215
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 49,
+        "startLoc": {
+          "column": 62,
+          "line": 49,
+          "position": 2948
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 68,
+        "endLoc": {
+          "column": 93,
+          "line": 68,
+          "position": 4504
+        },
+        "name": "platform\\phase11\\p014\\use-p014-discipline.ts",
+        "start": 60,
+        "startLoc": {
+          "column": 84,
+          "line": 60,
+          "position": 4241
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 88,
+        "endLoc": {
+          "column": 22,
+          "line": 88,
+          "position": 4664
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 79,
+        "startLoc": {
+          "column": 30,
+          "line": 79,
+          "position": 4345
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 112,
+        "endLoc": {
+          "column": 22,
+          "line": 112,
+          "position": 5925
+        },
+        "name": "platform\\phase11\\p012\\use-p012-promotion.ts",
+        "start": 103,
+        "startLoc": {
+          "column": 40,
+          "line": 103,
+          "position": 5606
+        }
+      },
+      "tokens": 70
+    },
+    {
+      "firstFile": {
+        "end": 88,
+        "endLoc": {
+          "column": 22,
+          "line": 88,
+          "position": 4664
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 79,
+        "startLoc": {
+          "column": 30,
+          "line": 79,
+          "position": 4345
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 121,
+        "endLoc": {
+          "column": 22,
+          "line": 121,
+          "position": 6134
+        },
+        "name": "platform\\phase11\\p013\\use-p013-reward.ts",
+        "start": 112,
+        "startLoc": {
+          "column": 35,
+          "line": 112,
+          "position": 5815
+        }
+      },
+      "tokens": 70
+    },
+    {
+      "firstFile": {
+        "end": 88,
+        "endLoc": {
+          "column": 22,
+          "line": 88,
+          "position": 4664
+        },
+        "name": "platform\\phase11\\p011\\use-p011-performance.ts",
+        "start": 79,
+        "startLoc": {
+          "column": 30,
+          "line": 79,
+          "position": 4345
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 10,
+      "secondFile": {
+        "end": 112,
+        "endLoc": {
+          "column": 22,
+          "line": 112,
+          "position": 6711
+        },
+        "name": "platform\\phase11\\p014\\use-p014-discipline.ts",
+        "start": 103,
+        "startLoc": {
+          "column": 39,
+          "line": 103,
+          "position": 6392
+        }
+      },
+      "tokens": 70
+    },
+    {
+      "firstFile": {
+        "end": 116,
+        "endLoc": {
+          "column": 46,
+          "line": 116,
+          "position": 7052
+        },
+        "name": "platform\\phase11\\p012\\P012PromotionFeature.vue:html",
+        "start": 95,
+        "startLoc": {
+          "column": 62,
+          "line": 95,
+          "position": 5903
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 22,
+      "secondFile": {
+        "end": 125,
+        "endLoc": {
+          "column": 277,
+          "line": 125,
+          "position": 10135
+        },
+        "name": "platform\\phase11\\p015\\P015PointLedgerFeature.vue:html",
+        "start": 118,
+        "startLoc": {
+          "column": 119,
+          "line": 118,
+          "position": 9163
+        }
+      },
+      "tokens": 103
+    },
+    {
+      "firstFile": {
+        "end": 116,
+        "endLoc": {
+          "column": 46,
+          "line": 116,
+          "position": 7052
+        },
+        "name": "platform\\phase11\\p012\\P012PromotionFeature.vue:html",
+        "start": 95,
+        "startLoc": {
+          "column": 62,
+          "line": 95,
+          "position": 5903
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 22,
+      "secondFile": {
+        "end": 94,
+        "endLoc": {
+          "column": 277,
+          "line": 94,
+          "position": 7766
+        },
+        "name": "platform\\phase11\\p016\\P016CareSupportFeature.vue:html",
+        "start": 87,
+        "startLoc": {
+          "column": 80,
+          "line": 87,
+          "position": 6776
+        }
+      },
+      "tokens": 103
+    },
+    {
+      "firstFile": {
+        "end": 164,
+        "endLoc": {
+          "column": 42,
+          "line": 164,
+          "position": 8442
+        },
+        "name": "platform\\phase11\\p012\\use-p012-promotion.ts",
+        "start": 156,
+        "startLoc": {
+          "column": 107,
+          "line": 156,
+          "position": 8033
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 173,
+        "endLoc": {
+          "column": 42,
+          "line": 173,
+          "position": 8614
+        },
+        "name": "platform\\phase11\\p013\\use-p013-reward.ts",
+        "start": 165,
+        "startLoc": {
+          "column": 101,
+          "line": 165,
+          "position": 8205
+        }
+      },
+      "tokens": 98
+    },
+    {
+      "firstFile": {
+        "end": 82,
+        "endLoc": {
+          "column": 277,
+          "line": 82,
+          "position": 6977
+        },
+        "name": "platform\\phase11\\p013\\P013RewardFeature.vue:html",
+        "start": 74,
+        "startLoc": {
+          "column": 15,
+          "line": 74,
+          "position": 5733
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 89,
+        "endLoc": {
+          "column": 277,
+          "line": 89,
+          "position": 7432
+        },
+        "name": "platform\\phase11\\p014\\P014DisciplineFeature.vue:html",
+        "start": 81,
+        "startLoc": {
+          "column": 56,
+          "line": 81,
+          "position": 6206
+        }
+      },
+      "tokens": 175
+    },
+    {
+      "firstFile": {
+        "end": 61,
+        "endLoc": {
+          "column": 81,
+          "line": 61,
+          "position": 3370
+        },
+        "name": "platform\\phase11\\p013\\use-p013-reward.ts",
+        "start": 53,
+        "startLoc": {
+          "column": 57,
+          "line": 53,
+          "position": 3111
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 53,
+        "endLoc": {
+          "column": 81,
+          "line": 53,
+          "position": 3631
+        },
+        "name": "platform\\phase11\\p014\\use-p014-discipline.ts",
+        "start": 45,
+        "startLoc": {
+          "column": 57,
+          "line": 45,
+          "position": 3372
+        }
+      },
+      "tokens": 70
+    },
+    {
+      "firstFile": {
+        "end": 83,
+        "endLoc": {
+          "column": 1,
+          "line": 83,
+          "position": 3655
+        },
+        "name": "platform\\phase11\\use-process-operation.ts",
+        "start": 72,
+        "startLoc": {
+          "column": 30,
+          "line": 72,
+          "position": 3211
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 109,
+        "endLoc": {
+          "column": 1,
+          "line": 109,
+          "position": 4782
+        },
+        "name": "platform\\phase11\\use-process-operation.ts",
+        "start": 98,
+        "startLoc": {
+          "column": 52,
+          "line": 98,
+          "position": 4338
+        }
+      },
+      "tokens": 113
+    },
+    {
+      "firstFile": {
+        "end": 26,
+        "endLoc": {
+          "column": 7,
+          "line": 26,
+          "position": 1049
+        },
+        "name": "platform\\processes\\p006\\P006MeetingRecordList.vue:typescript",
+        "start": 16,
+        "startLoc": {
+          "column": 41,
+          "line": 16,
+          "position": 731
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 11,
+      "secondFile": {
+        "end": 18,
+        "endLoc": {
+          "column": 106,
+          "line": 18,
+          "position": 1107
+        },
+        "name": "platform\\processes\\p009\\P009OvertimeRecordList.vue:typescript",
+        "start": 14,
+        "startLoc": {
+          "column": 50,
+          "line": 14,
+          "position": 801
+        }
+      },
+      "tokens": 80
+    },
+    {
+      "firstFile": {
+        "end": 26,
+        "endLoc": {
+          "column": 18,
+          "line": 26,
+          "position": 1143
+        },
+        "name": "platform\\processes\\p007\\service.ts",
+        "start": 18,
+        "startLoc": {
+          "column": 69,
+          "line": 18,
+          "position": 558
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 31,
+        "endLoc": {
+          "column": 17,
+          "line": 31,
+          "position": 1151
+        },
+        "name": "platform\\processes\\p008\\service.ts",
+        "start": 23,
+        "startLoc": {
+          "column": 60,
+          "line": 23,
+          "position": 567
+        }
+      },
+      "tokens": 99
+    },
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 57,
+          "line": 58,
+          "position": 3679
+        },
+        "name": "platform\\processes\\p008\\P008LeaveActionPanel.vue:html",
+        "start": 69,
+        "startLoc": {
+          "column": 29,
+          "line": 69,
+          "position": 4610
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 1,
+      "secondFile": {
+        "end": 84,
+        "endLoc": {
+          "column": 57,
+          "line": 84,
+          "position": 5366
+        },
+        "name": "platform\\processes\\p009\\P009OvertimeActionPanel.vue:html",
+        "start": 98,
+        "startLoc": {
+          "column": 29,
+          "line": 98,
+          "position": 6776
+        }
+      },
+      "tokens": 118
+    },
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 57,
+          "line": 58,
+          "position": 3679
+        },
+        "name": "platform\\processes\\p008\\P008LeaveActionPanel.vue:html",
+        "start": 69,
+        "startLoc": {
+          "column": 29,
+          "line": 69,
+          "position": 4610
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 1,
+      "secondFile": {
+        "end": 82,
+        "endLoc": {
+          "column": 57,
+          "line": 82,
+          "position": 4099
+        },
+        "name": "platform\\processes\\p010\\P010LearningActionPanel.vue:html",
+        "start": 94,
+        "startLoc": {
+          "column": 29,
+          "line": 94,
+          "position": 5187
+        }
+      },
+      "tokens": 118
+    },
+    {
+      "firstFile": {
+        "end": 61,
+        "endLoc": {
+          "column": 15,
+          "line": 61,
+          "position": 3306
+        },
+        "name": "platform\\processes\\p008\\P008LeaveCreateForm.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 61,
+      "secondFile": {
+        "end": 68,
+        "endLoc": {
+          "column": 15,
+          "line": 68,
+          "position": 3554
+        },
+        "name": "platform\\processes\\p009\\P009OvertimeCreateForm.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "tokens": 102
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 48,
+          "line": 47,
+          "position": 2530
+        },
+        "name": "platform\\processes\\p008\\P008LeaveCreateForm.vue:typescript",
+        "start": 34,
+        "startLoc": {
+          "column": 90,
+          "line": 34,
+          "position": 1909
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 14,
+      "secondFile": {
+        "end": 51,
+        "endLoc": {
+          "column": 48,
+          "line": 51,
+          "position": 2682
+        },
+        "name": "platform\\processes\\p009\\P009OvertimeCreateForm.vue:typescript",
+        "start": 36,
+        "startLoc": {
+          "column": 90,
+          "line": 36,
+          "position": 2053
+        }
+      },
+      "tokens": 139
+    },
+    {
+      "firstFile": {
+        "end": 42,
+        "endLoc": {
+          "column": 16,
+          "line": 42,
+          "position": 1968
+        },
+        "name": "platform\\processes\\p008\\contracts.ts",
+        "start": 31,
+        "startLoc": {
+          "column": 77,
+          "line": 31,
+          "position": 1517
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 42,
+        "endLoc": {
+          "column": 16,
+          "line": 42,
+          "position": 1957
+        },
+        "name": "platform\\processes\\p009\\contracts.ts",
+        "start": 31,
+        "startLoc": {
+          "column": 77,
+          "line": 31,
+          "position": 1506
+        }
+      },
+      "tokens": 89
+    },
+    {
+      "firstFile": {
+        "end": 42,
+        "endLoc": {
+          "column": 16,
+          "line": 42,
+          "position": 1968
+        },
+        "name": "platform\\processes\\p008\\contracts.ts",
+        "start": 31,
+        "startLoc": {
+          "column": 77,
+          "line": 31,
+          "position": 1517
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 43,
+        "endLoc": {
+          "column": 16,
+          "line": 43,
+          "position": 1964
+        },
+        "name": "platform\\processes\\p010\\contracts.ts",
+        "start": 32,
+        "startLoc": {
+          "column": 77,
+          "line": 32,
+          "position": 1513
+        }
+      },
+      "tokens": 89
+    },
+    {
+      "firstFile": {
+        "end": 18,
+        "endLoc": {
+          "column": 121,
+          "line": 18,
+          "position": 1122
+        },
+        "name": "platform\\processes\\p009\\P009OvertimeRecordList.vue:typescript",
+        "start": 10,
+        "startLoc": {
+          "column": 106,
+          "line": 10,
+          "position": 529
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 23,
+        "endLoc": {
+          "column": 121,
+          "line": 23,
+          "position": 1128
+        },
+        "name": "platform\\processes\\p010\\P010LearningRecordList.vue:typescript",
+        "start": 14,
+        "startLoc": {
+          "column": 106,
+          "line": 14,
+          "position": 533
+        }
+      },
+      "tokens": 153
+    }
+  ],
+  "statistics": {
+    "detectionDate": "2026-08-14T21:02:01.153Z",
+    "formats": {
+      "css": {
+        "clones": 0,
+        "duplicatedLines": 0,
+        "duplicatedTokens": 0,
+        "lines": 3438,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.0,
+        "percentageTokens": 0.0,
+        "sources": 27,
+        "tokens": 14823
+      },
+      "html": {
+        "clones": 10,
+        "duplicatedLines": 210,
+        "duplicatedTokens": 1129,
+        "lines": 6559,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 3.2017075773745995,
+        "percentageTokens": 3.8474645583424207,
+        "sources": 93,
+        "tokens": 29344
+      },
+      "typescript": {
+        "clones": 23,
+        "duplicatedLines": 235,
+        "duplicatedTokens": 2293,
+        "lines": 8877,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 2.6472907513799706,
+        "percentageTokens": 3.3717117355566337,
+        "sources": 130,
+        "tokens": 68007
+      },
+      "vue": {
+        "clones": 0,
+        "duplicatedLines": 0,
+        "duplicatedTokens": 0,
+        "lines": 6480,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.0,
+        "percentageTokens": 0.0,
+        "sources": 95,
+        "tokens": 49742
+      }
+    },
+    "total": {
+      "clones": 33,
+      "duplicatedLines": 445,
+      "duplicatedTokens": 3422,
+      "lines": 25354,
+      "newClones": 0,
+      "newDuplicatedLines": 0,
+      "percentage": 1.7551471168257473,
+      "percentageTokens": 2.113441537587391,
+      "sources": 345,
+      "tokens": 161916
+    }
+  }
+}

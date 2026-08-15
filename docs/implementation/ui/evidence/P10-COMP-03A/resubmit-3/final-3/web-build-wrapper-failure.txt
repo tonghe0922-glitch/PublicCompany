@@ -1,0 +1,5 @@
+Command: pnpm build inside a PowerShell wrapper with ErrorActionPreference=Stop.
+Result: wrapper exit 1 when Vite's pre-existing chunk-size warning surfaced as NativeCommandError.
+The wrapper terminated before the three-build chain completed and before its log/exit files were written.
+Classification: orchestration failure; not an authoritative frontend build result.
+Correction policy: verify all six candidate hashes are unchanged, then rerun once with native stderr captured without treating warnings as terminating errors.

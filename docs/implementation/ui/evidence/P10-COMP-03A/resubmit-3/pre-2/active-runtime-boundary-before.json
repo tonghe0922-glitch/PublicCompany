@@ -1,0 +1,105 @@
+﻿{
+    "schema_version":  "1.0",
+    "captured_at_utc":  "2026-08-13T09:02:12.4393729Z",
+    "classification":  "pre-existing active runtime / source-baseline non-writer",
+    "process_count":  7,
+    "processes":  [
+                      {
+                          "pid":  15196,
+                          "parent_pid":  6700,
+                          "name":  "node.exe",
+                          "start_time":  "2026-08-13T13:34:56.4965210+08:00",
+                          "command_line":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode admin --host 127.0.0.1 --port 5175 --strictPort "
+                      },
+                      {
+                          "pid":  35248,
+                          "parent_pid":  40240,
+                          "name":  "cmd.exe",
+                          "start_time":  "2026-08-13T13:32:00.2283350+08:00",
+                          "command_line":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run \""
+                      },
+                      {
+                          "pid":  36432,
+                          "parent_pid":  6700,
+                          "name":  "node.exe",
+                          "start_time":  "2026-08-13T13:34:56.4542350+08:00",
+                          "command_line":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode center --host 127.0.0.1 --port 5174 --strictPort "
+                      },
+                      {
+                          "pid":  40796,
+                          "parent_pid":  33932,
+                          "name":  "node.exe",
+                          "start_time":  "2026-08-13T13:11:44.0128210+08:00",
+                          "command_line":  "C:\\Users\\Administrator\\.workbuddy\\binaries\\node\\versions\\22.22.2\\node.exe node_modules/vite/bin/vite.js --mode employee --host 127.0.0.1 --port 5173"
+                      },
+                      {
+                          "pid":  41392,
+                          "parent_pid":  44872,
+                          "name":  "java.exe",
+                          "start_time":  "2026-08-13T13:32:32.6796610+08:00",
+                          "command_line":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "pid":  43248,
+                          "parent_pid":  35248,
+                          "name":  "java.exe",
+                          "start_time":  "2026-08-13T13:32:00.5332030+08:00",
+                          "command_line":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "pid":  44872,
+                          "parent_pid":  42648,
+                          "name":  "cmd.exe",
+                          "start_time":  "2026-08-13T13:32:32.3622570+08:00",
+                          "command_line":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run \""
+                      }
+                  ],
+    "listener_count":  3,
+    "listeners":  [
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5173,
+                          "pid":  40796,
+                          "State":  2
+                      },
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5174,
+                          "pid":  36432,
+                          "State":  2
+                      },
+                      {
+                          "address":  "127.0.0.1",
+                          "port":  5175,
+                          "pid":  15196,
+                          "State":  2
+                      }
+                  ],
+    "candidates":  [
+                       {
+                           "path":  "scripts/implementation/ui_component_access_gate.py",
+                           "sha256":  "9BA4C5AEB0BF68EE99B6C9C1FE5174458A805D4C0608182269ADC24173563A90",
+                           "bytes":  112869
+                       },
+                       {
+                           "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                           "sha256":  "DCC9D3EA38F9AB254A5D0236F069202810CA3D6C48BD51447CCC9896FC923C34",
+                           "bytes":  84758
+                       },
+                       {
+                           "path":  "technical-platform/web/src/design-system/component-vtu.test.ts",
+                           "sha256":  "8915B86FE71829C89564D537FE63A431F94C9A97E38AA1056EC1654B540A0296",
+                           "bytes":  11534
+                       },
+                       {
+                           "path":  "docs/implementation/ui/P10-COMP-03A_REPORT.md",
+                           "sha256":  "C4482387DEF8453C8C202C6FC2A1BF03BD1C228FDC3F2512B4F94749E164985B",
+                           "bytes":  24807
+                       },
+                       {
+                           "path":  "technical-platform/web/src/showcase/ShowcaseApp.vue",
+                           "sha256":  "AF1C7C41E72CE1BEB518597836FD8F65D839811BF4684A61031A5AC903BDF8FB",
+                           "bytes":  16822
+                       }
+                   ]
+}

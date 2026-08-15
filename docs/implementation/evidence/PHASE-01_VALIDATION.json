@@ -1,0 +1,127 @@
+{
+  "phase": "PHASE-01",
+  "generated_at_utc": "2026-08-07T07:51:46.626435+00:00",
+  "phase_gate": "PASS",
+  "required_checks": {
+    "six_page_excels": true,
+    "page_source_trace": true,
+    "process_catalog_126": true,
+    "process_workbooks_378": true,
+    "kb_parse_zero_fail": true,
+    "database_stats": true,
+    "three_portal_sources": true,
+    "traceability": true,
+    "gaps_recorded": true,
+    "s0_P001_P126_unique": true,
+    "s1_P001_P126_unique": true,
+    "process_table_mapping_126": true,
+    "core_databases_3": true,
+    "page_source_routes": true
+  },
+  "hard_failures": [],
+  "summary": {
+    "phase": "PHASE-01",
+    "phase_gate": "PASS",
+    "checks": {
+      "six_page_excels": true,
+      "page_source_trace": true,
+      "process_catalog_126": true,
+      "process_workbooks_378": true,
+      "kb_parse_zero_fail": true,
+      "database_stats": true,
+      "three_portal_sources": true,
+      "traceability": true,
+      "gaps_recorded": true,
+      "s0_P001_P126_unique": true,
+      "s1_P001_P126_unique": true,
+      "process_table_mapping_126": true,
+      "core_databases_3": true,
+      "page_source_routes": true
+    },
+    "hard_failures": [],
+    "kb": {
+      "files": 524,
+      "extensions": {
+        ".xlsx": 393,
+        ".md": 11,
+        ".json": 4,
+        ".txt": 2,
+        ".csv": 14,
+        ".sql": 60,
+        ".mmd": 40
+      },
+      "failures": 0
+    },
+    "pages": {
+      "records": 7126,
+      "by_source": {
+        "Knowledge Base/01 完整的页面架构/1-1 员工首页.xlsx": 13,
+        "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx": 1630,
+        "Knowledge Base/01 完整的页面架构/2-1 中心首页.xlsx": 15,
+        "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx": 2620,
+        "Knowledge Base/01 完整的页面架构/3-1技术-首页.xlsx": 15,
+        "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx": 2833
+      },
+      "source_routes_expected": 7025,
+      "source_routes_sourced": 7025
+    },
+    "process": {
+      "catalog": 126,
+      "workbooks": {
+        "employee": 126,
+        "center": 126,
+        "tech": 126
+      },
+      "workbooks_total": 378,
+      "s0_codes": 126,
+      "s1_codes": 126,
+      "form_rows": 1972,
+      "field_rows": 90124,
+      "field_rows_by_portal": {
+        "employee": 27022,
+        "center": 35028,
+        "tech": 28074
+      }
+    },
+    "database": {
+      "count": 3,
+      "schemas": 46,
+      "tables": 265,
+      "field_rows": 7116,
+      "relations": 1335,
+      "indexes": 1024,
+      "ddl": {
+        "database": 3,
+        "schema": 46,
+        "table": 266,
+        "index": 1019
+      },
+      "core_databases": [
+        "sjg_audit",
+        "sjg_dw",
+        "sjg_oms"
+      ],
+      "data_sources_total": 7
+    },
+    "permission_fragments": 94760,
+    "trace_records": 7126,
+    "api_records": 0,
+    "gaps": {
+      "count": 17110,
+      "severity": {
+        "WARN": 17109,
+        "INFO": 1
+      },
+      "category": {
+        "PAGE_FACT": 17107,
+        "PAGE_PROCESS": 1,
+        "KB_STRUCTURE": 1,
+        "FORM_COUNT": 1
+      }
+    }
+  },
+  "security": {
+    "employee_master_values_exported": false,
+    "sample_redaction": true
+  }
+}

@@ -1,0 +1,270 @@
+﻿{
+    "count":  33,
+    "mismatch_count":  0,
+    "files":  [
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "manifest_sha256":  "F9123E7E093C4E37DFE289D35EEED9B591894C6C9599CEDF6ECAF6C6E3A62232",
+                      "manifest_bytes":  2841,
+                      "disk_sha256":  "F9123E7E093C4E37DFE289D35EEED9B591894C6C9599CEDF6ECAF6C6E3A62232",
+                      "disk_bytes":  2841,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_BLOCKED_CONTRACTS.md",
+                      "manifest_sha256":  "408C39BF631BA16037B0FEF4E466FEB2B738A39762A680C909F95B73BFFF5F79",
+                      "manifest_bytes":  1399,
+                      "disk_sha256":  "408C39BF631BA16037B0FEF4E466FEB2B738A39762A680C909F95B73BFFF5F79",
+                      "disk_bytes":  1399,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "docs/implementation/ui/P10-COMP-03_REPORT.md",
+                      "manifest_sha256":  "7D803C8E222C6623139A7780FAF41D04EF53542E1FB22212B528D0073558CFDC",
+                      "manifest_bytes":  13600,
+                      "disk_sha256":  "7D803C8E222C6623139A7780FAF41D04EF53542E1FB22212B528D0073558CFDC",
+                      "disk_bytes":  13600,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+                      "manifest_sha256":  "D9AE7D7B510FDA07F92CD2BA5501E79A05268EE479B2C1B2E50A99758CA90866",
+                      "manifest_bytes":  85016,
+                      "disk_sha256":  "D9AE7D7B510FDA07F92CD2BA5501E79A05268EE479B2C1B2E50A99758CA90866",
+                      "disk_bytes":  85016,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "scripts/implementation/ui_component_access_gate.py",
+                      "manifest_sha256":  "054E01BFF90725C4829001C1CC48ABBAC9BE427540C3CC1803368D51A1378743",
+                      "manifest_bytes":  119430,
+                      "disk_sha256":  "054E01BFF90725C4829001C1CC48ABBAC9BE427540C3CC1803368D51A1378743",
+                      "disk_bytes":  119430,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/design-system/ui-component-access.test.ts",
+                      "manifest_sha256":  "0BBC9ECBAC03310D6877811B34F9CB92E2247A6ACA788148D146C02707F2EA4C",
+                      "manifest_bytes":  2072,
+                      "disk_sha256":  "0BBC9ECBAC03310D6877811B34F9CB92E2247A6ACA788148D146C02707F2EA4C",
+                      "disk_bytes":  2072,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/action-contracts.ts",
+                      "manifest_sha256":  "F5531C9BD1955F25A0A7CFFEED8BA45DD1DE54D34D6CDB0BA95908F71E058238",
+                      "manifest_bytes":  328,
+                      "disk_sha256":  "F5531C9BD1955F25A0A7CFFEED8BA45DD1DE54D34D6CDB0BA95908F71E058238",
+                      "disk_bytes":  328,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ConfirmDialog.vue",
+                      "manifest_sha256":  "14D769E0262C01E44A42486C4745CC52F3B7CE0D68262EAAADBDDF57EEEB5FF1",
+                      "manifest_bytes":  944,
+                      "disk_sha256":  "14D769E0262C01E44A42486C4745CC52F3B7CE0D68262EAAADBDDF57EEEB5FF1",
+                      "disk_bytes":  944,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/HighRiskConfirmDialog.vue",
+                      "manifest_sha256":  "E118CE3E369867FD8B999B5E030C3C34850AED31632BB755F7844BE76A0FDF70",
+                      "manifest_bytes":  1655,
+                      "disk_sha256":  "E118CE3E369867FD8B999B5E030C3C34850AED31632BB755F7844BE76A0FDF70",
+                      "disk_bytes":  1655,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/ProcessActionPanel.vue",
+                      "manifest_sha256":  "2C4D865D9660661B6A99A17A62322466EE71EAFF776726C26CA819C1BB33B02A",
+                      "manifest_bytes":  2884,
+                      "disk_sha256":  "2C4D865D9660661B6A99A17A62322466EE71EAFF776726C26CA819C1BB33B02A",
+                      "disk_bytes":  2884,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/actions/shared-components.test.ts",
+                      "manifest_sha256":  "09E52DB0B648FDFE7D8B6B12BC4A08FE075913062C742E1CD91EEE4B77235D59",
+                      "manifest_bytes":  5231,
+                      "disk_sha256":  "09E52DB0B648FDFE7D8B6B12BC4A08FE075913062C742E1CD91EEE4B77235D59",
+                      "disk_bytes":  5231,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-contracts.ts",
+                      "manifest_sha256":  "1EB5148A885094964BDB453F8430F0B1E8B0AFB49D263125148D7F1C73AF827C",
+                      "manifest_bytes":  349,
+                      "disk_sha256":  "1EB5148A885094964BDB453F8430F0B1E8B0AFB49D263125148D7F1C73AF827C",
+                      "disk_bytes":  349,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/async-state.ts",
+                      "manifest_sha256":  "FEF79181081DCDE37D2CCA7EEBE4071C37C6DE6A55BF5E454CE84D603D38E085",
+                      "manifest_bytes":  397,
+                      "disk_sha256":  "FEF79181081DCDE37D2CCA7EEBE4071C37C6DE6A55BF5E454CE84D603D38E085",
+                      "disk_bytes":  397,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/AsyncStateBoundary.vue",
+                      "manifest_sha256":  "D798150B78BF6043AAA6B543FA2359AEF83545E8AE5E92065731FDAE49021891",
+                      "manifest_bytes":  1390,
+                      "disk_sha256":  "D798150B78BF6043AAA6B543FA2359AEF83545E8AE5E92065731FDAE49021891",
+                      "disk_bytes":  1390,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/shared-components.test.ts",
+                      "manifest_sha256":  "D59C7B251BCDB1E28A580DD5C980DCCE9969B5B8DD03B4609AA913348BB08F49",
+                      "manifest_bytes":  5324,
+                      "disk_sha256":  "D59C7B251BCDB1E28A580DD5C980DCCE9969B5B8DD03B4609AA913348BB08F49",
+                      "disk_bytes":  5324,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncAction.ts",
+                      "manifest_sha256":  "9A07812EAE251020438D21B356EAAF40B3864627B0BFD424D26839EEF8E356AA",
+                      "manifest_bytes":  2105,
+                      "disk_sha256":  "9A07812EAE251020438D21B356EAAF40B3864627B0BFD424D26839EEF8E356AA",
+                      "disk_bytes":  2105,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/async/useAsyncResource.ts",
+                      "manifest_sha256":  "DCC711DFD4961FC686FDDFB1EBEF4589ED5E0D6E084D47DD408EFB69BDBF1408",
+                      "manifest_bytes":  2085,
+                      "disk_sha256":  "DCC711DFD4961FC686FDDFB1EBEF4589ED5E0D6E084D47DD408EFB69BDBF1408",
+                      "disk_bytes":  2085,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ApiErrorNotice.vue",
+                      "manifest_sha256":  "00A4AA7DC8489F9EDECEDF31CF5A7F43287F1359C40BE99C0183A21E522F7062",
+                      "manifest_bytes":  956,
+                      "disk_sha256":  "00A4AA7DC8489F9EDECEDF31CF5A7F43287F1359C40BE99C0183A21E522F7062",
+                      "disk_bytes":  956,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/FormErrorSummary.vue",
+                      "manifest_sha256":  "FDE9C7E896A2713276B4DB0854F5FAA97DCCBE26C08B1DEAC0BD602A9FDC2BD2",
+                      "manifest_bytes":  923,
+                      "disk_sha256":  "FDE9C7E896A2713276B4DB0854F5FAA97DCCBE26C08B1DEAC0BD602A9FDC2BD2",
+                      "disk_bytes":  923,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/map-api-error.ts",
+                      "manifest_sha256":  "90B96C208C83ACF96D75EF852FFC60C47465B362CC30E6BBA36BEF4ADAC7584A",
+                      "manifest_bytes":  2320,
+                      "disk_sha256":  "90B96C208C83ACF96D75EF852FFC60C47465B362CC30E6BBA36BEF4ADAC7584A",
+                      "disk_bytes":  2320,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/shared-components.test.ts",
+                      "manifest_sha256":  "EC2BD5C73DFEAC29CFFD773A5A5A396BCDD2529C1170100B6978EE344EDAC88D",
+                      "manifest_bytes":  2160,
+                      "disk_sha256":  "EC2BD5C73DFEAC29CFFD773A5A5A396BCDD2529C1170100B6978EE344EDAC88D",
+                      "disk_bytes":  2160,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/ui-error.ts",
+                      "manifest_sha256":  "0DEFBE5B5D3AC748EA3FD46A233B7619ABA97E8842663E97E5188A089A88F5A8",
+                      "manifest_bytes":  487,
+                      "disk_sha256":  "0DEFBE5B5D3AC748EA3FD46A233B7619ABA97E8842663E97E5188A089A88F5A8",
+                      "disk_bytes":  487,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/errors/VersionConflictPanel.vue",
+                      "manifest_sha256":  "7F4D137D481D1A531F66ADB76D4DEC5866D91CB1E77E51F6A213D8407982779B",
+                      "manifest_bytes":  949,
+                      "disk_sha256":  "7F4D137D481D1A531F66ADB76D4DEC5866D91CB1E77E51F6A213D8407982779B",
+                      "disk_bytes":  949,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/DateTimeRangeField.vue",
+                      "manifest_sha256":  "AEE45B634719723041042F8047877B60F06AC6A8C35A7B740771600D01210567",
+                      "manifest_bytes":  1105,
+                      "disk_sha256":  "AEE45B634719723041042F8047877B60F06AC6A8C35A7B740771600D01210567",
+                      "disk_bytes":  1105,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/forms/shared-components.test.ts",
+                      "manifest_sha256":  "8E54EDEED127A763A93F4858F199B7F11E1CF17F76C721B9D6898CF0CD11F9F3",
+                      "manifest_bytes":  885,
+                      "disk_sha256":  "8E54EDEED127A763A93F4858F199B7F11E1CF17F76C721B9D6898CF0CD11F9F3",
+                      "disk_bytes":  885,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+                      "manifest_sha256":  "0B9544983922DDDDC2CDB671F1AC14C6C0A7D3A5A35BCB3F3EAFF22600D076CC",
+                      "manifest_bytes":  1588,
+                      "disk_sha256":  "0B9544983922DDDDC2CDB671F1AC14C6C0A7D3A5A35BCB3F3EAFF22600D076CC",
+                      "disk_bytes":  1588,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DataTable.vue",
+                      "manifest_sha256":  "64B135E8BFA47118E343682F37F2462343E812DA4371CF86220A8D32597F8CC4",
+                      "manifest_bytes":  4950,
+                      "disk_sha256":  "64B135E8BFA47118E343682F37F2462343E812DA4371CF86220A8D32597F8CC4",
+                      "disk_bytes":  4950,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/DescriptionList.vue",
+                      "manifest_sha256":  "2A293C28D5A1A9FAD73B8E0C6051B6CEA6E3F5CCBED108311FDFCA0891C7A35B",
+                      "manifest_bytes":  663,
+                      "disk_sha256":  "2A293C28D5A1A9FAD73B8E0C6051B6CEA6E3F5CCBED108311FDFCA0891C7A35B",
+                      "disk_bytes":  663,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessRecordMeta.vue",
+                      "manifest_sha256":  "07490DEB51C02BB8598EF060E9915A8F4CA01C5E0E61FD8005462E43B8FC94A4",
+                      "manifest_bytes":  917,
+                      "disk_sha256":  "07490DEB51C02BB8598EF060E9915A8F4CA01C5E0E61FD8005462E43B8FC94A4",
+                      "disk_bytes":  917,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/ProcessTimeline.vue",
+                      "manifest_sha256":  "B8A0A0485AD55EEFFB4635E291D8A8817DA7BA7431E8A59D6B772F6FDAF73B06",
+                      "manifest_bytes":  764,
+                      "disk_sha256":  "B8A0A0485AD55EEFFB4635E291D8A8817DA7BA7431E8A59D6B772F6FDAF73B06",
+                      "disk_bytes":  764,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/records/shared-components.test.ts",
+                      "manifest_sha256":  "A0F2F99B402D659C7D6966FE61146AE3D84A34D088A7A2E613E0ACD3013028DA",
+                      "manifest_bytes":  4435,
+                      "disk_sha256":  "A0F2F99B402D659C7D6966FE61146AE3D84A34D088A7A2E613E0ACD3013028DA",
+                      "disk_bytes":  4435,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/PermissionGate.vue",
+                      "manifest_sha256":  "A8688170613BE17579A99F4A786E0496C8FC64E2E7C5BAD50DDC51635DD09614",
+                      "manifest_bytes":  588,
+                      "disk_sha256":  "A8688170613BE17579A99F4A786E0496C8FC64E2E7C5BAD50DDC51635DD09614",
+                      "disk_bytes":  588,
+                      "mismatch":  false
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/shared/security/shared-components.test.ts",
+                      "manifest_sha256":  "D232153E9777BFA24EEE2426FA41CB5E3AA459980D0AAF66C7633A12060503D8",
+                      "manifest_bytes":  1134,
+                      "disk_sha256":  "D232153E9777BFA24EEE2426FA41CB5E3AA459980D0AAF66C7633A12060503D8",
+                      "disk_bytes":  1134,
+                      "mismatch":  false
+                  }
+              ]
+}

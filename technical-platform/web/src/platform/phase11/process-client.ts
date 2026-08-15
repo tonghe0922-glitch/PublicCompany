@@ -16,10 +16,6 @@ export interface ProcessRequestContext {
   signal: AbortSignal
 }
 
-export function idempotencyKey(scope: string): string {
-  return `${scope}-${globalThis.crypto.randomUUID()}`
-}
-
 export function listProcessRecords<T>(
   requester: ProcessRequester,
   path: string,
@@ -33,13 +29,13 @@ export function listProcessRecords<T>(
 export function createProcessRecord<TResponse, TBody>(
   requester: ProcessRequester,
   path: string,
-  scope: string,
+  idempotencyKey: string,
   body: TBody,
   context?: ProcessRequestContext,
 ): Promise<TResponse> {
   return requester.request<TResponse, TBody>(path, {
     method: 'POST',
-    idempotencyKey: idempotencyKey(scope),
+    idempotencyKey,
     body,
     ...(context ? { signal: context.signal } : {}),
   })
@@ -50,7 +46,7 @@ export function executeProcessAction<TResponse, TBody extends ProcessActionBody>
   collectionPath: string,
   recordId: string,
   actionCode: string,
-  scope: string,
+  idempotencyKey: string,
   body: TBody,
   context?: ProcessRequestContext,
 ): Promise<TResponse> {
@@ -58,7 +54,7 @@ export function executeProcessAction<TResponse, TBody extends ProcessActionBody>
     `${collectionPath}/${recordId}/actions/${actionCode}`,
     {
       method: 'POST',
-      idempotencyKey: idempotencyKey(scope),
+      idempotencyKey,
       body,
       ...(context ? { signal: context.signal } : {}),
     },

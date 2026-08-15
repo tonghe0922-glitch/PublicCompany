@@ -1,0 +1,10 @@
+{
+  "schema_version": "10",
+  "post_preflight": 0,
+  "post_baseline": 0,
+  "metadata_refresh": 0,
+  "task_changes": 0,
+  "unrelated_workspace_changes": 0,
+  "concurrent_core_changes": 0,
+  "evidence_metadata_changes": 1
+}

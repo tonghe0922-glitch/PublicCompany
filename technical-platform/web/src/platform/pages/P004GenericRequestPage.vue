@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { SgjButton, SgjInput, SgjSelect, SgjTextarea } from '@sgj/ui'
 import { usePortalSessionStore } from '../../session'
 import type { PortalDefinition } from '../portal-config'
 
@@ -187,35 +188,39 @@ onMounted(() => { void run(load) })
       <h2>发起通用申请</h2>
       <p v-if="!canSubmit">当前身份没有 p004.request.submit 权限。</p>
       <div class="form-grid">
-        <label>业务事项类型<input v-model="requestType" :disabled="busy || !canSubmit" required /></label>
-        <label>业务日期<input v-model="businessDate" type="date" :disabled="busy || !canSubmit" required /></label>
-        <label>优先级
-          <select v-model="priority" :disabled="busy || !canSubmit"><option value="NORMAL">普通</option><option value="HIGH">高</option><option value="URGENT">紧急</option></select>
-        </label>
-        <label>风险级别
-          <select v-model="riskLevel" :disabled="busy || !canSubmit"><option value="NORMAL">普通</option><option value="MEDIUM">中</option><option value="HIGH">高</option></select>
-        </label>
-        <label>申请金额（可选）<input v-model="amount" type="number" min="0" step="0.01" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">主题<input v-model="subject" :disabled="busy || !canSubmit" required /></label>
-        <label class="wide">申请原因<textarea v-model="reason" :disabled="busy || !canSubmit" /></label>
-        <label class="wide">期望结果<textarea v-model="requestedResult" :disabled="busy || !canSubmit" /></label>
+        <SgjInput v-model="requestType" label="业务事项类型" :disabled="busy || !canSubmit" required />
+        <SgjInput v-model="businessDate" label="业务日期" type="date" :disabled="busy || !canSubmit" required />
+        <SgjSelect v-model="priority" label="优先级" :options="[
+          { value: 'NORMAL', label: '普通' },
+          { value: 'HIGH', label: '高' },
+          { value: 'URGENT', label: '紧急' },
+        ]" :disabled="busy || !canSubmit" />
+        <SgjSelect v-model="riskLevel" label="风险级别" :options="[
+          { value: 'NORMAL', label: '普通' },
+          { value: 'MEDIUM', label: '中' },
+          { value: 'HIGH', label: '高' },
+        ]" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="amount" label="申请金额（可选）" type="number" min="0" step="0.01" :disabled="busy || !canSubmit" />
+        <SgjInput v-model="subject" class="wide" label="主题" :disabled="busy || !canSubmit" required />
+        <SgjTextarea v-model="reason" class="wide" label="申请原因" :disabled="busy || !canSubmit" />
+        <SgjTextarea v-model="requestedResult" class="wide" label="期望结果" :disabled="busy || !canSubmit" />
       </div>
-      <button type="button" :disabled="busy || !canSubmit || !requestType.trim() || !subject.trim() || !businessDate" @click="submit">提交申请</button>
+      <SgjButton type="button" :disabled="busy || !canSubmit || !requestType.trim() || !subject.trim() || !businessDate" @click="submit">提交申请</SgjButton>
     </section>
 
     <section v-if="isCenter" class="phase09-card">
       <h2>本次节点处理信息</h2>
       <div class="form-grid">
-        <label class="wide">处理说明<textarea v-model="actionReason" :disabled="busy" /></label>
-        <label class="wide">结果摘要<textarea v-model="resultSummary" :disabled="busy" placeholder="执行、验收、补偿或归档时按实际需要填写" /></label>
-        <label>实际金额（执行结果可填）<input v-model="actualAmount" type="number" min="0" step="0.01" :disabled="busy" /></label>
+        <SgjTextarea v-model="actionReason" class="wide" label="处理说明" :disabled="busy" />
+        <SgjTextarea v-model="resultSummary" class="wide" label="结果摘要" :disabled="busy" placeholder="执行、验收、补偿或归档时按实际需要填写" />
+        <SgjInput v-model="actualAmount" label="实际金额（执行结果可填）" type="number" min="0" step="0.01" :disabled="busy" />
       </div>
     </section>
 
     <section class="phase09-card">
       <div class="section-head">
         <h2>{{ isEmployee ? '我的申请记录' : isCenter ? '可处理申请' : '流程实例监控' }}</h2>
-        <button type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</button>
+        <SgjButton type="button" :disabled="busy || !canRead" @click="() => run(load)">刷新</SgjButton>
       </div>
       <p v-if="!canRead">当前身份没有 p004.request.read 权限。</p>
       <div v-if="records.length" class="record-list">
@@ -239,12 +244,12 @@ onMounted(() => { void run(load) })
           </template>
           <p v-else class="metadata-note">业务自由文本按技术端最小必要原则隐藏，仅显示运行元数据。</p>
           <div v-if="employeeActions(record).length" class="actions">
-            <button v-for="action in employeeActions(record)" :key="action.code" type="button"
-              :class="{ danger: action.destructive }" :disabled="busy" @click="perform(record, action.code)">{{ action.label }}</button>
+            <SgjButton v-for="action in employeeActions(record)" :key="action.code" type="button"
+              :class="{ danger: action.destructive }" :disabled="busy" @click="perform(record, action.code)">{{ action.label }}</SgjButton>
           </div>
           <div v-if="actionsFor(record).length" class="actions">
-            <button v-for="action in actionsFor(record)" :key="action.code" type="button"
-              :class="{ danger: action.destructive }" :disabled="busy" @click="perform(record, action.code)">{{ action.label }}</button>
+            <SgjButton v-for="action in actionsFor(record)" :key="action.code" type="button"
+              :class="{ danger: action.destructive }" :disabled="busy" @click="perform(record, action.code)">{{ action.label }}</SgjButton>
           </div>
         </article>
       </div>

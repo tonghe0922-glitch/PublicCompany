@@ -1,0 +1,46 @@
+﻿{
+    "docs":  [
+                 {
+                     "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                     "sha256":  "4775C0C53C0F57EF5691D8D6DDFB7F25489154DD6A5FF926A40DCE1CB002DDD2",
+                     "bytes":  7874,
+                     "strict_utf8":  true,
+                     "replacement_char_count":  0
+                 },
+                 {
+                     "path":  "docs/implementation/ui/page-component-plans/P10-COMP-06_REPORT.md",
+                     "sha256":  "E502F22509B7BD4FA77ACF4A0577F14BB676A0CC187723A5C714F62ACAA5A172",
+                     "bytes":  13554,
+                     "strict_utf8":  true,
+                     "replacement_char_count":  0
+                 }
+             ],
+    "submitted_count":  30,
+    "submitted_present":  28,
+    "submitted_expected_deleted":  2,
+    "submitted_mismatch":  0,
+    "scoped":  {
+                   "task":  29,
+                   "unrelated":  0,
+                   "concurrent":  0,
+                   "metadata":  1
+               },
+    "runtime_count":  7,
+    "runtime_pids":  [
+                         15196,
+                         35248,
+                         36432,
+                         40796,
+                         41392,
+                         43248,
+                         44872
+                     ],
+    "listeners":  [
+                      "5173:40796",
+                      "5174:36432",
+                      "5175:15196"
+                  ],
+    "fresh_listener_count":  0,
+    "running_testcontainers_count":  0,
+    "running_ryuk_count":  0
+}

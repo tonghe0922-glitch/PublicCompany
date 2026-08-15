@@ -95,7 +95,7 @@ test('P001 real MFA lifecycle, typed negatives, data scope and three-portal rend
 
   await loginPortal(page, employeeBase, '员工工作入口')
   await page.goto(`${employeeBase}#/employee/13/04/04`)
-  await expect(page.getByRole('heading', { name: '账号安全与会话管理', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '账号安全与会话管理', level: 2 })).toBeVisible()
   await expect(page.getByTestId('p001-mfa-status')).toContainText('NONE')
   await page.getByLabel('账号标识').fill(monitorUserId)
   await page.getByLabel('当前密码（绑定前重新验证）').fill(password)
@@ -119,7 +119,7 @@ test('P001 real MFA lifecycle, typed negatives, data scope and three-portal rend
   await page.getByRole('button', { name: '登录' }).click()
   await expect(page.getByRole('heading', { name: '员工工作入口', level: 1 })).toBeVisible()
   await page.goto(`${employeeBase}#/employee/13/04/06`)
-  await expect(page.getByRole('heading', { name: '账号安全与会话管理', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '账号安全与会话管理', level: 2 })).toBeVisible()
   await expect(page.locator('tbody')).toContainText(monitorEmployeeId)
 
   const activeToken = await apiLogin(request, monitorLogin, totp(secret1 ?? ''))
@@ -192,14 +192,14 @@ test('P001 real MFA lifecycle, typed negatives, data scope and three-portal rend
   const newSecret = reenrollment.secret
   await loginPortal(page, centerBase, '中心管理工作入口', totp(newSecret))
   await page.goto(`${centerBase}#/center/02/01/01`)
-  await expect(page.getByRole('heading', { name: '身份与会话审批监督', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '身份与会话审批监督', level: 2 })).toBeVisible()
   await page.getByLabel('目标用户 ID').fill(targetUserId)
   await page.getByRole('button', { name: '刷新服务端会话' }).click()
   await expect(page.locator('tbody')).toContainText(targetEmployeeId)
 
   await loginPortal(page, techBase, '技术运行工作入口', totp(newSecret))
   await page.goto(`${techBase}#/tech/03/01/01`)
-  await expect(page.getByRole('heading', { name: '身份与会话安全监控', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '身份与会话安全监控', level: 2 })).toBeVisible()
   await page.getByLabel('目标用户 ID').fill(targetUserId)
   await page.getByRole('button', { name: '刷新服务端会话' }).click()
   await expect(page.locator('tbody')).toContainText(targetEmployeeId)

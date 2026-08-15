@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "contractId": "CXR07_IDEMPOTENCY_HTTP_CONTRACT",
+  "status": "REGATE_CANDIDATE",
+  "sourceOfTruth": {
+    "kind": "REAL_HTTP_INTEGRATION_TEST",
+    "log": ".runlogs/cxr07-idempotency-lock/green/api-six-it-green-rerun3-final.log",
+    "postgres": "16.14",
+    "omsFlywayTarget": "125.2",
+    "auditFlywayTarget": "101",
+    "auditFlywayMigrationsFromEmpty": 9,
+    "auditValidateAfterMigrate": true,
+    "auditSecondMigrateExecuted": 0,
+    "classes": 6,
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "client": {
+    "idempotencyKeyAuthority": "PROCESS_COMMAND_JOURNAL",
+    "processClientGeneratesKeys": false,
+    "actorIdentityFields": ["tenantId", "userId", "identityId"],
+    "recordLockKey": "<processCode>:record:<recordId>",
+    "canonicalPayload": "RECURSIVE_SORTED_JSON_COMPATIBLE_VALUES",
+    "payloadHash": "WEB_CRYPTO_SHA_256_64_HEX",
+    "payloadHashInputRetained": false,
+    "payloadIdentityRequirement": "COLLISION_RESISTANT_CHANGED_PAYLOAD_SEPARATION",
+    "rawPayloadRetained": false,
+    "scopeDispose": "ABORT_TRANSPORT_AND_RETAIN_UNKNOWN_COMMAND",
+    "unknownOutcome": "RETAIN_KEY_AND_RECORD_LOCK",
+    "sameOperationSamePayloadRetry": "REUSE_ORIGINAL_IDEMPOTENCY_KEY",
+    "differentOperationOrPayloadWhileUnknown": "FAIL_CLOSED_WITHOUT_TRANSPORT",
+    "confirmedOrDeterministic4xx": "RELEASE_RECORD_LOCK_AND_COMMAND_STATE",
+    "transportTimeoutAbortOrUncertain5xx": "UNKNOWN",
+    "errorClassification": "TYPED_API_CLIENT_ERROR"
+  },
+  "server": {
+    "idempotencyHeader": "Idempotency-Key",
+    "headerForwarding": "VERBATIM_CALLER_KEY",
+    "changedPayloadSameKey": "HTTP_409",
+    "businessFactCountAfterReplay": 1,
+    "outboxCountAfterReplay": 1,
+    "attemptAuditCountAfterReplay": 1,
+    "successAuditCountAfterReplay": 1,
+    "auditColumn": "audit.operation_log.idempotency_key",
+    "auditUniqueKey": ["tenant_id", "action", "resource_type", "idempotency_key"],
+    "auditNullKeyParticipatesInUniqueConstraint": false,
+    "auditInsert": "PARAMETERIZED_ON_CONFLICT_DO_NOTHING",
+    "getAndMonitorAuditBehavior": "UNCHANGED"
+  },
+  "processes": [
+    { "processCode": "P011", "createIdempotencyKey": "create-approved", "successAuditAction": "P011_CREATED" },
+    { "processCode": "P012", "createIdempotencyKey": "create-nomination", "successAuditAction": "P012_CREATED" },
+    { "processCode": "P013", "createIdempotencyKey": "create-reward", "successAuditAction": "P013_CREATED" },
+    { "processCode": "P014", "createIdempotencyKey": "create-discipline", "successAuditAction": "P014_CREATED" },
+    { "processCode": "P015", "createIdempotencyKey": "transaction-create", "successAuditAction": "P015_CREATED" },
+    { "processCode": "P016", "createIdempotencyKey": "care-create", "successAuditAction": "P016_CREATED" }
+  ],
+  "prohibited": {
+    "clientGeneratedKeyBelowJournal": true,
+    "messageSubstringErrorClassification": true,
+    "rawPayloadPersistence": true,
+    "automaticBusinessActionReplay": true,
+    "clientLockAsServerAuthority": true
+  },
+  "frontendVerification": {
+    "journalFocused": { "files": 1, "tests": 22, "failures": 0, "exit": 0 },
+    "focused": { "files": 4, "tests": 64, "failures": 0, "unhandledErrors": 0, "exit": 0 },
+    "typecheckExit": 0,
+    "lintExit": 0
+  },
+  "independentGatePassClaimed": false,
+  "phase12OrP017PlusChanged": 0
+}

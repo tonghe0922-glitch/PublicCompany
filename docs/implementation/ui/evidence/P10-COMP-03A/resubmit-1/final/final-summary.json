@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P10-COMP-03A",
+  "submission": "RESUBMIT-1",
+  "status_requested": "INDEPENDENT_REVIEW",
+  "valid_pre_2": {
+    "workspace_source_id": "1EE760B478C9432364B692ADE32C61C841B769F9CE048CD73C7B94C22279D35D",
+    "workspace_file_count": 1503,
+    "task_source_id": "A3E20B12B46FB350534C2D563709C5E7B92203ECF80577D53A98291909E09DBB",
+    "task_source_file_count": 23,
+    "evidence_metadata_file_count": 0,
+    "git_status": "ABSENT"
+  },
+  "aborted_pre": {
+    "workspace_source_id_prefix": "5AC2C45F",
+    "task_source_id_prefix": "1701FEBB",
+    "reason": "Canonical plan schema changed after this snapshot; it is retained only as aborted history."
+  },
+  "comparable_post": {
+    "workspace_source_id": "C1EDDA4378BC96A1AD5877646A8B19918F0340CAD580E72CBE25CCD4176E4787",
+    "workspace_file_count": 1502,
+    "task_source_id": "D92E47BC07DC2C8C1A4FE839E31082F289BCBA27A489C0BF76BF8D95CBCE2909",
+    "task_source_file_count": 22,
+    "planned_path_count": 23,
+    "planned_missing_count": 0,
+    "evidence_metadata_id": "54C4D0CA9B7730F00B92BA29B4D3AC83EAC9F5F8C34D6F7AFACEE4B51339AF42",
+    "evidence_metadata_file_count": 1,
+    "scoped_counts": {
+      "ui_task": 0,
+      "concurrent_core": 0,
+      "unrelated": 0,
+      "evidence_metadata": 1
+    }
+  },
+  "source_gates": {
+    "python_compile_exit": 0,
+    "official_ui_self_exit": 0,
+    "official_ui_self_case_count": 20,
+    "reviewer_fixture_exit": 0,
+    "reviewer_probe_count": 6,
+    "reviewer_fail_open_count": 0,
+    "project_ui_current_exit": 1,
+    "project_ui_current_findings": 190,
+    "project_ui_raw_findings": 181,
+    "project_ui_legacy_findings": 9,
+    "project_ui_structural_findings": 0,
+    "project_source_self_exit": 0,
+    "project_source_current_exit": 1,
+    "project_source_current_findings": 340,
+    "project_source_route_pages": 7,
+    "project_source_action_codes": 46,
+    "package_ui_self_exit": 0,
+    "package_ui_current_exit": 1,
+    "package_ui_current_findings": 79,
+    "package_ui_current_files": 4
+  },
+  "frontend_gates": {
+    "targeted_alias_exit": 0,
+    "lint_exit": 0,
+    "typecheck_exit": 0,
+    "unit_exit": 0,
+    "unit_files": 36,
+    "unit_tests": 198,
+    "build_exit": 0,
+    "build_portals": ["employee", "center", "admin"],
+    "knip_exit": 0,
+    "retained_chunk_warning_mb": 2.080
+  },
+  "representative_browser": {
+    "process": "P016",
+    "fixture_ready": true,
+    "playwright_exit": 0,
+    "desktop_chromium_tests": 1,
+    "test_seconds": 13.5,
+    "total_seconds": 18.2,
+    "controlled_ctrl_c": true,
+    "fixture_exit": 1,
+    "fixture_exit_expected_after_ctrl_c": true,
+    "postgres_id": "a34f513923afb63866c185e9fc712efe4eea4474b5f10f73eaf2a50dbc8fa010",
+    "redis_id": "2dd1ae51285f0e2d2f43d68282bf4954f86af707762dcb460f2b7424dab10c59",
+    "remaining_exact_ids": 0,
+    "ryuk_count": 0,
+    "listener_count": 0,
+    "workspace_process_count": 0
+  },
+  "post_tools": {
+    "first_preflight_wrapper_exit": 1,
+    "first_preflight_wrapper_started_tool": false,
+    "corrected_preflight_exit": 0,
+    "post_baseline_exit": 0,
+    "submitted_hash_exit": 0
+  },
+  "submitted": {
+    "file_count": 23,
+    "mismatch_count": 0,
+    "report_sha256": "BE3A3B23504737160C1947DE9A15880BC2F54630AF60363EA54A2FA7732E31BB",
+    "report_bytes": 12685
+  }
+}

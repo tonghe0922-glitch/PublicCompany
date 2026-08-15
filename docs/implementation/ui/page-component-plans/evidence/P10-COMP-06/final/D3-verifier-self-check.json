@@ -1,0 +1,32 @@
+﻿{
+    "running_container_count":  4,
+    "short_count":  4,
+    "short_all_length12":  true,
+    "full_all_length64":  true,
+    "full_exact_set_membership_count":  4,
+    "inspect_exact_count":  4,
+    "inspect_results":  [
+                            {
+                                "full_length":  64,
+                                "inspect_length":  64,
+                                "exact_ordinal_ignore_case":  true
+                            },
+                            {
+                                "full_length":  64,
+                                "inspect_length":  64,
+                                "exact_ordinal_ignore_case":  true
+                            },
+                            {
+                                "full_length":  64,
+                                "inspect_length":  64,
+                                "exact_ordinal_ignore_case":  true
+                            },
+                            {
+                                "full_length":  64,
+                                "inspect_length":  64,
+                                "exact_ordinal_ignore_case":  true
+                            }
+                        ],
+    "running_testcontainers_count":  0,
+    "running_ryuk_count":  0
+}

@@ -1,0 +1,207 @@
+﻿{
+  "probe_count": 20,
+  "negative_count": 18,
+  "positive_count": 2,
+  "failure_count": 0,
+  "negative_scanned_min": 5,
+  "temp_absent": true,
+  "results": [
+    {
+      "name": "callback-object-escape",
+      "expected": "DYNAMIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "DYNAMIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "create-vnode",
+      "expected": "PROGRAMMATIC_NATIVE_INTERACTIVE",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "resolve-dynamic",
+      "expected": "PROGRAMMATIC_NATIVE_INTERACTIVE",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "resolve-component",
+      "expected": "PROGRAMMATIC_NATIVE_INTERACTIVE",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "h-alias",
+      "expected": "PROGRAMMATIC_NATIVE_INTERACTIVE",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "namespace-optional",
+      "expected": "PROGRAMMATIC_NATIVE_INTERACTIVE",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "namespace-let",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "namespace-reassign",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "conditional",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "bind",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "array",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "argument",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "return",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "object",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+        "PROGRAMMATIC_NATIVE_INTERACTIVE"
+      ],
+      "pass": true
+    },
+    {
+      "name": "sequence",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "logical",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "namespace-argument",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "namespace-return",
+      "expected": "PROGRAMMATIC_COMPONENT_UNRESOLVED",
+      "status": "FAIL",
+      "scanned": 5,
+      "codes": [
+        "PROGRAMMATIC_COMPONENT_UNRESOLVED"
+      ],
+      "pass": true
+    },
+    {
+      "name": "recursive-alias-component",
+      "expected": "PASS",
+      "status": "PASS",
+      "scanned": 5,
+      "codes": [],
+      "pass": true
+    },
+    {
+      "name": "recursive-namespace-component",
+      "expected": "PASS",
+      "status": "PASS",
+      "scanned": 5,
+      "codes": [],
+      "pass": true
+    }
+  ]
+}

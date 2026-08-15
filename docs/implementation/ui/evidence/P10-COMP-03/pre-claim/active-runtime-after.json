@@ -1,0 +1,69 @@
+﻿{
+    "label":  "after-corrected-baseline",
+    "captured_utc":  "2026-08-13T09:48:50.4615084Z",
+    "classification":  "pre-existing active runtime / source-baseline non-writer",
+    "expected_process_count":  7,
+    "process_count":  7,
+    "processes":  [
+                      {
+                          "ProcessId":  15196,
+                          "ParentProcessId":  6700,
+                          "Name":  "node.exe",
+                          "CommandLine":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode admin --host 127.0.0.1 --port 5175 --strictPort "
+                      },
+                      {
+                          "ProcessId":  35248,
+                          "ParentProcessId":  40240,
+                          "Name":  "cmd.exe",
+                          "CommandLine":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run \""
+                      },
+                      {
+                          "ProcessId":  36432,
+                          "ParentProcessId":  6700,
+                          "Name":  "node.exe",
+                          "CommandLine":  "\"C:\\Program Files\\nodejs\\node.exe\" I:\\PublicCompany_source_codex\\technical-platform\\web\\node_modules\\vite\\bin\\vite.js --mode center --host 127.0.0.1 --port 5174 --strictPort "
+                      },
+                      {
+                          "ProcessId":  40796,
+                          "ParentProcessId":  33932,
+                          "Name":  "node.exe",
+                          "CommandLine":  "C:\\Users\\Administrator\\.workbuddy\\binaries\\node\\versions\\22.22.2\\node.exe node_modules/vite/bin/vite.js --mode employee --host 127.0.0.1 --port 5173"
+                      },
+                      {
+                          "ProcessId":  41392,
+                          "ParentProcessId":  44872,
+                          "Name":  "java.exe",
+                          "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "ProcessId":  43248,
+                          "ParentProcessId":  35248,
+                          "Name":  "java.exe",
+                          "CommandLine":  "\"C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe\"       --enable-native-access=ALL-UNNAMED       -classpath \"C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\boot\\plexus-classworlds-2.9.0.jar\"   \"-Dclassworlds.conf=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\bin\\m2.conf\"   \"-Dmaven.home=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\"   \"-Dlibrary.jansi.path=C:\\Users\\Administrator\\.m2\\wrapper\\dists\\apache-maven-3.9.11\\apache-maven-3.9.11\\lib\\jansi-native\"   \"-Dmaven.multiModuleProjectDirectory=I:\\PublicCompany_source_codex\"   org.codehaus.plexus.classworlds.launcher.Launcher  -f technical-platform\\backend\\apps\\api\\pom.xml spring-boot:run"
+                      },
+                      {
+                          "ProcessId":  44872,
+                          "ParentProcessId":  42648,
+                          "Name":  "cmd.exe",
+                          "CommandLine":  "C:\\Windows\\system32\\cmd.exe /c \"\"I:\\PublicCompany_source_codex\\mvnw.cmd\" -f technical-platform\\backend\\apps\\worker\\pom.xml spring-boot:run \""
+                      }
+                  ],
+    "listener_count":  3,
+    "listeners":  [
+                      {
+                          "LocalAddress":  "127.0.0.1",
+                          "LocalPort":  5173,
+                          "OwningProcess":  40796
+                      },
+                      {
+                          "LocalAddress":  "127.0.0.1",
+                          "LocalPort":  5174,
+                          "OwningProcess":  36432
+                      },
+                      {
+                          "LocalAddress":  "127.0.0.1",
+                          "LocalPort":  5175,
+                          "OwningProcess":  15196
+                      }
+                  ]
+}

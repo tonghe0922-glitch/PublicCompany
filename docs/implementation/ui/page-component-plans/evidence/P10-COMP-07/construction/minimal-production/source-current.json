@@ -1,0 +1,528 @@
+{
+  "schema_version": "2.0",
+  "gate": "phase10-component-source",
+  "repository_root": "I:\\PublicCompany_source_codex",
+  "status": "FAIL",
+  "violation_count": 40,
+  "violations": [
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09P001Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09P002Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09P003Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09P004Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09P005Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09SharedCenterRoutes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase09-routes.ts",
+      "line": null,
+      "contributor": "phase09SharedTechWorkflowRoutes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase10P006Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase10P007Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase10P008Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase10P009Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase10P010Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P011Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P012Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P013Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P014Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P015Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "ROUTER_CONTRIBUTOR_OPAQUE",
+      "path": "technical-platform/web/src/router/phase10-routes.ts",
+      "line": null,
+      "contributor": "phase11P016Routes",
+      "reason": "function-return-not-static-route-array"
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 14
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 14
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 10
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+      "line": 11
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 43
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 44
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 45
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 46
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 47
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 48
+    },
+    {
+      "code": "PAGE_NESTING",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 49
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 23
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 24
+    },
+    {
+      "code": "BARE_PERMISSION",
+      "path": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue",
+      "line": 25
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    },
+    {
+      "code": "COMPONENT_GRAPH_DYNAMIC_IS_AMBIGUOUS",
+      "path": "technical-platform/web/src/design-system/components/Card.vue",
+      "line": null,
+      "value": "as",
+      "binding_count": 0,
+      "route_page": "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+    }
+  ],
+  "discovered_route_pages": [
+    "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+    "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+    "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+    "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+    "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+    "technical-platform/web/src/platform/pages/Phase10AttendanceMonitorPage.vue",
+    "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue"
+  ],
+  "derived_action_codes": [
+    "ACCEPT",
+    "ACCEPT_RESULT",
+    "ACKNOWLEDGE_OVERDUE",
+    "ACTIVATE",
+    "ADJUST",
+    "APPROVE",
+    "ARCHIVE",
+    "ASSIGN",
+    "CERTIFY",
+    "CHANGE",
+    "CLOSE_DAY",
+    "COMPLETE_LEARNING",
+    "CONFIRM",
+    "CONFIRM_HANDOVER",
+    "CONFIRM_MINUTES",
+    "CONFIRM_SCHEME",
+    "CONVENE",
+    "DEDUCT",
+    "EARLY_RETURN",
+    "GENERATE_ACTIONS",
+    "HR_CONFIRM",
+    "HR_RETURN",
+    "LINK",
+    "LINK_PERMISSION",
+    "MARK_ATTENDANCE",
+    "MATCH_TEMPLATE",
+    "NO_CHANGE",
+    "PUBLISH",
+    "RECORD_ATTENDANCE",
+    "RECORD_FACT",
+    "RECORD_PRACTICAL",
+    "RECORD_RECEIPT",
+    "REJECT",
+    "RELEASE",
+    "REQUEST_CHANGE",
+    "RESERVE",
+    "RETURN",
+    "REWORK",
+    "SCHEDULE_RECERTIFICATION",
+    "START_LEAVE",
+    "SUBMIT",
+    "SUBMIT_DEMAND",
+    "SUBMIT_EXAM",
+    "SUBMIT_EXECUTION",
+    "VALIDATE",
+    "WITHDRAW"
+  ],
+  "action_contract_sources": {
+    "P006": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V115__phase10_p006_meeting_action.sql",
+      "service": "technical-platform/backend/modules/collaboration/src/main/java/cn/shangjingu/platform/collaboration/MeetingService.java",
+      "sql_actions": [
+        "ACCEPT",
+        "ACCEPT_RESULT",
+        "ACKNOWLEDGE_OVERDUE",
+        "ARCHIVE",
+        "CONFIRM_MINUTES",
+        "CONVENE",
+        "GENERATE_ACTIONS",
+        "PUBLISH",
+        "RECORD_ATTENDANCE",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "SUBMIT_EXECUTION",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ACCEPT",
+        "ACCEPT_RESULT",
+        "ACKNOWLEDGE_OVERDUE",
+        "ARCHIVE",
+        "CONFIRM_MINUTES",
+        "CONVENE",
+        "GENERATE_ACTIONS",
+        "PUBLISH",
+        "RECORD_ATTENDANCE",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "SUBMIT_EXECUTION",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P007": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V116__phase10_p007_shift_change.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/ShiftChangeService.java",
+      "sql_actions": [
+        "APPROVE",
+        "CLOSE_DAY",
+        "CONFIRM",
+        "LINK",
+        "MATCH_TEMPLATE",
+        "NO_CHANGE",
+        "PUBLISH",
+        "REJECT",
+        "REQUEST_CHANGE",
+        "RETURN",
+        "SUBMIT_DEMAND",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "APPROVE",
+        "CLOSE_DAY",
+        "CONFIRM",
+        "LINK",
+        "MATCH_TEMPLATE",
+        "NO_CHANGE",
+        "PUBLISH",
+        "REJECT",
+        "REQUEST_CHANGE",
+        "RETURN",
+        "SUBMIT_DEMAND",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P008": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V117__phase10_p008_leave_quota.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/LeaveService.java",
+      "sql_actions": [
+        "ADJUST",
+        "APPROVE",
+        "CHANGE",
+        "CLOSE_DAY",
+        "CONFIRM_HANDOVER",
+        "DEDUCT",
+        "EARLY_RETURN",
+        "MARK_ATTENDANCE",
+        "REJECT",
+        "RELEASE",
+        "RESERVE",
+        "RETURN",
+        "START_LEAVE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ADJUST",
+        "APPROVE",
+        "CHANGE",
+        "CLOSE_DAY",
+        "CONFIRM_HANDOVER",
+        "DEDUCT",
+        "EARLY_RETURN",
+        "MARK_ATTENDANCE",
+        "REJECT",
+        "RELEASE",
+        "RESERVE",
+        "RETURN",
+        "START_LEAVE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P009": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V118__phase10_p009_overtime_flow.sql",
+      "service": "technical-platform/backend/modules/attendance/src/main/java/cn/shangjingu/platform/attendance/OvertimeService.java",
+      "sql_actions": [
+        "ACCEPT_RESULT",
+        "APPROVE",
+        "ARCHIVE",
+        "CONFIRM_SCHEME",
+        "HR_CONFIRM",
+        "HR_RETURN",
+        "RECORD_FACT",
+        "RECORD_RECEIPT",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "service_actions": [
+        "ACCEPT_RESULT",
+        "APPROVE",
+        "ARCHIVE",
+        "CONFIRM_SCHEME",
+        "HR_CONFIRM",
+        "HR_RETURN",
+        "RECORD_FACT",
+        "RECORD_RECEIPT",
+        "REJECT",
+        "RETURN",
+        "REWORK",
+        "SUBMIT",
+        "VALIDATE",
+        "WITHDRAW"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    },
+    "P010": {
+      "sql": "technical-platform/database/flyway-overlays/oms/V119__phase10_p010_learning_qualification_flow.sql",
+      "service": "technical-platform/backend/modules/learning/src/main/java/cn/shangjingu/platform/learning/LearningAssignmentService.java",
+      "sql_actions": [
+        "ACTIVATE",
+        "ARCHIVE",
+        "ASSIGN",
+        "CERTIFY",
+        "COMPLETE_LEARNING",
+        "LINK_PERMISSION",
+        "PUBLISH",
+        "RECORD_PRACTICAL",
+        "SCHEDULE_RECERTIFICATION",
+        "SUBMIT_EXAM"
+      ],
+      "service_actions": [
+        "ACTIVATE",
+        "ARCHIVE",
+        "ASSIGN",
+        "CERTIFY",
+        "COMPLETE_LEARNING",
+        "LINK_PERMISSION",
+        "PUBLISH",
+        "RECORD_PRACTICAL",
+        "SCHEDULE_RECERTIFICATION",
+        "SUBMIT_EXAM"
+      ],
+      "sql_transition_insert_count": 1,
+      "sql_parse_issues": [],
+      "service_definition_count": 1,
+      "service_invalid_assignment_count": 0,
+      "service_outer_class_count": 1
+    }
+  },
+  "remote_operations_performed": false
+}

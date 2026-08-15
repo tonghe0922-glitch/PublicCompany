@@ -1,0 +1,29 @@
+﻿{
+    "existing":  28,
+    "missing":  2,
+    "added":  19,
+    "modified":  9,
+    "deleted":  2,
+    "matrix_sha":  "4775C0C53C0F57EF5691D8D6DDFB7F25489154DD6A5FF926A40DCE1CB002DDD2",
+    "matrix_bytes":  7874,
+    "report_sha":  "CAF7D948344EAA87604FE312CD69E17D84B4767C1C2E4DEA0CACFFFFCAE99866",
+    "report_bytes":  9694,
+    "runtime_count":  7,
+    "runtime_pids":  [
+                         15196,
+                         35248,
+                         36432,
+                         40796,
+                         41392,
+                         43248,
+                         44872
+                     ],
+    "listeners":  [
+                      "5173:40796",
+                      "5174:36432",
+                      "5175:15196"
+                  ],
+    "fresh_listener_count":  0,
+    "running_testcontainers_count":  0,
+    "running_ryuk_count":  0
+}

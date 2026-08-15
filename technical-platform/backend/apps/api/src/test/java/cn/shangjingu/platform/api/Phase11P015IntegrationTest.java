@@ -16,8 +16,12 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.assertj.core.api.SoftAssertions;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -36,29 +40,772 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(classes=ApiApplication.class)
+@SpringBootTest(classes = ApiApplication.class)
 @AutoConfigureMockMvc
 class Phase11P015IntegrationTest {
-    private static final UUID TENANT=id("00000000-0000-0000-0000-000000002015"),CENTER_A=id("10000000-0000-0000-0000-000000003615"),CENTER_B=id("10000000-0000-0000-0000-000000003616"),POSITION_A=id("20000000-0000-0000-0000-000000003615"),POSITION_B=id("20000000-0000-0000-0000-000000003616"),AFFECTED=id("30000000-0000-0000-0000-000000003615"),MANAGER=id("30000000-0000-0000-0000-000000003616"),REVIEWER=id("30000000-0000-0000-0000-000000003617"),ADJUSTER=id("30000000-0000-0000-0000-000000003618"),TECH=id("30000000-0000-0000-0000-000000003619"),OUTSIDER=id("30000000-0000-0000-0000-000000003620");private static final String PASSWORD="P015-Live-Test-9q!",API_PASSWORD="p015_api_"+shortId(),AUDIT_PASSWORD="p015_audit_"+shortId();private static final PostgreSQLContainer<?> POSTGRES=new PostgreSQLContainer<>("postgres:16.14-alpine3.24").withDatabaseName("postgres").withUsername("postgres").withPassword("bootstrap-"+shortId());private static final GenericContainer<?> REDIS=new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
-    static{POSTGRES.start();REDIS.start();try{prepare();}catch(Exception e){POSTGRES.stop();REDIS.stop();throw new ExceptionInInitializerError(e);}}
-    @Autowired MockMvc mvc;@Autowired ObjectMapper mapper;
-    @DynamicPropertySource static void properties(DynamicPropertyRegistry r){r.add("spring.datasource.url",()->url("sjg_oms"));r.add("spring.datasource.username",()->"sjg_api_runtime");r.add("spring.datasource.password",()->API_PASSWORD);r.add("spring.data.redis.host",REDIS::getHost);r.add("spring.data.redis.port",()->REDIS.getMappedPort(6379));r.add("sjg.audit.datasource.url",()->url("sjg_audit"));r.add("sjg.audit.datasource.username",()->"sjg_audit_writer");r.add("sjg.audit.datasource.password",()->AUDIT_PASSWORD);}
-    @AfterAll static void stop(){REDIS.stop();POSTGRES.stop();}
-    @Test void realHttpLifecycleVersionsRulesPostsCorrectionsAndRecalculatesBalance()throws Exception{
-        String affected=login("affected"),manager=login("manager"),reviewer=login("reviewer"),adjuster=login("adjuster"),tech=login("tech"),outsider=login("outsider");
-        ObjectNode rule=rule("P015_SERVICE",1);mvc.perform(post("/api/v1/processes/P015/point-rules").header("Authorization",bearer(tech)).header("Idempotency-Key","rule-create").contentType(MediaType.APPLICATION_JSON).content(rule.toString())).andExpect(status().isOk());JsonNode rules=json(mvc.perform(get("/api/v1/processes/P015/point-rules").header("Authorization",bearer(tech))).andExpect(status().isOk()).andReturn());String ruleId=rules.get(0).path("rule").path("id").asText();mvc.perform(post("/api/v1/processes/P015/point-rules/"+ruleId+"/publish").header("Authorization",bearer(tech)).header("Idempotency-Key","rule-publish")).andExpect(status().isOk());
-        JsonNode overlap=json(mvc.perform(post("/api/v1/processes/P015/point-rules").header("Authorization",bearer(tech)).header("Idempotency-Key","rule-overlap-create").contentType(MediaType.APPLICATION_JSON).content(rule("P015_SERVICE_OVERLAP",2).toString())).andExpect(status().isOk()).andReturn());mvc.perform(post("/api/v1/processes/P015/point-rules/"+overlap.path("rule").path("id").asText()+"/publish").header("Authorization",bearer(tech)).header("Idempotency-Key","rule-overlap-publish")).andExpect(status().isConflict());
-        ObjectNode create=create("P015-SOURCE-001");mvc.perform(post("/api/v1/processes/P015/point-transactions").contentType(MediaType.APPLICATION_JSON).content(create.toString()).header("Idempotency-Key","unauth")).andExpect(status().isUnauthorized());mvc.perform(post("/api/v1/processes/P015/point-transactions").header("Authorization",bearer(tech)).header("Idempotency-Key","tech-business-denied").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isForbidden());
-        JsonNode current=json(mvc.perform(post("/api/v1/processes/P015/point-transactions").header("Authorization",bearer(manager)).header("Idempotency-Key","transaction-create").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isOk()).andReturn());String id=current.path("id").asText();assertEquals("S01",current.path("currentNodeCode").asText());assertEquals(10,current.path("quantity").asInt());assertEquals(100,current.path("calculatedPoints").asInt());assertEquals(100,current.path("cappedPoints").asInt());assertEquals(id,json(mvc.perform(post("/api/v1/processes/P015/point-transactions").header("Authorization",bearer(manager)).header("Idempotency-Key","transaction-create").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isOk()).andReturn()).path("id").asText());mvc.perform(post("/api/v1/processes/P015/point-transactions").header("Authorization",bearer(manager)).header("Idempotency-Key","duplicate-source").contentType(MediaType.APPLICATION_JSON).content(create.toString())).andExpect(status().isConflict());
-        assertEquals(0,json(mvc.perform(get("/api/v1/processes/P015/point-transactions").header("Authorization",bearer(outsider))).andExpect(status().isOk()).andReturn()).size());mvc.perform(get("/api/v1/processes/P015/point-transactions/"+id).header("Authorization",bearer(outsider))).andExpect(status().isForbidden());JsonNode masked=json(mvc.perform(get("/api/v1/processes/P015/point-transactions/"+id).header("Authorization",bearer(tech))).andExpect(status().isOk()).andReturn());assertTrue(masked.path("affectedEmployeeId").isNull());assertTrue(masked.path("sourceFactKey").isNull());assertEquals(0,masked.path("cappedPoints").asInt());assertTrue(masked.path("events").isArray()&&masked.path("events").isEmpty());
-        mvc.perform(post(actionUrl(id,"REGISTER_EVENT")).header("Authorization",bearer(manager)).header("Idempotency-Key","stale").contentType(MediaType.APPLICATION_JSON).content(action(0).toString())).andExpect(status().isConflict());current=act(manager,id,"REGISTER_EVENT",1,action(1));current=act(manager,id,"VALIDATE_SOURCE",2,action(2));current=act(manager,id,"CHECK_DUPLICATE",3,action(3));current=act(manager,id,"MATCH_RULE",4,action(4));current=act(manager,id,"CALCULATE_CAP",5,action(5));current=act(reviewer,id,"CLASSIFY_RISK",6,action(6));mvc.perform(post(actionUrl(id,"POST_LEDGER")).header("Authorization",bearer(affected)).header("Idempotency-Key","self-post").contentType(MediaType.APPLICATION_JSON).content(action(7).toString())).andExpect(status().isConflict());current=act(reviewer,id,"POST_LEDGER",7,action(7));assertEquals(100,current.path("posting").path("postedPoints").asInt());current=act(affected,id,"CONFIRM_NOTICE",8,action(8));
-        current=act(affected,id,"SUBMIT_ADJUSTMENT",9,action(9).put("adjustmentRequested",true).put("adjustmentPoints",-10).put("adjustmentReason","Verified source correction"));assertEquals("S09",current.path("currentNodeCode").asText());mvc.perform(post(actionUrl(id,"REVIEW_ADJUSTMENT")).header("Authorization",bearer(affected)).header("Idempotency-Key","self-adjust-review").contentType(MediaType.APPLICATION_JSON).content(action(10).put("adjustmentApproved",true).toString())).andExpect(status().isConflict());current=act(adjuster,id,"REVIEW_ADJUSTMENT",10,action(10).put("adjustmentApproved",true));current=act(manager,id,"RECALCULATE_BALANCE",11,action(11));assertEquals("END",current.path("currentNodeCode").asText());assertEquals(90,current.path("balance").path("effectiveBalance").asInt());assertEquals("BASE",current.path("balance").path("rankCode").asText());
-        JdbcTemplate oms=jdbc("sjg_oms",POSTGRES.getUsername(),POSTGRES.getPassword());assertEquals(2,oms.queryForObject("select count(*) from reward.point_transaction where tenant_id=?",Integer.class,TENANT));assertEquals(1,oms.queryForObject("select count(*) from reward.point_transaction where tenant_id=? and original_transaction_id=? and change_action='ADJUSTMENT' and points_delta=-10",Integer.class,TENANT,UUID.fromString(id)));assertEquals(0,oms.queryForObject("select count(*) from information_schema.role_table_grants where grantee in ('sjg_api_runtime','sjg_worker_runtime') and table_schema='reward' and table_name='point_transaction' and privilege_type in ('UPDATE','DELETE','TRUNCATE')",Integer.class));assertTrue(jdbc("sjg_audit",POSTGRES.getUsername(),POSTGRES.getPassword()).queryForObject("select count(*) from audit.operation_log where tenant_id=? and resource_id=? and action like 'P015_%'",Integer.class,TENANT,UUID.fromString(id))>=14);
+
+  private static final UUID TENANT = id("00000000-0000-0000-0000-000000002015"),
+      CENTER_A = id("10000000-0000-0000-0000-000000003615"),
+      CENTER_B = id("10000000-0000-0000-0000-000000003616"),
+      POSITION_A = id("20000000-0000-0000-0000-000000003615"),
+      POSITION_B = id("20000000-0000-0000-0000-000000003616"),
+      AFFECTED = id("30000000-0000-0000-0000-000000003615"),
+      MANAGER = id("30000000-0000-0000-0000-000000003616"),
+      REVIEWER = id("30000000-0000-0000-0000-000000003617"),
+      ADJUSTER = id("30000000-0000-0000-0000-000000003618"),
+      TECH = id("30000000-0000-0000-0000-000000003619"),
+      OUTSIDER = id("30000000-0000-0000-0000-000000003620");
+  private static final String PASSWORD = "P015-Live-Test-9q!",
+      API_PASSWORD = "p015_api_" + shortId(),
+      AUDIT_PASSWORD = "p015_audit_" + shortId();
+
+  private static final PostgreSQLContainer<?> POSTGRES =
+      new PostgreSQLContainer<>("postgres:16.14-alpine3.24")
+          .withDatabaseName("postgres")
+          .withUsername("postgres")
+          .withPassword("bootstrap-" + shortId());
+
+  private static final GenericContainer<?> REDIS =
+      new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine")).withExposedPorts(6379);
+
+  static {
+    POSTGRES.start();
+    REDIS.start();
+    try {
+      prepare();
+    } catch (Exception e) {
+      POSTGRES.stop();
+      REDIS.stop();
+      throw new ExceptionInInitializerError(e);
     }
-    private JsonNode act(String token,String id,String code,int version,ObjectNode body)throws Exception{assertEquals(version,body.path("expectedVersion").asInt());return json(mvc.perform(post(actionUrl(id,code)).header("Authorization",bearer(token)).header("Idempotency-Key","p015-"+code.toLowerCase()+"-"+version).contentType(MediaType.APPLICATION_JSON).content(body.toString())).andExpect(status().isOk()).andReturn());}private ObjectNode action(int version){return mapper.createObjectNode().put("expectedVersion",version).putNull("adjustmentRequested").putNull("adjustmentPoints").putNull("adjustmentReason").putNull("adjustmentApproved").put("resultSummary","P015 source fact accepted").set("evidence",evidence("immutable "+version));}private ObjectNode create(String source){return mapper.createObjectNode().put("businessDate",LocalDate.now().toString()).put("subject","Verified service growth points").put("reason","Source-backed service event requires versioned rule calculation").put("affectedEmployeeId",AFFECTED.toString()).put("sourceFactKey",source).put("pointKind","GROWTH").put("quantity",10).put("businessObjectType","SERVICE_CASE").put("businessObjectNo","SERVICE-P015-001").put("businessObjectName","Verified service case").put("employeeEventType","SERVICE").put("factOccurredAt",Instant.now().toString()).put("factSummary","Verified service event retained as immutable source").putNull("expiresAt").set("evidence",evidence("source package"));}private ObjectNode rule(String code,int version){ObjectNode n=mapper.createObjectNode().put("ruleCode",code).put("versionNo",version).put("pointKind","GROWTH").put("eventType","SERVICE").put("unitPoints",10).put("minPoints",-1000).put("maxPoints",1000).put("manualReviewThreshold",500).put("effectiveFrom",Instant.now().minusSeconds(3600).toString()).putNull("effectiveTo");n.putArray("ranks").addObject().put("rankCode","BASE").put("minBalance",-1000).put("maxBalance",1000);return n;}private ObjectNode evidence(String note){return mapper.createObjectNode().put("note",note).put("recordedAt",Instant.now().toString());}private String login(String name)throws Exception{return json(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(mapper.createObjectNode().put("tenantCode","PHASE11_P015").put("loginName","p015."+name).put("password",PASSWORD).toString())).andExpect(status().isOk()).andReturn()).path("accessToken").asText();}private JsonNode json(MvcResult result)throws Exception{return mapper.readTree(result.getResponse().getContentAsByteArray());}private static String bearer(String token){return"Bearer "+token;}private static String actionUrl(String id,String action){return"/api/v1/processes/P015/point-transactions/"+id+"/actions/"+action;}
-    private static void prepare()throws Exception{Path root=root();Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/cluster")).cleanDisabled(true).load().migrate();try(Connection c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());Statement s=c.createStatement()){s.execute("alter role sjg_api_runtime password '"+API_PASSWORD+"'");s.execute("alter role sjg_audit_writer password '"+AUDIT_PASSWORD+"'");s.execute("create database sjg_oms");s.execute("create database sjg_audit");}Flyway.configure().dataSource(url("sjg_oms"),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/oms"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/oms")).placeholders(Map.of("sjg_tenant_id",TENANT.toString(),"sjg_tenant_code","PHASE11_P015","sjg_tenant_name","P015 Integration Tenant")).cleanDisabled(true).load().migrate();Flyway.configure().dataSource(url("sjg_audit"),POSTGRES.getUsername(),POSTGRES.getPassword()).locations("filesystem:"+root.resolve("technical-platform/database/flyway/audit"),"filesystem:"+root.resolve("technical-platform/database/flyway-overlays/audit")).cleanDisabled(true).load().migrate();seed();}
-    private static void seed()throws Exception{String hash=new BCryptPasswordEncoder(12).encode(PASSWORD);try(Connection c=DriverManager.getConnection(url("sjg_oms"),POSTGRES.getUsername(),POSTGRES.getPassword());Statement s=c.createStatement()){s.execute("insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values ('"+CENTER_A+"','"+TENANT+"','P015_A','P015 Center A','CENTER','p015_a'::ltree,'ACTIVE'),('"+CENTER_B+"','"+TENANT+"','P015_B','P015 Center B','CENTER','p015_b'::ltree,'ACTIVE')");s.execute("insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values ('"+POSITION_A+"','"+TENANT+"','P015_A','P015 Position A','"+CENTER_A+"','ACTIVE'),('"+POSITION_B+"','"+TENANT+"','P015_B','P015 Position B','"+CENTER_B+"','ACTIVE')");UUID[] actors={AFFECTED,MANAGER,REVIEWER,ADJUSTER,TECH,OUTSIDER};for(int i=0;i<actors.length;i++){UUID center=i==5?CENTER_B:CENTER_A,position=i==5?POSITION_B:POSITION_A;s.execute("insert into org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id) values ('"+actors[i]+"','"+TENANT+"','P015-E00"+(i+1)+"','P015 Actor "+i+"','ACTIVE',current_date-90,'"+center+"','"+position+"')");}s.execute("insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled) values ('"+TENANT+"','P015_SELF','P015 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"+TENANT+"','P015_CENTER','P015 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");s.execute("insert into iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level) values (gen_random_uuid(),'"+TENANT+"','platform.session.read','Session read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"+TENANT+"','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");String[][] roles={{"affected","SELF","p015.points.read,p015.points.adjust,p015.points.review,p015.points.manage"},{"manager","CENTER","p015.points.read,p015.points.manage"},{"reviewer","CENTER","p015.points.read,p015.points.review"},{"adjuster","CENTER","p015.points.read,p015.points.adjust"},{"tech","SELF","p015.points.manage,p015.points.monitor"},{"outsider","CENTER","p015.points.read"}};for(int i=0;i<roles.length;i++)seedActor(s,i,actors[i],roles[i][0],roles[i][1],roles[i][2],hash,i==5?CENTER_B:CENTER_A,i==5?POSITION_B:POSITION_A);seedExtraRole(s,TECH,"TECH_MONITOR","CENTER","p015.points.monitor");}}
-    private static void seedActor(Statement s,int index,UUID employee,String login,String scope,String permissions,String hash,UUID center,UUID position)throws Exception{UUID user=derived(4,index),identity=derived(5,index),role=derived(6,index),appointment=derived(7,index);s.execute("insert into org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status) values ('"+appointment+"','"+TENANT+"','"+employee+"','"+position+"','"+center+"',true,current_date-90,'ACTIVE')");s.execute("insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level) values ('"+user+"','"+TENANT+"','p015."+login+"','"+hash+"','ACTIVE',0)");s.execute("insert into iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at) values ('"+identity+"','"+TENANT+"','"+user+"','"+employee+"','EMPLOYEE','P015 "+login+"','"+center+"','"+position+"',true,now()-interval '1 day')");s.execute("insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled) values ('"+role+"','"+TENANT+"','P015_"+login.toUpperCase()+"','P015 "+login+"','PLATFORM','P015_"+scope+"',true)");s.execute("insert into iam.role_permission(tenant_id,role_id,permission_id) select '"+TENANT+"','"+role+"',id from iam.permission where tenant_id='"+TENANT+"' and permission_code in ('platform.session.read','platform.session.logout','"+permissions.replace(",","','")+"') and not is_deleted");s.execute("insert into iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source) values ('"+TENANT+"','"+user+"','"+identity+"','"+role+"',now()-interval '1 day','TEST_ONLY')");}
-    private static void seedExtraRole(Statement s,UUID employee,String code,String scope,String permission)throws Exception{UUID role=UUID.randomUUID();s.execute("insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled) values ('"+role+"','"+TENANT+"','P015_"+code+"','P015 "+code+"','PLATFORM','P015_"+scope+"',true)");s.execute("insert into iam.role_permission(tenant_id,role_id,permission_id) select '"+TENANT+"','"+role+"',id from iam.permission where tenant_id='"+TENANT+"' and permission_code='"+permission+"' and not is_deleted");s.execute("insert into iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source) select '"+TENANT+"',ui.user_id,ui.id,'"+role+"',now()-interval '1 day','TEST_ONLY' from iam.user_identity ui where ui.tenant_id='"+TENANT+"' and ui.employee_id='"+employee+"' and ui.is_primary and not ui.is_deleted");}
-    private static JdbcTemplate jdbc(String database,String username,String password){DriverManagerDataSource ds=new DriverManagerDataSource();ds.setDriverClassName("org.postgresql.Driver");ds.setUrl(url(database));ds.setUsername(username);ds.setPassword(password);return new JdbcTemplate(ds);}private static UUID derived(int group,int index){return id("%d0000000-0000-0000-0000-%012d".formatted(group,3615+index));}private static UUID id(String value){return UUID.fromString(value);}private static String shortId(){return UUID.randomUUID().toString().replace("-","").substring(0,16);}private static String url(String database){String original=POSTGRES.getJdbcUrl();int query=original.indexOf('?');String suffix=query<0?"":original.substring(query),base=query<0?original:original.substring(0,query);return base.substring(0,base.lastIndexOf('/')+1)+database+suffix;}private static Path root(){Path p=Path.of("").toAbsolutePath();while(p!=null){if(Files.exists(p.resolve("AGENT.md")))return p;p=p.getParent();}throw new IllegalStateException("repository root not found");}
+  }
+
+  @Autowired MockMvc mvc;
+
+  @Autowired ObjectMapper mapper;
+
+  @DynamicPropertySource
+  static void properties(DynamicPropertyRegistry r) {
+    r.add("spring.datasource.url", () -> url("sjg_oms"));
+    r.add("spring.datasource.username", () -> "sjg_api_runtime");
+    r.add("spring.datasource.password", () -> API_PASSWORD);
+    r.add("spring.data.redis.host", REDIS::getHost);
+    r.add("spring.data.redis.port", () -> REDIS.getMappedPort(6379));
+    r.add("sjg.audit.datasource.url", () -> url("sjg_audit"));
+    r.add("sjg.audit.datasource.username", () -> "sjg_audit_writer");
+    r.add("sjg.audit.datasource.password", () -> AUDIT_PASSWORD);
+  }
+
+  @AfterAll
+  static void stop() {
+    REDIS.stop();
+    POSTGRES.stop();
+  }
+
+  @Test
+  void realHttpLifecycleVersionsRulesPostsCorrectionsAndRecalculatesBalance() throws Exception {
+    SoftAssertions projected = new SoftAssertions();
+    String affected = login("affected"),
+        manager = login("manager"),
+        reviewer = login("reviewer"),
+        adjuster = login("adjuster"),
+        tech = login("tech"),
+        outsider = login("outsider");
+    ObjectNode rule = rule("P015_SERVICE", 1);
+    mvc.perform(
+            post("/api/v1/processes/P015/point-rules")
+                .header("Authorization", bearer(tech))
+                .header("Idempotency-Key", "rule-create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rule.toString()))
+        .andExpect(status().isOk());
+    JsonNode rules =
+        json(
+            mvc.perform(
+                    get("/api/v1/processes/P015/point-rules").header("Authorization", bearer(tech)))
+                .andExpect(status().isOk())
+                .andReturn());
+    String ruleId = rules.get(0).path("rule").path("id").asText();
+    mvc.perform(
+            post("/api/v1/processes/P015/point-rules/" + ruleId + "/publish")
+                .header("Authorization", bearer(tech))
+                .header("Idempotency-Key", "rule-publish"))
+        .andExpect(status().isOk());
+    JsonNode overlap =
+        json(
+            mvc.perform(
+                    post("/api/v1/processes/P015/point-rules")
+                        .header("Authorization", bearer(tech))
+                        .header("Idempotency-Key", "rule-overlap-create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(rule("P015_SERVICE_OVERLAP", 2).toString()))
+                .andExpect(status().isOk())
+                .andReturn());
+    mvc.perform(
+            post("/api/v1/processes/P015/point-rules/"
+                    + overlap.path("rule").path("id").asText()
+                    + "/publish")
+                .header("Authorization", bearer(tech))
+                .header("Idempotency-Key", "rule-overlap-publish"))
+        .andExpect(status().isConflict());
+    ObjectNode create = create("P015-SOURCE-001");
+    mvc.perform(
+            post("/api/v1/processes/P015/point-transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(create.toString())
+                .header("Idempotency-Key", "unauth"))
+        .andExpect(status().isUnauthorized());
+    mvc.perform(
+            post("/api/v1/processes/P015/point-transactions")
+                .header("Authorization", bearer(tech))
+                .header("Idempotency-Key", "tech-business-denied")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(create.toString()))
+        .andExpect(status().isForbidden());
+    JsonNode current =
+        json(
+            mvc.perform(
+                    post("/api/v1/processes/P015/point-transactions")
+                        .header("Authorization", bearer(manager))
+                        .header("Idempotency-Key", "transaction-create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(create.toString()))
+                .andExpect(status().isOk())
+                .andReturn());
+    String id = current.path("id").asText();
+    assertEquals("S01", current.path("currentNodeCode").asText());
+    checkActions(projected, current, 1, false, "REGISTER_EVENT");
+    assertEquals(10, current.path("quantity").asInt());
+    assertEquals(100, current.path("calculatedPoints").asInt());
+    assertEquals(100, current.path("cappedPoints").asInt());
+    assertEquals(
+        id,
+        json(mvc.perform(
+                    post("/api/v1/processes/P015/point-transactions")
+                        .header("Authorization", bearer(manager))
+                        .header("Idempotency-Key", "transaction-create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(create.toString()))
+                .andExpect(status().isOk())
+                .andReturn())
+            .path("id")
+            .asText());
+    ObjectNode changedCreate = create.deepCopy().put("subject", "Changed service growth points");
+    mvc.perform(
+            post("/api/v1/processes/P015/point-transactions")
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "transaction-create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(changedCreate.toString()))
+        .andExpect(status().isConflict());
+    JdbcTemplate replayOms = jdbc("sjg_oms", POSTGRES.getUsername(), POSTGRES.getPassword()),
+        replayAudit = jdbc("sjg_audit", POSTGRES.getUsername(), POSTGRES.getPassword());
+    UUID replayId = UUID.fromString(id);
+    projected
+        .assertThat(
+            replayOms.queryForObject(
+                "select count(*) from reward.point_transaction where tenant_id=? and id=?",
+                Integer.class,
+                TENANT,
+                replayId))
+        .as("P015 retry keeps one business fact")
+        .isEqualTo(1);
+    projected
+        .assertThat(
+            replayOms.queryForObject(
+                "select count(*) from core.outbox_event where tenant_id=? and aggregate_id=?",
+                Integer.class,
+                TENANT,
+                replayId))
+        .as("P015 retry keeps one create outbox event")
+        .isEqualTo(1);
+    projected
+        .assertThat(
+            replayAudit.queryForObject(
+                "select count(*) from audit.operation_log where tenant_id=? and resource_id=? and"
+                    + " action='P015_CREATED' and idempotency_key=?",
+                Integer.class,
+                TENANT,
+                replayId,
+                "transaction-create"))
+        .as("P015 retry keeps one success audit")
+        .isEqualTo(1);
+    mvc.perform(
+            post("/api/v1/processes/P015/point-transactions")
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "duplicate-source")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(create.toString()))
+        .andExpect(status().isConflict());
+    projected
+        .assertThat(
+            replayAudit.queryForObject(
+                "select count(*) from audit.operation_log where tenant_id=? and resource_id is null"
+                    + " and action='P015_CREATE_ATTEMPT' and idempotency_key=?",
+                Integer.class,
+                TENANT,
+                "transaction-create"))
+        .as("P015 retry keeps one attempt audit")
+        .isEqualTo(1);
+    assertEquals(
+        0,
+        json(mvc.perform(
+                    get("/api/v1/processes/P015/point-transactions")
+                        .header("Authorization", bearer(outsider)))
+                .andExpect(status().isOk())
+                .andReturn())
+            .size());
+    mvc.perform(
+            get("/api/v1/processes/P015/point-transactions/" + id)
+                .header("Authorization", bearer(outsider)))
+        .andExpect(status().isForbidden());
+    JsonNode masked =
+        json(
+            mvc.perform(
+                    get("/api/v1/processes/P015/point-transactions/" + id)
+                        .header("Authorization", bearer(tech)))
+                .andExpect(status().isOk())
+                .andReturn());
+    checkActions(projected, masked, 1, false);
+    assertTrue(masked.path("affectedEmployeeId").isNull());
+    assertTrue(masked.path("sourceFactKey").isNull());
+    assertEquals(0, masked.path("cappedPoints").asInt());
+    assertTrue(masked.path("events").isArray() && masked.path("events").isEmpty());
+    mvc.perform(
+            post(actionUrl(id, "REGISTER_EVENT"))
+                .header("Authorization", bearer(manager))
+                .header("Idempotency-Key", "stale")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(action(0).toString()))
+        .andExpect(status().isConflict());
+    current = act(manager, id, "REGISTER_EVENT", 1, action(1));
+    current = act(manager, id, "VALIDATE_SOURCE", 2, action(2));
+    current = act(manager, id, "CHECK_DUPLICATE", 3, action(3));
+    current = act(manager, id, "MATCH_RULE", 4, action(4));
+    current = act(manager, id, "CALCULATE_CAP", 5, action(5));
+    current = act(reviewer, id, "CLASSIFY_RISK", 6, action(6));
+    mvc.perform(
+            post(actionUrl(id, "POST_LEDGER"))
+                .header("Authorization", bearer(affected))
+                .header("Idempotency-Key", "self-post")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(action(7).toString()))
+        .andExpect(status().isConflict());
+    current = act(reviewer, id, "POST_LEDGER", 7, action(7));
+    assertEquals(100, current.path("posting").path("postedPoints").asInt());
+    checkActions(projected, getTransaction(affected, id), 8, true, "CONFIRM_NOTICE");
+    checkActions(projected, getTransaction(reviewer, id), 8, true);
+    current = act(affected, id, "CONFIRM_NOTICE", 8, action(8));
+    checkActions(projected, getTransaction(affected, id), 9, true, "SUBMIT_ADJUSTMENT");
+    checkActions(projected, getTransaction(adjuster, id), 9, true);
+    current =
+        act(
+            affected,
+            id,
+            "SUBMIT_ADJUSTMENT",
+            9,
+            action(9)
+                .put("adjustmentRequested", true)
+                .put("adjustmentPoints", -10)
+                .put("adjustmentReason", "Verified source correction"));
+    assertEquals("S09", current.path("currentNodeCode").asText());
+    checkActions(projected, getTransaction(affected, id), 10, true);
+    checkActions(projected, getTransaction(adjuster, id), 10, true, "REVIEW_ADJUSTMENT");
+    mvc.perform(
+            post(actionUrl(id, "REVIEW_ADJUSTMENT"))
+                .header("Authorization", bearer(affected))
+                .header("Idempotency-Key", "self-adjust-review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(action(10).put("adjustmentApproved", true).toString()))
+        .andExpect(status().isConflict());
+    current =
+        act(adjuster, id, "REVIEW_ADJUSTMENT", 10, action(10).put("adjustmentApproved", true));
+    current = act(manager, id, "RECALCULATE_BALANCE", 11, action(11));
+    assertEquals("END", current.path("currentNodeCode").asText());
+    assertEquals(90, current.path("balance").path("effectiveBalance").asInt());
+    assertEquals("BASE", current.path("balance").path("rankCode").asText());
+    JdbcTemplate oms = jdbc("sjg_oms", POSTGRES.getUsername(), POSTGRES.getPassword());
+    assertEquals(
+        2,
+        oms.queryForObject(
+            "select count(*) from reward.point_transaction where tenant_id=?",
+            Integer.class,
+            TENANT));
+    assertEquals(
+        1,
+        oms.queryForObject(
+            "select count(*) from reward.point_transaction where tenant_id=? and"
+                + " original_transaction_id=? and change_action='ADJUSTMENT' and points_delta=-10",
+            Integer.class,
+            TENANT,
+            UUID.fromString(id)));
+    assertEquals(
+        0,
+        oms.queryForObject(
+            "select count(*) from information_schema.role_table_grants where grantee in"
+                + " ('sjg_api_runtime','sjg_worker_runtime') and table_schema='reward' and"
+                + " table_name='point_transaction' and privilege_type in"
+                + " ('UPDATE','DELETE','TRUNCATE')",
+            Integer.class));
+    assertTrue(
+        jdbc("sjg_audit", POSTGRES.getUsername(), POSTGRES.getPassword())
+                .queryForObject(
+                    "select count(*) from audit.operation_log where tenant_id=? and resource_id=?"
+                        + " and action like 'P015_%'",
+                    Integer.class, TENANT, UUID.fromString(id))
+            >= 14);
+    projected.assertAll();
+  }
+
+  private JsonNode getTransaction(String token, String id) throws Exception {
+    return json(
+        mvc.perform(
+                get("/api/v1/processes/P015/point-transactions/" + id)
+                    .header("Authorization", bearer(token)))
+            .andExpect(status().isOk())
+            .andReturn());
+  }
+
+  private static void checkActions(
+      SoftAssertions softly, JsonNode view, int version, boolean pending, String... codes) {
+    JsonNode actions = view.path("availableActions");
+    softly.assertThat(actions.isArray()).as("availableActions array").isTrue();
+    List<String> actual = new ArrayList<>();
+    for (JsonNode action : actions) {
+      softly
+          .assertThat(new LinkedHashSet<>(toNames(action)))
+          .as("four action fields")
+          .containsExactlyInAnyOrder("code", "labelCode", "taskId", "expectedVersion");
+      softly.assertThat(action.path("expectedVersion").asInt()).isEqualTo(version);
+      if (pending) {
+        softly.assertThat(action.path("taskId").asText()).isNotBlank();
+      } else {
+        softly.assertThat(action.path("taskId").isNull()).isTrue();
+      }
+      actual.add(action.path("code").asText());
+    }
+    softly.assertThat(actual).containsExactlyInAnyOrder(codes);
+  }
+
+  private static List<String> toNames(JsonNode node) {
+    List<String> names = new ArrayList<>();
+    node.fieldNames().forEachRemaining(names::add);
+    return names;
+  }
+
+  private JsonNode act(String token, String id, String code, int version, ObjectNode body)
+      throws Exception {
+    assertEquals(version, body.path("expectedVersion").asInt());
+    return json(
+        mvc.perform(
+                post(actionUrl(id, code))
+                    .header("Authorization", bearer(token))
+                    .header("Idempotency-Key", "p015-" + code.toLowerCase() + "-" + version)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(body.toString()))
+            .andExpect(status().isOk())
+            .andReturn());
+  }
+
+  private ObjectNode action(int version) {
+    return mapper
+        .createObjectNode()
+        .put("expectedVersion", version)
+        .putNull("adjustmentRequested")
+        .putNull("adjustmentPoints")
+        .putNull("adjustmentReason")
+        .putNull("adjustmentApproved")
+        .put("resultSummary", "P015 source fact accepted")
+        .set("evidence", evidence("immutable " + version));
+  }
+
+  private ObjectNode create(String source) {
+    return mapper
+        .createObjectNode()
+        .put("businessDate", LocalDate.now().toString())
+        .put("subject", "Verified service growth points")
+        .put("reason", "Source-backed service event requires versioned rule calculation")
+        .put("affectedEmployeeId", AFFECTED.toString())
+        .put("sourceFactKey", source)
+        .put("pointKind", "GROWTH")
+        .put("quantity", 10)
+        .put("businessObjectType", "SERVICE_CASE")
+        .put("businessObjectNo", "SERVICE-P015-001")
+        .put("businessObjectName", "Verified service case")
+        .put("employeeEventType", "SERVICE")
+        .put("factOccurredAt", Instant.now().toString())
+        .put("factSummary", "Verified service event retained as immutable source")
+        .putNull("expiresAt")
+        .set("evidence", evidence("source package"));
+  }
+
+  private ObjectNode rule(String code, int version) {
+    ObjectNode n =
+        mapper
+            .createObjectNode()
+            .put("ruleCode", code)
+            .put("versionNo", version)
+            .put("pointKind", "GROWTH")
+            .put("eventType", "SERVICE")
+            .put("unitPoints", 10)
+            .put("minPoints", -1000)
+            .put("maxPoints", 1000)
+            .put("manualReviewThreshold", 500)
+            .put("effectiveFrom", Instant.now().minusSeconds(3600).toString())
+            .putNull("effectiveTo");
+    n.putArray("ranks")
+        .addObject()
+        .put("rankCode", "BASE")
+        .put("minBalance", -1000)
+        .put("maxBalance", 1000);
+    return n;
+  }
+
+  private ObjectNode evidence(String note) {
+    return mapper.createObjectNode().put("note", note).put("recordedAt", Instant.now().toString());
+  }
+
+  private String login(String name) throws Exception {
+    return json(mvc.perform(
+                post("/api/v1/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        mapper
+                            .createObjectNode()
+                            .put("tenantCode", "PHASE11_P015")
+                            .put("loginName", "p015." + name)
+                            .put("password", PASSWORD)
+                            .toString()))
+            .andExpect(status().isOk())
+            .andReturn())
+        .path("accessToken")
+        .asText();
+  }
+
+  private JsonNode json(MvcResult result) throws Exception {
+    return mapper.readTree(result.getResponse().getContentAsByteArray());
+  }
+
+  private static String bearer(String token) {
+    return "Bearer " + token;
+  }
+
+  private static String actionUrl(String id, String action) {
+    return "/api/v1/processes/P015/point-transactions/" + id + "/actions/" + action;
+  }
+
+  private static void prepare() throws Exception {
+    Path root = root();
+    Flyway.configure()
+        .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations("filesystem:" + root.resolve("technical-platform/database/flyway/cluster"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    try (Connection c =
+            DriverManager.getConnection(
+                POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute("alter role sjg_api_runtime password '" + API_PASSWORD + "'");
+      s.execute("alter role sjg_audit_writer password '" + AUDIT_PASSWORD + "'");
+      s.execute("create database sjg_oms");
+      s.execute("create database sjg_audit");
+    }
+    Flyway.configure()
+        .dataSource(url("sjg_oms"), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/oms"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/oms"))
+        .placeholders(
+            Map.of(
+                "sjg_tenant_id",
+                TENANT.toString(),
+                "sjg_tenant_code",
+                "PHASE11_P015",
+                "sjg_tenant_name",
+                "P015 Integration Tenant"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    Flyway.configure()
+        .dataSource(url("sjg_audit"), POSTGRES.getUsername(), POSTGRES.getPassword())
+        .locations(
+            "filesystem:" + root.resolve("technical-platform/database/flyway/audit"),
+            "filesystem:" + root.resolve("technical-platform/database/flyway-overlays/audit"))
+        .cleanDisabled(true)
+        .load()
+        .migrate();
+    seed();
+  }
+
+  private static void seed() throws Exception {
+    String hash = new BCryptPasswordEncoder(12).encode(PASSWORD);
+    try (Connection c =
+            DriverManager.getConnection(
+                url("sjg_oms"), POSTGRES.getUsername(), POSTGRES.getPassword());
+        Statement s = c.createStatement()) {
+      s.execute(
+          "insert into org.organization(id,tenant_id,org_code,org_name,org_type,path,status) values"
+              + " ('"
+              + CENTER_A
+              + "','"
+              + TENANT
+              + "','P015_A','P015 Center A','CENTER','p015_a'::ltree,'ACTIVE'),('"
+              + CENTER_B
+              + "','"
+              + TENANT
+              + "','P015_B','P015 Center B','CENTER','p015_b'::ltree,'ACTIVE')");
+      s.execute(
+          "insert into org.position(id,tenant_id,position_code,position_name,org_id,status) values"
+              + " ('"
+              + POSITION_A
+              + "','"
+              + TENANT
+              + "','P015_A','P015 Position A','"
+              + CENTER_A
+              + "','ACTIVE'),('"
+              + POSITION_B
+              + "','"
+              + TENANT
+              + "','P015_B','P015 Position B','"
+              + CENTER_B
+              + "','ACTIVE')");
+      UUID[] actors = {AFFECTED, MANAGER, REVIEWER, ADJUSTER, TECH, OUTSIDER};
+      for (int i = 0; i < actors.length; i++) {
+        UUID center = i == 5 ? CENTER_B : CENTER_A, position = i == 5 ? POSITION_B : POSITION_A;
+        s.execute(
+            "insert into"
+                + " org.employee(id,tenant_id,employee_no,person_name,employment_status,hire_date,primary_org_id,primary_position_id)"
+                + " values ('"
+                + actors[i]
+                + "','"
+                + TENANT
+                + "','P015-E00"
+                + (i + 1)
+                + "','P015 Actor "
+                + i
+                + "','ACTIVE',current_date-90,'"
+                + center
+                + "','"
+                + position
+                + "')");
+      }
+      s.execute(
+          "insert into iam.data_scope_rule(tenant_id,scope_code,scope_name,rule_expr,enabled)"
+              + " values ('"
+              + TENANT
+              + "','P015_SELF','P015 Self','{\"scope\":\"SELF\"}'::jsonb,true),('"
+              + TENANT
+              + "','P015_CENTER','P015 Center','{\"scope\":\"CENTER\"}'::jsonb,true)");
+      s.execute(
+          "insert into"
+              + " iam.permission(id,tenant_id,permission_code,permission_name,resource_type,action_code,risk_level)"
+              + " values (gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.read','Session"
+              + " read','SESSION','READ','NORMAL'),(gen_random_uuid(),'"
+              + TENANT
+              + "','platform.session.logout','Session logout','SESSION','LOGOUT','NORMAL')");
+      String[][] roles = {
+        {
+          "affected",
+          "SELF",
+          "p015.points.read,p015.points.adjust,p015.points.review,p015.points.manage"
+        },
+        {"manager", "CENTER", "p015.points.read,p015.points.manage"},
+        {"reviewer", "CENTER", "p015.points.read,p015.points.review"},
+        {"adjuster", "CENTER", "p015.points.read,p015.points.adjust"},
+        {"tech", "SELF", "p015.points.manage,p015.points.monitor"},
+        {"outsider", "CENTER", "p015.points.read"}
+      };
+      for (int i = 0; i < roles.length; i++) {
+        seedActor(
+            s,
+            i,
+            actors[i],
+            roles[i][0],
+            roles[i][1],
+            roles[i][2],
+            hash,
+            i == 5 ? CENTER_B : CENTER_A,
+            i == 5 ? POSITION_B : POSITION_A);
+      }
+      seedExtraRole(s, TECH, "TECH_MONITOR", "CENTER", "p015.points.monitor");
+    }
+  }
+
+  private static void seedActor(
+      Statement s,
+      int index,
+      UUID employee,
+      String login,
+      String scope,
+      String permissions,
+      String hash,
+      UUID center,
+      UUID position)
+      throws Exception {
+    UUID user = derived(4, index),
+        identity = derived(5, index),
+        role = derived(6, index),
+        appointment = derived(7, index);
+    s.execute(
+        "insert into"
+            + " org.employee_position(id,tenant_id,employee_id,position_id,org_id,is_primary,effective_start_date,status)"
+            + " values ('"
+            + appointment
+            + "','"
+            + TENANT
+            + "','"
+            + employee
+            + "','"
+            + position
+            + "','"
+            + center
+            + "',true,current_date-90,'ACTIVE')");
+    s.execute(
+        "insert into iam.user_account(id,tenant_id,login_name,password_hash,status,mfa_level)"
+            + " values ('"
+            + user
+            + "','"
+            + TENANT
+            + "','p015."
+            + login
+            + "','"
+            + hash
+            + "','ACTIVE',0)");
+    s.execute(
+        "insert into"
+            + " iam.user_identity(id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,is_primary,effective_start_at)"
+            + " values ('"
+            + identity
+            + "','"
+            + TENANT
+            + "','"
+            + user
+            + "','"
+            + employee
+            + "','EMPLOYEE','P015 "
+            + login
+            + "','"
+            + center
+            + "','"
+            + position
+            + "',true,now()-interval '1 day')");
+    s.execute(
+        "insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled)"
+            + " values ('"
+            + role
+            + "','"
+            + TENANT
+            + "','P015_"
+            + login.toUpperCase()
+            + "','P015 "
+            + login
+            + "','PLATFORM','P015_"
+            + scope
+            + "',true)");
+    s.execute(
+        "insert into iam.role_permission(tenant_id,role_id,permission_id) select '"
+            + TENANT
+            + "','"
+            + role
+            + "',id from iam.permission where tenant_id='"
+            + TENANT
+            + "' and permission_code in ('platform.session.read','platform.session.logout','"
+            + permissions.replace(",", "','")
+            + "') and not is_deleted");
+    s.execute(
+        "insert into"
+            + " iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source)"
+            + " values ('"
+            + TENANT
+            + "','"
+            + user
+            + "','"
+            + identity
+            + "','"
+            + role
+            + "',now()-interval '1 day','TEST_ONLY')");
+  }
+
+  private static void seedExtraRole(
+      Statement s, UUID employee, String code, String scope, String permission) throws Exception {
+    UUID role = UUID.randomUUID();
+    s.execute(
+        "insert into iam.role(id,tenant_id,role_code,role_name,role_type,data_scope_code,enabled)"
+            + " values ('"
+            + role
+            + "','"
+            + TENANT
+            + "','P015_"
+            + code
+            + "','P015 "
+            + code
+            + "','PLATFORM','P015_"
+            + scope
+            + "',true)");
+    s.execute(
+        "insert into iam.role_permission(tenant_id,role_id,permission_id) select '"
+            + TENANT
+            + "','"
+            + role
+            + "',id from iam.permission where tenant_id='"
+            + TENANT
+            + "' and permission_code='"
+            + permission
+            + "' and not is_deleted");
+    s.execute(
+        "insert into"
+            + " iam.user_role(tenant_id,user_id,identity_id,role_id,effective_start_at,grant_source)"
+            + " select '"
+            + TENANT
+            + "',ui.user_id,ui.id,'"
+            + role
+            + "',now()-interval '1 day','TEST_ONLY' from iam.user_identity ui where ui.tenant_id='"
+            + TENANT
+            + "' and ui.employee_id='"
+            + employee
+            + "' and ui.is_primary and not ui.is_deleted");
+  }
+
+  private static JdbcTemplate jdbc(String database, String username, String password) {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName("org.postgresql.Driver");
+    ds.setUrl(url(database));
+    ds.setUsername(username);
+    ds.setPassword(password);
+    return new JdbcTemplate(ds);
+  }
+
+  private static UUID derived(int group, int index) {
+    return id("%d0000000-0000-0000-0000-%012d".formatted(group, 3615 + index));
+  }
+
+  private static UUID id(String value) {
+    return UUID.fromString(value);
+  }
+
+  private static String shortId() {
+    return UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+  }
+
+  private static String url(String database) {
+    String original = POSTGRES.getJdbcUrl();
+    int query = original.indexOf('?');
+    String suffix = query < 0 ? "" : original.substring(query),
+        base = query < 0 ? original : original.substring(0, query);
+    return base.substring(0, base.lastIndexOf('/') + 1) + database + suffix;
+  }
+
+  private static Path root() {
+    Path p = Path.of("").toAbsolutePath();
+    while (p != null) {
+      if (Files.exists(p.resolve("AGENT.md"))) {
+        return p;
+      }
+      p = p.getParent();
+    }
+    throw new IllegalStateException("repository root not found");
+  }
 }

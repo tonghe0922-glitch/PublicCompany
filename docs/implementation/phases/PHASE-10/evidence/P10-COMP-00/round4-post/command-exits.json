@@ -1,0 +1,6 @@
+﻿{
+    "failed_external_array_binding_exit":  1,
+    "failed_external_array_binding_reason":  "powershell.exe -File did not bind expanded string[] arguments; no scoped diff was produced",
+    "final_preflight_exit":  0,
+    "final_baseline_exit":  0
+}

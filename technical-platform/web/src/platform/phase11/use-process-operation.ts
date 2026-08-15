@@ -5,11 +5,19 @@ import {
   loadingProcessState, successProcessState,
 } from './process-state'
 import type { ProcessState } from './process-state'
+import { ApiClientError } from '../../api'
+import {
+  beginProcessCommand, findProcessCommand, processRecordPending, settleProcessCommand,
+} from './process-command-journal'
+import type {
+  ProcessCommandActor, ProcessCommandAttemptView, ProcessCommandDescriptor,
+} from './process-command-journal'
 
 export interface ProcessOperationContext { signal: AbortSignal; requestId: string }
+export interface ProcessCommandContext extends ProcessOperationContext { idempotencyKey: string }
 export type ProcessOperationResult<T> =
   | { ok: true; data: T; state: ProcessState<T> }
-  | { ok: false; outcome: 'cancelled' | 'failed' | 'in-flight'; state: ProcessState<T> }
+  | { ok: false; outcome: 'cancelled' | 'failed' | 'in-flight' | 'unknown'; state: ProcessState<T> }
 interface ActiveOperation { controller: AbortController; requestId: string }
 type StateRegistry = UnwrapNestedRefs<Record<string, ProcessState<unknown>>>
 interface OperationRegistry {
@@ -109,6 +117,48 @@ function cancelRegistry(registry: OperationRegistry): void {
   registry.active.clear()
 }
 
+function isUnknownCommandFailure(cause: unknown): boolean {
+  if (!(cause instanceof ApiClientError)) return true
+  if (cause.kind !== 'http') return true
+  return cause.status === undefined || cause.status >= 500
+}
+
+async function runCommand<T>(
+  registry: OperationRegistry,
+  command: ProcessCommandDescriptor,
+  operation: (context: ProcessCommandContext) => Promise<T>,
+  successMessage: string,
+): Promise<ProcessOperationResult<T>> {
+  const started = await beginProcessCommand(command)
+  if (!started.acquired) {
+    return { ok: false, outcome: 'in-flight', state: current<T>(registry, command.stateKey) }
+  }
+  const active = begin(registry, command.stateKey, false)
+  try {
+    const data = await operation({
+      signal: active.controller.signal,
+      requestId: active.requestId,
+      idempotencyKey: started.lease.idempotencyKey,
+    })
+    settleProcessCommand(started.lease, 'confirmed')
+    if (!isCurrent(registry, command.stateKey, active)) return cancelledResult<T>(active.requestId)
+    const state = successProcessState(successMessage, data, active.requestId)
+    registry.states[command.stateKey] = state
+    return { ok: true, data, state }
+  } catch (cause) {
+    const unknown = isUnknownCommandFailure(cause)
+    settleProcessCommand(started.lease, unknown ? 'unknown' : 'rejected')
+    if (!isCurrent(registry, command.stateKey, active)) {
+      return { ok: false, outcome: unknown ? 'unknown' : 'cancelled', state: current<T>(registry, command.stateKey) }
+    }
+    const state = failedProcessState<T>(cause, active.requestId)
+    registry.states[command.stateKey] = state
+    return { ok: false, outcome: unknown ? 'unknown' : 'failed', state }
+  } finally {
+    if (registry.active.get(command.stateKey) === active) registry.active.delete(command.stateKey)
+  }
+}
+
 export function useProcessOperation() {
   const resources = createRegistry()
   const actions = createRegistry()
@@ -126,6 +176,13 @@ export function useProcessOperation() {
       runResource(resources, key, operation),
     runAction: <T>(key: string, operation: (context: ProcessOperationContext) => Promise<T>, message = '') =>
       runAction(actions, key, operation, message),
+    runCommand: <T>(command: ProcessCommandDescriptor,
+      operation: (context: ProcessCommandContext) => Promise<T>, message = '') =>
+      runCommand(actions, command, operation, message),
+    recordPending: (actor: ProcessCommandActor, recordLockKey: string) =>
+      processRecordPending(actor, recordLockKey),
+    commandAttempt: (actor: ProcessCommandActor, operationKey: string, payload: unknown):
+    Promise<ProcessCommandAttemptView | undefined> => findProcessCommand(actor, operationKey, payload),
     clearAction: (key: string) => { actions.states[key] = idleProcessState() },
     cancelAll,
   }

@@ -41,10 +41,22 @@
   },
   "field_component_map": [
     {
-      "field": "request-subject|request-reason",
+      "field": "requestType|businessDate|amount|subject|actualAmount",
       "component_id": "ui.input",
-      "reason": "Existing request facts; unchanged in landmark task",
-      "editable_when": "Existing server-defined state/permission contract; unchanged by P10-COMP-02"
+      "reason": "CXR-08 uses the public input contract without changing numeric or date payload semantics",
+      "editable_when": "Existing server-defined state and permission contract"
+    },
+    {
+      "field": "priority|riskLevel",
+      "component_id": "ui.select",
+      "reason": "CXR-08 uses the public select contract with existing enum values",
+      "editable_when": "Existing server-defined enum values"
+    },
+    {
+      "field": "reason|requestedResult|actionReason|resultSummary",
+      "component_id": "ui.textarea",
+      "reason": "CXR-08 uses the public textarea contract without changing lifecycle payloads",
+      "editable_when": "Existing server-defined state and permission contract"
     },
     {
       "field": "request-records",
@@ -79,14 +91,7 @@
     "mobile": "Same landmark order and route title; content reflows using existing page CSS without a second shell",
     "limited_actions": []
   },
-  "gaps": [
-    {
-      "id": "UI-GAP-P004GenericRequestPage-LANDMARK-SCOPE",
-      "classification": "deferred-existing-debt",
-      "status": "not-expanded",
-      "reason": "P004 raw form/action debt is not widened; component migration is outside P10-COMP-02."
-    }
-  ],
+  "gaps": [],
   "native_element_exceptions": [],
   "decision": "reuse-only",
   "registry_updates": [],
@@ -94,7 +99,8 @@
     "exactly one rendered main under authenticated shell",
     "exactly one accessible h1 sourced from route metadata",
     "desktop and mobile route title semantics",
+    "CXR-08 public component migration and raw interactive element count zero",
     "existing permission/action/data-scope behavior remains unchanged"
   ],
-  "updated_at": "2026-08-13T00:00:00+08:00"
+  "updated_at": "2026-08-15T00:00:00+08:00"
 }

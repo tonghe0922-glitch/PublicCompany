@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
-import { SgjButton, SgjError } from '../design-system'
+import { SgjButton, SgjError } from '@sgj/ui'
 import { clearRuntimeError, recordRuntimeError, useRuntimeErrorState } from './runtime-error-state'
 
 const failure = useRuntimeErrorState()

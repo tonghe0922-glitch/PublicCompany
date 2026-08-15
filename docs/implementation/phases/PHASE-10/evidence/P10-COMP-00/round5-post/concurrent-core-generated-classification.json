@@ -1,0 +1,12 @@
+﻿{
+    "schema_version":  "1.0",
+    "classification":  "concurrent_core_excluded_generated",
+    "attributed_to_ui_task_source":  false,
+    "paths":  [
+                  ".runlogs/phase11-p016-*.log",
+                  "technical-platform/backend/**/target/**"
+              ],
+    "round5_pre_release_source_docs_changes":  [
+
+                                               ]
+}

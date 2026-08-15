@@ -1,0 +1,22 @@
+﻿[
+    {
+        "name":  "pycompile",
+        "exit":  0
+    },
+    {
+        "name":  "official85",
+        "exit":  0
+    },
+    {
+        "name":  "reviewer6",
+        "exit":  0
+    },
+    {
+        "name":  "reviewer7",
+        "exit":  0
+    },
+    {
+        "name":  "reference20",
+        "exit":  0
+    }
+]

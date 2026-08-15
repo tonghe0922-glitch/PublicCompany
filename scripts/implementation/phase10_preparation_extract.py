@@ -20,6 +20,9 @@ OUT_JSON = OUT_DIR / f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.json"
 OUT_MD = OUT_DIR / f"{RANGE_FILE_LABEL}_SOURCE_SNAPSHOT.md"
 PROCESS_CATALOG = ROOT / "docs" / "implementation" / "MASTER_PROCESS_CATALOG.json"
 API_RECORDS = ROOT / "docs" / "implementation" / "contracts" / "phase-01" / "api_records.jsonl"
+PAGES = ROOT / "docs" / "implementation" / "contracts" / "phase-01" / "pages.json"
+PHASE01_GENERATOR = ROOT / "scripts" / "knowledge_base" / "phase01_parse.py"
+GENERATOR_RELATIVE = "scripts/implementation/phase10_preparation_extract.py"
 PHASE01_CONTRACTS = ROOT / "docs" / "implementation" / "contracts" / "phase-01"
 WORKBOOK_CACHE = PHASE01_CONTRACTS / "process_workbook_sheets.jsonl"
 CACHE_ROWS = {
@@ -40,6 +43,11 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def canonical_sha256(value: Any) -> str:
+    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def trim_row(row: list[str]) -> list[str]:
@@ -134,7 +142,7 @@ def parse_cached_source(process_code: str, portal: str, expected_sheets: list[st
             "rows": cached_sheet_rows(process_code, portal, sheet_name),
             "row_contract_available": sheet_name in CACHE_ROWS and CACHE_ROWS[sheet_name] is not None,
         })
-    return {
+    payload = {
         "source_file": cached.get("source_file"),
         "source_file_present": False,
         "source_sha256": None,
@@ -146,6 +154,7 @@ def parse_cached_source(process_code: str, portal: str, expected_sheets: list[st
         "missing_expected_sheets": [],
         "sheets": sheet_records,
     }
+    return payload
 
 
 def parse_source(
@@ -241,7 +250,7 @@ def build_payload() -> dict[str, Any]:
     if API_RECORDS.stat().st_size != 0:
         raise RuntimeError("PHASE-01 api_records.jsonl is no longer empty; preparation contract must be revisited")
 
-    return {
+    payload = {
         "phase": PHASE_CODE,
         "state": "CONSTRUCTION_SOURCE_BASELINE",
         "scope": SCOPE_LABEL,
@@ -274,6 +283,33 @@ def build_payload() -> dict[str, Any]:
             "three_portal_single_business_truth": True,
         },
     }
+    content = {
+        "phase": payload["phase"],
+        "process_codes": payload["process_codes"],
+        "workbook_count": payload["workbook_count"],
+        "sheet_count": payload["sheet_count"],
+        "nonempty_row_count": payload["nonempty_row_count"],
+        "parse_failures": payload["parse_failures"],
+        "raw_workbook_count": payload["raw_workbook_count"],
+        "cached_workbook_count": payload["cached_workbook_count"],
+        "processes_sha256": canonical_sha256(payload["processes"]),
+    }
+    payload.update({
+        "generated": True,
+        "do_not_edit": True,
+        "generator": GENERATOR_RELATIVE,
+        "content": content,
+        "content_sha256": canonical_sha256(content),
+        "machine_contract": {
+            "pages_path": "docs/implementation/contracts/phase-01/pages.json",
+            "pages_sha256": sha256(PAGES),
+            "api_records_path": "docs/implementation/contracts/phase-01/api_records.jsonl",
+            "api_records_sha256": sha256(API_RECORDS),
+            "phase01_generator_path": "scripts/knowledge_base/phase01_parse.py",
+            "phase01_generator_sha256": sha256(PHASE01_GENERATOR),
+        },
+    })
+    return payload
 
 
 def md_escape(value: object) -> str:
@@ -283,6 +319,9 @@ def md_escape(value: object) -> str:
 def build_markdown(payload: dict[str, Any]) -> str:
     lines = [
         f"# {PHASE_CODE} {RANGE_LABEL} XLSX ACTUAL PARSE SNAPSHOT",
+        "",
+        "<!-- GENERATED: DO NOT EDIT. Regenerate with the generator recorded in the JSON contract. -->",
+        f"> Content SHA-256: `{payload['content_sha256']}`",
         "",
         "> 优先读取当前仓库中的原始 XLSX；原件缺失时只使用 PHASE-01 已落盘、逐行且带来源坐标的机器合同缓存。",
         "> 缓存模式不会伪称重新解析原始 XLSX；本文件只冻结施工来源，不代表业务流程已实现。",

@@ -2,6 +2,36 @@
   "api_contract_rule": "DO_NOT_INFER_HTTP_PATHS_FROM_PROCESS_NAMES_OR_SHEET_TEXT",
   "business_api_records": 0,
   "cached_workbook_count": 0,
+  "content": {
+    "cached_workbook_count": 0,
+    "nonempty_row_count": 5655,
+    "parse_failures": 0,
+    "phase": "PHASE-11",
+    "process_codes": [
+      "P011",
+      "P012",
+      "P013",
+      "P014",
+      "P015",
+      "P016"
+    ],
+    "processes_sha256": "60cd2b3b4354c23f85a6e34b15bbbf18b6842f3b333a82a95a4fc72199ee781d",
+    "raw_workbook_count": 18,
+    "sheet_count": 108,
+    "workbook_count": 18
+  },
+  "content_sha256": "64bba585691e70d59310ef1d66b899f1583c0486d04c0cf89258f3feac53dd5a",
+  "do_not_edit": true,
+  "generated": true,
+  "generator": "scripts/implementation/phase11_preparation_extract.py",
+  "machine_contract": {
+    "api_records_path": "docs/implementation/contracts/phase-01/api_records.jsonl",
+    "api_records_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pages_path": "docs/implementation/contracts/phase-01/pages.json",
+    "pages_sha256": "b9a668d0d641b90439263995588f6b1e38c3baf52ed1f5487cac57c62d41299a",
+    "phase01_generator_path": "scripts/knowledge_base/phase01_parse.py",
+    "phase01_generator_sha256": "b2f4118b09d3f4dfde01e79f96f90ce7e86780e7684511e284055f2ca89892ff"
+  },
   "nonempty_row_count": 5655,
   "parse_failures": 0,
   "parser": "phase04_source_contract.parse_workbook/python-stdlib-zipfile-xml",

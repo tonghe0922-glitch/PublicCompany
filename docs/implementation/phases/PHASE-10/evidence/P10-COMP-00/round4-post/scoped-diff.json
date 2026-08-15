@@ -1,0 +1,145 @@
+﻿{
+    "schema_version":  "2.0",
+    "before_baseline_id":  "08AD109FD6B0680C29E71193E33DD65C4FE00877C368F8254606CF6796BC6C54",
+    "after_baseline_id":  "B7CAD2737BD4D10C66DF12C986C4B65E44DCBD4D8930E78F5481B982FF5EFE06",
+    "before_task_source_id":  "389593788938341CCC38BD09FFBE710A2CB3D7DDB5E3041648E8DC452F35F019",
+    "after_task_source_id":  "389593788938341CCC38BD09FFBE710A2CB3D7DDB5E3041648E8DC452F35F019",
+    "before_evidence_metadata_id":  "7F1D6171BBAEC0640E44F456E079305156DACCF7972E5C8569B0B943F96B7253",
+    "after_evidence_metadata_id":  "EDBE46594BA8CCC5BD8481A8522E59D6B9CBAE61B35852D0B59211D3338F0F1F",
+    "task_changes":  [
+
+                     ],
+    "evidence_metadata_changes":  [
+                                      {
+                                          "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                                          "change":  "modified",
+                                          "classification":  "evidence_metadata"
+                                      }
+                                  ],
+    "concurrent_core":  [
+                            {
+                                "path":  "technical-platform/database/flyway-overlays/oms/V124__phase11_p015_point_ledger.sql",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/reward/src/main/java/cn/shangjingu/platform/reward/PointLedgerService.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/reward/src/main/java/cn/shangjingu/platform/reward/JdbcPointLedgerRepository.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/P015PointController.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/config/SecurityConfiguration.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase11P015NotificationHandler.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase09P002WorkerConfiguration.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/database-baseline/pom.xml",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P015DatabaseIT.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P015NotificationDatabaseIT.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase11P015IntegrationTest.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase11P015BrowserBackendFixture.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/platform/pages/P015PointLedgerPage.vue",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/router/portal-router.ts",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/src/router/p015-router.test.ts",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/e2e/phase11-p015-live.spec.ts",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/playwright.phase11-p015-live.config.ts",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/web/knip.json",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "docs/implementation/phases/PHASE-11/P015_CHECKPOINT.md",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "docs/implementation/phases/PHASE-11/README.md",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "docs/implementation/phases/PHASE-11/START_CHECKLIST.md",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "docs/implementation/MASTER_PROGRESS.md",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/database/flyway-overlays/oms/V125__phase11_p016_welfare_care.sql",
+                                "change":  "added",
+                                "classification":  "concurrent_core"
+                            }
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

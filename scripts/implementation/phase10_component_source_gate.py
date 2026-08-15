@@ -154,16 +154,103 @@ def pascal_to_kebab(name: str) -> str:
     return re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", first).lower()
 
 
-def component_is_values(attrs: str) -> tuple[list[str], bool]:
+def script_setup_native_prop(text: str, name: str) -> tuple[str, frozenset[str]] | None:
+    scripts, issues = sfc_top_level_scripts(text)
+    setup_scripts = [script for script in scripts if script.setup]
+    if issues or len(setup_scripts) != 1:
+        return None
+    script = setup_scripts[0].text
+    code = js_code_mask(script)
+    keywords = list(re.finditer(r"\bdefineProps\b", code))
+    if len(keywords) != 1:
+        return None
+    definition = re.compile(r"defineProps\s*<\s*{(?P<body>[^{}]*)}\s*>\s*\(\s*\)", re.DOTALL).match(
+        script, keywords[0].start())
+    if definition is None:
+        return None
+    properties = list(re.finditer(
+        rf"(?:^|[\n;,])\s*{re.escape(name)}\s*(?P<optional>\?)?\s*:\s*(?P<type>[^\n;,]+)",
+        definition.group("body"), re.DOTALL))
+    if len(properties) != 1:
+        return None
+    type_expression = properties[0].group("type").strip()
+    if type_expression == "boolean":
+        kind = "boolean"
+        values: frozenset[str] = frozenset()
+    else:
+        literals: list[str] = []
+        for part in type_expression.split("|"):
+            literal = re.fullmatch(r"\s*(?P<quote>['\"])(?P<value>[a-z][a-z0-9-]*)(?P=quote)\s*", part)
+            if literal is None:
+                return None
+            literals.append(literal.group("value"))
+        values = frozenset(literals)
+        if not values or not values <= NATIVE_TAGS:
+            return None
+        kind = "literal-union"
+
+    call_start = definition.start()
+    call_end = definition.end()
+    wrapper = re.search(r"\bwithDefaults\s*\(\s*$", code[:definition.start()])
+    if wrapper is not None:
+        defaults = re.match(r"\s*,\s*{(?P<body>[^{}]*)}\s*\)", script[definition.end():], re.DOTALL)
+        if defaults is None:
+            return None
+        if kind == "literal-union":
+            entries = list(re.finditer(
+                rf"(?:^|,)\s*{re.escape(name)}\s*:\s*(?P<quote>['\"])(?P<value>[a-z][a-z0-9-]*)(?P=quote)\s*(?=,|$)",
+                defaults.group("body")))
+            if len(entries) != 1:
+                return None
+            default_value = entries[0].group("value")
+            if default_value not in values or default_value not in NATIVE_TAGS:
+                return None
+        else:
+            boolean_defaults = re.findall(
+                rf"(?:^|,)\s*{re.escape(name)}\s*:\s*(?:true|false)\s*(?=,|$)", defaults.group("body"))
+            if len(boolean_defaults) != 1:
+                return None
+        call_start = wrapper.start()
+        call_end = definition.end() + defaults.end()
+    elif re.search(r"\bwithDefaults\b", code):
+        return None
+
+    if not code_declaration_start(code, call_start):
+        return None
+    same_line_tail = code[call_end:].split("\n", 1)[0].strip().strip(";").strip()
+    if same_line_tail:
+        return None
+    remainder = code[:call_start] + (" " * (call_end - call_start)) + code[call_end:]
+    if re.search(rf"\b{re.escape(name)}\b", remainder):
+        return None
+    return kind, values
+
+
+def component_is_values(attrs: str, text: str) -> tuple[list[str], bool, bool]:
     match = re.search(r"(?:^|\s)(?P<dynamic>:)?is\s*=\s*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)", attrs, re.DOTALL)
     if match is None:
-        return [], True
+        return [], True, False
     value = match.group("value").strip()
-    if match.group("dynamic") and len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+    dynamic = match.group("dynamic") is not None
+    if dynamic and len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
         value = value[1:-1]
+    if dynamic:
+        ternary = re.fullmatch(
+            r"(?P<condition>[A-Za-z_$][A-Za-z0-9_$]*)\s*\?\s*"
+            r"(?P<left_quote>['\"])(?P<left>[a-z][a-z0-9-]*)(?P=left_quote)\s*:\s*"
+            r"(?P<right_quote>['\"])(?P<right>[a-z][a-z0-9-]*)(?P=right_quote)", value)
+        if ternary is not None:
+            native_values = frozenset((ternary.group("left"), ternary.group("right")))
+            authority = script_setup_native_prop(text, ternary.group("condition"))
+            if native_values and native_values <= NATIVE_TAGS and authority == ("boolean", frozenset()):
+                return sorted(native_values), False, True
+        if re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", value):
+            authority = script_setup_native_prop(text, value)
+            if authority is not None and authority[0] == "literal-union":
+                return sorted(authority[1]), False, True
     if re.fullmatch(r"[A-Z][A-Za-z0-9_$]*|[a-z][a-z0-9-]*", value):
-        return [value], False
-    return [], True
+        return [value], False, False
+    return [], True, False
 
 
 def split_alias(item: str) -> tuple[str, str]:
@@ -436,12 +523,50 @@ def parse_imports(text: str, *, sfc: bool = False) -> list[ImportBinding]:
     return sfc_exposed_imports(text)[0] if sfc else parse_segment_imports(text)
 
 
+def exact_alias_base(spec: str, repo: Path) -> tuple[Path | None, str | None]:
+    config = repo / "technical-platform/web/tsconfig.app.json"
+    try:
+        payload = json.loads(read_text(config))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return None, "COMPONENT_GRAPH_ALIAS_CONFIG_INVALID"
+    if not isinstance(payload, dict):
+        return None, "COMPONENT_GRAPH_ALIAS_CONFIG_INVALID"
+    compiler_options = payload.get("compilerOptions")
+    if not isinstance(compiler_options, dict):
+        return None, "COMPONENT_GRAPH_ALIAS_CONFIG_INVALID"
+    paths = compiler_options.get("paths")
+    if not isinstance(paths, dict):
+        return None, "COMPONENT_GRAPH_ALIAS_CONFIG_INVALID"
+    targets = paths.get(spec)
+    if targets is None:
+        return None, "COMPONENT_GRAPH_ALIAS_MISSING"
+    if "*" in spec or not isinstance(targets, list) or len(targets) != 1:
+        return None, "COMPONENT_GRAPH_ALIAS_TARGET_INVALID"
+    target = targets[0]
+    if not isinstance(target, str) or not target.strip() or "*" in target:
+        return None, "COMPONENT_GRAPH_ALIAS_TARGET_INVALID"
+    base_url = compiler_options.get("baseUrl", ".")
+    if not isinstance(base_url, str) or not base_url.strip() or "*" in base_url:
+        return None, "COMPONENT_GRAPH_ALIAS_CONFIG_INVALID"
+    base = (config.parent / base_url / target).resolve()
+    try:
+        base.relative_to(repo.resolve())
+    except ValueError:
+        return None, "COMPONENT_GRAPH_PATH_ESCAPE"
+    return base, None
+
+
 def module_candidates(source: Path, spec: str, repo: Path) -> tuple[list[Path], str | None]:
     web_source = repo / "technical-platform/web/src"
     if spec.startswith("@/") or spec.startswith("~/"):
         base = web_source / spec[2:]
     elif spec.startswith("."):
         base = source.parent / spec
+    elif spec.startswith("@sgj/"):
+        alias_base, alias_error = exact_alias_base(spec, repo)
+        if alias_error or alias_base is None:
+            return [], alias_error
+        base = alias_base
     else:
         return [], None  # package import: opaque framework/library boundary
     resolved_base = base.resolve()
@@ -473,7 +598,7 @@ def resolve_export(
     if boundary_error:
         return None, [finding(boundary_error, safe_relative(source, repo), import_spec=spec)]
     if not modules:
-        if spec.startswith((".", "@/", "~/")):
+        if spec.startswith((".", "@/", "~/", "@sgj/")):
             return None, [finding("COMPONENT_GRAPH_UNRESOLVED", safe_relative(source, repo), import_spec=spec, imported=imported)]
         return None, []
     if len(modules) != 1:
@@ -554,10 +679,12 @@ def rendered_main_graph(
         if tag in VUE_BUILTINS:
             continue
         if tag.lower() == "component":
-            values, unresolved = component_is_values(match.group("attrs"))
+            values, unresolved, native_leaf = component_is_values(match.group("attrs"), text)
             if unresolved:
                 issues.append(finding("COMPONENT_GRAPH_DYNAMIC_IS_UNRESOLVED", safe_relative(resolved, repo),
                                       expression=match.group("attrs").strip()))
+                continue
+            if native_leaf:
                 continue
             candidate_names: list[str] = []
             for value in values:

@@ -14,6 +14,15 @@
     <minio-java.version>8.6.0</minio-java.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+    <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
+    <spotless-maven-plugin.version>2.44.5</spotless-maven-plugin.version>
+    <google-java-format.version>1.24.0</google-java-format.version>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <spotbugs-maven-plugin.version>4.9.3.0</spotbugs-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+    <mockito.version>5.17.0</mockito.version>
+    <argLine></argLine>
   </properties>
   <modules>
     <module>technical-platform/backend/modules/core</module>
@@ -49,6 +58,11 @@
         <artifactId>minio</artifactId>
         <version>${minio-java.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -64,7 +78,43 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
-          <configuration><useModulePath>false</useModulePath></configuration>
+          <configuration>
+            <useModulePath>false</useModulePath>
+            <argLine>@{argLine} -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar</argLine>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <configuration>
+            <argLine>@{argLine} -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar</argLine>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${spotless-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -73,4 +123,104 @@
       <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId></plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>cxr09-quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.diffplug.spotless</groupId>
+            <artifactId>spotless-maven-plugin</artifactId>
+            <version>${spotless-maven-plugin.version}</version>
+            <inherited>false</inherited>
+            <configuration>
+              <java>
+                <includes>
+                  <include>technical-platform/backend/modules/attendance/src/**/*.java</include>
+                  <include>technical-platform/backend/modules/learning/src/**/*.java</include>
+                  <include>technical-platform/backend/modules/performance/src/**/*.java</include>
+                  <include>technical-platform/backend/modules/reward/src/**/*.java</include>
+                  <include>technical-platform/backend/modules/welfare/src/**/*.java</include>
+                  <include>technical-platform/backend/apps/api/src/main/java/**/phase10/**/*.java</include>
+                  <include>technical-platform/backend/apps/api/src/main/java/**/phase11/**/*.java</include>
+                  <include>technical-platform/backend/apps/api/src/test/java/**/Phase10*.java</include>
+                  <include>technical-platform/backend/apps/api/src/test/java/**/Phase11*.java</include>
+                  <include>technical-platform/backend/modules/database-baseline/src/test/java/**/Phase10*.java</include>
+                  <include>technical-platform/backend/modules/database-baseline/src/test/java/**/Phase11*.java</include>
+                  <include>technical-platform/backend/apps/worker/src/main/java/**/Phase10*.java</include>
+                  <include>technical-platform/backend/apps/worker/src/main/java/**/Phase11*.java</include>
+                </includes>
+                <googleJavaFormat>
+                  <version>${google-java-format.version}</version>
+                </googleJavaFormat>
+              </java>
+            </configuration>
+            <executions>
+              <execution>
+                <id>cxr09-spotless-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${maven-checkstyle-plugin.version}</version>
+            <inherited>false</inherited>
+            <configuration>
+              <configLocation>config/checkstyle/cxr09-checkstyle.xml</configLocation>
+              <sourceDirectories>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/attendance/src</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/learning/src</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/performance/src</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/reward/src</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/welfare/src</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/apps/api/src/main/java</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/apps/api/src/test/java</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/modules/database-baseline/src/test/java</sourceDirectory>
+                <sourceDirectory>${project.basedir}/technical-platform/backend/apps/worker/src/main/java</sourceDirectory>
+              </sourceDirectories>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+              <failOnViolation>true</failOnViolation>
+            </configuration>
+            <executions>
+              <execution>
+                <id>cxr09-checkstyle</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <configuration>
+              <onlyAnalyze>cn.shangjingu.platform.attendance.*,cn.shangjingu.platform.learning.*,cn.shangjingu.platform.performance.*,cn.shangjingu.platform.reward.*,cn.shangjingu.platform.welfare.*,cn.shangjingu.platform.api.phase10.*,cn.shangjingu.platform.api.phase11.*</onlyAnalyze>
+              <failOnError>true</failOnError>
+            </configuration>
+            <executions>
+              <execution>
+                <id>cxr09-spotbugs</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>cxr09-prepare-agent</id>
+                <goals><goal>prepare-agent</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

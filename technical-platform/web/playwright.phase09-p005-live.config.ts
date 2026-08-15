@@ -17,5 +17,10 @@ export default defineConfig({
   reporter: [['list'], ['html', { outputFolder: 'reports/playwright-phase09-p005-live', open: 'never' }]],
   use: { trace: 'retain-on-failure', screenshot: 'only-on-failure', video: 'retain-on-failure' },
   projects: [{ name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: servers.map((server) => ({ ...server, reuseExistingServer: false, timeout: 120_000 })),
+  webServer: servers.map((server) => ({
+    ...server,
+    env: { SJG_LOCAL_API_PROXY_TARGET: 'http://127.0.0.1:18084' },
+    reuseExistingServer: false,
+    timeout: 120_000,
+  })),
 })

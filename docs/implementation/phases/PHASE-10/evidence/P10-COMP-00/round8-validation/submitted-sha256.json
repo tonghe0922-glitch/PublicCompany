@@ -1,0 +1,35 @@
+﻿{
+    "schema_version":  "1.0",
+    "files":  [
+                  {
+                      "path":  "scripts/implementation/phase10_component_source_gate.py",
+                      "sha256":  "3FAE67B5280846F879BE54A40E6298652FDC9E0C4133D30BA480805249934E36",
+                      "bytes":  59026
+                  },
+                  {
+                      "path":  "scripts/implementation/phase10_component_source_gate_test.py",
+                      "sha256":  "846B67AD63AE4E610CA96BBA94CF32DE73A4CE70529C2CBAE4E9BCF2AC64110C",
+                      "bytes":  27066
+                  },
+                  {
+                      "path":  "scripts/implementation/phase10_component_local_tools_test.py",
+                      "sha256":  "A77F094782430E4A6F1A79756746AD1FB6E050D58DF836F21C04ADA084032792",
+                      "bytes":  8121
+                  },
+                  {
+                      "path":  "scripts/local/phase10-component-preflight.ps1",
+                      "sha256":  "6E2CB035F99C454C519E8BCB0C349021108D6D811448C078FF3AEEF352502ADE",
+                      "bytes":  3300
+                  },
+                  {
+                      "path":  "scripts/local/phase10-component-baseline.ps1",
+                      "sha256":  "D02D430FD694A5D13CC1B5995DF91B036DBF28470C106361484BCF6E073B712F",
+                      "bytes":  8017
+                  },
+                  {
+                      "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                      "sha256":  "3F174BD5CDD527E60020FB00A1F30B32C341AE0DAD4F34656ECDDDE07ADC94A8",
+                      "bytes":  8913
+                  }
+              ]
+}

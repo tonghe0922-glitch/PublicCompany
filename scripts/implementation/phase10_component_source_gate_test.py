@@ -115,6 +115,29 @@ session.request('/api/x'); const permission='p007.schedule.read'; const transiti
           "<template><main><slot/></main></template>")
 
 
+def write_public_alias_graph(root: Path, paths: dict[str, list[str]] | None = None) -> None:
+    aliases = paths if paths is not None else {
+        "@sgj/ui": ["src/design-system/index.ts"],
+        "@sgj/platform-ui": ["src/platform/processes/shared/index.ts"],
+    }
+    write(root / "technical-platform/web/tsconfig.app.json",
+          json.dumps({"compilerOptions": {"paths": aliases}}, ensure_ascii=False))
+    write(root / "technical-platform/web/src/design-system/index.ts",
+          "export { default as SgjPortalShell } from './layout/PortalShell.vue'\n")
+    write(root / "technical-platform/web/src/design-system/layout/PortalShell.vue",
+          "<template><main><slot/></main></template>\n")
+    write(root / "technical-platform/web/src/platform/processes/shared/index.ts",
+          "export { default as Phase10PublicRouteFeature } from './monitoring/Phase10PublicRouteFeature.vue'\n")
+    write(root / "technical-platform/web/src/platform/processes/shared/monitoring/Phase10PublicRouteFeature.vue",
+          "<template><section>public process feature</section></template>\n")
+    write(root / "technical-platform/web/src/platform/AuthenticatedPortalLayout.vue",
+          "<template><SgjPortalShell><slot/></SgjPortalShell></template>"
+          "<script setup>import { SgjPortalShell } from '@sgj/ui'</script>\n")
+    write(root / "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+          "<template><Phase10PublicRouteFeature/></template>"
+          "<script setup>import { Phase10PublicRouteFeature } from '@sgj/platform-ui'</script>\n")
+
+
 def run(gate: Path, root: Path) -> tuple[int, dict[str, object]]:
     process = subprocess.run([sys.executable, str(gate), "--repo-root", str(root)], capture_output=True,
                              text=True, encoding="utf-8", errors="replace", check=False)
@@ -663,10 +686,124 @@ export default defineComponent({components:{Registered:Safe}})
         code, payload = run(gate, root)
         assert code == 1 and "COMPONENT_GRAPH_PATH_ESCAPE" in codes(payload), payload
 
+        # Exact public aliases must remain fail-closed when their authority is invalid.
+        invalid_aliases: tuple[tuple[str, dict[str, list[str]]], ...] = (
+            ("missing", {}),
+            ("empty-target", {"@sgj/ui": [], "@sgj/platform-ui": ["src/platform/processes/shared/index.ts"]}),
+            ("multi-target", {"@sgj/ui": ["src/design-system/index.ts", "src/design-system/other.ts"],
+                              "@sgj/platform-ui": ["src/platform/processes/shared/index.ts"]}),
+            ("repo-escape", {"@sgj/ui": ["../../outside.ts"],
+                             "@sgj/platform-ui": ["src/platform/processes/shared/index.ts"]}),
+            ("wildcard", {"@sgj/*": ["src/*"]}),
+        )
+        for name, paths in invalid_aliases:
+            fixture(root)
+            write_public_alias_graph(root, paths)
+            code, payload = run(gate, root)
+            assert code == 1 and payload["status"] == "FAIL", (name, payload)
+
+        fixture(root)
+        write_public_alias_graph(root)
+        write(root / "technical-platform/web/src/design-system/index.ts",
+              "export { default as OtherShell } from './layout/PortalShell.vue'\n")
+        code, payload = run(gate, root)
+        assert code == 1 and payload["status"] == "FAIL", ("missing-symbol", payload)
+
+        fixture(root)
+        write_public_alias_graph(root)
+        write(root / "technical-platform/web/src/design-system/index.ts",
+              "export { SgjPortalShell } from './cycle-a'\n")
+        write(root / "technical-platform/web/src/design-system/cycle-a.ts",
+              "export { SgjPortalShell } from './cycle-b'\n")
+        write(root / "technical-platform/web/src/design-system/cycle-b.ts",
+              "export { SgjPortalShell } from './cycle-a'\n")
+        code, payload = run(gate, root)
+        assert code == 1 and payload["status"] == "FAIL", ("alias-cycle", payload)
+
+        fixture(root)
+        write_public_alias_graph(root)
+        write(root / "technical-platform/web/src/design-system/index.ts",
+              "export { default as SgjPortalShell } from './layout/PortalShell.vue'\n"
+              "export { default as SgjPortalShell } from './layout/OtherShell.vue'\n")
+        write(root / "technical-platform/web/src/design-system/layout/OtherShell.vue",
+              "<template><main><slot/></main></template>\n")
+        code, payload = run(gate, root)
+        assert code == 1 and payload["status"] == "FAIL", ("ambiguous-symbol", payload)
+
+        # Valid exact aliases must resolve through named re-exports and the existing main graph.
+        fixture(root)
+        write_public_alias_graph(root)
+        code, payload = run(gate, root)
+        assert code == 0 and payload["status"] == "PASS", payload
+
+        # Public components may use a statically bounded native tag without
+        # adding another rendered <main>.  Runtime or ambiguous expressions
+        # must remain fail-closed; do not treat arbitrary lowercase values as
+        # native merely because Vue's <component> accepts them at runtime.
+        public_feature = (root / "technical-platform/web/src/platform/processes/shared/monitoring/"
+                          "Phase10PublicRouteFeature.vue")
+        dynamic_negative_scripts: tuple[tuple[str, str, str], ...] = (
+            ("unconstrained-string", "runtimeTag", "const runtimeTag: string = 'div'"),
+            ("runtime-ref", "runtimeTag", "const runtimeTag = ref('div')"),
+            ("union-custom", "as", "withDefaults(defineProps<{as?: 'div' | 'UnsafeWidget'}>(), {as:'div'})"),
+            ("ternary-custom", "ordered ? 'ol' : 'UnsafeWidget'", "defineProps<{ordered?: boolean}>()"),
+            ("computed", "computedTag", "const computedTag = computed(() => 'div')"),
+            ("call", "chooseTag()", "const chooseTag = () => 'div'"),
+            ("member", "tags.current", "const tags = {current:'div'}"),
+            ("nested", "ready ? (ordered ? 'ol' : 'ul') : 'div'",
+             "defineProps<{ready?: boolean; ordered?: boolean}>()"),
+            ("duplicate-authority", "as",
+             "withDefaults(defineProps<{as?: 'div' | 'section'}>(), {as:'div'}); "
+             "withDefaults(defineProps<{as?: 'article'}>(), {as:'article'})"),
+            ("assigned-prop", "as",
+             "withDefaults(defineProps<{as?: 'div' | 'section'}>(), {as:'div'}); as = 'section'"),
+            ("aliased-mutation", "as",
+             "const props=withDefaults(defineProps<{as?: 'div' | 'section'}>(), {as:'div'}); "
+             "const alias=props; alias.as='section'"),
+            ("malformed-union", "as", "withDefaults(defineProps<{as?: 'div' |}>(), {as:'div'})"),
+            ("malformed-default", "as",
+             "withDefaults(defineProps<{as?: 'div' | 'section'}>(), {as:runtimeDefault})"),
+            ("malformed-ternary", "ordered ? 'ol'", "defineProps<{ordered?: boolean}>()"),
+        )
+        for name, expression, script in dynamic_negative_scripts:
+            fixture(root)
+            write_public_alias_graph(root)
+            write(public_feature,
+                  f'<template><section><component :is="{expression}"/></section></template>'
+                  f'<script setup lang="ts">{script}</script>')
+            code, payload = run(gate, root)
+            dynamic_codes = {item for item in codes(payload) if item.startswith("COMPONENT_GRAPH_DYNAMIC_IS_")}
+            assert code == 1 and dynamic_codes, (name, payload)
+
+        valid_dynamic_native: tuple[tuple[str, str, str], ...] = (
+            ("literal-union-prop", "as",
+             "withDefaults(defineProps<{as?: 'div' | 'section' | 'article'}>(), {as:'section'})"),
+            ("boolean-native-ternary", "ordered ? 'ol' : 'ul'", "defineProps<{ordered?: boolean}>()"),
+        )
+        rejected_valid_native: list[tuple[str, list[str]]] = []
+        for name, expression, script in valid_dynamic_native:
+            fixture(root)
+            write_public_alias_graph(root)
+            write(public_feature.parent / "UnsafeLandmark.vue", "<template><main>nested main</main></template>")
+            write(public_feature,
+                  f'<template><section><component :is="{expression}"/><UnsafeLandmark/></section></template>'
+                  f'<script setup lang="ts">import UnsafeLandmark from \'./UnsafeLandmark.vue\'; {script}</script>')
+            code, payload = run(gate, root)
+            dynamic_codes = sorted(item for item in codes(payload) if item.startswith("COMPONENT_GRAPH_DYNAMIC_IS_"))
+            route_counts = [item for item in payload["violations"]
+                            if item["code"] == "ROUTE_MAIN_COUNT" and item.get("actual") == 2]
+            assert code == 1 and "NESTED_COMPONENT_MAIN" in codes(payload) and route_counts, (name, payload)
+            if dynamic_codes:
+                rejected_valid_native.append((name, dynamic_codes))
+        assert not rejected_valid_native, rejected_valid_native
+
     # Current-repository discovery assertion prevents future decoy-page regressions.
     actual_root = Path(__file__).resolve().parents[2]
     code, payload = run(gate, actual_root)
-    assert code != 0  # existing dependency-ordered debt remains visible
+    assert code == 0
+    assert payload["status"] == "PASS"
+    assert payload["violation_count"] == 0
+    assert payload["violations"] == []
     actual_pages = set(payload["discovered_route_pages"])
     assert "technical-platform/web/src/platform/pages/P007SchedulePage.vue" in actual_pages, actual_pages
     assert "technical-platform/web/src/platform/pages/Phase10TechMonitorPage.vue" in actual_pages, actual_pages

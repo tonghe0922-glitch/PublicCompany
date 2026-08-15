@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "review_round": "RESUBMIT-11",
+  "probe_count": 4,
+  "fail_open_count": 0,
+  "results": [
+    {
+      "probe": "options-export-expression-tail-overrides-safe-object",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "COMPONENT_GRAPH_CUSTOM_BINDING_MISSING",
+        "COMPONENT_GRAPH_OPTIONS_COMPONENTS_UNRESOLVED"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "meta-nested-mutable-identifier",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "props-nested-mutable-identifier",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    },
+    {
+      "probe": "redirect-mutable-identifier",
+      "gate_exit": 1,
+      "gate_status": "FAIL",
+      "finding_codes": [
+        "ROUTER_CONTRIBUTOR_OPAQUE"
+      ],
+      "fail_open": false
+    }
+  ]
+}

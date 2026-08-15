@@ -1,0 +1,138 @@
+{
+  "phase": "PHASE-02",
+  "scope": "PLATFORM/基础工程",
+  "status_at_report_creation": "FORMAL_GATE_RECHECK_PASS_PENDING_FINAL_HEAD_CI",
+  "business_processes_implemented": 0,
+  "business_pages_marked_implemented": 0,
+  "formal_gate_failure": {
+    "report_commit": "026dce6a6d12c5a36905fa54c640283556a22f3c",
+    "gate_result": "FAIL",
+    "failures": ["FAIL-01", "FAIL-02", "FAIL-03", "FAIL-04"]
+  },
+  "gate_fix": {
+    "implementation_commit": "cb589b9658bc1c6d9770622ed97c88ecc4bdefa7",
+    "remote_sha": "cb589b9658bc1c6d9770622ed97c88ecc4bdefa7",
+    "github_push": "PASS",
+    "pull_request": {
+      "number": 2,
+      "state": "OPEN",
+      "draft": true,
+      "base": "main",
+      "head": "agent/full-build"
+    },
+    "runtime_alias_contract": {
+      "canonical_portals": ["employee", "center", "tech"],
+      "runtime_build_portals": ["employee", "center", "admin"],
+      "aliases": {
+        "employee": "employee",
+        "center": "center",
+        "tech": "admin"
+      },
+      "tech_entry": "technical-platform/web/admin.html",
+      "tech_source": "technical-platform/web/src/portals/admin/main.ts",
+      "tech_output": "technical-platform/web/dist/admin",
+      "regression_protection": [
+        "Vitest portal alias assertion",
+        "GitHub Actions runtime/build alias structure assertion"
+      ]
+    },
+    "implementation_ci": {
+      "workflow": "Phase 02 Build",
+      "run_id": 31165851666,
+      "head_sha": "cb589b9658bc1c6d9770622ed97c88ecc4bdefa7",
+      "conclusion": "success"
+    },
+    "orchestration_commit": "e3ea1537bd5fb349ed3f3786bf7bfb3c0b693f7f",
+    "ledger_closure": {
+      "workflow": "Phase 02 Ledger Finalize",
+      "run_id": 31166324916,
+      "workflow_head_sha": "e3ea1537bd5fb349ed3f3786bf7bfb3c0b693f7f",
+      "conclusion": "success",
+      "generated_commit": "35ab8ad1c7a7fd3c365c5f96266337ba2e46b783"
+    },
+    "fail_resolution": {
+      "FAIL-01": "FIXED_AND_REGRESSION_TESTED",
+      "FAIL-02": "FIXED_EVIDENCE_CLOSED",
+      "FAIL-03": "FIXED_LEDGER_STATE_UNIFIED",
+      "FAIL-04": "FIXED_REPORT_GITHUB_CLOSURE_ADDED"
+    }
+  },
+  "formal_gate_recheck": {
+    "evaluated_remote_head": "08cb61f6f4613ee9a89013fca0ee1bc4166d9acf",
+    "evaluated_head_ci": {
+      "workflow": "Phase 02 Build",
+      "run_id": 31166532746,
+      "head_sha": "08cb61f6f4613ee9a89013fca0ee1bc4166d9acf",
+      "conclusion": "success",
+      "jobs": {
+        "repository_quality_phase_boundary": "PASS",
+        "canonical_tech_admin_alias": "PASS",
+        "backend": "PASS",
+        "frontend": "PASS",
+        "infrastructure": "PASS",
+        "windows_chinese_path": "PASS"
+      }
+    },
+    "previous_failures_rechecked": {
+      "FAIL-01": "PASS",
+      "FAIL-02": "PASS",
+      "FAIL-03": "PASS",
+      "FAIL-04": "PASS"
+    },
+    "gate_result": "PASS",
+    "master_progress_target": "PHASE-02_COMPLETE",
+    "next_phase": "PHASE-03_NOT_STARTED"
+  },
+  "backend": {
+    "java": 21,
+    "apps": ["api", "worker"],
+    "modules": ["core", "iam", "org", "workflow", "document", "notification", "integration", "audit"],
+    "jpa_hibernate": false,
+    "spring_jdbc": true,
+    "flyway_wired": true,
+    "business_migrations": 0
+  },
+  "frontend": {
+    "canonical_portals": ["employee", "center", "tech"],
+    "runtime_build_portals": ["employee", "center", "admin"],
+    "strict_typecheck": "PASS",
+    "unit_smoke": "PASS",
+    "three_portal_build": "PASS",
+    "react": false,
+    "browser_storage_business_source": false,
+    "frozen_pnpm_lock": true
+  },
+  "infrastructure": {
+    "postgresql": "PASS",
+    "redis": "PASS",
+    "minio": "PASS",
+    "rabbitmq": "PASS",
+    "core_databases": ["sjg_oms", "sjg_audit", "sjg_dw"],
+    "business_tables_created_by_phase02": 0
+  },
+  "windows": {
+    "chinese_path_copy": "PASS",
+    "install_bat_ci": "PASS",
+    "verify_bat_ci": "PASS",
+    "start_bat_ci": "PASS",
+    "stop_bat_ci": "PASS",
+    "interactive_real_secret_start": "NOT_RUN"
+  },
+  "not_run": [
+    "business E2E",
+    "business permission negative tests",
+    "business idempotency tests",
+    "business concurrency tests",
+    "business outbox/DLQ/compensation tests",
+    "real external integration"
+  ],
+  "not_run_reason": "PHASE-02 explicitly prohibits domain business implementation; these checks are NOT_APPLICABLE_BY_SCOPE and are not claimed as business PASS.",
+  "known_non_blocking_conflicts": [
+    "declared forms 2164 vs extracted form rows 1972",
+    "table catalog 265 vs DDL CREATE TABLE 266",
+    "index catalog 1024 vs DDL CREATE INDEX 1019",
+    "Knowledge Base/04 Agents开发规范 pointer directory absent"
+  ],
+  "finalization_policy": "The Gate PASS report and MASTER_PROGRESS COMPLETE commit must be pushed, then the final Remote HEAD must have a successful Phase 02 Build run before PASS is reported externally.",
+  "next_phase": "PHASE-03_NOT_STARTED"
+}

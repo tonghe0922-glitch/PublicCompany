@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "taskId": "CXR-00",
+  "sourceCommit": "fef590876838d2c0222e2721c480d61929a385da",
+  "authoritativeAttempt": {
+    "path": "I:/PublicCompany_gate_evidence/fef590876838d2c0222e2721c480d61929a385da/20260814T093311Z-CXR-00-recovery-401d4797",
+    "classification": "AUTHORITATIVE_RECOVERY_ATTEMPT",
+    "fileCount": 43,
+    "commandLogCount": 30,
+    "commandGroups": { "A": 12, "B": 9, "C": 8, "D": 1 },
+    "reportCount": 3,
+    "manifestCount": 10,
+    "checksumCatalog": "docs/implementation/remediation/CODEX_FEF5908_CXR00_EVIDENCE_CHECKSUMS.sha256",
+    "commandExitMarkerCount": 30,
+    "duplicateCommandIds": 0,
+    "missingExitMarkers": 0,
+    "jsonReportParseFailures": 0,
+    "strictUtf8InvalidFiles": 0,
+    "literalReplacementCharacterFiles": [
+      "commands/B01-phase10-preparation-check.log",
+      "commands/B03-phase11-preparation-check.log"
+    ],
+    "literalReplacementCharacterCount": 2,
+    "encodingQualification": "The two literal U+FFFD characters are confined to a human-readable range separator emitted by the preparation scripts; the files are strict-valid UTF-8, exit markers are intact, and no JSON report contains U+FFFD. Repository-authored CXR-00 control files must have U+FFFD count 0."
+  },
+  "excludedAttempt": {
+    "path": "I:/PublicCompany_gate_evidence/fef590876838d2c0222e2721c480d61929a385da/20260814T091911Z-CXR-00",
+    "classification": "EVIDENCE_INTEGRITY_LOSS",
+    "permanentlyExcluded": true,
+    "reason": "Concurrent writers reused the attempt directory; at least commands/20-ui-changed.log and commands/21-web-lint.log were overwritten by same-name Tee-Object output.",
+    "maySupportPass": false
+  },
+  "observedExits": {
+    "A00": 0, "A01": 0, "A02": 0, "A03": 0, "A04": 0, "A05": 0,
+    "A06": 0, "A07": 0, "A08": 0, "A09": 0, "A10": 0, "A11": 0,
+    "B01": 0, "B02": 2, "B03": 0, "B04": 0, "B05": 0,
+    "B06": 1, "B07": 1, "B08": 0, "B09": 1,
+    "C01": 0, "C02": 0, "C03": 0, "C04": 0,
+    "C05": 0, "C06": 0, "C07": 0, "C08": 0,
+    "D01": 0
+  },
+  "expectedFailureChain": [
+    { "id": "B02", "exit": 2, "finding": "phase10_contract.py does not accept --mode sealed-regression" },
+    { "id": "B04", "exit": 0, "finding": "presence probe returned ABSENT for scripts/implementation/phase11_contract.py" },
+    { "id": "B06", "exit": 1, "finding": "UI all scope FAIL: 86 errors over 122 scanned source files" },
+    { "id": "B07", "exit": 1, "finding": "HEAD changed scope FAIL: 1 IMPORT_GRAMMAR_UNSUPPORTED finding over 34 scanned source files" },
+    { "id": "B09", "exit": 1, "finding": "Phase10 source gate FAIL: 14 violations (PAGE_NESTING 9, BARE_PERMISSION 5)" }
+  ],
+  "postClosureAudit": {
+    "authoredFileCount": 11,
+    "authoredStrictUtf8InvalidFiles": 0,
+    "authoredLiteralReplacementCharacterCount": 0,
+    "remediationJsonParseFailures": 0,
+    "evidenceChecksumEntries": 43,
+    "evidenceChecksumFailures": 0,
+    "dirtyPathCountBefore": 1583,
+    "dirtyPathCountAfter": 1594,
+    "dirtyDeltaCount": 11,
+    "dirtyDeltaOutsideAllowedPaths": 0,
+    "removedOrLostBaselinePaths": 0,
+    "gitDiffCheckExit": 0,
+    "productionChangedByCxr00": 0,
+    "phase12OrP017PlusChangedByCxr00": 0,
+    "phase11GateSha256": "C8D2DE2B68D1CE1090BC3F5BE999B80CF8C2523BEF7C8C0308BE2645AFEB9B22",
+    "statusWarnings": [
+      "could not open docs/implementation/ui/evidence/P10-COMP-03A/resubmit-3/temp/phase10-source-gate-ghokw4sa/: Permission denied",
+      "could not open docs/implementation/ui/evidence/P10-COMP-03A/resubmit-3/temp/tmpsfk46btz/: Permission denied"
+    ],
+    "warningDisposition": "The two pre-existing user temp directories were left untouched. Git returned all 1594 status records used for the boundary comparison; the warnings are retained for independent review."
+  },
+  "phaseClaims": {
+    "PHASE-10": "REGATE_REQUIRED",
+    "PHASE-11": "CONSTRUCTION_COMPLETE / REGATE_REQUIRED",
+    "PHASE-12": "NOT_STARTED / BLOCKED"
+  },
+  "constructionOutcome": "REGATE_CANDIDATE",
+  "independentReview": "PENDING",
+  "independentGatePassClaimed": false
+}

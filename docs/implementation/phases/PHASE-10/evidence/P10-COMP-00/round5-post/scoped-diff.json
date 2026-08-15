@@ -1,0 +1,65 @@
+﻿{
+    "schema_version":  "2.0",
+    "before_baseline_id":  "3E56CC998B7A8116E66B6A56EAF752500B3CDC02C86BBA90FD51C2631B1CEC33",
+    "after_baseline_id":  "3E56CC998B7A8116E66B6A56EAF752500B3CDC02C86BBA90FD51C2631B1CEC33",
+    "before_task_source_id":  "045B387E8C4AEA2D85A9E97F1EF48D13967938CBA0B77075C4C8EBA6E04C93BB",
+    "after_task_source_id":  "045B387E8C4AEA2D85A9E97F1EF48D13967938CBA0B77075C4C8EBA6E04C93BB",
+    "before_evidence_metadata_id":  "77AB547C68056F4789C78E4744EB633E08B5BEB991A99FD6552BDE2BAEB9C022",
+    "after_evidence_metadata_id":  "1EE6B2B3974445A57E04B84ACAB52F7C3A29190D5BD2331E546CA21D0AC9FB39",
+    "task_changes":  [
+
+                     ],
+    "evidence_metadata_changes":  [
+                                      {
+                                          "path":  "docs/implementation/phases/PHASE-10/P10-COMP-00_UI_GATE_REVALIDATION.md",
+                                          "change":  "modified",
+                                          "classification":  "evidence_metadata"
+                                      }
+                                  ],
+    "concurrent_core":  [
+                            {
+                                "path":  "technical-platform/database/flyway-overlays/oms/V125__phase11_p016_welfare_care.sql",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/welfare/src/main/java/cn/shangjingu/platform/welfare/P016CareService.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/welfare/src/main/java/cn/shangjingu/platform/welfare/JdbcP016CareRepository.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/modules/welfare/pom.xml",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/P016CareController.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SecurityConfiguration.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase11P016NotificationHandler.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            },
+                            {
+                                "path":  "technical-platform/backend/apps/worker/src/main/java/cn/shangjingu/platform/worker/Phase09P002WorkerConfiguration.java",
+                                "change":  "unchanged",
+                                "classification":  "concurrent_core"
+                            }
+                        ],
+    "unrelated_workspace_changes":  [
+
+                                    ],
+    "evidence_tree_changes_included":  false
+}

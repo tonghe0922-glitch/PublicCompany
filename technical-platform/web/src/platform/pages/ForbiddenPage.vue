@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PortalDefinition } from '../portal-config'
-import { SgjNoPermission } from '../../design-system'
+import { SgjNoPermission } from '@sgj/ui'
 
 defineProps<{ portal: PortalDefinition }>()
 </script>

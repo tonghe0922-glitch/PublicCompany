@@ -1,0 +1,356 @@
+﻿{
+    "count":  50,
+    "mismatch":  0,
+    "files":  [
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "exists":  true,
+                      "sha256":  "258F996AE452BE1F1330B39F3D9CB8D47FB3B64A2CD1CB560E0ABB36CA2E951F",
+                      "bytes":  5916,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P008LeavePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "E284D054B34D492CCEEF2709EBABB3F824AA5156B88019E4796FB2352704E3B5",
+                      "bytes":  7257,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P009OvertimePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "B6A3D18ABA34901181E7C57175177BBCF4CF0C029242DDD9DA7EB73F605AE232",
+                      "bytes":  7990,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P010LearningPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "16471D5DD150449DE181B1B775D3A24480CCE0FE6BE31422594A7E3BF87BD60B",
+                      "bytes":  8339,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P10-COMP-05_REPORT.md",
+                      "exists":  true,
+                      "sha256":  "D35D036E58BB52099A26924CC373AC871088BAF68BF34EC445F847219BB2E367",
+                      "bytes":  14221,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/e2e/phase10-p008-live.spec.ts",
+                      "exists":  true,
+                      "sha256":  "34432F10C0E35DBC723222BDB383EC0E2FE8455DF453771B7DB949152BFEE3C2",
+                      "bytes":  10627,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/e2e/phase10-p009-live.spec.ts",
+                      "exists":  true,
+                      "sha256":  "FE69AFB7CE5F059F503BC5421CDF82AAAE5C3180BF6AAEA74B73E1C5E7EA36A9",
+                      "bytes":  13295,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/e2e/phase10-p010-live.spec.ts",
+                      "exists":  true,
+                      "sha256":  "617E89552942547D5335C55B4D721648A57D4D8660174A73A46672A9A5AF38A2",
+                      "bytes":  13559,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+                      "exists":  true,
+                      "sha256":  "9367FE11CF0A590DCF16AEC16443028E55948026B42EF8381B671E9A52B83D1B",
+                      "bytes":  5362,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+                      "exists":  true,
+                      "sha256":  "02114A92A388B3FFAEB5BCBE9881AF63F932D29D2C90D360361FDAADCDBB5AFD",
+                      "bytes":  5191,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+                      "exists":  true,
+                      "sha256":  "2DCCF9D3E4AB6CA9731C330170B483914C9EF07DB87E00A69F21142017B36CE3",
+                      "bytes":  4213,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/contracts.ts",
+                      "exists":  true,
+                      "sha256":  "B640F74D7C3A6B85CCC84AFA61332139D51EAC14F7F14FC0AEBE183DE01C5A6F",
+                      "bytes":  4855,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/index.ts",
+                      "exists":  true,
+                      "sha256":  "7D02890B61436F180D54D521819E8932BBF22EBE2A87CB8CD21669437DE03AE7",
+                      "bytes":  496,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/p008-components.test.ts",
+                      "exists":  true,
+                      "sha256":  "6E2CCFA8B8180CB703996AA0B5EB3D967E6658FCB281B63828FD5AA80E3C4F23",
+                      "bytes":  12265,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/p008-contracts.test.ts",
+                      "exists":  true,
+                      "sha256":  "81D6CB1CD5455406D2224AD407CE074EF49B461D62CB254E0C23DD6B67FAB8C4",
+                      "bytes":  4184,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/P008LeaveActionPanel.vue",
+                      "exists":  true,
+                      "sha256":  "F77F4C7B3E4DE42229A06699E86DF2DA12F36152619C9EBC14578D12442B85C0",
+                      "bytes":  5119,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/P008LeaveCreateForm.vue",
+                      "exists":  true,
+                      "sha256":  "1B6D354C735A27AA25F26F2A16D7599F58644A65236C4E87D5A0BEC92D3DD6C7",
+                      "bytes":  4771,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/P008LeaveQuotaPanel.vue",
+                      "exists":  true,
+                      "sha256":  "4511756FA265F298BBCED67468E8DFDA9083ABDD198EFC4BE995F9817224EE64",
+                      "bytes":  1052,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/P008LeaveRecordList.vue",
+                      "exists":  true,
+                      "sha256":  "4AC263CF245199AECE8D50A8F79CBB888D3BA660654ADB128C58A4A9F6745D70",
+                      "bytes":  1933,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/p008-page.test.ts",
+                      "exists":  true,
+                      "sha256":  "A233229604155B4D9ABACE2961C58DD8D78C29617F3CBDAB3A822DBEAEC625C0",
+                      "bytes":  19096,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/p008-service.test.ts",
+                      "exists":  true,
+                      "sha256":  "CCF56412C37466DE2F34028ECE962D1AA1F937E9441C6AAE8C21844050993502",
+                      "bytes":  11515,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/selectors.ts",
+                      "exists":  true,
+                      "sha256":  "E60D21A8CDA06222BCC50B592372C538F257B09E7E647F8D80CF2A09417FD393",
+                      "bytes":  1276,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/service.ts",
+                      "exists":  true,
+                      "sha256":  "371B8AACFAB0FA6F1A7C81CC3CB5A8D967DB91F1F94F0DA29BE5737CE9F2B60F",
+                      "bytes":  3879,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p008/useP008Leave.ts",
+                      "exists":  true,
+                      "sha256":  "C6F0AF27B494880BBCE1AA71AAD8E10EEAEDA4FE1A71C0867104197494F0E2DE",
+                      "bytes":  2316,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/contracts.ts",
+                      "exists":  true,
+                      "sha256":  "A9AFE35D43BEBBD8A4F5BD7CBFC56029830C5CD36181C910107AD28D717D4EE5",
+                      "bytes":  4576,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/index.ts",
+                      "exists":  true,
+                      "sha256":  "3CA74FA2A51BFB5149615C5F85439EBF9B058F33D97997475AEF5537DE7ADE57",
+                      "bytes":  591,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/p009-components.test.ts",
+                      "exists":  true,
+                      "sha256":  "78C1511862328FC6CF17B6ACEFA5929EED7C51E4E5E0D693941516BB09BB346F",
+                      "bytes":  12912,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/p009-contracts.test.ts",
+                      "exists":  true,
+                      "sha256":  "353DB718CD219A10955711D7D21631B54E352F77F8FF2A9478385CEA80091850",
+                      "bytes":  5428,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/P009OvertimeActionPanel.vue",
+                      "exists":  true,
+                      "sha256":  "9CE3AD3836D6D55B04013835F6C06C670DD248BA8A5A364E29A40D691B28A10F",
+                      "bytes":  7285,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/P009OvertimeCompensationPanel.vue",
+                      "exists":  true,
+                      "sha256":  "0E37C05739FD445B340A8A5D232DF9FF1543E9A7A3AF3F097165C1318052B315",
+                      "bytes":  1122,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/P009OvertimeCreateForm.vue",
+                      "exists":  true,
+                      "sha256":  "CD496896C9544C741048B168DD0BF43D98A8A9296BF189599363EEDDED2C9D1C",
+                      "bytes":  4861,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/P009OvertimeRecordList.vue",
+                      "exists":  true,
+                      "sha256":  "49CF2F52F6967F7C507AF16B0A30BE0742537076F50B7DA21DBF82140DDFDC88",
+                      "bytes":  1836,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/p009-page.test.ts",
+                      "exists":  true,
+                      "sha256":  "6A33D7CF0318CAF7C76FD8D593B616256FCCC1E76D2704ED7C2A5384A1D04761",
+                      "bytes":  14163,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/p009-service.test.ts",
+                      "exists":  true,
+                      "sha256":  "495CC8EC3B56B279E7167EFD82B1F57DE3908D9A45EC8BAC7C1018F3B0F59342",
+                      "bytes":  10105,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/selectors.ts",
+                      "exists":  true,
+                      "sha256":  "C4C8D98DAF7CFDF453556A6CF421618CF1E5E18C12260A89EEAF09857BD498EF",
+                      "bytes":  1340,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/service.ts",
+                      "exists":  true,
+                      "sha256":  "BC25D4AD4FCB7A4451026C0EA97CB155B7D68CBCCF31ECFF8D1FAD1618914A98",
+                      "bytes":  3063,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p009/useP009Overtime.ts",
+                      "exists":  true,
+                      "sha256":  "F828F0C08F5EC72DB0DE50C8D2A6DDC8B3A1C19B44A421EEAEBF1A424CB907C9",
+                      "bytes":  2121,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/contracts.ts",
+                      "exists":  true,
+                      "sha256":  "E0C082B7DFA057464EA6A41A62D3D82D0F72ECF884491631091D8FCF5AC99B85",
+                      "bytes":  4193,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/index.ts",
+                      "exists":  true,
+                      "sha256":  "D752B3C5799C15FC6DEABB7CB0EDA7833B69F56E728112236EF38C883F08D226",
+                      "bytes":  552,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/p010-components.test.ts",
+                      "exists":  true,
+                      "sha256":  "3BBDD35FE2C13F4DBAF082ED6906CFE5839DE240D9CC4A5BFD525C41C6488C6C",
+                      "bytes":  10980,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/p010-contracts.test.ts",
+                      "exists":  true,
+                      "sha256":  "5B31F0A6CD3C5E07A9E65045AE777768D899B919E2F2B27682EA381D00F28E2F",
+                      "bytes":  5533,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/P010LearningActionPanel.vue",
+                      "exists":  true,
+                      "sha256":  "44CC351CE92226D026674A87F9110A3EE41E62469B1D707D02B9F56FE089AC4C",
+                      "bytes":  5696,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/P010LearningCreateForm.vue",
+                      "exists":  true,
+                      "sha256":  "DB6AFAC01C12BD21408A1F4A52EEC6B177C7B45853F4E865A3A73C9E766B9DEF",
+                      "bytes":  531,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/P010LearningRecordList.vue",
+                      "exists":  true,
+                      "sha256":  "3D88486503AB94D108D264DC179A6E8898DF917B1492529FC23ABFCCBF034342",
+                      "bytes":  1883,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/p010-page.test.ts",
+                      "exists":  true,
+                      "sha256":  "298B2A39ADB547026EBF367612A318CC53A5DC5309566FA0E7E6BDCC0B75F532",
+                      "bytes":  11772,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/P010QualificationPanel.vue",
+                      "exists":  true,
+                      "sha256":  "C41D6CB185F78AA3E79EDC9E2B8FBDDE5A33EE9AA30B5C391BF121C41F92A89F",
+                      "bytes":  1776,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/p010-service.test.ts",
+                      "exists":  true,
+                      "sha256":  "1DFEC2EDF50577F222C7A9EF5ECE4D8EF79AD55756677522E2034944EFD3829B",
+                      "bytes":  9655,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/selectors.ts",
+                      "exists":  true,
+                      "sha256":  "4D4CAF4DA734B28DBF65607B9C72FED20E291D1AD247995025483C6CC21CEA00",
+                      "bytes":  1246,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/service.ts",
+                      "exists":  true,
+                      "sha256":  "6AF1CC875EF00A816CD72309286C16DBA47619B77221E352A781E93423919B37",
+                      "bytes":  2814,
+                      "matches_manifest":  true
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p010/useP010Learning.ts",
+                      "exists":  true,
+                      "sha256":  "71451FB892E2C16641544431F28B70F438F6CF7A9DB82653F7162F72F16C9401",
+                      "bytes":  1650,
+                      "matches_manifest":  true
+                  }
+              ]
+}

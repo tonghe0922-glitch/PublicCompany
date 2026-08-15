@@ -1,0 +1,146 @@
+﻿[
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/index.ts",
+        "pre_exists":  true,
+        "post_exists":  true,
+        "pre_sha":  "0B9544983922DDDDC2CDB671F1AC14C6C0A7D3A5A35BCB3F3EAFF22600D076CC",
+        "post_sha":  "49E8C2CCAB62C297D4690B3F7511792450E058C4BAFB08FC19D2F0BF05505C97",
+        "pre_bytes":  1588,
+        "post_bytes":  1661
+    },
+    {
+        "path":  "technical-platform/web/src/design-system/ui-component-access.test.ts",
+        "pre_exists":  true,
+        "post_exists":  true,
+        "pre_sha":  "0BBC9ECBAC03310D6877811B34F9CB92E2247A6ACA788148D146C02707F2EA4C",
+        "post_sha":  "48E0751C24AB3F4021B63D3E9CB4716DF0BF6BB536871ECC6D9B3F0A411DAFA6",
+        "pre_bytes":  2072,
+        "post_bytes":  3736
+    },
+    {
+        "path":  "docs/implementation/ui/UI_COMPONENT_REGISTRY.json",
+        "pre_exists":  true,
+        "post_exists":  true,
+        "pre_sha":  "D9AE7D7B510FDA07F92CD2BA5501E79A05268EE479B2C1B2E50A99758CA90866",
+        "post_sha":  "896F4DECBFC3EA20B3D72B571E756370411A8B81FCA3B6C02FF5DD366675C244",
+        "pre_bytes":  85016,
+        "post_bytes":  88075
+    },
+    {
+        "path":  "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/Phase10TechMonitorIntegrationTest.java",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "F9A78353515A4F54628441FF874670EFE8AF11CC2AF881392B2634B7F1787F72",
+        "pre_bytes":  0,
+        "post_bytes":  13334
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/index.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "39A2AF94E232E0EA5CBF464494189A21FC69FD38EE13E84D8375A6C862AB0322",
+        "pre_bytes":  0,
+        "post_bytes":  61
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-service.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "EFCEB9C4DDAAC1EC39C68F78BD34C566267587A46A5DCCE4F11C33B1984746CB",
+        "pre_bytes":  0,
+        "post_bytes":  2545
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/useMonitorProjection.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "C5B001EF369EF0CDA92272499173C524B887281BF43A70D06BFF0EA462CDB5D0",
+        "pre_bytes":  0,
+        "post_bytes":  2585
+    },
+    {
+        "path":  "technical-platform/web/src/contracts/index.ts",
+        "pre_exists":  true,
+        "post_exists":  true,
+        "pre_sha":  "C35A1907EEAA77BC1E675D17DF791101B47DE3A02932D712886D95C0D34E792A",
+        "post_sha":  "3903B9039BDFDD07754CA0B4A67BD0662EB4A697E7B7D791CDB6296BE3E0592A",
+        "pre_bytes":  22,
+        "post_bytes":  51
+    },
+    {
+        "path":  "docs/implementation/ui/page-component-plans/Phase10TechMonitorPage.ui-plan.json",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "AA0CE44341624BEC04F8546902022639B1A985F79878B767211421700DC01086",
+        "pre_bytes":  0,
+        "post_bytes":  7720
+    },
+    {
+        "path":  "technical-platform/web/src/contracts/monitoring.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "8B00E61BE91E282E6DCB9117007FEC7D6E938F5C08D553A0EA1E3AA03A976E32",
+        "pre_bytes":  0,
+        "post_bytes":  2056
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/MonitorStatusTable.vue",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "FAFABCB39495EC6DA36CA3F5B6081CA03F679B37C8691DCB39E3D9E9D66E1088",
+        "pre_bytes":  0,
+        "post_bytes":  2369
+    },
+    {
+        "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase10/MonitorProjection.java",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "3D99A57DE829E03652E99639893B3246B5072AAE3658FBFEF15F4DCC76382A8F",
+        "pre_bytes":  0,
+        "post_bytes":  438
+    },
+    {
+        "path":  "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase10/Phase10TechMonitorController.java",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "8BF089E27E94FD4ABB6684505A03472C5CFA3B6937EDCCBF7CE3DF5B8C9E1F1A",
+        "pre_bytes":  0,
+        "post_bytes":  4571
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/MonitorPanel.vue",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "62ECA756A901F9A02242DA178DEC7C2678D1D194661E7B7F8CE4BDB36BF5DD94",
+        "pre_bytes":  0,
+        "post_bytes":  1028
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-service.test.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "2C1669412E84376BBB42C517264B9265C9CA283898B8BE573404FD6F04A700B2",
+        "pre_bytes":  0,
+        "post_bytes":  8497
+    },
+    {
+        "path":  "technical-platform/web/src/platform/processes/shared/monitoring/monitor-components.test.ts",
+        "pre_exists":  false,
+        "post_exists":  true,
+        "pre_sha":  null,
+        "post_sha":  "5F8BD0723A23A0F9D9E10F9FD3C90D23E222B2CF8C99353B4EFC3AE96F6C5F93",
+        "pre_bytes":  0,
+        "post_bytes":  4630
+    }
+]

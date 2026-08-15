@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceRoot": "I:/PublicCompany_gate_evidence",
+  "lockPath": ".local-gate.lock",
+  "runtimeTempRoot": ".runlogs/local-gate-temp",
+  "redaction": {
+    "replacement": "[REDACTED]",
+    "patterns": [
+      "(?i)authorization\\s*:\\s*bearer\\s+\\S+",
+      "(?i)(?:token|password|cookie|secret)\\s*[=:]\\s*\\S+"
+    ]
+  },
+  "bootstrap": {
+    "steps": [
+      {
+        "id": "maven-go-offline",
+        "kind": "script",
+        "mandatory": true,
+        "enabled": true,
+        "executable": "mvnw.cmd",
+        "arguments": ["-B", "-ntp", "dependency:go-offline"],
+        "workingDirectory": ".",
+        "expectedExitCodes": [0],
+        "failureClassification": "ENVIRONMENT_BLOCKED"
+      },
+      {
+        "id": "pnpm-frozen-install",
+        "kind": "command",
+        "mandatory": true,
+        "enabled": true,
+        "executable": "pnpm.cmd",
+        "arguments": ["install", "--frozen-lockfile"],
+        "workingDirectory": "technical-platform/web",
+        "expectedExitCodes": [0],
+        "failureClassification": "ENVIRONMENT_BLOCKED"
+      },
+      {
+        "id": "playwright-install-chromium",
+        "kind": "command",
+        "mandatory": true,
+        "enabled": true,
+        "executable": "pnpm.cmd",
+        "arguments": ["exec", "playwright", "install", "chromium"],
+        "workingDirectory": "technical-platform/web",
+        "expectedExitCodes": [0],
+        "failureClassification": "ENVIRONMENT_BLOCKED"
+      }
+    ]
+  },
+  "gates": {
+    "quick": {
+      "steps": [
+        { "id": "phase10-preparation", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase10_preparation_extract.py", "--check"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "phase10-sealed-contract", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase10_contract.py", "--mode", "sealed-regression"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "phase11-preparation", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase11_preparation_extract.py", "--check"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "phase11-contract", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase11_contract.py"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "ui-self-test", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/ui_component_access_gate.py", "--self-test"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "ui-all", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/ui_component_access_gate.py", "--repo-root", ".", "--scope", "all", "--report", "{evidencePath}/ui-source/ui-all.json"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "source-self-test", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase10_component_source_gate_test.py"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "source-current", "kind": "command", "mandatory": true, "enabled": true, "executable": "python", "arguments": ["scripts/implementation/phase10_component_source_gate.py", "--repo-root", ".", "--report", "{evidencePath}/ui-source/phase10-source-current.json"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "web-lint", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["lint"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "web-typecheck", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["typecheck"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "web-unit", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["test:unit"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" }
+      ]
+    },
+    "full": {
+      "steps": [
+        { "id": "maven-root-test", "kind": "script", "mandatory": true, "enabled": true, "executable": "mvnw.cmd", "arguments": ["-B", "-ntp", "test"], "workingDirectory": ".", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "web-deadcode", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["quality:deadcode"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "web-duplicates", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["quality:duplicates"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "build-employee", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["build:employee"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "build-center", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["build:center"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "build-admin", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["build:admin"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" }
+      ]
+    },
+    "phase10Live": {
+      "steps": [
+        { "id": "p006-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase10-p006-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p007-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase10-p007-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p008-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase10-p008-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p009-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase10-p009-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p010-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase10-p010-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" }
+      ]
+    },
+    "phase11Live": {
+      "steps": [
+        { "id": "p011-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p011-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p012-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p012-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p013-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p013-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p014-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p014-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p015-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p015-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" },
+        { "id": "p016-live", "kind": "command", "mandatory": true, "enabled": true, "executable": "pnpm.cmd", "arguments": ["exec", "playwright", "test", "--config", "playwright.phase11-p016-live.config.ts"], "workingDirectory": "technical-platform/web", "expectedExitCodes": [0], "failureClassification": "CODE_FAILURE" }
+      ]
+    }
+  },
+  "cleanup": {
+    "ports": [18090, 5303, 5304, 5305, 5330, 5331, 5332, 5340, 5341, 5342, 5350, 5351, 5352, 5360, 5361, 5362],
+    "processPatterns": ["BrowserBackendFixture", "vite --mode", "playwright"],
+    "steps": []
+  }
+}

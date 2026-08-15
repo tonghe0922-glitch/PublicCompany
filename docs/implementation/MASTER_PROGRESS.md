@@ -1,13 +1,12 @@
 # MASTER_PROGRESS
 
 > Sole local construction directory: `I:\PublicCompany_source_codex`
-> Local source-control fact: `.git` is absent; old repository/branch/CI identifiers below are historical only and are not current acceptance evidence
-> Historical target branch: `main` (not applicable to the current no-`.git` local evidence set)
-> Latest completed phase: `PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS`
-> Current construction phase: `PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START`
-> Next phase: `PHASE-12 = NOT_STARTED / AUTHORIZED_BY_PHASE11_GATE`
+> Local source-control fact: `.git` is present; branch `CODEX_Phase10_Local`; CXR-00 source commit `fef590876838d2c0222e2721c480d61929a385da`; working tree `DIRTY`
+> Latest sealed phase: `PHASE-09 = COMPLETE`
+> Current remediation state: `PHASE-10 = REGATE_REQUIRED`; `PHASE-11 = CONSTRUCTION_COMPLETE / REGATE_REQUIRED`
+> Next product phase: `PHASE-12 = NOT_STARTED / BLOCKED`
 
-根据 `Construction Master Schedule.csv`，PHASE-11 固定为 P011–P016：绩效管理、晋升与任职发展、奖励、纪律责任与申诉、成长/荣誉积分、员工福利与关怀。P011→P016 三端闭环已通过独立 Gate；PHASE-10 与 PHASE-11 保持封板，PHASE-12 可按既定顺序启动。
+根据 `Construction Master Schedule.csv`，PHASE-11 固定为 P011–P016：绩效管理、晋升与任职发展、奖励、纪律责任与申诉、成长/荣誉积分、员工福利与关怀。原施工闭环和历史证据保留，但 `fef5908` 复审已撤回 PHASE-12 授权。当前必须按 `docs/implementation/remediation/` 的 CXR-00 → CXR-12 顺序整改和重新 Gate；不得实现 P017+。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -21,9 +20,9 @@
 | PHASE-07 | COMPLETE | Cycle 3 完整度复核；独立 Formal Gate PASS |
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS；CI 生命周期门禁已全绿 |
-| PHASE-10 | COMPLETE | P006-P010 closed; independent DB/Worker 22 tests, API 5 lifecycles, web 20 files/91 tests/build/Knip/lint and real Chromium passed after focused lint remediation |
-| PHASE-11 | COMPLETE | P011-P016 independent source/DB/Worker/API/web/static and six fresh Chromium gates PASS；40-file remediation SHA set frozen |
-| PHASE-12 | NOT_STARTED | P017–P020；authorized to start in sequence by PHASE-11 independent PASS |
+| PHASE-10 | REGATE_REQUIRED | P006–P010 原施工闭环保留；CXR-02/03/04/08/11/12 完成并由独立 clean-clone Release Gate 复验前不得重新封板 |
+| PHASE-11 | CONSTRUCTION_COMPLETE / REGATE_REQUIRED | P011–P016 原施工代码保留；CXR-02/05/06/07/08/09/10/11/12 尚待顺序整改与独立复验 |
+| PHASE-12 | NOT_STARTED / BLOCKED | P017–P020；CXR-12 独立 clean-clone Release Gate 通过前禁止启动 |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
 | PHASE-15 | NOT_STARTED | P028–P030 |
@@ -83,8 +82,9 @@ P007 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P008 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P009 = CHECKPOINT_PASS / CLOSED (local reproducible verification)
 P010 = CHECKPOINT_PASS / CLOSED (local PG16+Redis+Chromium verification)
-PHASE-10 = COMPLETE / INDEPENDENT_GATE_PASS
-PHASE-11 = IN_PROGRESS / C0_FROZEN / NEXT=P011
+Historical closeout claim = PHASE-10 COMPLETE / INDEPENDENT_GATE_PASS
+Current CXR-00 override = PHASE-10 REGATE_REQUIRED
+PHASE-11 historical opening state = IN_PROGRESS / C0_FROZEN / NEXT=P011
 ```
 
 ## PHASE-11 C0 source / impact / gap freeze
@@ -104,11 +104,12 @@ P013 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P014 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
 P015 = CHECKPOINT_PASS / CLOSED
 P016 = CHECKPOINT_PASS / CLOSED / local PG16+Redis+Chromium evidence
-PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS
-PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START
+Historical closeout claim = PHASE-11 COMPLETE / INDEPENDENT_GATE_PASS
+Current CXR-00 override = PHASE-11 CONSTRUCTION_COMPLETE / REGATE_REQUIRED
+PHASE-12 = NOT_STARTED / BLOCKED
 ```
 
-## PHASE-11 full construction gate
+## PHASE-11 historical full construction gate (current commit requires regate)
 
 ```text
 Source contract = PASS / 18 XLSX / 108 sheets / 5,655 rows / SHA D21D758B6CCE42A68659A2D1711C977FFE8DAFDF56DB57234C775074F3A36C55
@@ -119,10 +120,11 @@ Static negative scan = PASS / 0 findings
 Real Browser = PASS / P011-P016 each desktop-chromium 1/1 / exact containers ABSENT / processes 0
 Remediation Browser evidence = .runlogs/phase11-remediation-stable-p011..p016-* / final Ryuk + workspace gate process + ports = 0
 Construction report = phases/PHASE-11/FULL_GATE_REPORT.md
-PHASE-11 = COMPLETE / INDEPENDENT_GATE_PASS
-PHASE-12 = NOT_STARTED / AUTHORIZED_TO_START
+Historical claim only = PHASE-11 COMPLETE / INDEPENDENT_GATE_PASS
+Current CXR-00 override = PHASE-11 CONSTRUCTION_COMPLETE / REGATE_REQUIRED
+PHASE-12 = NOT_STARTED / BLOCKED
 ```
 
 ## Completed-phase regression lifecycle
 
-已完成阶段与 checkpoint 在后续施工期间继续保持可执行。PHASE-10 不得降低 PHASE-07/08/09 或 P001–P005 门槛；任何回归失败必须先修复再继续。PHASE-10 按 `P006 → P007 → P008 → P009 → P010` 执行“小闭环 → 本地可复现测试 → checkpoint”，五项关闭后才允许 Full Construction Gate、PHASE_REPORT 和独立 Phase Gate。当前目录无 Git，因此不得执行或宣称 checkpoint commit/push。
+已完成代码与 checkpoint 在整改期间继续保持可执行。PHASE-10 不得降低 PHASE-07/08/09 或 P001–P005 门槛；任何回归失败必须先修复再继续。当前目录有 Git，但 CXR 整改不自动 commit/push；工作树中的既有用户资产不得 reset、clean、删除或覆盖。只有 CXR-00 → CXR-12 全部顺序完成且独立 clean-clone Release Gate 通过后，才可重新决定 PHASE-10/11 是否封板；PHASE-12 在此之前始终 BLOCKED。

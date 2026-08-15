@@ -1,0 +1,1558 @@
+{
+  "schema_version": "1.0",
+  "gate": "P10-COMP-03A UI component access gate",
+  "repository_root": "I:\\PublicCompany_source_codex",
+  "scope": "all",
+  "scanned_source_file_count": 58,
+  "registered_component_count": 58,
+  "status": "FAIL",
+  "error_count": 193,
+  "warning_count": 0,
+  "findings": [
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/AuthenticatedPortalLayout.vue",
+      "message": "../design-system",
+      "line": 5,
+      "excerpt": "import { SgjPortalShell, SgjStatusChip } from '../design-system'",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/ForbiddenPage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import { SgjNoPermission } from '../../design-system'",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/LoginPage.vue",
+      "message": "../../design-system",
+      "line": 5,
+      "excerpt": "import { SgjButton, SgjCard, SgjError, SgjInput, SgjPortalShell, SgjStatusChip } from '../../design-system'",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/NotFoundPage.vue",
+      "message": "../../design-system",
+      "line": 4,
+      "excerpt": "import { SgjButton, SgjEmpty, SgjPortalShell } from '../../design-system'",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 22,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 25,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 30,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 36,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 48,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 53,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 56,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 58,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 66,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 70,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P001IdentityPage.vue",
+      "message": "Use the registered replacement for <table>",
+      "line": 76,
+      "excerpt": "<table",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 21,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 26,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 30,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 35,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 38,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 44,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 48,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 52,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 56,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 63,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 66,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 78,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 85,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 112,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 118,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 126,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 129,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 135,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P002PermissionRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 138,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 9,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 12,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 14,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 16,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 20,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 23,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 26,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 29,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 36,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 39,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 54,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 56,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P003ProfileChangePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 61,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 20,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 24,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 32,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 41,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 47,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 51,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 53,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 56,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 66,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 69,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 71,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 76,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 123,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P004GenericRequestPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 130,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 15,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 19,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 22,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 26,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 32,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 35,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 40,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 47,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 50,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 53,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 57,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 63,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 68,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 74,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 78,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 88,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 91,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 99,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 105,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 164,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P005NoticePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 169,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 8,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 10,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 11,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 12,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 12,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 13,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 15,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 15,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 15,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 16,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 18,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 19,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 24,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 8,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 8,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 9,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 10,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 10,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 10,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 11,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 11,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 11,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 12,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 13,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 14,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 15,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 9,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 9,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 10,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 12,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 17,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 18,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 22,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 27,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 42,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P008LeavePage.vue",
+      "message": "Use the registered replacement for <table>",
+      "line": 45,
+      "excerpt": "<table",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 9,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 11,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 12,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 14,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 15,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 15,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 15,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 15,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <select>",
+      "line": 16,
+      "excerpt": "<select",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 17,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 19,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 20,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P009OvertimePage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 31,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 8,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 9,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 10,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 10,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 11,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 11,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 12,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 12,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <input>",
+      "line": 13,
+      "excerpt": "<input",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <textarea>",
+      "line": 13,
+      "excerpt": "<textarea",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 14,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "RAW_INTERACTIVE_ELEMENT",
+      "path": "technical-platform/web/src/platform/pages/P010LearningPage.vue",
+      "message": "Use the registered replacement for <button>",
+      "line": 15,
+      "excerpt": "<button",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P011PerformancePage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjCheckbox,\n  SgjConflict,\n  SgjDateTime,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjRecor",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P012PromotionPage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjCheckbox,\n  SgjConflict,\n  SgjDateTime,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjRecor",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P013RewardPage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjConflict,\n  SgjDateTime,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjRecordCard,\n  SgjSel",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P014DisciplinePage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjCheckbox,\n  SgjConflict,\n  SgjDateTime,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjRecor",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P015PointLedgerPage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjCheckbox,\n  SgjConflict,\n  SgjDateTime,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjParti",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/pages/P016CareSupportPage.vue",
+      "message": "../../design-system",
+      "line": 3,
+      "excerpt": "import {\n  SgjButton,\n  SgjCard,\n  SgjConflict,\n  SgjEmpty,\n  SgjError,\n  SgjInput,\n  SgjListPageTemplate,\n  SgjLoading,\n  SgjNoPermission,\n  SgjRecordCard,\n  SgjSelect,\n  SgjStatu",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/PortalRuntimeRoot.vue",
+      "message": "../design-system",
+      "line": 4,
+      "excerpt": "import { SgjButton, SgjError } from '../design-system'",
+      "severity": "error"
+    },
+    {
+      "code": "LEGACY_COMPONENT_IMPORT",
+      "path": "technical-platform/web/src/platform/PortalSessionHeader.vue",
+      "message": "../design-system",
+      "line": 4,
+      "excerpt": "import { SgjButton, SgjSelect, SgjStatusChip } from '../design-system'",
+      "severity": "error"
+    }
+  ],
+  "remote_operations_performed": false
+}

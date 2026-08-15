@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ApiClientError } from '../../api'
-import { SgjButton, SgjCard, SgjError, SgjInput, SgjPortalShell, SgjStatusChip } from '../../design-system'
+import { SgjButton, SgjCard, SgjError, SgjInput, SgjPortalShell, SgjStatusChip } from '@sgj/ui'
 import { usePortalSessionStore } from '../../session'
 import { safeInternalRedirect } from '../../router/redirect'
 import type { PortalDefinition } from '../portal-config'

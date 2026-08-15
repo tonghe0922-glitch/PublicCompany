@@ -36,7 +36,11 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot-maven-plugin.version}</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -47,6 +51,27 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>cxr09-quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>cxr09-report-aggregate</id>
+                <phase>verify</phase>
+                <goals><goal>report-aggregate</goal></goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/site/jacoco-aggregate</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>phase04-integration</id>
       <build>

@@ -13,7 +13,7 @@ const requestedHighRoleId = '70000000-0000-0000-0000-000000000997'
 const apiBase = 'http://127.0.0.1:18082'
 const employeeBase = 'http://127.0.0.1:5283/employee.html'
 const centerBase = 'http://127.0.0.1:5284/center.html'
-const techBase = 'http://127.0.0.1:5285/admin.html'
+const techBase = 'http://127.0.0.1:5286/admin.html'
 const mainSubject = 'P002 live high-risk lifecycle'
 
 interface PermissionRequestRecord {
@@ -101,7 +101,7 @@ test('P002 real high-risk request, reviewer separation, idempotency, scope and t
 
   await loginPortal(page, employeeBase, applicantLogin, '员工工作入口')
   await page.goto(`${employeeBase}#/employee/03/07/04`)
-  await expect(page.getByRole('heading', { name: '临时权限申请', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '临时权限申请', level: 2, exact: true })).toBeVisible()
   const start = new Date(Date.now() - 60_000)
   const end = new Date(Date.now() + 2 * 60 * 60_000)
   await page.getByLabel('申请角色 ID').fill(requestedHighRoleId)
@@ -150,8 +150,8 @@ test('P002 real high-risk request, reviewer separation, idempotency, scope and t
 
   await loginPortal(page, centerBase, reviewer1Login, '中心管理工作入口')
   await page.goto(`${centerBase}#/center/02/01/01`)
-  await expect(page.getByRole('heading', { name: '中心管理端审批与监督', level: 1 })).toBeVisible()
-  await expect(page.getByRole('heading', { name: '权限申请审批收件箱', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '中心管理端审批与监督', level: 2 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '权限申请审批收件箱', level: 2 })).toBeVisible()
   let centerRecord = page.locator(`article[data-request-id="${id}"]`)
   await expect(centerRecord).toContainText('业务负责人确认')
   await centerRecord.getByRole('button', { name: '通过当前复核' }).click()
@@ -196,7 +196,7 @@ test('P002 real high-risk request, reviewer separation, idempotency, scope and t
 
   await loginPortal(page, techBase, techLogin, '技术运行工作入口')
   await page.goto(`${techBase}#/tech/03/01/04`)
-  await expect(page.getByRole('heading', { name: '权限授权执行与回收', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '权限授权执行与回收', level: 2 })).toBeVisible()
   let techRecord = page.locator(`article[data-request-id="${id}"]`)
   await expect(techRecord).toContainText('权限生效')
   await techRecord.getByRole('button', { name: '执行授权' }).click()

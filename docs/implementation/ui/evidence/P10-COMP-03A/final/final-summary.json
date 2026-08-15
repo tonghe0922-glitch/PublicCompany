@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P10-COMP-03A",
+  "status": "SUBMITTED_FOR_INDEPENDENT_REVIEW",
+  "pre": {
+    "project_preflight_exit": 0,
+    "project_baseline_exit": 0,
+    "workspace_source_id": "A75B79B5A65782DF26CF9C3F58A0ECCB2A9CEE48B4E1F3CB7819FE787FEEB5B6",
+    "workspace_file_count": 1483,
+    "task_source_id": "76CC17082AC76CB1CB38C7BC7967CB39E36520E437A74D23757CCCF443C76B4B",
+    "planned_path_count": 23,
+    "planned_existing": 5,
+    "planned_missing": 18
+  },
+  "self_tests": {
+    "project_ui_access": 0,
+    "project_source": 0,
+    "package_ui": 0
+  },
+  "current_debt": {
+    "project_ui_access": {"exit": 1, "status": "FAIL", "findings": 190, "files": 26},
+    "project_source": {"exit": 1, "status": "FAIL", "findings": 340, "route_pages": 7, "actions": 46},
+    "package_ui": {"exit": 1, "status": "FAIL", "findings": 79, "files": 4}
+  },
+  "frontend": {
+    "targeted_exit": 0,
+    "lint_exit": 0,
+    "typecheck_exit": 0,
+    "unit_exit": 0,
+    "unit_files": 36,
+    "unit_tests": 198,
+    "build_exit": 0,
+    "build_portals": ["employee", "center", "admin"],
+    "build_warning": "existing approximately 2.080 MB chunk warning retained",
+    "knip_exit": 0
+  },
+  "representative_browser": {
+    "first_attempt": {
+      "fixture_ready": true,
+      "status": "WRAPPER_ABORTED_BEFORE_PLAYWRIGHT_RESULT",
+      "postgres_id": "ce11657d2ba102c21720b5018032f48dbf715d70ca98f47bc414ba0c8d6380d9",
+      "redis_id": "f0d3eca719599426a4d4fcf58130795c3e3395425066034cff90309eb9fe9e1f",
+      "cleanup_exact_ids_remaining": 0,
+      "listeners": 0,
+      "workspace_processes": 0
+    },
+    "fresh_rerun": {
+      "fixture_ready": true,
+      "playwright_exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "test_seconds": 13.5,
+      "total_seconds": 18.2,
+      "controlled_stop_exit": 0,
+      "forced_stop": false,
+      "postgres_id": "042bef640ded845b70b44a7109f1432db6871b5ea6a056ca10d3c29550771dc0",
+      "redis_id": "9b3ac6f037299c5bf7c388fdc85bf366e718eb711f3a5fe6b446dd02a5b4a9e8",
+      "cleanup_exact_ids_remaining": 0,
+      "listeners": 0,
+      "workspace_processes": 0
+    }
+  },
+  "post": {
+    "project_preflight_exit": 0,
+    "project_baseline_exit": 0,
+    "workspace_source_id": "222602D6659C7E9A9A027C63F9D0D3635BA2E2B01B5555B3C758070A807F33EA",
+    "workspace_file_count": 1500,
+    "task_source_id": "FE96B72DCA3B646DF9107ACE3D969D01B5E4777A88E7BDBB5F5EFDD6BB123C42",
+    "task_source_file_count": 22,
+    "planned_path_count": 23,
+    "evidence_metadata_id": "F61D6FB59B3DE62D7826FF79DC9C72D0CB013BC0D4218102A1A5230F7F97B5FC",
+    "evidence_metadata_file_count": 1,
+    "scoped": {"ui_task": 21, "concurrent_core": 1, "unrelated": 0, "evidence_metadata": 1},
+    "concurrent_core_paths": ["technical-platform/web/e2e/phase11-p015-live.spec.ts"],
+    "submitted_file_count": 23,
+    "submitted_mismatch_count": 0,
+    "report_sha256": "06822424CBE627745A5A9C6BAB100380D8B9D7A01A3977DD705637FE3F5CB270",
+    "report_bytes": 7718
+  }
+}

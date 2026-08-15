@@ -1,0 +1,17 @@
+﻿{
+    "before_process_count":  7,
+    "after_process_count":  7,
+    "same_process_ids":  true,
+    "before_listener_count":  3,
+    "after_listener_count":  3,
+    "same_listener_owners":  true,
+    "workspace_source_id":  "E70584931A0955420DD03444ABD90464DD62C17F5E63D6A96B6406C7EF6F7274",
+    "workspace_file_count":  1542,
+    "task_source_id":  "73BE1185147DF3C8E1852461A9D7E6918870A67BDC23E3B53C54731B1271C3EB",
+    "task_source_path_count":  32,
+    "task_existing":  5,
+    "task_missing":  27,
+    "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+    "metadata_count":  0,
+    "git_status":  "ABSENT"
+}

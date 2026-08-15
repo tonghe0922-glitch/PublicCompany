@@ -1,0 +1,209 @@
+﻿{
+    "checked_utc":  "2026-08-13T14:07:23.5236335Z",
+    "task_path_count":  33,
+    "task_after_id":  "0675F607C9E4E93C2A71D76281520CA22A8979E339FE1556128866CDAF6BDA0C",
+    "candidate_mismatch_count":  0,
+    "files":  [
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/p007-contracts.test.ts",
+                      "exists":  true,
+                      "sha256":  "54CFDE370010D328B8BC631C781D886F32D90C0EDD8CF3C6D1E97699565784B0",
+                      "bytes":  4025
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/index.ts",
+                      "exists":  true,
+                      "sha256":  "9E7EBD55D55D4DA0157C3CA593F0D1E6A0F9DF87320BD64F9F1E44D4407EADC2",
+                      "bytes":  491
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/p007-components.test.ts",
+                      "exists":  true,
+                      "sha256":  "48EF138A08507932BEB244D15CAEC4BA7C249EDA703B583C717D8DB70A4AE57F",
+                      "bytes":  9132
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/p007-service.test.ts",
+                      "exists":  true,
+                      "sha256":  "D918891349BBC5F1AC9189733EEAB9117ED846E19BF78953DA415C6C6F2B6686",
+                      "bytes":  8194
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/P007ScheduleRecordList.vue",
+                      "exists":  true,
+                      "sha256":  "F38B1CD2902FE2741859747E1AFA9C1BFDEF5A0B9DE9D9D23AA57C7EAE74D0E3",
+                      "bytes":  2071
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/P007ShiftCreateForm.vue",
+                      "exists":  true,
+                      "sha256":  "BE9BA9217654BD8684737F17531780CEF1623C8A3444816A69E61DD93DF6E71B",
+                      "bytes":  574
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/P007ShiftDetails.vue",
+                      "exists":  true,
+                      "sha256":  "646E1ACF4ECD1D50AF72CDFDAE692E64610327A8F6CABA0A875670E0B2BB12BB",
+                      "bytes":  1559
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/P007ScheduleActionPanel.vue",
+                      "exists":  true,
+                      "sha256":  "A9B9A491D512C3AF43DBB1397D81F8C564825A66A18E73329A579B50614CB999",
+                      "bytes":  5012
+                  },
+                  {
+                      "path":  "docs/implementation/ui/L0-L5_COVERAGE_MATRIX.md",
+                      "exists":  true,
+                      "sha256":  "CE4B97E51158A5D173ED63903A2C1D0336D475B986A7FAA6CBE3CBA0E7CFAC30",
+                      "bytes":  4210
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P007SchedulePage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "A5C1C9C7A49B49EA0ECBF05A37D383AB465D1875EA265839BA9E1EFA39A64874",
+                      "bytes":  6499
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P10-COMP-04_REPORT.md",
+                      "exists":  true,
+                      "sha256":  "6665FF6E3C10434FB889620640FB7D9380ED143874F5F5CEA9F25F11BCB8A198",
+                      "bytes":  8205
+                  },
+                  {
+                      "path":  "technical-platform/web/e2e/phase10-p006-live.spec.ts",
+                      "exists":  true,
+                      "sha256":  "17D4ECD34C4C679458D334D5D5FF1A1B29E00BA7864901872AE2F43219A496C6",
+                      "bytes":  10197
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P006MeetingPage.vue",
+                      "exists":  true,
+                      "sha256":  "BFCCCA2197FB6C948AB3F0C49D91598A1B6FC933DFE0D489394AE9C61A116FB0",
+                      "bytes":  5043
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/p007-page.test.ts",
+                      "exists":  true,
+                      "sha256":  "7C457A44C17388E6AD3415770FBD0378148C635A0F899261DE42A664F7F42C35",
+                      "bytes":  11605
+                  },
+                  {
+                      "path":  "docs/implementation/ui/page-component-plans/P006MeetingPage.ui-plan.json",
+                      "exists":  true,
+                      "sha256":  "E731E5DCD4CE6E2BC35F65BE6100D6174193DB6F3261C1F6D7B2FC198DB2E4D7",
+                      "bytes":  6072
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/pages/P007SchedulePage.vue",
+                      "exists":  true,
+                      "sha256":  "005E940BBE6200BCB76AE306D062A4E78A1134CE499FBE0BB176D840D95952AA",
+                      "bytes":  4570
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/useP007Schedule.ts",
+                      "exists":  true,
+                      "sha256":  "91555A89373A26E22B23EAFD3CBA84819000B9CEF126C262167BFB0A7EC48DFE",
+                      "bytes":  1626
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/P006MeetingRecordList.vue",
+                      "exists":  true,
+                      "sha256":  "9FE59CE02FEA75F35900F09BBE22F00FF6120CA28DF837A32AFB812B36694C9B",
+                      "bytes":  2017
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/P006MeetingCreateForm.vue",
+                      "exists":  true,
+                      "sha256":  "FFDA80E19C47E3F5CBC20A0BA8EE2BC9006C95E55728D9E0FE8EBB487BFF52C6",
+                      "bytes":  5548
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/P006MeetingEvidencePanel.vue",
+                      "exists":  true,
+                      "sha256":  "459E557C8BC56578820D4FD61D8257ADAAF04CE2A818F2BA2F86F6DADA6838C4",
+                      "bytes":  1319
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/P006MeetingActionPanel.vue",
+                      "exists":  true,
+                      "sha256":  "0F9210FA6FCB44BBA94B75B20B938C9588B6E9D8E4DD3C7828C629106F5996DA",
+                      "bytes":  4486
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/service.ts",
+                      "exists":  true,
+                      "sha256":  "AC97BDEA6AAF92EC935C122596D832C47BFF649F1F2C2E179065906887F7FC94",
+                      "bytes":  3255
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/contracts.ts",
+                      "exists":  true,
+                      "sha256":  "E72988D6FF0A476547E24C0CBBB5310BA7D5CE7DF53E03E44020ECA70295C20E",
+                      "bytes":  4570
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/useP006Meeting.ts",
+                      "exists":  true,
+                      "sha256":  "65F8CF200F507BA503A3AF2A66BF1241077CA31A2606F7D72FA4F85DF5F38AE0",
+                      "bytes":  2810
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/selectors.ts",
+                      "exists":  true,
+                      "sha256":  "D349ACB36605BDBEAB6B5C82D613ABF8D9B2F7E7BDDA154E8773AC57A45813B7",
+                      "bytes":  1540
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/contracts.ts",
+                      "exists":  true,
+                      "sha256":  "064C78FF31F49AFCD49B99E26AF9848ADB17BED20D697638BE274AFE666D8149",
+                      "bytes":  3134
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/p006-page.test.ts",
+                      "exists":  true,
+                      "sha256":  "ABE3C30FEFD090AD2B54387E5C334BD7746402C87EFFB51087470EEEE7CA0AC5",
+                      "bytes":  17760
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/selectors.ts",
+                      "exists":  true,
+                      "sha256":  "714DF4124B0CAE37B7EB41CC77906B9DF627B0ADDFA6DF38E314E85FA054E8EF",
+                      "bytes":  1365
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p007/service.ts",
+                      "exists":  true,
+                      "sha256":  "2BCE2D9891EEBA4CC08C3250606EFD5815331F088A263AB8433B4439F0F8A020",
+                      "bytes":  2876
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/p006-contracts.test.ts",
+                      "exists":  true,
+                      "sha256":  "6CCB0B0ABC8867EC45D795D4A10A4066AE538E0D3E3DBC311E027719F5127A11",
+                      "bytes":  2870
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/index.ts",
+                      "exists":  true,
+                      "sha256":  "9BBDC29D99C1B10DDA9A01EA1AE2676FFEFAEA40D88151EEF5C35D305A43318A",
+                      "bytes":  531
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/p006-components.test.ts",
+                      "exists":  true,
+                      "sha256":  "865DAC0A512CB270506CE5AB092C35C3675D3F34886E35A6E0F39213C5AA257E",
+                      "bytes":  15435
+                  },
+                  {
+                      "path":  "technical-platform/web/src/platform/processes/p006/p006-service.test.ts",
+                      "exists":  true,
+                      "sha256":  "FCA0709FB4145625BD7E65B806C41DD962C3C5B7A4E184E67D05552F96CD2BAE",
+                      "bytes":  8381
+                  }
+              ],
+    "mismatches":  [
+
+                   ]
+}

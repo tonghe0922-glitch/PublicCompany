@@ -1,0 +1,48 @@
+﻿{
+    "schema_version":  "1.0",
+    "kind":  "P10-COMP-07-post-authoritative-independent-verification",
+    "verified_at_utc":  "2026-08-13T22:11:49.8958047Z",
+    "baseline_script_status":  "NON_AUTHORITATIVE_EXIT9_OUTER1_POST_DATA_REQUIRES_INDEPENDENT_VERIFICATION",
+    "checks":  {
+                   "manifest_schema":  true,
+                   "planned_exact_set":  true,
+                   "planned_count":  true,
+                   "planned_unique":  true,
+                   "task_count":  true,
+                   "existing_count":  true,
+                   "missing_count":  true,
+                   "disk_mismatch_zero":  true,
+                   "candidate_planned":  true,
+                   "candidate_existing":  true,
+                   "candidate_missing":  true,
+                   "candidate_mismatch_zero":  true,
+                   "before_process_count":  true,
+                   "after_process_count":  true,
+                   "before_pid_exact":  true,
+                   "after_pid_exact":  true,
+                   "before_listener_exact":  true,
+                   "after_listener_exact":  true,
+                   "before_testcontainers_zero":  true,
+                   "after_testcontainers_zero":  true,
+                   "before_ryuk_zero":  true,
+                   "after_ryuk_zero":  true,
+                   "workspace_id_match":  true,
+                   "task_id_match":  true,
+                   "metadata_id_match":  true,
+                   "project_preflight_zero":  true,
+                   "git_absent":  true
+               },
+    "failed_checks":  [
+
+                      ],
+    "disk_mismatches":  [
+
+                        ],
+    "workspace_id":  "E56C7644CCA526E834EA70C97A9A477761C6F7935320E7A670DDA56D09783E19",
+    "workspace_count":  1641,
+    "task_id":  "32F40485AC85577E4E5961E8D24ADACC800EC7149647AF127F58C95A16FBD6BE",
+    "task_count":  13,
+    "metadata_id":  "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+    "metadata_count":  0,
+    "status":  "PASS"
+}

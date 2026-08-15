@@ -2,6 +2,7 @@ import { computed, onMounted, reactive, toRefs, watchEffect } from 'vue'
 import { usePortalSessionStore } from '../../../session'
 import type { PortalDefinition } from '../../portal-config'
 import { createProcessRecord, executeProcessAction, listProcessRecords } from '../process-client'
+import { processCommandActor } from '../process-command-journal'
 import type { ProcessState } from '../process-state'
 import { useProcessOperation } from '../use-process-operation'
 
@@ -11,9 +12,10 @@ export interface RewardCase {
   id: string; businessNo: string; currentNodeCode: string | null; status: string
   versionNo: number; subject: string; sourceFactKey: string; employeeEventType: string
   impactLevel: string; recommendedRewardLevel: string | null; approvedRewardLevel: string | null
-  impacts: Impact[]; receipts: unknown[]
+  impacts: Impact[]; receipts: unknown[]; availableActions: ServerAction[]
 }
-export interface P013Action { code: string; label: string; permission: string }
+interface ServerAction { code: string; labelCode: string; taskId: string | null; expectedVersion: number }
+export interface P013Action { code: string; label: string }
 type Session = ReturnType<typeof usePortalSessionStore>
 type Operations = ReturnType<typeof useProcessOperation>
 type Form = ReturnType<typeof createForm>
@@ -39,20 +41,17 @@ const receiptTypeOptions = [
   { value: 'FINANCE_BONUS', label: '财务奖金回执' },
   { value: 'HR_DEVELOPMENT', label: '人力发展回执' },
 ] as const
-const ACTIONS: Record<string, P013Action[]> = {
-  S01: [action('RECORD_CONTRIBUTION', '确认贡献事实', 'p013.reward.manage')],
-  S02: [action('VERIFY_EVIDENCE', '完成证据核验', 'p013.reward.manage')],
-  S03: [action('RECOMMEND_LEVEL', '提交奖励等级建议', 'p013.reward.review')],
-  S04: [action('APPROVE', '独立审批奖励等级', 'p013.reward.approve')],
-  S05: [action('CHECK_DUPLICATE', '独立复核重复奖励', 'p013.reward.review')],
-  S06: [action('RECORD_IMPACT', '登记影响指令', 'p013.reward.execute'), action('COMPLETE_IMPACTS', '完成影响指令登记', 'p013.reward.execute')],
-  S07: [action('CONFIRM_NOTICE', '员工确认奖励告知', 'p013.reward.read')],
-  S08: [action('RECORD_RECEIPT', '登记权威执行回执', 'p013.reward.execute'), action('COMPLETE_RECEIPTS', '完成全部回执核验', 'p013.reward.execute')],
-  S09: [action('ARCHIVE', '归档奖励案例', 'p013.reward.manage')],
+const ACTION_PRESENTATION: Record<string, P013Action> = {
+  RECORD_CONTRIBUTION: action('RECORD_CONTRIBUTION', '确认贡献事实'), VERIFY_EVIDENCE: action('VERIFY_EVIDENCE', '完成证据核验'),
+  RECOMMEND_LEVEL: action('RECOMMEND_LEVEL', '提交奖励等级建议'), APPROVE: action('APPROVE', '独立审批奖励等级'),
+  CHECK_DUPLICATE: action('CHECK_DUPLICATE', '独立复核重复奖励'), RECORD_IMPACT: action('RECORD_IMPACT', '登记影响指令'),
+  COMPLETE_IMPACTS: action('COMPLETE_IMPACTS', '完成影响指令登记'), CONFIRM_NOTICE: action('CONFIRM_NOTICE', '员工确认奖励告知'),
+  RECORD_RECEIPT: action('RECORD_RECEIPT', '登记权威执行回执'), COMPLETE_RECEIPTS: action('COMPLETE_RECEIPTS', '完成全部回执核验'),
+  ARCHIVE: action('ARCHIVE', '归档奖励案例'),
 }
 
-function action(code: string, label: string, permission: string): P013Action {
-  return { code, label, permission }
+function action(code: string, label: string): P013Action {
+  return { code, label }
 }
 function instant(value: string): string | null {
   return value ? new Date(value).toISOString() : null
@@ -116,10 +115,14 @@ function createLoad(context: Context) {
 function createCreate(context: Context, load: () => Promise<void>) {
   return async (): Promise<void> => {
     const body = createBody(context.form)
-    const result = await context.operations.runAction(
-      context.createKey,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: context.createKey,
+        recordLockKey: `P013:record:create:${context.props.portal.code}:${context.props.mode}`,
+        operationKey: 'P013:create', actor: processCommandActor(context.session), payload: body,
+      },
       request => createProcessRecord<RewardCase, typeof body>(
-        context.session, COLLECTION, 'p013-create', body, request,
+        context.session, COLLECTION, request.idempotencyKey, body, request,
       ),
       '奖励案例已创建。',
     )
@@ -130,21 +133,23 @@ function createPerform(context: Context, load: () => Promise<void>) {
   return async (item: RewardCase, candidate: P013Action): Promise<void> => {
     const key = `P013:action:${item.id}:${candidate.code}`
     const body = actionBody(context.form, item, candidate)
-    const result = await context.operations.runAction(
-      key,
+    const result = await context.operations.runCommand(
+      {
+        stateKey: key, recordLockKey: `P013:record:${item.id}`,
+        operationKey: `P013:record:${item.id}:${candidate.code}`,
+        actor: processCommandActor(context.session), payload: body,
+      },
       request => executeProcessAction<RewardCase, typeof body>(
         context.session, COLLECTION, item.id, candidate.code,
-        `p013-${candidate.code.toLowerCase()}`, body, request,
+        request.idempotencyKey, body, request,
       ),
       `${candidate.label}已完成。`,
     )
     if (result.ok) await load()
   }
 }
-function availableActions(context: Context, item: RewardCase): P013Action[] {
-  if (context.props.mode === 'tech' || !item.currentNodeCode) return []
-  return (ACTIONS[item.currentNodeCode] ?? [])
-    .filter(candidate => context.session.can(candidate.permission))
+function availableActions(item: RewardCase): P013Action[] {
+  return item.availableActions.flatMap(candidate => ACTION_PRESENTATION[candidate.code] ?? [])
 }
 
 export function useP013Reward(props: P013Props) {
@@ -168,8 +173,10 @@ export function useP013Reward(props: P013Props) {
     canCreate: computed(() => session.can('p013.reward.manage')),
     isTech: computed(() => props.mode === 'tech'), eventTypeOptions, impactLevelOptions,
     impactTypeOptions, receiptTypeOptions, load, create, perform,
-    actions: (item: RewardCase) => availableActions(context, item),
+    actions: (item: RewardCase) => availableActions(item),
     actionState: (item: RewardCase, candidate: P013Action): ProcessState =>
       operations.actionState(`P013:action:${item.id}:${candidate.code}`),
+    recordPending: (item: RewardCase) =>
+      operations.recordPending(processCommandActor(session), `P013:record:${item.id}`),
   }
 }

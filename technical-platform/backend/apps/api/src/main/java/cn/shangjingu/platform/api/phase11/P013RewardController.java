@@ -26,13 +26,165 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/processes/P013")
 public final class P013RewardController {
-    private static final String MANAGE="p013.reward.manage",READ="p013.reward.read",MONITOR="p013.reward.monitor";
-    private final RewardCaseService rewards;private final AuthorizationService authorization;private final JdbcSecurityAuditService audit;private final ObjectMapper mapper;
-    public P013RewardController(RewardCaseService rewards,AuthorizationService authorization,JdbcSecurityAuditService audit,ObjectMapper mapper){this.rewards=rewards;this.authorization=authorization;this.audit=audit;this.mapper=mapper;}
-    @PostMapping("/reward-cases") public RewardCaseService.RewardCase create(@AuthenticationPrincipal SessionPrincipal p,@RequestHeader("Idempotency-Key")String key,@RequestBody RewardCaseService.CreateCommand c){require(authorization.authorizeAction(p.context(),MANAGE));AuthorizationTarget target=new AuthorizationTarget(p.context().tenantId(),c.ownerEmployeeId(),p.context().orgId(),null,c.ownerEmployeeId());require(authorization.authorizeData(p.context(),MANAGE,target));audit.recordOperation(p.context(),"P013_CREATE_ATTEMPT","reward.reward_case",null);var r=rewards.create(context(p),key,hash(c),c);audit.recordOperation(p.context(),"P013_CREATED","reward.reward_case",r.id());return view(p,r);}
-    @GetMapping("/reward-cases/{id}") public RewardCaseService.RewardCase get(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id){String permission=readPermission(p);var v=rewards.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P013 reward case not found"));require(authorization.authorizeData(p.context(),permission,target(v)));audit.recordOperation(p.context(),"P013_READ","reward.reward_case",id);return view(p,v);}
-    @GetMapping("/reward-cases") public List<RewardCaseService.RewardCase> list(@AuthenticationPrincipal SessionPrincipal p){String permission=readPermission(p);var values=rewards.list(context(p)).stream().filter(v->authorization.authorizeData(p.context(),permission,target(v)).allowed()).map(v->view(p,v)).toList();audit.recordOperation(p.context(),"P013_LIST","reward.reward_case",null);return values;}
-    @PostMapping("/reward-cases/{id}/actions/{actionCode}") public RewardCaseService.RewardCase act(@AuthenticationPrincipal SessionPrincipal p,@PathVariable UUID id,@PathVariable String actionCode,@RequestHeader("Idempotency-Key")String key,@RequestBody RewardCaseService.ActionCommand c){var current=rewards.find(context(p),id).orElseThrow(()->new IllegalArgumentException("P013 reward case not found"));String action=safe(actionCode),permission=rewards.permissionForAction(current,action);require(authorization.authorizeAction(p.context(),permission));require(authorization.authorizeData(p.context(),permission,target(current)));audit.recordOperation(p.context(),"P013_ACTION_ATTEMPT_"+action,"reward.reward_case",id);var r=rewards.act(context(p),id,action,key,hash(Map.of("actionCode",action,"body",c)),c);audit.recordOperation(p.context(),"P013_ACTION_"+action,"reward.reward_case",id);return view(p,r);}
-    private RewardCaseService.RewardCase view(SessionPrincipal p,RewardCaseService.RewardCase v){return authorization.authorizeAction(p.context(),MONITOR).allowed()&&!authorization.authorizeAction(p.context(),READ).allowed()?v.metadataOnly():v;}private String readPermission(SessionPrincipal p){if(authorization.authorizeAction(p.context(),READ).allowed())return READ;require(authorization.authorizeAction(p.context(),MONITOR));return MONITOR;}
-    private static AuthorizationTarget target(RewardCaseService.RewardCase v){return new AuthorizationTarget(v.tenantId(),v.ownerEmployeeId(),v.ownerCenterId(),null,v.ownerEmployeeId());}private static DatabaseSecurityContext context(SessionPrincipal p){var s=p.context();return new DatabaseSecurityContext(s.tenantId(),s.userId(),s.identityId(),s.employeeId(),s.appointmentId(),s.orgId(),s.positionId());}private static void require(AuthorizationDecision d){if(!d.allowed())throw new AccessDeniedException("P013 authorization denied: "+d.reason());}private static String safe(String v){if(v==null)return"INVALID";String n=v.trim().toUpperCase();return n.matches("[A-Z0-9_]{1,32}")?n:"INVALID";}private String hash(Object v){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));}catch(Exception e){throw new IllegalArgumentException("P013 request cannot be hashed",e);}}
+
+  private static final String MANAGE = "p013.reward.manage",
+      READ = "p013.reward.read",
+      MONITOR = "p013.reward.monitor";
+
+  private final RewardCaseService rewards;
+
+  private final Phase11AvailableActionProjectionService projections;
+
+  private final AuthorizationService authorization;
+
+  private final JdbcSecurityAuditService audit;
+
+  private final ObjectMapper mapper;
+
+  public P013RewardController(
+      RewardCaseService rewards,
+      Phase11AvailableActionProjectionService projections,
+      AuthorizationService authorization,
+      JdbcSecurityAuditService audit,
+      ObjectMapper mapper) {
+    this.rewards = rewards;
+    this.projections = projections;
+    this.authorization = authorization;
+    this.audit = audit;
+    this.mapper = mapper;
+  }
+
+  @PostMapping("/reward-cases")
+  public Phase11AvailableActionProjectionService.RecordView<RewardCaseService.RewardCase> create(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody RewardCaseService.CreateCommand c) {
+    require(authorization.authorizeAction(p.context(), MANAGE));
+    AuthorizationTarget target =
+        new AuthorizationTarget(
+            p.context().tenantId(),
+            c.ownerEmployeeId(),
+            p.context().orgId(),
+            null,
+            c.ownerEmployeeId());
+    require(authorization.authorizeData(p.context(), MANAGE, target));
+    audit.recordOperationOnce(p.context(), "P013_CREATE_ATTEMPT", "reward.reward_case", null, key);
+    var r = rewards.create(context(p), key, hash(c), c);
+    audit.recordOperationOnce(p.context(), "P013_CREATED", "reward.reward_case", r.id(), key);
+    return view(p, r);
+  }
+
+  @GetMapping("/reward-cases/{id}")
+  public Phase11AvailableActionProjectionService.RecordView<RewardCaseService.RewardCase> get(
+      @AuthenticationPrincipal SessionPrincipal p, @PathVariable UUID id) {
+    String permission = readPermission(p);
+    var v =
+        rewards
+            .find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P013 reward case not found"));
+    require(authorization.authorizeData(p.context(), permission, target(v)));
+    audit.recordOperation(p.context(), "P013_READ", "reward.reward_case", id);
+    return view(p, v);
+  }
+
+  @GetMapping("/reward-cases")
+  public List<Phase11AvailableActionProjectionService.RecordView<RewardCaseService.RewardCase>>
+      list(@AuthenticationPrincipal SessionPrincipal p) {
+    String permission = readPermission(p);
+    var values =
+        rewards.list(context(p)).stream()
+            .filter(v -> authorization.authorizeData(p.context(), permission, target(v)).allowed())
+            .map(v -> view(p, v))
+            .toList();
+    audit.recordOperation(p.context(), "P013_LIST", "reward.reward_case", null);
+    return values;
+  }
+
+  @PostMapping("/reward-cases/{id}/actions/{actionCode}")
+  public Phase11AvailableActionProjectionService.RecordView<RewardCaseService.RewardCase> act(
+      @AuthenticationPrincipal SessionPrincipal p,
+      @PathVariable UUID id,
+      @PathVariable String actionCode,
+      @RequestHeader("Idempotency-Key") String key,
+      @RequestBody RewardCaseService.ActionCommand c) {
+    var current =
+        rewards
+            .find(context(p), id)
+            .orElseThrow(() -> new IllegalArgumentException("P013 reward case not found"));
+    String action = safe(actionCode), permission = rewards.permissionForAction(current, action);
+    require(authorization.authorizeAction(p.context(), permission));
+    require(authorization.authorizeData(p.context(), permission, target(current)));
+    audit.recordOperationOnce(
+        p.context(), "P013_ACTION_ATTEMPT_" + action, "reward.reward_case", id, key);
+    var r =
+        rewards.act(context(p), id, action, key, hash(Map.of("actionCode", action, "body", c)), c);
+    audit.recordOperationOnce(p.context(), "P013_ACTION_" + action, "reward.reward_case", id, key);
+    return view(p, r);
+  }
+
+  private Phase11AvailableActionProjectionService.RecordView<RewardCaseService.RewardCase> view(
+      SessionPrincipal p, RewardCaseService.RewardCase v) {
+    boolean monitorOnly =
+        authorization.authorizeAction(p.context(), MONITOR).allowed()
+            && !authorization.authorizeAction(p.context(), READ).allowed();
+    var record = monitorOnly ? v.metadataOnly() : v;
+    return projections.project(
+        p,
+        record,
+        v.workflowInstanceId(),
+        v.versionNo(),
+        () -> rewards.availableActionCodes(context(p), v),
+        code -> false,
+        code -> rewards.permissionForAction(v, code),
+        target(v),
+        monitorOnly);
+  }
+
+  private String readPermission(SessionPrincipal p) {
+    if (authorization.authorizeAction(p.context(), READ).allowed()) {
+      return READ;
+    }
+    require(authorization.authorizeAction(p.context(), MONITOR));
+    return MONITOR;
+  }
+
+  private static AuthorizationTarget target(RewardCaseService.RewardCase v) {
+    return new AuthorizationTarget(
+        v.tenantId(), v.ownerEmployeeId(), v.ownerCenterId(), null, v.ownerEmployeeId());
+  }
+
+  private static DatabaseSecurityContext context(SessionPrincipal p) {
+    var s = p.context();
+    return new DatabaseSecurityContext(
+        s.tenantId(),
+        s.userId(),
+        s.identityId(),
+        s.employeeId(),
+        s.appointmentId(),
+        s.orgId(),
+        s.positionId());
+  }
+
+  private static void require(AuthorizationDecision d) {
+    if (!d.allowed()) {
+      throw new AccessDeniedException("P013 authorization denied: " + d.reason());
+    }
+  }
+
+  private static String safe(String v) {
+    if (v == null) {
+      return "INVALID";
+    }
+    String n = v.trim().toUpperCase();
+    return n.matches("[A-Z0-9_]{1,32}") ? n : "INVALID";
+  }
+
+  private String hash(Object v) {
+    try {
+      return HexFormat.of()
+          .formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(v)));
+    } catch (Exception e) {
+      throw new IllegalArgumentException("P013 request cannot be hashed", e);
+    }
+  }
 }

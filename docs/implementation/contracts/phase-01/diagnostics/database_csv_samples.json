@@ -1,0 +1,922 @@
+[
+  {
+    "path": "/home/runner/work/NEWSTART/NEWSTART/Knowledge Base/03 数据库需求规则/02_数据字典/03_全量表清单.csv",
+    "encoding": "utf-8-sig",
+    "rows": [
+      {
+        "row": 1,
+        "values": [
+          "数据库",
+          "Schema",
+          "表名",
+          "表中文名",
+          "表类型",
+          "说明",
+          "关联流程",
+          "分区策略",
+          "保留策略",
+          "写入来源",
+          "不可变",
+          "字段数"
+        ]
+      },
+      {
+        "row": 2,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "承载大型活动的稳定业务事实；流程动作、动态字段和附件分别落公共子表",
+          "P049",
+          "不分区",
+          "按法规与制度",
+          "业务服务",
+          "否",
+          "41"
+        ]
+      },
+      {
+        "row": 3,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event_item",
+          "大型活动明细项",
+          "子表",
+          "按field_code承载：actual_metrics、after_snapshot、before_snapshot",
+          "P049",
+          "不分区",
+          "与主表一致",
+          "业务服务",
+          "否",
+          "21"
+        ]
+      },
+      {
+        "row": 4,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "official_document",
+          "正式公文主表",
+          "主表",
+          "承载正式公文的稳定业务事实；流程动作、动态字段和附件分别落公共子表",
+          "P047",
+          "不分区",
+          "按法规与制度",
+          "业务服务",
+          "否",
+          "36"
+        ]
+      },
+      {
+        "row": 5,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "official_document_item",
+          "正式公文明细项",
+          "子表",
+          "按field_code承载：action_items、recipient_scope",
+          "P047",
+          "不分区",
+          "与主表一致",
+          "业务服务",
+          "否",
+          "21"
+        ]
+      },
+      {
+        "row": 6,
+        "values": [
+          "sjg_dw",
+          "analytics",
+          "dim_date",
+          "日期维度",
+          "维度表",
+          "日期维度",
+          "",
+          "不分区",
+          "长期保留",
+          "CDC/ETL",
+          "否",
+          "7"
+        ]
+      },
+      {
+        "row": 7,
+        "values": [
+          "sjg_dw",
+          "analytics",
+          "dim_employee",
+          "员工维度",
+          "维度表",
+          "员工维度",
+          "",
+          "不分区",
+          "长期保留",
+          "CDC/ETL",
+          "否",
+          "9"
+        ]
+      },
+      {
+        "row": 8,
+        "values": [
+          "sjg_dw",
+          "analytics",
+          "dim_org",
+          "组织维度",
+          "维度表",
+          "组织维度",
+          "",
+          "不分区",
+          "长期保留",
+          "CDC/ETL",
+          "否",
+          "8"
+        ]
+      },
+      {
+        "row": 9,
+        "values": [
+          "sjg_dw",
+          "analytics",
+          "dim_process",
+          "流程维度",
+          "维度表",
+          "流程维度",
+          "",
+          "不分区",
+          "长期保留",
+          "CDC/ETL",
+          "否",
+          "5"
+        ]
+      },
+      {
+        "row": 10,
+        "values": [
+          "sjg_dw",
+          "analytics",
+          "fact_finance",
+          "财务事实表",
+          "事实表",
+          "财务事实表",
+          "",
+          "事实表按date_key月分区",
+          "长期保留",
+          "CDC/ETL",
+          "否",
+          "10"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/runner/work/NEWSTART/NEWSTART/Knowledge Base/03 数据库需求规则/02_数据字典/04_全量字段字典.csv",
+    "encoding": "utf-8-sig",
+    "rows": [
+      {
+        "row": 1,
+        "values": [
+          "数据库",
+          "Schema",
+          "表名",
+          "表中文名",
+          "表类型",
+          "字段序号",
+          "字段名",
+          "字段中文名",
+          "PostgreSQL类型",
+          "允许空",
+          "默认值",
+          "主键",
+          "唯一",
+          "外键",
+          "敏感级别",
+          "业务/校验规则",
+          "字段来源",
+          "关联流程"
+        ]
+      },
+      {
+        "row": 2,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "1",
+          "id",
+          "主键ID",
+          "uuid",
+          "否",
+          "gen_random_uuid()",
+          "是",
+          "否",
+          "",
+          "P1-内部",
+          "",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 3,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "2",
+          "tenant_id",
+          "租户ID",
+          "uuid",
+          "否",
+          "",
+          "否",
+          "否",
+          "core.tenant.id",
+          "P1-内部",
+          "所有业务唯一键必须包含tenant_id",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 4,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "3",
+          "business_no",
+          "业务单号",
+          "varchar(64)",
+          "否",
+          "",
+          "否",
+          "是",
+          "",
+          "P1-内部",
+          "租户内唯一；由core.sequence_rule生成",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 5,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "4",
+          "workflow_instance_id",
+          "流程实例ID",
+          "uuid",
+          "是",
+          "",
+          "否",
+          "否",
+          "workflow.wf_instance.id",
+          "P1-内部",
+          "",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 6,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "5",
+          "status",
+          "业务状态",
+          "varchar(32)",
+          "否",
+          "'DRAFT'",
+          "否",
+          "否",
+          "",
+          "P1-内部",
+          "仅由状态机合法迁移",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 7,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "6",
+          "version_no",
+          "乐观锁版本",
+          "integer",
+          "否",
+          "0",
+          "否",
+          "否",
+          "",
+          "P1-内部",
+          "更新时version_no+1，冲突则拒绝",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 8,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "7",
+          "created_by",
+          "创建人",
+          "uuid",
+          "是",
+          "",
+          "否",
+          "否",
+          "org.employee.id",
+          "P1-内部",
+          "",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 9,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "8",
+          "created_at",
+          "创建时间",
+          "timestamptz",
+          "否",
+          "now()",
+          "否",
+          "否",
+          "",
+          "P1-内部",
+          "",
+          "设计字段",
+          "P049"
+        ]
+      },
+      {
+        "row": 10,
+        "values": [
+          "sjg_oms",
+          "administration",
+          "large_event",
+          "大型活动主表",
+          "主表",
+          "9",
+          "updated_by",
+          "更新人",
+          "uuid",
+          "是",
+          "",
+          "否",
+          "否",
+          "org.employee.id",
+          "P1-内部",
+          "",
+          "设计字段",
+          "P049"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/runner/work/NEWSTART/NEWSTART/Knowledge Base/03 数据库需求规则/02_数据字典/07_流程落表映射.csv",
+    "encoding": "utf-8-sig",
+    "rows": [
+      {
+        "row": 1,
+        "values": [
+          "process_code",
+          "process_name",
+          "business_section",
+          "module",
+          "source_folder",
+          "database",
+          "schema",
+          "master_table",
+          "detail_table",
+          "workflow_tables",
+          "attachment_table",
+          "audit_database",
+          "analytics_subject",
+          "mapping_rule"
+        ]
+      },
+      {
+        "row": 2,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "iam",
+          "iam.login_session",
+          "iam.login_session_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "身份权限",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 3,
+        "values": [
+          "P002",
+          "权限申请、复核与回收",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "iam",
+          "iam.permission_request",
+          "iam.permission_request_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "身份权限",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 4,
+        "values": [
+          "P003",
+          "个人资料变更",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "hr",
+          "hr.employee_profile_change",
+          "hr.employee_profile_change_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "人力资源",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 5,
+        "values": [
+          "P004",
+          "通用申请与审批",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "workflow",
+          "workflow.generic_request",
+          "",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "流程内核",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 6,
+        "values": [
+          "P005",
+          "制度、通知与执行回执",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "collaboration",
+          "collaboration.notice",
+          "collaboration.notice_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "协同办公",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 7,
+        "values": [
+          "P006",
+          "会议与行动项",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "collaboration",
+          "collaboration.meeting",
+          "collaboration.meeting_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "协同办公",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 8,
+        "values": [
+          "P007",
+          "排班与班次调整",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "attendance",
+          "attendance.shift_change_request",
+          "attendance.shift_change_request_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "考勤排班",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 9,
+        "values": [
+          "P008",
+          "请假与考勤",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "attendance",
+          "attendance.leave_request",
+          "attendance.leave_request_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "考勤排班",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      },
+      {
+        "row": 10,
+        "values": [
+          "P009",
+          "加班与调休",
+          "平台公共能力",
+          "全员公共能力",
+          "01_平台公共能力",
+          "sjg_oms",
+          "attendance",
+          "attendance.overtime_request",
+          "attendance.overtime_request_item",
+          "workflow.wf_instance / wf_task / wf_action_log / wf_submission",
+          "document.attachment_link",
+          "sjg_audit",
+          "考勤排班",
+          "稳定标量落领域主表；重复项落明细表；人员/组织关联落relation；附件落attachment_link；配置/低频动态值落wf_submission_value"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/runner/work/NEWSTART/NEWSTART/Knowledge Base/03 数据库需求规则/04_初始化数据/01_process_catalog.csv",
+    "encoding": "utf-8-sig",
+    "rows": [
+      {
+        "row": 1,
+        "values": [
+          "tenant_code",
+          "process_code",
+          "process_name",
+          "business_section",
+          "module",
+          "owner_schema",
+          "owner_table",
+          "enabled"
+        ]
+      },
+      {
+        "row": 2,
+        "values": [
+          "SJG",
+          "P001",
+          "统一登录与多岗位身份切换",
+          "平台公共能力",
+          "全员公共能力",
+          "iam",
+          "login_session",
+          "true"
+        ]
+      },
+      {
+        "row": 3,
+        "values": [
+          "SJG",
+          "P002",
+          "权限申请、复核与回收",
+          "平台公共能力",
+          "全员公共能力",
+          "iam",
+          "permission_request",
+          "true"
+        ]
+      },
+      {
+        "row": 4,
+        "values": [
+          "SJG",
+          "P003",
+          "个人资料变更",
+          "平台公共能力",
+          "全员公共能力",
+          "hr",
+          "employee_profile_change",
+          "true"
+        ]
+      },
+      {
+        "row": 5,
+        "values": [
+          "SJG",
+          "P004",
+          "通用申请与审批",
+          "平台公共能力",
+          "全员公共能力",
+          "workflow",
+          "generic_request",
+          "true"
+        ]
+      },
+      {
+        "row": 6,
+        "values": [
+          "SJG",
+          "P005",
+          "制度、通知与执行回执",
+          "平台公共能力",
+          "全员公共能力",
+          "collaboration",
+          "notice",
+          "true"
+        ]
+      },
+      {
+        "row": 7,
+        "values": [
+          "SJG",
+          "P006",
+          "会议与行动项",
+          "平台公共能力",
+          "全员公共能力",
+          "collaboration",
+          "meeting",
+          "true"
+        ]
+      },
+      {
+        "row": 8,
+        "values": [
+          "SJG",
+          "P007",
+          "排班与班次调整",
+          "平台公共能力",
+          "全员公共能力",
+          "attendance",
+          "shift_change_request",
+          "true"
+        ]
+      },
+      {
+        "row": 9,
+        "values": [
+          "SJG",
+          "P008",
+          "请假与考勤",
+          "平台公共能力",
+          "全员公共能力",
+          "attendance",
+          "leave_request",
+          "true"
+        ]
+      },
+      {
+        "row": 10,
+        "values": [
+          "SJG",
+          "P009",
+          "加班与调休",
+          "平台公共能力",
+          "全员公共能力",
+          "attendance",
+          "overtime_request",
+          "true"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/runner/work/NEWSTART/NEWSTART/Knowledge Base/03 数据库需求规则/04_初始化数据/04_interface_catalog.csv",
+    "encoding": "utf-8-sig",
+    "rows": [
+      {
+        "row": 1,
+        "values": [
+          "process_code",
+          "process_name",
+          "endpoint",
+          "interface_code",
+          "external_system",
+          "purpose",
+          "interaction",
+          "key_data",
+          "idempotency_key",
+          "retry_policy",
+          "compensation",
+          "audit"
+        ]
+      },
+      {
+        "row": 2,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I01",
+          "统一身份与MFA",
+          "认证、任职身份、二次认证",
+          "同步调用",
+          "用户ID/身份ID/认证级别",
+          "P001-01-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "超时拒绝高风险操作",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 3,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I02",
+          "组织与员工主数据",
+          "中心、部门、岗位、员工关系",
+          "同步查询+事件订阅",
+          "组织ID/员工ID/有效期",
+          "P001-02-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "缓存降级；变更事件补偿",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 4,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I03",
+          "流程任务中心",
+          "实例、任务、状态、待办",
+          "内部事务+消息",
+          "实例号/任务号/状态",
+          "P001-03-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "幂等重试；死信队列",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 5,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I04",
+          "消息通知中心",
+          "站内信、短信、邮件、企业微信",
+          "异步消息",
+          "模板变量/接收人/业务链接",
+          "P001-04-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "重试3次；失败告警",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 6,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I05",
+          "文件与电子证据",
+          "附件、哈希、水印、短时下载",
+          "对象存储+签名URL",
+          "文件ID/哈希/敏感级别",
+          "P001-05-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "病毒隔离；链接过期",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 7,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I06",
+          "审计日志平台",
+          "操作、前后值、接口请求ID",
+          "异步不可篡改日志",
+          "操作者/身份/时间/设备/IP",
+          "P001-06-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "关键审计失败阻断",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 8,
+        "values": [
+          "P001",
+          "统一登录与多岗位身份切换",
+          "员工端",
+          "I07",
+          "人力资源与考勤",
+          "员工、编制、合同、假勤、排班、绩效",
+          "API+事件",
+          "员工ID/岗位/时间/分数",
+          "P001-07-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "对账补偿；差异工单",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 9,
+        "values": [
+          "P002",
+          "权限申请、复核与回收",
+          "员工端",
+          "I01",
+          "统一身份与MFA",
+          "认证、任职身份、二次认证",
+          "同步调用",
+          "用户ID/身份ID/认证级别",
+          "P002-01-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "超时拒绝高风险操作",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      },
+      {
+        "row": 10,
+        "values": [
+          "P002",
+          "权限申请、复核与回收",
+          "员工端",
+          "I02",
+          "组织与员工主数据",
+          "中心、部门、岗位、员工关系",
+          "同步查询+事件订阅",
+          "组织ID/员工ID/有效期",
+          "P002-02-{业务主键}",
+          "指数退避3次；超限转死信/人工",
+          "缓存降级；变更事件补偿",
+          "请求ID、响应码、耗时、摘要、重试和最终结果"
+        ]
+      }
+    ]
+  }
+]

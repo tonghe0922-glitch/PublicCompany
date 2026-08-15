@@ -1,0 +1,15 @@
+﻿{
+    "checked_utc":  "2026-08-13T11:15:17.7690814Z",
+    "old_runtime_ids":  [
+                            35248,
+                            43248,
+                            44872,
+                            41392,
+                            36432,
+                            15196,
+                            40796
+                        ],
+    "fresh_listener_count":  0,
+    "running_testcontainers":  0,
+    "ryuk":  0
+}
