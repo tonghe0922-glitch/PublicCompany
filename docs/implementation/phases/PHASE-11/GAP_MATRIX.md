@@ -37,15 +37,15 @@
 - 现有服务使用本地顺序状态机，需要确认是否接入 canonical workflow/task/form/outbox；
 - 没有员工端、中心端、技术端独立业务页面和字段投影；
 - 没有按 PHASE-11 来源验证资格、隐私授权、发放执行、员工确认、对账和归档全链路；
-- 没有三端权限负向、幂等、并发旧版本、真实 PostgreSQL/Redis/浏览器闭环证据［
+- 没有三端权限负向、幂等、并发旧版本、真实 PostgreSQL/Redis/浏览器闭环证据；
 - 不允许创建第二张福利主表或第二套并行 P016 状态事实。
 
 ## 4. 准备阶段完成条件
 
 - `IMPACT_MATRIX`、`GAP_MATRIX`、来源合同、页面候选和实现探针提交；
-- MASTER_PROGRESS=PHASE-11 IN_PROGRESS，MASTER_PAGE_CATALOG 当��阶段同步；
-- Preparation Gate 最终 SHA 绿色［
-- P011 仍为 C0_NOT_FROZEN，P012–P016 不被伪标施工完成；
+- MASTER_PROGRESS=PHASE-11 IN_PROGRESS，MASTER_PAGE_CATALOG 当前阶段同步；
+- Preparation Gate 最终 SHA 绿色；
+- P011 仍为 C0_GATE_PASS / NOT_IMPLEMENTED，P012–P016 不被伪标施工完成；
 - 生产目录相对 PHASE-10 基线无改动；
 - P017+ 保持锁定。
 
