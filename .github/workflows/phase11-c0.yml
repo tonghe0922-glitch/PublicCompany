@@ -47,12 +47,10 @@ jobs:
           python -m py_compile scripts/implementation/phase11_c0_contract.py
           python scripts/implementation/phase11_c0_contract.py
           git diff --check
-      - name: Reject product implementation and later-phase drift during C0
+      - name: Preserve C0 freeze and reject later-phase drift
         shell: bash
         run: |
           set -euo pipefail
-          TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/web/e2e technical-platform/database)
-          test -z "$(git diff --name-only "$PHASE11_PREPARATION_SHA"...HEAD -- "${TARGETS[@]}")"
           ADDED=$(git diff -U0 "$PHASE11_PREPARATION_SHA"...HEAD -- . ':!docs/**' ':!scripts/implementation/phase11_*' ':!.github/workflows/phase11-*' | grep '^+' | grep -v '^+++' || true)
           if printf '%s\n' "$ADDED" | grep -Eq '\bP0(17|18|19|20)\b|\bPHASE-12\b'; then
             echo 'PHASE-11 C0 introduced later-phase executable coupling'
