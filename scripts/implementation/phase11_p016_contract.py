@@ -113,11 +113,13 @@ for token in (
 
 workspace = read("technical-platform/web/src/platform/phase11/p016/P016CareWorkspace.vue")
 for token in (
-    "/api/v1/processes/P016/care-cases", "REGISTER_CARE_CASE", "VERIFY_ELIGIBILITY",
+    "/api/v1/processes/P016/care-cases", "p016.care.create", "VERIFY_ELIGIBILITY",
     "AUTHORIZE_PRIVACY", "APPROVE_CARE", "EXECUTE_BENEFIT", "CONFIRM_RECEIPT", "RECONCILE", "ARCHIVE",
 ):
     if token not in workspace:
         raise SystemExit(f"P016 web closed loop missing: {token}")
+if "REGISTER_CARE_CASE" in workspace:
+    raise SystemExit("P016 create must remain server-owned and must not be exposed as a second client action")
 if re.search(r"localStorage|mock.*P016|requestedStatus|targetStatus", workspace, re.I):
     raise SystemExit("P016 web contains forbidden fake/target-state behavior")
 
