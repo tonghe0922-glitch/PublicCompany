@@ -4,11 +4,11 @@
 > Construction branch: `agent/phase-11-performance-growth-welfare`
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction state: `PHASE-11 = IN_PROGRESS / P016_CONSTRUCTION_AUTHORIZED`
-> Current legal checkpoint: `P016 = NOT_STARTED_CHECKPOINT / AUTHORIZED / CONSTRUCTION`
+> Current construction state: `PHASE-11 = IN_PROGRESS / READY_FOR_FULL_GATE`
+> Current legal checkpoint: `PHASE-11 Full Construction Gate = NOT_STARTED / AUTHORIZED`
 > Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
-根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理、P012 晋升任职、P013 奖励与认可、P014 纪律责任与申诉、P015 成长积分与荣誉积分均已通过 Checkpoint Gate 并关闭；P016 福利关怀与台账既有 PHASE-05 内核复用评审已通过，当前唯一合法施工点为 P016 production construction，必须复用 `welfare.care_case` 与既有平台内核，不得另造平行真相源。P017+ 保持锁定。
+根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理、P012 晋升任职、P013 奖励与认可、P014 纪律责任与申诉、P015 成长积分与荣誉积分、P016 福利关怀与台账均已通过各自 Checkpoint Gate 并关闭；当前唯一合法施工点为 PHASE-11 Full Construction Gate 阶段总封板。P017+ 保持锁定，Full Construction Gate 全绿前不得启动 PHASE-12。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -23,7 +23,7 @@
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS |
 | PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；封板后质量整改 HEAD `79edc420...` CI SUCCESS |
-| PHASE-11 | IN_PROGRESS | P011–P016；P011–P015 已关闭；`P016_CONSTRUCTION_AUTHORIZED` |
+| PHASE-11 | IN_PROGRESS | P011–P016 `CHECKPOINT_PASS / CLOSED`；`READY_FOR_FULL_GATE` |
 | PHASE-12 | NOT_STARTED | P017–P020；LOCKED |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
@@ -125,7 +125,10 @@ P015 final checkpoint = run 31932006960 / SUCCESS
 P016 reuse review foundation HEAD = 48d673472f943218c14cca54d174df73e3c8454e
 P016 accepted reuse review candidate = 6abb1a83fd09b38ec4e6c1c2dde9ed3d73dca7d4
 P016 reuse review gate = run 31933487876 / SUCCESS
-P016 = NOT_STARTED_CHECKPOINT / CONSTRUCTION_AUTHORIZED / REUSE_REVIEW_PASS
+P016 = CHECKPOINT_PASS / CLOSED / run 31934614405
+P016 accepted implementation candidate = 13ae7492f72844c4e72bf35627f17be395c66cd0
+P016 final checkpoint = run 31934614405 / SUCCESS
+PHASE-11 Full Construction Gate = NOT_STARTED / AUTHORIZED
 P017-P020 = PHASE-12 / NOT_STARTED / LOCKED
 ```
 
@@ -159,5 +162,6 @@ P012 implementation = CHECKPOINT_PASS / CLOSED / run 31924632658
 P013 implementation = CHECKPOINT_PASS / CLOSED / run 31928350534
 P014 implementation = CHECKPOINT_PASS / CLOSED / run 31930909868
 P015 implementation = CHECKPOINT_PASS / CLOSED / run 31932006960
-P016 implementation = NOT_STARTED / CONSTRUCTION_AUTHORIZED / REUSE_REVIEW_PASS
+P016 implementation = CHECKPOINT_PASS / CLOSED / run 31934614405
+PHASE-11 final gate = NOT_STARTED / AUTHORIZED
 ```
