@@ -43,10 +43,7 @@ for token in (
 ):
     if token not in db_contract:
         raise SystemExit(f"P015 database contract drifted: {token}")
-for token in (
-    "积分事实 append-only",
-    "ADJUST/REVERSAL",
-):
+for token in ("积分事实 append-only", "ADJUST/REVERSAL"):
     if token not in decisions:
         raise SystemExit(f"P015 C0 decision missing: {token}")
 
@@ -67,6 +64,10 @@ required = {
         "phase11-p015-c0-v1", "CTR-P015-F01", "trg_p015_point_transaction_immutable",
         "uq_p015_source_post", "uq_p015_single_reversal", "point_rule_version", "point_source_guard",
         "point_balance_snapshot",
+    ],
+    "technical-platform/web/src/platform/phase11/p015/P015PointsWorkspace.vue": [
+        "/api/v1/processes/P015/points", "expectedVersion", "idempotencyKey", "ADJUST_OR_REVERSE",
+        "RECALCULATE_BALANCE", "portal === 'center'",
     ],
 }
 for path, tokens in required.items():
@@ -101,14 +102,27 @@ if p015_http.get("permissions") != expected_permissions:
     raise SystemExit(f"P015 permission contract drifted: {p015_http.get('permissions')}")
 
 page_text = json.dumps(pages, ensure_ascii=False)
-for route in ("/employee/08/06/04", "/center/10/09/06", "/tech/06/06/03"):
+route_spec = read("technical-platform/web/src/router/p015-route-specs.ts")
+router = read("technical-platform/web/src/router/portal-router.ts")
+for route, name in (
+    ("/employee/08/06/04", "p015-points-self-ledger"),
+    ("/center/10/09/06", "p015-points-management"),
+    ("/tech/06/06/03", "p015-points-monitor"),
+):
     if route not in page_text:
         raise SystemExit(f"P015 page route is not frozen: {route}")
+    if route not in route_spec or name not in route_spec:
+        raise SystemExit(f"P015 executable route binding missing: {route} -> {name}")
+if "p015.points.read" not in route_spec:
+    raise SystemExit("P015 employee route must require immutable-ledger read permission")
+if "p015.points.monitor" not in route_spec:
+    raise SystemExit("P015 technical route must require monitor permission")
+if "P015_ROUTE_SPECS" not in router or "...P015_ROUTE_SPECS" not in router:
+    raise SystemExit("P015 executable route specs are not registered by portal router")
 
 web_root = ROOT / "technical-platform/web/src/platform/phase11/p015"
-if web_root.is_dir():
-    for target in web_root.rglob("*"):
-        if target.is_file() and "targetStatus" in target.read_text(encoding="utf-8"):
-            raise SystemExit(f"client target status is forbidden: {target.relative_to(ROOT)}")
+for target in web_root.rglob("*"):
+    if target.is_file() and "targetStatus" in target.read_text(encoding="utf-8"):
+        raise SystemExit(f"client target status is forbidden: {target.relative_to(ROOT)}")
 
 print("PHASE11_P015_CONTRACT_OK")
