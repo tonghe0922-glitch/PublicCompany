@@ -57,6 +57,24 @@ public final class Phase11WorkflowCoordinator {
                 actor, process, process.managerPermission(), data.ownerCenterId(), "manager");
         List<UUID> specialists = candidates(
                 actor, process, process.specialistPermission(), data.ownerCenterId(), "specialist");
+        List<UUID> appealReviewers = process == Phase11Process.P014
+                ? candidates(
+                        actor,
+                        process,
+                        "p014.discipline.appeal",
+                        data.ownerCenterId(),
+                        "appeal reviewer")
+                : specialists;
+        List<UUID> remediators = process == Phase11Process.P014
+                ? candidates(
+                        actor,
+                        process,
+                        "p014.discipline.remediate",
+                        data.ownerCenterId(),
+                        "remediator")
+                : specialists;
+        List<UUID> appealOrRemediation = new ArrayList<>(appealReviewers);
+        appealOrRemediation.addAll(remediators);
 
         ObjectNode context = mapper.createObjectNode();
         context.put("ownerEmployeeId", data.ownerEmployeeId().toString());
@@ -65,10 +83,16 @@ public final class Phase11WorkflowCoordinator {
         context.set("managerCandidateIds", uuidArray(managers));
         context.set("specialistCandidateIds", uuidArray(specialists));
         context.set("calibratorCandidateIds", uuidArray(specialists));
-        context.set("appealReviewerIds", uuidArray(specialists));
+        context.set("appealReviewerIds", uuidArray(appealReviewers));
         context.set("investigatorCandidateIds", uuidArray(managers));
         context.set("decisionCandidateIds", uuidArray(specialists));
-        context.set("recusedEmployeeIds", mapper.createArrayNode());
+        context.set("remediationCandidateIds", uuidArray(remediators));
+        context.set("appealOrRemediationCandidateIds", uuidArray(appealOrRemediation));
+        context.set(
+                "recusedEmployeeIds",
+                process == Phase11Process.P014
+                        ? uuidArray(List.of(data.ownerEmployeeId()))
+                        : mapper.createArrayNode());
         context.put("riskLevel", record.riskLevel());
 
         WorkflowRuntimeService.Result started = workflow.start(

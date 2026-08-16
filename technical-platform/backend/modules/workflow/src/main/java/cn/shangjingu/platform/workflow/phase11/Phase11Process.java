@@ -73,6 +73,35 @@ public enum Phase11Process {
                     "EXECUTE_REWARD",
                     "NOTIFY_EMPLOYEE",
                     "RECORD_RECEIPTS",
+                    "ARCHIVE")),
+    P014(
+            "纪律责任与申诉",
+            "reward.discipline_case",
+            "EMP-P014-F01",
+            "p014.discipline.investigate",
+            "p014.discipline.decide",
+            List.of(
+                    step("S01", "NEW", "REGISTER_LEAD", "S02"),
+                    step("S02", "TRIAGE_PENDING", "OPEN_INVESTIGATION", "S03"),
+                    step("S03", "INVESTIGATING", "RECORD_STATEMENT", "S04"),
+                    step("S04", "STATEMENT_RECORDED", "HEARING_DECISION", "S05"),
+                    step("S05", "DECISION_PENDING", "SERVE_DECISION", "S06"),
+                    step("S06", "DECISION_SERVED", "OPEN_APPEAL", "S07"),
+                    step("S07", "APPEAL_PENDING", "ASSIGN_APPEAL_REVIEWER", "S08"),
+                    step("S08", "APPEAL_REVIEWING", "RESOLVE_APPEAL", "S09"),
+                    step("S06", "DECISION_SERVED", "CLOSE_NO_APPEAL", "S10"),
+                    step("S09", "APPEAL_RESOLVED", "CLOSE_AFTER_APPEAL", "S10"),
+                    step("S10", "CLOSED", "REOPEN_FOR_DEFECT", "S03"),
+                    step("S10", "CLOSED", "ARCHIVE", "END")),
+            Set.of("OPEN_APPEAL"),
+            Set.of(
+                    "HEARING_DECISION",
+                    "SERVE_DECISION",
+                    "ASSIGN_APPEAL_REVIEWER",
+                    "RESOLVE_APPEAL",
+                    "CLOSE_NO_APPEAL",
+                    "CLOSE_AFTER_APPEAL",
+                    "REOPEN_FOR_DEFECT",
                     "ARCHIVE"));
 
     private final String label;
@@ -81,7 +110,8 @@ public enum Phase11Process {
     private final String managerPermission;
     private final String specialistPermission;
     private final List<Step> steps;
-    private final Map<String, Step> byNode;
+    private final Map<String, Step> byTransition;
+    private final Map<String, String> labelsByNode;
     private final Set<String> ownerActions;
     private final Set<String> specialistActions;
 
@@ -102,11 +132,20 @@ public enum Phase11Process {
         this.steps = List.copyOf(steps);
         this.ownerActions = Set.copyOf(ownerActions);
         this.specialistActions = Set.copyOf(specialistActions);
-        Map<String, Step> index = new LinkedHashMap<>();
+        Map<String, Step> transitions = new LinkedHashMap<>();
+        Map<String, String> nodeLabels = new LinkedHashMap<>();
         for (Step step : steps) {
-            index.put(step.node(), step);
+            String previousLabel = nodeLabels.putIfAbsent(step.node(), step.label());
+            if (previousLabel != null && !previousLabel.equals(step.label())) {
+                throw new IllegalArgumentException(name() + " has inconsistent labels for " + step.node());
+            }
+            Step previous = transitions.put(transitionKey(step.node(), step.action()), step);
+            if (previous != null) {
+                throw new IllegalArgumentException(name() + " has duplicate transition " + step.action());
+            }
         }
-        this.byNode = Map.copyOf(index);
+        this.byTransition = Map.copyOf(transitions);
+        this.labelsByNode = Map.copyOf(nodeLabels);
     }
 
     public String code() {
@@ -139,18 +178,18 @@ public enum Phase11Process {
 
     public String labelFor(String node) {
         if ("END".equals(node)) {
-            return "已关闭";
+            return this == P014 ? "ARCHIVED" : "已关闭";
         }
-        Step step = byNode.get(node);
-        if (step == null) {
+        String nodeLabel = labelsByNode.get(node);
+        if (nodeLabel == null) {
             throw rejected("unknown workflow node: " + node);
         }
-        return step.label();
+        return nodeLabel;
     }
 
     public Step requireTransition(String node, String action) {
-        Step step = byNode.get(node);
-        if (step == null || !step.action().equals(action)) {
+        Step step = byTransition.get(transitionKey(node, action));
+        if (step == null) {
             throw rejected("action " + action + " is not allowed from " + node);
         }
         return step;
@@ -170,6 +209,10 @@ public enum Phase11Process {
 
     private ProcessRejectedException rejected(String message) {
         return new ProcessRejectedException(code() + " " + message);
+    }
+
+    private static String transitionKey(String node, String action) {
+        return node + '\u0000' + action;
     }
 
     private static Step step(String node, String label, String action, String targetNode) {

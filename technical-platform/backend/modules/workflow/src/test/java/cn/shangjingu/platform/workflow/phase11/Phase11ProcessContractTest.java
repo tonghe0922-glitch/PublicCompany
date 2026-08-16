@@ -69,12 +69,24 @@ class Phase11ProcessContractTest {
     }
 
     @Test
-    void p013CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
+    void p014CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
         assertEquals(
-                List.of("P011", "P012", "P013"),
+                List.of("P011", "P012", "P013", "P014"),
                 java.util.Arrays.stream(Phase11Process.values())
                         .map(Phase11Process::code)
                         .toList());
+    }
+
+    @Test
+    void p014SupportsFrozenBranchingWithoutChangingEarlierGraphs() {
+        Phase11Process process = Phase11Process.P014;
+        assertEquals("S07", process.requireTransition("S06", "OPEN_APPEAL").targetNode());
+        assertEquals("S10", process.requireTransition("S06", "CLOSE_NO_APPEAL").targetNode());
+        assertEquals("S03", process.requireTransition("S10", "REOPEN_FOR_DEFECT").targetNode());
+        assertEquals("END", process.requireTransition("S10", "ARCHIVE").targetNode());
+        assertThrows(
+                ProcessRejectedException.class,
+                () -> process.requireTransition("S06", "ARCHIVE"));
     }
 
     @Test
