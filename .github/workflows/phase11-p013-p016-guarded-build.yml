@@ -71,6 +71,7 @@ jobs:
           rm -f scripts/implementation/phase11_p013_generate_database.py
           rm -f scripts/implementation/phase11_p013_generate_web.py
           rm -f .github/workflows/phase11-p013-p016-inspect.yml
+          rm -f .github/workflows/phase11-p013-compile-diagnose.yml
           rm -f .github/workflows/phase11-p013-p016-guarded-build.yml
           rm -f .phase11-local-file-probe.txt
           rm -f docs/implementation/phases/PHASE-11/P012_RECOVERY_CHECKPOINT.md
