@@ -44,8 +44,8 @@ class Phase11ProcessContractTest {
     }
 
     @Test
-    void p015CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
-        assertEquals(List.of("P011", "P012", "P013", "P014", "P015"),
+    void p016CheckpointExposesClosedAndCurrentPhase11ProcessesOnly() {
+        assertEquals(List.of("P011", "P012", "P013", "P014", "P015", "P016"),
                 java.util.Arrays.stream(Phase11Process.values()).map(Phase11Process::code).toList());
     }
 
@@ -61,6 +61,24 @@ class Phase11ProcessContractTest {
         assertEquals("S08", process.requireTransition("S07", "POST_OR_REVIEW").targetNode());
         assertEquals("END", process.requireTransition("S10", "RECALCULATE_BALANCE").targetNode());
         assertThrows(ProcessRejectedException.class, () -> process.requireTransition("S07", "RECALCULATE_BALANCE"));
+    }
+
+    @Test
+    void p016GraphMatchesFrozenReuseContract() {
+        Phase11Process process = Phase11Process.P016;
+        assertEquals("welfare.care_case", process.table());
+        assertEquals("EMP-P016-F01", process.initialFormCode());
+        assertEquals(List.of("S01","S02","S03","S04","S05","S06","S07","S08"),
+                process.steps().stream().map(Phase11Process.Step::node).toList());
+        assertEquals(List.of("REGISTER_CARE_CASE","VERIFY_ELIGIBILITY","AUTHORIZE_PRIVACY","APPROVE_CARE",
+                "EXECUTE_BENEFIT","CONFIRM_RECEIPT","RECONCILE","ARCHIVE"),
+                process.steps().stream().map(Phase11Process.Step::action).toList());
+        assertTrue(process.ownerAction("AUTHORIZE_PRIVACY"));
+        assertTrue(process.ownerAction("CONFIRM_RECEIPT"));
+        assertTrue(process.specialistAction("EXECUTE_BENEFIT"));
+        assertTrue(process.specialistAction("RECONCILE"));
+        assertEquals("END", process.requireTransition("S08", "ARCHIVE").targetNode());
+        assertThrows(ProcessRejectedException.class, () -> process.requireTransition("S04", "EXECUTE_BENEFIT"));
     }
 
     @Test

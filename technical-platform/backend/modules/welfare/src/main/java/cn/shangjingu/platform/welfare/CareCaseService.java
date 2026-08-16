@@ -72,6 +72,7 @@ public final class CareCaseService {
         return transactions.required(actor, () -> repository.find(actor.tenantId(), id));
     }
 
+    /** Legacy PHASE-05 state transition surface. PHASE-11 must use action-code orchestration instead. */
     public CareCase advance(
             DatabaseSecurityContext actor,
             UUID id,
@@ -121,17 +122,44 @@ public final class CareCaseService {
     }
 
     public void validateInvoiceEvidence(DatabaseSecurityContext actor, UUID id, InvoiceEvidence invoice) {
-        Objects.requireNonNull(invoice, "invoice");
-        if (invoice.amount() == null || invoice.amount().signum() < 0
-                || blank(invoice.invoiceCode()) || blank(invoice.invoiceNumber())
-                || invoice.invoiceDate() == null || invoice.fileId() == null
-                || blank(invoice.imageSha256()) || invoice.imageSha256().length() != 64) {
-            throw new ProcessRejectedException("invoice evidence is incomplete or invalid");
-        }
+        Objects.requireNonNull(actor, "actor");
+        validateInvoice(invoice);
         transactions.required(actor, () -> {
             CareCase current = repository.find(actor.tenantId(), id)
                     .orElseThrow(() -> new ProcessRejectedException("care case not found"));
             finance().assertInvoiceUnique(current, invoice);
+            return null;
+        });
+    }
+
+    /**
+     * Reuses the PHASE-05 financial side-effect capability without mutating the legacy target-status state machine.
+     * The PHASE-11 canonical workflow remains the only state-transition authority.
+     */
+    public void executeBenefit(DatabaseSecurityContext actor, UUID id, InvoiceEvidence invoice) {
+        Objects.requireNonNull(actor, "actor");
+        if (invoice != null) {
+            validateInvoice(invoice);
+        }
+        transactions.required(actor, () -> {
+            CareCase current = repository.find(actor.tenantId(), id)
+                    .orElseThrow(() -> new ProcessRejectedException("care case not found"));
+            FinanceCapability capability = finance();
+            if (invoice != null) {
+                capability.assertInvoiceUnique(current, invoice);
+            }
+            capability.validateBudgetInvoiceAndExecute(current);
+            return null;
+        });
+    }
+
+    /** Reuses PHASE-05 reconciliation as a fail-closed side effect without accepting a client target status. */
+    public void reconcileBenefit(DatabaseSecurityContext actor, UUID id) {
+        Objects.requireNonNull(actor, "actor");
+        transactions.required(actor, () -> {
+            CareCase current = repository.find(actor.tenantId(), id)
+                    .orElseThrow(() -> new ProcessRejectedException("care case not found"));
+            finance().reconcile(current);
             return null;
         });
     }
@@ -151,6 +179,16 @@ public final class CareCaseService {
         }
         if (command.benefitAmount() != null && command.benefitAmount().signum() < 0) {
             throw new ProcessRejectedException("benefit amount must be non-negative");
+        }
+    }
+
+    private static void validateInvoice(InvoiceEvidence invoice) {
+        Objects.requireNonNull(invoice, "invoice");
+        if (invoice.amount() == null || invoice.amount().signum() < 0
+                || blank(invoice.invoiceCode()) || blank(invoice.invoiceNumber())
+                || invoice.invoiceDate() == null || invoice.fileId() == null
+                || blank(invoice.imageSha256()) || invoice.imageSha256().length() != 64) {
+            throw new ProcessRejectedException("invoice evidence is incomplete or invalid");
         }
     }
 
