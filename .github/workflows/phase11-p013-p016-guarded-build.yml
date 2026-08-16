@@ -58,8 +58,6 @@ jobs:
           python scripts/implementation/phase11_c0_contract.py
           python scripts/implementation/phase11_p011_contract.py
           python scripts/implementation/phase11_p012_contract.py
-          grep -q 'P012 = CHECKPOINT_PASS / CLOSED\|P012 implementation = CHECKPOINT_PASS' docs/implementation/MASTER_PROGRESS.md || \
-            grep -q '31924632658' docs/implementation/MASTER_PROGRESS.md || true
 
       - name: Generate the reviewed P013 implementation
         shell: bash
@@ -68,32 +66,15 @@ jobs:
           python scripts/implementation/phase11_p013_generate_backend.py
           python scripts/implementation/phase11_p013_generate_database.py
           python scripts/implementation/phase11_p013_generate_web.py
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/RewardService.java')
-          text = path.read_text(encoding='utf-8')
-          old = """        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();
-          if (benefit.signum() == 0
-"""
-          new = """        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();
-          if (points < 0L) {
-              throw rejected(\"pointsDelta must not be negative\");
-          }
-          if (benefit.signum() == 0
-"""
-          if old not in text:
-              raise SystemExit('P013 points validation anchor not found')
-          path.write_text(text.replace(old, new), encoding='utf-8')
-          PY
-          rm -f \
-            scripts/implementation/phase11_p013_generate_backend.py \
-            scripts/implementation/phase11_p013_generate_database.py \
-            scripts/implementation/phase11_p013_generate_web.py \
-            .github/workflows/phase11-p013-p016-inspect.yml \
-            .github/workflows/phase11-p013-p016-guarded-build.yml
-          rm -f .phase11-local-file-probe.txt \
-            docs/implementation/phases/PHASE-11/P012_RECOVERY_CHECKPOINT.md \
-            docs/implementation/phases/PHASE-11/P012_PUSH_RETRY_NOTE.md
+          python -c 'from pathlib import Path; p=Path("technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/RewardService.java"); s=p.read_text(encoding="utf-8"); old="        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();\n        if (benefit.signum() == 0\n"; new="        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();\n        if (points < 0L) {\n            throw rejected(\"pointsDelta must not be negative\");\n        }\n        if (benefit.signum() == 0\n"; assert old in s, "P013 points validation anchor not found"; p.write_text(s.replace(old,new),encoding="utf-8")'
+          rm -f scripts/implementation/phase11_p013_generate_backend.py
+          rm -f scripts/implementation/phase11_p013_generate_database.py
+          rm -f scripts/implementation/phase11_p013_generate_web.py
+          rm -f .github/workflows/phase11-p013-p016-inspect.yml
+          rm -f .github/workflows/phase11-p013-p016-guarded-build.yml
+          rm -f .phase11-local-file-probe.txt
+          rm -f docs/implementation/phases/PHASE-11/P012_RECOVERY_CHECKPOINT.md
+          rm -f docs/implementation/phases/PHASE-11/P012_PUSH_RETRY_NOTE.md
 
       - name: Verify P013 frozen contracts and construction boundaries
         shell: bash
@@ -104,17 +85,18 @@ jobs:
           python -m py_compile scripts/implementation/phase11_p013_contract.py
           test -f .github/workflows/phase11-p013-checkpoint.yml
           test -f technical-platform/database/flyway-overlays/oms/V124__phase11_p013_reward.sql
-          ! find technical-platform/backend technical-platform/web/src technical-platform/database \
-            -type f -print | grep -E '/(P014|p014|P015|p015|P016|p016)/|P014|P015|P016'
-          ! grep -R -nEi --include='*.sql' \
-            'CREATE[[:space:]]+TABLE[^;]*(phase[_-]?11|p013|reward_request)' \
-            technical-platform/database/flyway-overlays/oms/V124__phase11_p013_reward.sql
-          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage.*P013|mock.*P013|bypass login' \
-              technical-platform/backend technical-platform/web/src technical-platform/database; then
+          if find technical-platform/backend technical-platform/web/src technical-platform/database -type f -print | grep -E '/(P014|p014|P015|p015|P016|p016)/|P014|P015|P016'; then
+            echo 'P013 candidate introduced a later executable process'
             exit 1
           fi
-          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' \
-              technical-platform/backend technical-platform/web/src technical-platform/database; then
+          if grep -nEi 'CREATE[[:space:]]+TABLE[^;]*(phase[_-]?11|p013|reward_request)' technical-platform/database/flyway-overlays/oms/V124__phase11_p013_reward.sql; then
+            echo 'P013 shadow business table is forbidden'
+            exit 1
+          fi
+          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage.*P013|mock.*P013|bypass login' technical-platform/backend technical-platform/web/src technical-platform/database; then
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' technical-platform/backend technical-platform/web/src technical-platform/database; then
             exit 1
           fi
           git diff --check
@@ -136,9 +118,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          if ! bash ./mvnw -B -ntp -e \
-              -pl technical-platform/backend/modules/database-baseline -am \
-              -Pphase11-p013-integration verify 2>&1 | tee /tmp/p013-db.log; then
+          if ! bash ./mvnw -B -ntp -e -pl technical-platform/backend/modules/database-baseline -am -Pphase11-p013-integration verify 2>&1 | tee /tmp/p013-db.log; then
             find technical-platform/backend -type f -path '*/failsafe-reports/*' -print | sort | while read -r report; do
               echo "===== $report ====="
               tail -n 280 "$report" || true
@@ -170,7 +150,10 @@ jobs:
           git add -A
           git diff --cached --check
           test -n "$(git diff --cached --name-only)"
-          ! git diff --cached --name-only | grep -E '(^|/)(PHASE-12|P01[4-9]|P02[0-9])'
+          if git diff --cached --name-only | grep -E '(^|/)(PHASE-12|P01[4-9]|P02[0-9])'; then
+            echo 'P013 candidate contains later-phase files'
+            exit 1
+          fi
           git commit -m "phase-11: complete P013 reward closure candidate"
           git push origin HEAD:"$OFFICIAL_BRANCH"
 
@@ -180,6 +163,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh workflow run phase11-p013-checkpoint.yml \
-            --repo "$GITHUB_REPOSITORY" \
-            --ref "$OFFICIAL_BRANCH"
+          gh workflow run phase11-p013-checkpoint.yml --repo "$GITHUB_REPOSITORY" --ref "$OFFICIAL_BRANCH"
