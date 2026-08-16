@@ -18,59 +18,21 @@ jobs:
         with:
           fetch-depth: 0
           ref: agent/phase-11-performance-growth-welfare
-      - name: Inspect canonical tables and reusable P016 assets
+      - name: Inspect finance authority and reusable integrations
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          tables = (
-              'reward.reward_case',
-              'reward.discipline_case',
-              'reward.point_transaction',
-              'welfare.care_case',
-          )
-          for table in tables:
-              print(f'===== SQL STATEMENTS FOR {table} =====')
-              found = False
-              for path in sorted(Path('technical-platform/database').rglob('*.sql')):
-                  text = path.read_text(encoding='utf-8', errors='replace')
-                  if table.lower() not in text.lower():
-                      continue
-                  statements = [s.strip() + ';' for s in text.split(';') if table.lower() in s.lower()]
-                  for statement in statements:
-                      found = True
-                      print(f'----- {path} -----')
-                      print(statement)
-              if not found:
-                  print('NO_SQL_STATEMENT_FOUND')
-          print('===== REUSABLE CARE JAVA FILES =====')
-          for path in sorted(Path('technical-platform/backend').rglob('*.java')):
-              text = path.read_text(encoding='utf-8', errors='replace')
-              if any(token in text for token in ('CareCaseService', 'JdbcCareCaseRepository', 'WelfareCareCaseController')):
-                  print(path)
-          print('===== PHASE11 MAIN/TEST FILES =====')
-          for base in (
-              Path('technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11'),
-              Path('technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11'),
-              Path('technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11'),
-              Path('technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database'),
-              Path('technical-platform/web/src/platform/phase11'),
-              Path('technical-platform/web/src/platform/pages/phase11'),
-          ):
-              if base.exists():
-                  for path in sorted(p for p in base.rglob('*') if p.is_file()):
-                      print(path)
-          PY
-          echo '===== DATABASE BASELINE POM PROFILES ====='
-          grep -nE 'phase11|failsafe|IntegrationTest|DatabaseIT' technical-platform/backend/modules/database-baseline/pom.xml || true
-          echo '===== CARE SERVICE ====='
-          file=$(find technical-platform/backend -type f -name 'CareCaseService.java' | head -n1 || true)
-          test -z "$file" || { echo "$file"; sed -n '1,320p' "$file"; }
-          echo '===== CARE REPOSITORY ====='
-          file=$(find technical-platform/backend -type f -name 'JdbcCareCaseRepository.java' | head -n1 || true)
-          test -z "$file" || { echo "$file"; sed -n '1,360p' "$file"; }
-          echo '===== CARE CONTROLLER ====='
-          file=$(find technical-platform/backend -type f -name 'WelfareCareCaseController.java' | head -n1 || true)
-          test -z "$file" || { echo "$file"; sed -n '1,300p' "$file"; }
+          echo '===== FINANCE SCHEMAS AND TABLES ====='
+          grep -R -nE --include='*.sql' 'CREATE (TABLE|SCHEMA).*finance|CREATE TABLE IF NOT EXISTS (finance|settlement|payment)\.' technical-platform/database | head -n 300 || true
+          echo '===== PAYMENT / RECEIPT / INVOICE TABLES ====='
+          grep -R -nEi --include='*.sql' 'CREATE TABLE IF NOT EXISTS [a-z_]+\.(.*payment|.*receipt|.*invoice|.*settlement|.*reimbursement)' technical-platform/database | head -n 400 || true
+          echo '===== FINANCE CAPABILITY IMPLEMENTATIONS ====='
+          grep -R -nE --include='*.java' 'FinanceCapability|validateBudgetInvoiceAndExecute|reconcile\(' technical-platform/backend | head -n 400 || true
+          echo '===== FINANCE MODULE FILES ====='
+          find technical-platform/backend -type f | grep -Ei '/finance/|Finance|Payment|Receipt|Invoice|Settlement' | sort | head -n 400 || true
+          echo '===== API AUTHORIZATION TEST PATTERN ====='
+          find technical-platform/backend/apps/api/src/test -type f -name '*SecurityTest.java' -o -name '*ContractTest.java' | sort | head -n 100
+          echo '===== ROUTER PHASE11 BINDINGS ====='
+          grep -nE 'P011|P012|/employee/03/03/05|/center/10/06/01|/tech/01/11/07' technical-platform/web/src/router/portal-route-specs.ts | head -n 240 || true
+          echo '===== PACKAGE JSON SCRIPTS ====='
+          cat technical-platform/web/package.json
