@@ -15,6 +15,8 @@ def read(path: str) -> str:
 workflow_contract = json.loads(read("docs/implementation/phases/PHASE-11/PHASE11_WORKFLOW_CONTRACT.json"))
 http_contract = json.loads(read("docs/implementation/phases/PHASE-11/PHASE11_HTTP_PERMISSION_CONTRACT.json"))
 page_contract = json.loads(read("docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json"))
+progress = read("docs/implementation/MASTER_PROGRESS.md")
+p013_closed = "P013 = CHECKPOINT_PASS / CLOSED" in progress
 
 expected_actions = [
     "REGISTER_CONTRIBUTION",
@@ -60,7 +62,9 @@ if re.search(r"(?i)CREATE\s+TABLE", migration):
     raise SystemExit("P013 shadow business table is forbidden")
 if "targetStatus" in read("technical-platform/web/src/platform/phase11/p013/p013-config.ts"):
     raise SystemExit("client target status is forbidden")
-if "P014" in read("technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/Phase11Process.java"):
+if not p013_closed and "P014" in read(
+    "technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/Phase11Process.java"
+):
     raise SystemExit("P014 executable process was introduced before P013 closure")
 
 http_text = json.dumps(http_contract, ensure_ascii=False)
