@@ -35,6 +35,9 @@ import P011TechPage from '../platform/pages/phase11/P011TechPage.vue'
 import P012CenterPage from '../platform/pages/phase11/P012CenterPage.vue'
 import P012EmployeePage from '../platform/pages/phase11/P012EmployeePage.vue'
 import P012TechPage from '../platform/pages/phase11/P012TechPage.vue'
+import P013CenterPage from '../platform/pages/phase11/P013CenterPage.vue'
+import P013EmployeePage from '../platform/pages/phase11/P013EmployeePage.vue'
+import P013TechPage from '../platform/pages/phase11/P013TechPage.vue'
 
 export interface PortalRouteSpec {
   portal: PortalCode
@@ -337,6 +340,24 @@ const P012_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   },
 ]
 
+
+const P013_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  {
+    portal: 'employee', path: '/employee/08/07/02', name: 'p013-reward-self',
+    component: P013EmployeePage,
+    permissionsAny: ['p013.reward.create', 'p013.reward.read'],
+  },
+  {
+    portal: 'center', path: '/center/10/10/02', name: 'p013-reward-management',
+    component: P013CenterPage,
+    permissionsAny: ['p013.reward.create', 'p013.reward.review', 'p013.reward.execute'],
+  },
+  {
+    portal: 'tech', path: '/tech/06/06/01', name: 'p013-reward-monitor',
+    component: P013TechPage, permission: 'p013.reward.monitor',
+  },
+]
+
 const PHASE10_TECH_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
     portal: 'tech', path: '/tech/07/11/01',
@@ -366,4 +387,5 @@ export const PORTAL_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   ...PHASE10_TECH_ROUTE_SPECS,
   ...P011_ROUTE_SPECS,
   ...P012_ROUTE_SPECS,
+  ...P013_ROUTE_SPECS,
 ]

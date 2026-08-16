@@ -50,7 +50,30 @@ public enum Phase11Process {
                     "APPROVE_PROMOTION",
                     "COMPLETE_NOTICE",
                     "COMPLETE_VALIDATION",
-                    "ACTIVATE_APPOINTMENT"));
+                    "ACTIVATE_APPOINTMENT")),
+    P013(
+            "奖励与认可",
+            "reward.reward_case",
+            "EMP-P013-F01",
+            "p013.reward.review",
+            "p013.reward.execute",
+            List.of(
+                    step("S01", "贡献事实登记", "REGISTER_CONTRIBUTION", "S02"),
+                    step("S02", "证据核验", "VERIFY_EVIDENCE", "S03"),
+                    step("S03", "奖励建议", "RECOMMEND_REWARD", "S04"),
+                    step("S04", "奖励审批", "APPROVE_REWARD", "S05"),
+                    step("S05", "重复影响校验", "CHECK_DUPLICATE_IMPACT", "S06"),
+                    step("S06", "奖励执行", "EXECUTE_REWARD", "S07"),
+                    step("S07", "员工告知", "NOTIFY_EMPLOYEE", "S08"),
+                    step("S08", "回执登记", "RECORD_RECEIPTS", "S09"),
+                    step("S09", "归档", "ARCHIVE", "END")),
+            Set.of(),
+            Set.of(
+                    "APPROVE_REWARD",
+                    "EXECUTE_REWARD",
+                    "NOTIFY_EMPLOYEE",
+                    "RECORD_RECEIPTS",
+                    "ARCHIVE"));
 
     private final String label;
     private final String table;
