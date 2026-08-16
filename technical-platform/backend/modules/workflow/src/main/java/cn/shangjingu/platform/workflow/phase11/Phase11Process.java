@@ -89,7 +89,21 @@ public enum Phase11Process {
                     step("S09", "调整或冲销", "ADJUST_OR_REVERSE", "S10"),
                     step("S10", "余额重算", "RECALCULATE_BALANCE", "END")),
             Set.of(),
-            Set.of("ADJUST_OR_REVERSE", "RECALCULATE_BALANCE"));
+            Set.of("ADJUST_OR_REVERSE", "RECALCULATE_BALANCE")),
+    P016(
+            "福利关怀与台账", "welfare.care_case", "EMP-P016-F01",
+            "p016.care.review", "p016.care.execute",
+            List.of(
+                    step("S01", "关怀事项登记", "REGISTER_CARE_CASE", "S02"),
+                    step("S02", "资格核验", "VERIFY_ELIGIBILITY", "S03"),
+                    step("S03", "隐私授权", "AUTHORIZE_PRIVACY", "S04"),
+                    step("S04", "关怀审批", "APPROVE_CARE", "S05"),
+                    step("S05", "福利执行", "EXECUTE_BENEFIT", "S06"),
+                    step("S06", "员工确认回执", "CONFIRM_RECEIPT", "S07"),
+                    step("S07", "对账", "RECONCILE", "S08"),
+                    step("S08", "归档", "ARCHIVE", "END")),
+            Set.of("AUTHORIZE_PRIVACY", "CONFIRM_RECEIPT"),
+            Set.of("EXECUTE_BENEFIT", "RECONCILE", "ARCHIVE"));
 
     private final String label;
     private final String table;
