@@ -40,22 +40,36 @@ jobs:
           test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
           test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
           python scripts/implementation/phase11_repository_identity.py
-      - name: Verify preparation evidence or sealed preparation state
+      - name: Detect preparation lifecycle
+        id: mode
         shell: bash
         run: |
           set -euo pipefail
           if grep -q 'P011 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md; then
-            test -s docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json
-            test -s docs/implementation/phases/PHASE-11/P011_P016_SOURCE_CONTRACT.json
-            test -s docs/implementation/phases/PHASE-11/P011_P016_PAGE_CANDIDATES.json
-            test -s docs/implementation/phases/PHASE-11/P011_P016_IMPLEMENTATION_PROBE.json
-            test -s docs/implementation/phases/PHASE-11/PREPARATION_REPORT.md
-            test -s docs/implementation/phases/PHASE-11/IMPACT_MATRIX.md
-            test -s docs/implementation/phases/PHASE-11/GAP_MATRIX.md
-            test -s docs/implementation/contracts/phase-11/C0_DECISION_LOG.md
-            echo 'PHASE-11 preparation evidence is sealed; executable construction is allowed to drift from the preparation probe.'
-            exit 0
+            echo 'sealed=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'sealed=false' >> "$GITHUB_OUTPUT"
           fi
+      - name: Verify sealed preparation record
+        if: steps.mode.outputs.sealed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/implementation/phases/PHASE-11/README.md
+          test -s docs/implementation/phases/PHASE-11/PREPARATION_REPORT.md
+          test -s docs/implementation/phases/PHASE-11/IMPACT_MATRIX.md
+          test -s docs/implementation/phases/PHASE-11/GAP_MATRIX.md
+          test -s docs/implementation/phases/PHASE-11/PHASE11_HTTP_PERMISSION_CONTRACT.json
+          test -s docs/implementation/phases/PHASE-11/PHASE11_WORKFLOW_CONTRACT.json
+          test -s docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json
+          test -s docs/implementation/phases/PHASE-11/DATABASE_CONTRACT.md
+          test -s docs/implementation/contracts/phase-11/C0_DECISION_LOG.md
+          echo 'PHASE-11 preparation record is sealed; ephemeral generated evidence remains in the original preparation artifact.'
+      - name: Rebuild and verify deterministic preparation evidence
+        if: steps.mode.outputs.sealed != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
           python -m py_compile \
             scripts/implementation/phase11_preparation_extract.py \
             scripts/implementation/phase11_source_contract.py \
@@ -85,6 +99,7 @@ jobs:
           python scripts/implementation/phase11_preparation_contract.py
           git diff --check
       - uses: actions/upload-artifact@v4
+        if: steps.mode.outputs.sealed != 'true'
         with:
           name: phase11-preparation-gate-evidence-${{ github.sha }}
           path: |
