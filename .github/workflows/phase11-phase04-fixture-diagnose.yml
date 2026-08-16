@@ -26,28 +26,29 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
+          set +e
           bash ./mvnw -B -ntp -e \
             -pl technical-platform/backend/apps/api -am \
             -Pphase04-integration verify > /tmp/phase04.log 2>&1
           rc=$?
+          set -e
           echo "MAVEN_RC=$rc"
           echo '===== concise Maven evidence ====='
           grep -nE 'Running |Tests run:|BUILD (SUCCESS|FAILURE)|identity_session|row-level security|Phase04ApiSecurityIntegrationTest|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|Caused by:|ERROR' \
-            /tmp/phase04.log | tail -n 260 || true
+            /tmp/phase04.log | tail -n 320 || true
           echo '===== failsafe report files ====='
           find technical-platform/backend -type f \
             \( -path '*/failsafe-reports/*' -o -path '*/surefire-reports/*' \) \
             -print | sort | grep -E 'Phase04|failsafe-summary' || true
           echo '===== report excerpts ====='
-          find technical-platform/backend -type f \
-            \( -path '*/failsafe-reports/*' -o -path '*/surefire-reports/*' \) \
-            -print0 | sort -z | while IFS= read -r -d '' report; do
-              if grep -qE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession' "$report"; then
-                echo "----- $report -----"
-                grep -nE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|testsuite|error|failure' "$report" | tail -n 180 || true
-              fi
-            done
-          echo '===== generated sources ====='
+          while IFS= read -r report; do
+            if grep -qE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession' "$report"; then
+              echo "----- $report -----"
+              grep -nE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|testsuite|error|failure' "$report" | tail -n 220 || true
+            fi
+          done < <(find technical-platform/backend -type f \
+            \( -path '*/failsafe-reports/*' -o -path '*/surefire-reports/*' \) -print | sort)
+          echo '===== generated source matches ====='
           grep -R -n --exclude-dir=.git \
             -E 'loadsSessionFromDatabaseByOpaqueTokenHash|void insertSession|package cn\.shangjingu\.platform\.api\.security' \
             technical-platform/backend/*/target technical-platform/backend/apps/*/target 2>/dev/null || true
@@ -57,4 +58,4 @@ jobs:
             echo "----- strings $class -----"
             strings "$class" | grep -E 'Phase04ApiSecurityIntegrationTest|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|identity_session' || true
           done < <(find technical-platform/backend -type f -path '*/target/test-classes/*Phase04*IntegrationTest.class' -print | sort)
-          exit 0
+          echo "DIAGNOSIS_COMPLETE_MAVEN_RC=$rc"
