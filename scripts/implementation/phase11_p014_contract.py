@@ -95,7 +95,7 @@ required = {
     "technical-platform/web/src/platform/phase11/p014/P014DisciplineWorkspace.vue": [
         "/api/v1/processes/P014/discipline-cases",
         "expectedVersion",
-        "Idempotency-Key" if False else "idempotencyKey",
+        "idempotencyKey",
         "SUBMIT_DEFENSE",
         "ACKNOWLEDGE_SERVICE",
         "RESOLVE_APPEAL",

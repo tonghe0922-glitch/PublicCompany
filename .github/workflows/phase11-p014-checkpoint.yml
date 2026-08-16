@@ -22,6 +22,8 @@ on:
       - "technical-platform/web/src/platform/phase11/**"
       - "technical-platform/web/src/platform/pages/phase11/**"
       - "technical-platform/web/src/router/portal-route-specs.ts"
+      - "technical-platform/web/src/router/portal-router.ts"
+      - "technical-platform/web/src/router/p014-route-specs.ts"
       - "technical-platform/web/src/router/p014-router.test.ts"
   workflow_dispatch:
 
