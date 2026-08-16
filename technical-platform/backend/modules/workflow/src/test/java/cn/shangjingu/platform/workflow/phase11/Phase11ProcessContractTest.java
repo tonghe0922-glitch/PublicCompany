@@ -37,9 +37,41 @@ class Phase11ProcessContractTest {
     }
 
     @Test
-    void p011CheckpointDoesNotExposeLaterExecutableProcesses() {
+    void p012GraphMatchesFrozenContract() {
+        Phase11Process process = Phase11Process.P012;
         assertEquals(
-                List.of("P011"),
+                List.of(
+                        "S01", "S02", "S03", "S04", "S05",
+                        "S06", "S07", "S08", "S09", "S10"),
+                process.steps().stream().map(Phase11Process.Step::node).toList());
+        assertEquals(
+                List.of(
+                        "SUBMIT_NOMINATION",
+                        "PASS_ELIGIBILITY",
+                        "SUBMIT_ASSESSMENT",
+                        "VERIFY_POSITION_BUDGET",
+                        "COMPLETE_REVIEW",
+                        "APPROVE_PROMOTION",
+                        "COMPLETE_NOTICE",
+                        "CONFIRM_APPOINTMENT",
+                        "COMPLETE_VALIDATION",
+                        "ACTIVATE_APPOINTMENT"),
+                process.steps().stream().map(Phase11Process.Step::action).toList());
+        assertTrue(process.ownerAction("CONFIRM_APPOINTMENT"));
+        assertTrue(process.specialistAction("ACTIVATE_APPOINTMENT"));
+        assertFalse(process.ownerAction("APPROVE_PROMOTION"));
+        assertEquals(
+                "END",
+                process.requireTransition("S10", "ACTIVATE_APPOINTMENT").targetNode());
+        assertThrows(
+                ProcessRejectedException.class,
+                () -> process.requireTransition("S08", "ACTIVATE_APPOINTMENT"));
+    }
+
+    @Test
+    void p012CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
+        assertEquals(
+                List.of("P011", "P012"),
                 java.util.Arrays.stream(Phase11Process.values())
                         .map(Phase11Process::code)
                         .toList());
