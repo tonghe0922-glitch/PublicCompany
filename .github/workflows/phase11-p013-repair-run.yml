@@ -70,6 +70,11 @@ jobs:
           new = 'function inputType(field: Phase11CaseField) {'
           if old not in text:
               raise SystemExit('P013 input type anchor not found')
+          text = text.replace(old, new)
+          old = """  const value = record[column.key as keyof Phase11Record]\n  if (value === null || value === undefined || value === '') return '-'\n  return typeof value === 'number' ? value : String(value)\n"""
+          new = """  const value = record[column.key as keyof Phase11Record]\n  if (value === null || value === undefined || value === '') return '-'\n  if (typeof value === 'string' || typeof value === 'number') return value\n  if (typeof value === 'boolean') return String(value)\n  return '-'\n"""
+          if old not in text:
+              raise SystemExit('P013 safe cell rendering anchor not found')
           board.write_text(text.replace(old, new), encoding='utf-8')
           PY
           rm -f scripts/implementation/phase11_p013_generate_backend.py
