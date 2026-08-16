@@ -55,15 +55,17 @@ jobs:
           python scripts/implementation/phase11_p012_contract.py
           python scripts/implementation/phase11_p013_contract.py
           git diff --check "$PHASE11_C0_SHA"...HEAD
-      - name: Reject later-process drift, mock truth and secrets
+      - name: Reject premature later-process drift, mock truth and secrets
         shell: bash
         run: |
           set -euo pipefail
           TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/web/e2e technical-platform/database)
           ADDED=$(git diff -U0 "$PHASE11_C0_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
-          if printf '%s\n' "$ADDED" | grep -Eq '\bP0(14|15|16|17|18|19|20)\b|\bPHASE-12\b'; then
-            echo 'P013 checkpoint introduced a later executable process'
-            exit 1
+          if ! grep -q 'P013 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md; then
+            if printf '%s\n' "$ADDED" | grep -Eq '\bP0(14|15|16|17|18|19|20)\b|\bPHASE-12\b'; then
+              echo 'P013 checkpoint introduced a later executable process before P013 closure'
+              exit 1
+            fi
           fi
           if printf '%s\n' "$ADDED" | grep -Ei 'CREATE TABLE[^;]*(reward_request|reward_case|phase[_-]?11|p013)'; then
             echo 'P013 shadow business table is forbidden'
