@@ -5,7 +5,7 @@
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
 > Current construction state: `PHASE-11 = IN_PROGRESS / P012_CHECKPOINT_CANDIDATE`
-> Current legal checkpoint: `P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING`
+> Current legal checkpoint: `P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE`
 > Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
 根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理已通过 Checkpoint Gate 并关闭；当前唯一合法施工点为 P012 晋升与任职发展，P013–P016 尚未施工，P017+ 保持锁定。
@@ -108,7 +108,7 @@ Preparation Gate artifact SHA256 = 786f6a5f19a4720066829fef65dc21ddae0be43d2743a
 
 ```text
 P011 = CHECKPOINT_PASS / CLOSED / run 31871437974
-P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_NEXT
+P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE
 P013 = NOT_STARTED_CHECKPOINT
 P014 = NOT_STARTED_CHECKPOINT
 P015 = NOT_STARTED_CHECKPOINT
@@ -142,5 +142,5 @@ Production implementation changed at C0 = 0
 C0 Contract Freeze = run 31865754854 / SUCCESS
 Preparation Gate continuity = run 31865754872 / SUCCESS
 P011 implementation = CHECKPOINT_PASS / CLOSED
-P012 implementation = NEXT / CHECKPOINT_GATE_PENDING
+P012 implementation = CANDIDATE / CHECKPOINT_GATE_PENDING
 ```
