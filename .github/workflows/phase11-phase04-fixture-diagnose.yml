@@ -17,20 +17,44 @@ jobs:
         with:
           fetch-depth: 0
           ref: agent/phase-11-performance-growth-welfare
-      - name: Locate every Phase04 integration source and profile
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Reproduce and inspect the exact Phase04 regression class
         shell: bash
         run: |
-          set -euo pipefail
-          echo '===== Phase04 integration source files ====='
-          find . -type f -name '*Phase04*IntegrationTest.java' -print | sort
-          echo '===== opaque-token method matches ====='
-          grep -R -n --exclude-dir=.git --exclude-dir=target \
-            -E 'loadsSessionFromDatabaseByOpaqueTokenHash|void insertSession|identity_session' \
-            technical-platform/backend || true
-          echo '===== package matches ====='
-          grep -R -n --exclude-dir=.git --exclude-dir=target \
-            'package cn.shangjingu.platform.api.security' technical-platform/backend || true
-          echo '===== phase04 profile definitions ====='
-          grep -R -n --include='pom.xml' '<id>phase04-integration</id>' technical-platform/backend pom.xml || true
-          echo '===== tracked test classes with Phase04 name ====='
-          git ls-files | grep -E 'Phase04.*(Test|IT)\.java$' || true
+          set -uo pipefail
+          bash ./mvnw -B -ntp -e \
+            -pl technical-platform/backend/apps/api -am \
+            -Pphase04-integration verify > /tmp/phase04.log 2>&1
+          rc=$?
+          echo "MAVEN_RC=$rc"
+          echo '===== concise Maven evidence ====='
+          grep -nE 'Running |Tests run:|BUILD (SUCCESS|FAILURE)|identity_session|row-level security|Phase04ApiSecurityIntegrationTest|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|Caused by:|ERROR' \
+            /tmp/phase04.log | tail -n 260 || true
+          echo '===== failsafe report files ====='
+          find technical-platform/backend -type f \
+            \( -path '*/failsafe-reports/*' -o -path '*/surefire-reports/*' \) \
+            -print | sort | grep -E 'Phase04|failsafe-summary' || true
+          echo '===== report excerpts ====='
+          find technical-platform/backend -type f \
+            \( -path '*/failsafe-reports/*' -o -path '*/surefire-reports/*' \) \
+            -print0 | sort -z | while IFS= read -r -d '' report; do
+              if grep -qE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession' "$report"; then
+                echo "----- $report -----"
+                grep -nE 'Phase04ApiSecurityIntegrationTest|identity_session|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|testsuite|error|failure' "$report" | tail -n 180 || true
+              fi
+            done
+          echo '===== generated sources ====='
+          grep -R -n --exclude-dir=.git \
+            -E 'loadsSessionFromDatabaseByOpaqueTokenHash|void insertSession|package cn\.shangjingu\.platform\.api\.security' \
+            technical-platform/backend/*/target technical-platform/backend/apps/*/target 2>/dev/null || true
+          echo '===== compiled Phase04 classes ====='
+          find technical-platform/backend -type f -path '*/target/test-classes/*Phase04*IntegrationTest.class' -print | sort
+          while IFS= read -r class; do
+            echo "----- strings $class -----"
+            strings "$class" | grep -E 'Phase04ApiSecurityIntegrationTest|loadsSessionFromDatabaseByOpaqueTokenHash|insertSession|identity_session' || true
+          done < <(find technical-platform/backend -type f -path '*/target/test-classes/*Phase04*IntegrationTest.class' -print | sort)
+          exit 0
