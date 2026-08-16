@@ -69,9 +69,9 @@ class Phase11ProcessContractTest {
     }
 
     @Test
-    void p012CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
+    void p013CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
         assertEquals(
-                List.of("P011", "P012"),
+                List.of("P011", "P012", "P013"),
                 java.util.Arrays.stream(Phase11Process.values())
                         .map(Phase11Process::code)
                         .toList());
