@@ -53,12 +53,20 @@ def require(content: str, *fragments: str, label: str) -> None:
 
 
 def main() -> None:
+    progress = (ROOT / "docs/implementation/MASTER_PROGRESS.md").read_text(encoding="utf-8")
+    candidate = "P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE"
+    closed = "P012 = CHECKPOINT_PASS / CLOSED"
+    p012_candidate = candidate in progress
+    p012_closed = closed in progress
+    if not p012_candidate and not p012_closed:
+        fail("MASTER_PROGRESS must contain the P012 candidate or CLOSED state")
+
     process = text("process")
     require(process, "P011(", "P012(", '"hr.promotion_request"', label="process")
     for action in ACTIONS:
         require(process, f'"{action}"', label="P012 process graph")
-    if re.search(r"\bP0(13|14|15|16|17|18|19|20)\b", process):
-        fail("P012 checkpoint exposes a later executable process")
+    if p012_candidate and re.search(r"\bP0(13|14|15|16|17|18|19|20)\b", process):
+        fail("P012 candidate exposes a later executable process before P012 closure")
 
     service = text("service")
     require(
@@ -153,18 +161,14 @@ def main() -> None:
     for key in ("employee", "center", "tech", "router_test", "service_test", "database_test"):
         text(key)
 
-    progress = (ROOT / "docs/implementation/MASTER_PROGRESS.md").read_text(encoding="utf-8")
-    candidate = "P012 = IN_PROGRESS / CHECKPOINT_GATE_PENDING / IMPLEMENTATION_CANDIDATE"
-    closed = "P012 = CHECKPOINT_PASS / CLOSED"
-    if candidate not in progress and closed not in progress:
-        fail("MASTER_PROGRESS must contain the P012 candidate or CLOSED state")
     require(
         progress,
         "P011 = CHECKPOINT_PASS / CLOSED",
-        "P013 = NOT_STARTED_CHECKPOINT",
         "PHASE-12 = NOT_STARTED / LOCKED",
         label="MASTER_PROGRESS",
     )
+    if p012_candidate:
+        require(progress, "P013 = NOT_STARTED_CHECKPOINT", label="MASTER_PROGRESS")
 
     print(
         "PHASE-11 P012 contract PASS: authoritative P011 eligibility, canonical promotion aggregate, "
