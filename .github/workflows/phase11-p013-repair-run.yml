@@ -130,7 +130,7 @@ jobs:
           NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
           pnpm build
 
-      - name: Publish verified P013 candidate
+      - name: Publish verified P013 business candidate
         shell: bash
         run: |
           set -euo pipefail
@@ -138,13 +138,16 @@ jobs:
           git config user.name phase11-construction
           git config user.email actions@users.noreply.github.com
           git add -A
+          git reset -- .github/workflows
           git diff --cached --check
           test -n "$(git diff --cached --name-only)"
+          if git diff --cached --name-only | grep -q '^\.github/workflows/'; then
+            echo 'workflow mutations must be published separately through the repository connector'
+            exit 1
+          fi
           git commit -m "phase-11: complete P013 reward closure candidate"
           git push origin HEAD:"$OFFICIAL_BRANCH"
 
-      - name: Dispatch formal P013 checkpoint
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Mark workflow publication boundary
         shell: bash
-        run: gh workflow run phase11-p013-checkpoint.yml --repo "$GITHUB_REPOSITORY" --ref "$OFFICIAL_BRANCH"
+        run: echo 'P013 business candidate published; formal checkpoint workflow is published separately with workflow-authorized repository credentials.'
