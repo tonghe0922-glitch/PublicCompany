@@ -14,6 +14,7 @@ import LoginPage from '../platform/pages/LoginPage.vue'
 import NotFoundPage from '../platform/pages/NotFoundPage.vue'
 import { clearRuntimeError, recordRuntimeError } from '../platform/runtime-error-state'
 import { rotateNavigationAbortSignal } from './navigation-abort'
+import { P014_ROUTE_SPECS } from './p014-route-specs'
 import { PORTAL_ROUTE_SPECS, type PortalRouteSpec } from './portal-route-specs'
 import { safeInternalRedirect } from './redirect'
 
@@ -87,8 +88,13 @@ function routeMeta(spec: PortalRouteSpec) {
   }
 }
 
+const ALL_PORTAL_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  ...PORTAL_ROUTE_SPECS,
+  ...P014_ROUTE_SPECS,
+]
+
 function portalRoutes(portal: PortalDefinition): RouteRecordRaw[] {
-  return PORTAL_ROUTE_SPECS
+  return ALL_PORTAL_ROUTE_SPECS
     .filter((spec) => spec.portal === portal.code)
     .map((spec) => ({
       path: spec.path,

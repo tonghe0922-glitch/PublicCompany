@@ -92,6 +92,15 @@ required = {
         "ck_p014_appeal_reviewer_sod",
         "p_tenant_discipline_case",
     ],
+    "technical-platform/web/src/platform/phase11/p014/P014DisciplineWorkspace.vue": [
+        "/api/v1/processes/P014/discipline-cases",
+        "expectedVersion",
+        "Idempotency-Key" if False else "idempotencyKey",
+        "SUBMIT_DEFENSE",
+        "ACKNOWLEDGE_SERVICE",
+        "RESOLVE_APPEAL",
+        "portal !== 'tech'",
+    ],
 }
 for path, tokens in required.items():
     text = read(path)
@@ -131,14 +140,25 @@ if p014_http.get("permissions") != expected_permissions:
     raise SystemExit(f"P014 permission contract drifted: {p014_http.get('permissions')}")
 
 page_text = json.dumps(page_contract, ensure_ascii=False)
-for route in ("/employee/02/03/09", "/center/12/02/04", "/tech/06/06/02"):
+route_spec = read("technical-platform/web/src/router/p014-route-specs.ts")
+router = read("technical-platform/web/src/router/portal-router.ts")
+for route, name in (
+    ("/employee/02/03/09", "p014-discipline-self-service"),
+    ("/center/12/02/04", "p014-discipline-management"),
+    ("/tech/06/06/02", "p014-discipline-monitor"),
+):
     if route not in page_text:
         raise SystemExit(f"P014 page route is not frozen: {route}")
+    if route not in route_spec or name not in route_spec:
+        raise SystemExit(f"P014 executable route binding missing: {route} -> {name}")
+if "p014.discipline.monitor" not in route_spec:
+    raise SystemExit("P014 technical metadata route must require monitor permission")
+if "P014_ROUTE_SPECS" not in router or "...P014_ROUTE_SPECS" not in router:
+    raise SystemExit("P014 executable route specs are not registered by portal router")
 
 web_root = ROOT / "technical-platform/web/src/platform/phase11/p014"
-if web_root.is_dir():
-    for target in web_root.rglob("*"):
-        if target.is_file() and "targetStatus" in target.read_text(encoding="utf-8"):
-            raise SystemExit(f"client target status is forbidden: {target.relative_to(ROOT)}")
+for target in web_root.rglob("*"):
+    if target.is_file() and "targetStatus" in target.read_text(encoding="utf-8"):
+        raise SystemExit(f"client target status is forbidden: {target.relative_to(ROOT)}")
 
 print("PHASE11_P014_CONTRACT_OK")
