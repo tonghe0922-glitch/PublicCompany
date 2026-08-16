@@ -1,0 +1,76 @@
+name: PHASE-11 P013-P016 Schema Inspect
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p013-p016-inspect.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/phase-11-performance-growth-welfare
+      - name: Inspect canonical tables and reusable P016 assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          tables = (
+              'reward.reward_case',
+              'reward.discipline_case',
+              'reward.point_transaction',
+              'welfare.care_case',
+          )
+          for table in tables:
+              print(f'===== SQL STATEMENTS FOR {table} =====')
+              found = False
+              for path in sorted(Path('technical-platform/database').rglob('*.sql')):
+                  text = path.read_text(encoding='utf-8', errors='replace')
+                  if table.lower() not in text.lower():
+                      continue
+                  statements = [s.strip() + ';' for s in text.split(';') if table.lower() in s.lower()]
+                  for statement in statements:
+                      found = True
+                      print(f'----- {path} -----')
+                      print(statement)
+              if not found:
+                  print('NO_SQL_STATEMENT_FOUND')
+          print('===== REUSABLE CARE JAVA FILES =====')
+          for path in sorted(Path('technical-platform/backend').rglob('*.java')):
+              text = path.read_text(encoding='utf-8', errors='replace')
+              if any(token in text for token in ('CareCaseService', 'JdbcCareCaseRepository', 'WelfareCareCaseController')):
+                  print(path)
+          print('===== PHASE11 MAIN/TEST FILES =====')
+          for base in (
+              Path('technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11'),
+              Path('technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11'),
+              Path('technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11'),
+              Path('technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database'),
+              Path('technical-platform/web/src/platform/phase11'),
+              Path('technical-platform/web/src/platform/pages/phase11'),
+          ):
+              if base.exists():
+                  for path in sorted(p for p in base.rglob('*') if p.is_file()):
+                      print(path)
+          PY
+          echo '===== DATABASE BASELINE POM PROFILES ====='
+          grep -nE 'phase11|failsafe|IntegrationTest|DatabaseIT' technical-platform/backend/modules/database-baseline/pom.xml || true
+          echo '===== CARE SERVICE ====='
+          file=$(find technical-platform/backend -type f -name 'CareCaseService.java' | head -n1 || true)
+          test -z "$file" || { echo "$file"; sed -n '1,320p' "$file"; }
+          echo '===== CARE REPOSITORY ====='
+          file=$(find technical-platform/backend -type f -name 'JdbcCareCaseRepository.java' | head -n1 || true)
+          test -z "$file" || { echo "$file"; sed -n '1,360p' "$file"; }
+          echo '===== CARE CONTROLLER ====='
+          file=$(find technical-platform/backend -type f -name 'WelfareCareCaseController.java' | head -n1 || true)
+          test -z "$file" || { echo "$file"; sed -n '1,300p' "$file"; }
