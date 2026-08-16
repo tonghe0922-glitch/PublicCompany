@@ -1,0 +1,376 @@
+name: PHASE-11 Full Construction Gate
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/**"
+      - "docs/implementation/MASTER_*.md"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "scripts/implementation/phase11_*.py"
+      - "technical-platform/backend/**"
+      - "technical-platform/database/flyway-overlays/oms/**"
+      - "technical-platform/web/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+      - "docs/implementation/MASTER_*.md"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "scripts/implementation/phase11_*.py"
+      - "technical-platform/backend/**"
+      - "technical-platform/database/flyway-overlays/oms/**"
+      - "technical-platform/web/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-full-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE11_BASE_SHA: 79edc420802bfb9d2e47a0976b6198a67e80c4c2
+
+jobs:
+  contract:
+    name: PHASE-11 frozen contracts lifecycle and boundary
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify repository and every frozen P011-P016 contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          python scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+          python scripts/implementation/phase11_p013_contract.py
+          python scripts/implementation/phase11_p014_contract.py
+          python scripts/implementation/phase11_p015_contract.py
+          python scripts/implementation/phase11_p016_reuse_review.py
+          python scripts/implementation/phase11_p016_contract.py
+          python scripts/implementation/phase11_full_gate.py
+      - name: Verify phase boundary and repository hygiene
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check "$PHASE11_BASE_SHA"...HEAD
+          TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/database/flyway-overlays/oms)
+          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|临时演示入口|bypass login' "${TARGETS[@]}"; then
+            exit 1
+          fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then
+            exit 1
+          fi
+          if grep -nE '\bP0(17|18|19|20)[[:space:]]*\(' technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/Phase11Process.java; then
+            echo 'P017-P020 executable workflow drift is forbidden before PHASE-12 preparation'
+            exit 1
+          fi
+
+  backend-unit:
+    name: Java 21 complete P011-P016 service and API regression
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run complete backend reactor unit and contract suite
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+
+  api-integration:
+    name: PostgreSQL 16 API security regression with PHASE-11 controllers
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run PHASE-04 PostgreSQL API integration regression
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e -pl technical-platform/backend/apps/api -am -Pphase04-integration verify 2>&1 | tee /tmp/phase11-api-integration.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="
+              tail -n 240 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|AssertionFailedError' /tmp/phase11-api-integration.log | tail -n 360 || true
+            exit 1
+          fi
+
+  phase11-database:
+    name: PostgreSQL 16 P011-P016 canonical business integrity
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run all PHASE-11 database integration tests together
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e \
+            -pl technical-platform/backend/modules/database-baseline -am \
+            -Dtest=Phase11P011DatabaseIT,Phase11P012DatabaseIT,Phase11P013DatabaseIT,Phase11P014DatabaseIT,Phase11P015DatabaseIT,Phase11P016DatabaseIT \
+            -Dsurefire.failIfNoSpecifiedTests=false test 2>&1 | tee /tmp/phase11-database.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="
+              tail -n 280 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|AssertionFailedError|SQLSTATE' /tmp/phase11-database.log | tail -n 420 || true
+            exit 1
+          fi
+
+  completed-phase-database:
+    name: PostgreSQL 16 completed PHASE-${{ matrix.phase }} regression
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: ["03", "05", "06", "09", "10"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run completed PHASE-${{ matrix.phase }} database integration profile
+        shell: bash
+        run: |
+          set -o pipefail
+          MODULE=technical-platform/backend/modules/database-baseline
+          PROFILE="phase${{ matrix.phase }}-integration"
+          LOG="/tmp/${PROFILE}.log"
+          if ! bash ./mvnw -B -ntp -e -pl "$MODULE" -am -P"$PROFILE" verify 2>&1 | tee "$LOG"; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="
+              tail -n 240 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|AssertionFailedError|SQLSTATE' "$LOG" | tail -n 360 || true
+            exit 1
+          fi
+
+  web:
+    name: Vue TypeScript lint unit quality and production build
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm quality:duplicates
+      - run: NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+      - run: pnpm build
+
+  completed-phase-live-e2e:
+    name: P006-P010 PostgreSQL Redis three-portal live E2E regression
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/phase-11-performance-growth-welfare'
+    runs-on: ubuntu-latest
+    env:
+      PHASE10_E2E_TENANT: PHASE10_E2E
+      PHASE10_E2E_LOGIN: phase10.employee
+      SJG_LOCAL_API_PROXY_TARGET: http://127.0.0.1:18110
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - name: Generate ephemeral PHASE-10 credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PASSWORD="S10_$(openssl rand -hex 18)"
+          echo "::add-mask::$PASSWORD"
+          echo "PHASE10_E2E_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+      - name: Compile real PHASE-10 API fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am -DskipTests install
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api test-compile
+          bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api dependency:build-classpath \
+            -DincludeScope=test \
+            -Dmdep.outputFile="$GITHUB_WORKSPACE/technical-platform/backend/apps/api/target/phase10-classpath.txt"
+      - name: Install PHASE-10 browser dependencies
+        working-directory: technical-platform/web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+      - name: Start Spring Boot PostgreSQL 16 Redis fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_DIR=technical-platform/backend/apps/api
+          CP="$API_DIR/target/test-classes:$API_DIR/target/classes:$(cat "$API_DIR/target/phase10-classpath.txt")"
+          java -cp "$CP" cn.shangjingu.platform.api.Phase10BrowserBackendFixture \
+            > "$API_DIR/target/phase10-fixture.log" 2>&1 &
+          echo $! > "$API_DIR/target/phase10-fixture.pid"
+          for attempt in $(seq 1 150); do
+            if grep -q 'PHASE10_BROWSER_FIXTURE_READY' "$API_DIR/target/phase10-fixture.log" \
+              && curl -sS http://127.0.0.1:18110/actuator/health >/dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$(cat "$API_DIR/target/phase10-fixture.pid")" 2>/dev/null; then
+              cat "$API_DIR/target/phase10-fixture.log"
+              exit 1
+            fi
+            sleep 2
+          done
+          cat "$API_DIR/target/phase10-fixture.log"
+          exit 1
+      - name: Run P006-P010 real three-portal lifecycle E2E
+        working-directory: technical-platform/web
+        run: pnpm exec playwright test --config=playwright.phase10-live.config.ts
+      - name: Verify canonical database outbox audit and qualification facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          FACTS=technical-platform/backend/apps/api/target/phase10-fixture-runtime.json
+          test -s "$FACTS"
+          PG_CONTAINER=$(jq -r '.postgresContainerId' "$FACTS")
+          REDIS_CONTAINER=$(jq -r '.redisContainerId' "$FACTS")
+          TENANT_ID=$(jq -r '.tenantId' "$FACTS")
+          EMPLOYEE_ID=$(jq -r '.employeeId' "$FACTS")
+          QUALIFICATION_ROLE_ID=$(jq -r '.qualificationRoleId' "$FACTS")
+          MEETING_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from collaboration.meeting where tenant_id='$TENANT_ID'::uuid and official_subject='P006 live meeting' and not is_deleted")
+          SHIFT_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.shift_change_request where tenant_id='$TENANT_ID'::uuid and subject='P007 live schedule' and not is_deleted")
+          LEAVE_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.leave_request where tenant_id='$TENANT_ID'::uuid and subject='P008 live leave' and not is_deleted")
+          OVERTIME_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from attendance.overtime_request where tenant_id='$TENANT_ID'::uuid and subject='P009 live overtime' and not is_deleted")
+          LEARNING_ID=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select id from learning.learning_assignment where tenant_id='$TENANT_ID'::uuid and subject='P010 live qualification' and not is_deleted")
+          test -n "$MEETING_ID"; test -n "$SHIFT_ID"; test -n "$LEAVE_ID"
+          test -n "$OVERTIME_ID"; test -n "$LEARNING_ID"
+          CLOSED=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from (
+              select status from collaboration.meeting where id='$MEETING_ID'::uuid
+              union all select status from attendance.shift_change_request where id='$SHIFT_ID'::uuid
+              union all select status from attendance.leave_request where id='$LEAVE_ID'::uuid
+              union all select status from attendance.overtime_request where id='$OVERTIME_ID'::uuid
+              union all select status from learning.learning_assignment where id='$LEARNING_ID'::uuid
+            ) x where status='已关闭'")
+          WORKFLOWS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from workflow.wf_instance where status='COMPLETED' and id in (
+              select workflow_instance_id from collaboration.meeting where id='$MEETING_ID'::uuid
+              union all select workflow_instance_id from attendance.shift_change_request where id='$SHIFT_ID'::uuid
+              union all select workflow_instance_id from attendance.leave_request where id='$LEAVE_ID'::uuid
+              union all select workflow_instance_id from attendance.overtime_request where id='$OVERTIME_ID'::uuid
+              union all select workflow_instance_id from learning.learning_assignment where id='$LEARNING_ID'::uuid)")
+          LEDGER=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from attendance.leave_request_item where master_id='$LEAVE_ID'::uuid and field_code='QUOTA_LEDGER' and not is_deleted")
+          EVIDENCE=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from learning.learning_assignment_evidence where assignment_id='$LEARNING_ID'::uuid")
+          QUALIFICATION_GRANT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc \
+            "select count(*) from iam.user_role ur join iam.user_identity ui on ui.id=ur.identity_id and ui.tenant_id=ur.tenant_id where ur.tenant_id='$TENANT_ID'::uuid and ui.employee_id='$EMPLOYEE_ID'::uuid and ur.role_id='$QUALIFICATION_ROLE_ID'::uuid and ur.grant_source='QUALIFICATION' and not ur.is_deleted")
+          OUTBOX=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_oms -Atc "
+            select count(*) from core.outbox_event where tenant_id='$TENANT_ID'::uuid
+              and aggregate_id in ('$MEETING_ID'::uuid,'$SHIFT_ID'::uuid,'$LEAVE_ID'::uuid,'$OVERTIME_ID'::uuid,'$LEARNING_ID'::uuid)
+              and not is_deleted")
+          AUDIT=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc \
+            "select count(*) from audit.operation_log where tenant_id='$TENANT_ID'::uuid and action like 'P0%'")
+          PASSWORD_HITS=$(docker exec "$PG_CONTAINER" psql -U postgres -d sjg_audit -Atc \
+            "select (select count(*) from audit.operation_log where row_to_json(operation_log)::text like '%$PHASE10_E2E_PASSWORD%') + (select count(*) from audit.security_event where row_to_json(security_event)::text like '%$PHASE10_E2E_PASSWORD%')")
+          REDIS_KEYS=$(docker exec "$REDIS_CONTAINER" redis-cli DBSIZE | tr -d '\r')
+          printf 'PHASE10_FACTS closed=%s workflows=%s ledger=%s evidence=%s qualification=%s outbox=%s audit=%s password=%s redis=%s\n' \
+            "$CLOSED" "$WORKFLOWS" "$LEDGER" "$EVIDENCE" "$QUALIFICATION_GRANT" "$OUTBOX" "$AUDIT" "$PASSWORD_HITS" "$REDIS_KEYS"
+          test "$CLOSED" -eq 5
+          test "$WORKFLOWS" -eq 5
+          test "$LEDGER" -eq 3
+          test "$EVIDENCE" -ge 6
+          test "$QUALIFICATION_GRANT" -eq 1
+          test "$OUTBOX" -ge 40
+          test "$AUDIT" -ge 50
+          test "$PASSWORD_HITS" -eq 0
+          test "$REDIS_KEYS" -ge 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase11-completed-phase-live-${{ github.sha }}
+          path: |
+            technical-platform/web/reports/playwright-phase10-live
+            technical-platform/backend/apps/api/target/phase10-fixture.log
+            technical-platform/backend/apps/api/target/phase10-fixture-runtime.json
+          if-no-files-found: warn
+      - name: Stop PHASE-10 live fixture
+        if: always()
+        shell: bash
+        run: |
+          PID_FILE=technical-platform/backend/apps/api/target/phase10-fixture.pid
+          if [ -s "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")" 2>/dev/null || true
+            wait "$(cat "$PID_FILE")" 2>/dev/null || true
+          fi
+
+  verdict:
+    name: PHASE-11 full construction gate verdict
+    needs:
+      - contract
+      - backend-unit
+      - api-integration
+      - phase11-database
+      - completed-phase-database
+      - web
+      - completed-phase-live-e2e
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every PHASE-11 gate job green
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ '${{ github.event_name }}' = 'pull_request' ] && [ '${{ github.head_ref }}' != 'agent/phase-11-performance-growth-welfare' ]; then
+            echo 'PHASE-11 full construction gate is not applicable to this later-phase pull request.'
+            exit 0
+          fi
+          test '${{ needs.contract.result }}' = 'success'
+          test '${{ needs.backend-unit.result }}' = 'success'
+          test '${{ needs.api-integration.result }}' = 'success'
+          test '${{ needs.phase11-database.result }}' = 'success'
+          test '${{ needs.completed-phase-database.result }}' = 'success'
+          test '${{ needs.web.result }}' = 'success'
+          test '${{ needs.completed-phase-live-e2e.result }}' = 'success'
