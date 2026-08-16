@@ -104,7 +104,7 @@ class Phase11P014DatabaseIT {
     }
 
     @Test
-    void databaseRejectsBothSeparationOfDutyViolations() {
+    void databaseRejectsBothSeparationOfDutyViolations() throws SQLException {
         SQLException selfInvestigation = assertSqlRejected("""
                 update reward.discipline_case
                    set investigator_employee_id='%s'
