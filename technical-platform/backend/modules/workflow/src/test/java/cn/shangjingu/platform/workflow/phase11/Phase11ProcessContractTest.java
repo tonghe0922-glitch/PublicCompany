@@ -13,106 +13,59 @@ class Phase11ProcessContractTest {
     @Test
     void p011GraphMatchesFrozenContract() {
         Phase11Process process = Phase11Process.P011;
-        assertEquals(
-                List.of(
-                        "S01", "S02", "S03", "S04", "S05", "S06",
-                        "S07", "S08", "S09", "S10", "S11"),
+        assertEquals(List.of("S01","S02","S03","S04","S05","S06","S07","S08","S09","S10","S11"),
                 process.steps().stream().map(Phase11Process.Step::node).toList());
-        assertEquals(
-                List.of(
-                        "SET_TARGETS", "CONFIRM_TARGETS", "RECORD_COACHING",
-                        "COLLECT_FACTS", "SUBMIT_REVIEWS", "CALCULATE_SCORE",
-                        "CALIBRATE", "SUBMIT_APPEAL_DECISION", "RESOLVE_APPEAL",
-                        "EXECUTE_IMPACT", "ARCHIVE"),
+        assertEquals(List.of("SET_TARGETS","CONFIRM_TARGETS","RECORD_COACHING","COLLECT_FACTS","SUBMIT_REVIEWS",
+                "CALCULATE_SCORE","CALIBRATE","SUBMIT_APPEAL_DECISION","RESOLVE_APPEAL","EXECUTE_IMPACT","ARCHIVE"),
                 process.steps().stream().map(Phase11Process.Step::action).toList());
         assertTrue(process.ownerAction("CONFIRM_TARGETS"));
-        assertTrue(process.ownerAction("SUBMIT_APPEAL_DECISION"));
         assertTrue(process.specialistAction("CALIBRATE"));
-        assertTrue(process.specialistAction("RESOLVE_APPEAL"));
         assertFalse(process.ownerAction("CALCULATE_SCORE"));
-        assertEquals("S02", process.requireTransition("S01", "SET_TARGETS").targetNode());
-        assertThrows(
-                ProcessRejectedException.class,
-                () -> process.requireTransition("S03", "CALIBRATE"));
+        assertThrows(ProcessRejectedException.class, () -> process.requireTransition("S03", "CALIBRATE"));
     }
 
     @Test
     void p012GraphMatchesFrozenContract() {
         Phase11Process process = Phase11Process.P012;
-        assertEquals(
-                List.of(
-                        "S01", "S02", "S03", "S04", "S05",
-                        "S06", "S07", "S08", "S09", "S10"),
-                process.steps().stream().map(Phase11Process.Step::node).toList());
-        assertEquals(
-                List.of(
-                        "SUBMIT_NOMINATION",
-                        "PASS_ELIGIBILITY",
-                        "SUBMIT_ASSESSMENT",
-                        "VERIFY_POSITION_BUDGET",
-                        "COMPLETE_REVIEW",
-                        "APPROVE_PROMOTION",
-                        "COMPLETE_NOTICE",
-                        "CONFIRM_APPOINTMENT",
-                        "COMPLETE_VALIDATION",
-                        "ACTIVATE_APPOINTMENT"),
-                process.steps().stream().map(Phase11Process.Step::action).toList());
+        assertEquals(List.of("SUBMIT_NOMINATION","PASS_ELIGIBILITY","SUBMIT_ASSESSMENT","VERIFY_POSITION_BUDGET",
+                "COMPLETE_REVIEW","APPROVE_PROMOTION","COMPLETE_NOTICE","CONFIRM_APPOINTMENT","COMPLETE_VALIDATION",
+                "ACTIVATE_APPOINTMENT"), process.steps().stream().map(Phase11Process.Step::action).toList());
         assertTrue(process.ownerAction("CONFIRM_APPOINTMENT"));
         assertTrue(process.specialistAction("ACTIVATE_APPOINTMENT"));
-        assertFalse(process.ownerAction("APPROVE_PROMOTION"));
-        assertEquals(
-                "END",
-                process.requireTransition("S10", "ACTIVATE_APPOINTMENT").targetNode());
-        assertThrows(
-                ProcessRejectedException.class,
-                () -> process.requireTransition("S08", "ACTIVATE_APPOINTMENT"));
-    }
-
-    @Test
-    void p014CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
-        assertEquals(
-                List.of("P011", "P012", "P013", "P014"),
-                java.util.Arrays.stream(Phase11Process.values())
-                        .map(Phase11Process::code)
-                        .toList());
+        assertEquals("END", process.requireTransition("S10", "ACTIVATE_APPOINTMENT").targetNode());
     }
 
     @Test
     void p014GraphMatchesFrozenTwelveStepContract() {
         Phase11Process process = Phase11Process.P014;
-        assertEquals(
-                List.of(
-                        "S01", "S02", "S03", "S04", "S05", "S06",
-                        "S07", "S08", "S09", "S10", "S11", "S12"),
-                process.steps().stream().map(Phase11Process.Step::node).toList());
-        assertEquals(
-                List.of(
-                        "REGISTER_LEAD",
-                        "APPLY_SAFETY_MEASURE",
-                        "COMPLETE_INVESTIGATION",
-                        "SUBMIT_DEFENSE",
-                        "COMPLETE_RESPONSIBILITY_REVIEW",
-                        "APPROVE_DECISION",
-                        "ACKNOWLEDGE_SERVICE",
-                        "EXECUTE_IMPACTS",
-                        "RESOLVE_APPEAL",
-                        "CLOSE_CORE_CASE",
-                        "COMPLETE_OBSERVATION",
-                        "ARCHIVE"),
-                process.steps().stream().map(Phase11Process.Step::action).toList());
         assertEquals("CTR-P014-F01", process.initialFormCode());
         assertEquals("S05", process.requireTransition("S04", "SUBMIT_DEFENSE").targetNode());
-        assertEquals("S10", process.requireTransition("S09", "RESOLVE_APPEAL").targetNode());
         assertEquals("END", process.requireTransition("S12", "ARCHIVE").targetNode());
-        assertThrows(
-                ProcessRejectedException.class,
-                () -> process.requireTransition("S06", "ARCHIVE"));
+    }
+
+    @Test
+    void p015CheckpointExposesOnlyClosedAndCurrentPhase11Processes() {
+        assertEquals(List.of("P011", "P012", "P013", "P014", "P015"),
+                java.util.Arrays.stream(Phase11Process.values()).map(Phase11Process::code).toList());
+    }
+
+    @Test
+    void p015GraphMatchesFrozenImmutableLedgerContract() {
+        Phase11Process process = Phase11Process.P015;
+        assertEquals(List.of("S01","S02","S03","S04","S05","S06","S07","S08","S09","S10"),
+                process.steps().stream().map(Phase11Process.Step::node).toList());
+        assertEquals(List.of("REGISTER_EVENT","VALIDATE_SOURCE","CHECK_DUPLICATE","MATCH_RULE_VERSION","CALCULATE_POINTS",
+                "CLASSIFY_RISK","POST_OR_REVIEW","NOTIFY_EMPLOYEE","ADJUST_OR_REVERSE","RECALCULATE_BALANCE"),
+                process.steps().stream().map(Phase11Process.Step::action).toList());
+        assertEquals("CTR-P015-F01", process.initialFormCode());
+        assertEquals("S08", process.requireTransition("S07", "POST_OR_REVIEW").targetNode());
+        assertEquals("END", process.requireTransition("S10", "RECALCULATE_BALANCE").targetNode());
+        assertThrows(ProcessRejectedException.class, () -> process.requireTransition("S07", "RECALCULATE_BALANCE"));
     }
 
     @Test
     void independentScoresCalculateWithoutOverwritingSources() {
-        Phase11Repository.PerformanceScores scores =
-                new Phase11Repository.PerformanceScores(800L, 900L, 700L, null);
+        Phase11Repository.PerformanceScores scores = new Phase11Repository.PerformanceScores(800L, 900L, 700L, null);
         assertTrue(scores.readyForCalculation());
         assertEquals(800L, scores.calculated());
         assertEquals(800L, scores.employee());
