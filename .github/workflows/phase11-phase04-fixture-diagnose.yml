@@ -15,18 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           ref: agent/phase-11-performance-growth-welfare
-      - name: Locate the failing integration fixture
+      - name: Locate every Phase04 integration source and profile
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t files < <(find technical-platform/backend -type f -name 'Phase04ApiSecurityIntegrationTest.java' -print | sort)
-          printf 'FOUND=%s\n' "${#files[@]}"
-          for file in "${files[@]}"; do
-            echo "===== $file ====="
-            grep -nE '^(package |.*loadsSessionFromDatabaseByOpaqueTokenHash|.*insertSession|.*identity_session|.*set_config|.*app\.tenant_id)' "$file" || true
-            echo '----- lines 80-125 -----'
-            nl -ba "$file" | sed -n '80,125p'
-            echo '----- lines 430-485 -----'
-            nl -ba "$file" | sed -n '430,485p'
-          done
+          echo '===== Phase04 integration source files ====='
+          find . -type f -name '*Phase04*IntegrationTest.java' -print | sort
+          echo '===== opaque-token method matches ====='
+          grep -R -n --exclude-dir=.git --exclude-dir=target \
+            -E 'loadsSessionFromDatabaseByOpaqueTokenHash|void insertSession|identity_session' \
+            technical-platform/backend || true
+          echo '===== package matches ====='
+          grep -R -n --exclude-dir=.git --exclude-dir=target \
+            'package cn.shangjingu.platform.api.security' technical-platform/backend || true
+          echo '===== phase04 profile definitions ====='
+          grep -R -n --include='pom.xml' '<id>phase04-integration</id>' technical-platform/backend pom.xml || true
+          echo '===== tracked test classes with Phase04 name ====='
+          git ls-files | grep -E 'Phase04.*(Test|IT)\.java$' || true
