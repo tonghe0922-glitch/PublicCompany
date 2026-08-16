@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** P011 frozen process graph. Later PHASE-11 checkpoints are added only after the previous one passes. */
+/** Frozen PHASE-11 process graphs exposed strictly in checkpoint order. */
 public enum Phase11Process {
     P011(
             "绩效管理",
@@ -27,7 +27,30 @@ public enum Phase11Process {
                     step("S10", "绩效影响执行", "EXECUTE_IMPACT", "S11"),
                     step("S11", "归档", "ARCHIVE", "END")),
             Set.of("CONFIRM_TARGETS", "SUBMIT_APPEAL_DECISION"),
-            Set.of("CALIBRATE", "RESOLVE_APPEAL"));
+            Set.of("CALIBRATE", "RESOLVE_APPEAL")),
+    P012(
+            "晋升与任职发展",
+            "hr.promotion_request",
+            "EMP-P012-F01",
+            "p012.promotion.review",
+            "p012.promotion.appoint",
+            List.of(
+                    step("S01", "提名提交", "SUBMIT_NOMINATION", "S02"),
+                    step("S02", "资格校验", "PASS_ELIGIBILITY", "S03"),
+                    step("S03", "评审资料与评价", "SUBMIT_ASSESSMENT", "S04"),
+                    step("S04", "岗位编制与预算核验", "VERIFY_POSITION_BUDGET", "S05"),
+                    step("S05", "评审会", "COMPLETE_REVIEW", "S06"),
+                    step("S06", "审批", "APPROVE_PROMOTION", "S07"),
+                    step("S07", "公示与沟通", "COMPLETE_NOTICE", "S08"),
+                    step("S08", "员工确认", "CONFIRM_APPOINTMENT", "S09"),
+                    step("S09", "任前校验", "COMPLETE_VALIDATION", "S10"),
+                    step("S10", "正式生效", "ACTIVATE_APPOINTMENT", "END")),
+            Set.of("CONFIRM_APPOINTMENT"),
+            Set.of(
+                    "APPROVE_PROMOTION",
+                    "COMPLETE_NOTICE",
+                    "COMPLETE_VALIDATION",
+                    "ACTIVATE_APPOINTMENT"));
 
     private final String label;
     private final String table;
