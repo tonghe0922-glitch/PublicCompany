@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class PromotionRepository {
+public class PromotionRepository {
     private final NamedParameterJdbcTemplate jdbc;
     private final ObjectMapper mapper;
 
