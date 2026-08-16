@@ -8,6 +8,7 @@ on:
       - "docs/implementation/MASTER_PROGRESS.md"
       - "docs/implementation/phases/PHASE-11/**"
       - "scripts/implementation/phase11_p016_reuse_review.py"
+      - "scripts/implementation/phase11_p016_contract.py"
       - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/**"
       - "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/phase11/**"
       - "technical-platform/backend/modules/welfare/**"
@@ -15,6 +16,11 @@ on:
       - "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P016DatabaseIT.java"
       - "technical-platform/database/flyway/oms/V44__welfare_tables.sql"
       - "technical-platform/database/flyway-overlays/oms/V127__phase11_p016_welfare.sql"
+      - "technical-platform/web/src/platform/phase11/p016/**"
+      - "technical-platform/web/src/platform/pages/phase11/P016*"
+      - "technical-platform/web/src/router/portal-router.ts"
+      - "technical-platform/web/src/router/p016-route-specs.ts"
+      - "technical-platform/web/src/router/p016-router.test.ts"
   workflow_dispatch:
 
 permissions:
@@ -29,14 +35,14 @@ env:
 
 jobs:
   contract:
-    name: P016 C0 reuse and scope contract
+    name: P016 C0 reuse implementation and scope contract
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Verify frozen contracts, reuse boundary and checkpoint order
+      - name: Verify frozen contracts, reuse boundary, implementation and checkpoint order
         shell: bash
         run: |
           set -euo pipefail
@@ -50,6 +56,7 @@ jobs:
           python scripts/implementation/phase11_p014_contract.py
           python scripts/implementation/phase11_p015_contract.py
           python scripts/implementation/phase11_p016_reuse_review.py
+          python scripts/implementation/phase11_p016_contract.py
           git diff --check "$PHASE11_C0_SHA"...HEAD
       - name: Reject shadow truth, target-status regression, P017 drift, mocks and secrets
         shell: bash
@@ -58,12 +65,12 @@ jobs:
           test -f technical-platform/database/flyway-overlays/oms/V127__phase11_p016_welfare.sql
           ! grep -Eiq 'create[[:space:]]+table[[:space:]]+(if[[:space:]]+not[[:space:]]+exists[[:space:]]+)?welfare\.(care_case_v2|phase11_care_case|p016_case|care_case_shadow)' technical-platform/database/flyway-overlays/oms/V127__phase11_p016_welfare.sql
           ! grep -Eiq 'create[[:space:]]+table[[:space:]]+(if[[:space:]]+not[[:space:]]+exists[[:space:]]+)?welfare\.care_case\b' technical-platform/database/flyway-overlays/oms/V127__phase11_p016_welfare.sql
-          if grep -R -nE 'requestedStatus' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11; then
+          if grep -R -nE 'requestedStatus|targetStatus' technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11; then
             echo 'P016 PHASE-11 API must not accept a client target status'
             exit 1
           fi
-          if grep -R -nE '\bP0(17|18|19|20)\b' technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11; then
-            echo 'P017+ executable drift is forbidden before PHASE-12'
+          if ! grep -Fq 'PHASE-11 = COMPLETE' docs/implementation/MASTER_PROGRESS.md && grep -R -nE '\bP0(17|18|19|20)\b' technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11; then
+            echo 'P017+ executable drift is forbidden before PHASE-11 completion'
             exit 1
           fi
           TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/database)
@@ -136,14 +143,36 @@ jobs:
             exit 1
           fi
 
-  construction-verdict:
-    name: P016 backend database construction verdict
-    if: always()
-    needs: [contract, backend-unit, api-security-regression, database]
+  web:
+    name: P016 Vue TypeScript lint unit quality and builds
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
     steps:
       - uses: actions/checkout@v4
-      - name: Require server-side construction green without closing P016
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm quality:duplicates
+      - run: NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+      - run: pnpm build
+
+  verdict:
+    name: P016 checkpoint verdict
+    if: always()
+    needs: [contract, backend-unit, api-security-regression, database, web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every P016 checkpoint job green
         shell: bash
         run: |
           set -euo pipefail
@@ -151,5 +180,4 @@ jobs:
           test "${{ needs.backend-unit.result }}" = success
           test "${{ needs.api-security-regression.result }}" = success
           test "${{ needs.database.result }}" = success
-          ! grep -Fq 'P016 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md
-          echo 'P016 backend/database is green; three-portal web checkpoint is still required before closure.'
+          test "${{ needs.web.result }}" = success
