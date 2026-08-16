@@ -4,11 +4,11 @@
 > Construction branch: `agent/phase-11-performance-growth-welfare`
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction state: `PHASE-11 = IN_PROGRESS / P014_CONSTRUCTION_AUTHORIZED`
-> Current legal checkpoint: `P014 = NOT_STARTED_CHECKPOINT / AUTHORIZED`
+> Current construction state: `PHASE-11 = IN_PROGRESS / P015_CONSTRUCTION_AUTHORIZED`
+> Current legal checkpoint: `P015 = NOT_STARTED_CHECKPOINT / AUTHORIZED`
 > Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
-根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理、P012 晋升任职、P013 奖励与认可均已通过 Checkpoint Gate 并关闭；当前唯一合法下一施工点为 P014 纪律责任与申诉，P015–P016 尚未施工，P017+ 保持锁定。
+根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理、P012 晋升任职、P013 奖励与认可、P014 纪律责任与申诉均已通过 Checkpoint Gate 并关闭；当前唯一合法下一施工点为 P015，P016 尚未施工且保持既有内核复用评审状态，P017+ 保持锁定。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -23,7 +23,7 @@
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS |
 | PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；封板后质量整改 HEAD `79edc420...` CI SUCCESS |
-| PHASE-11 | IN_PROGRESS | P011–P016；P011、P012、P013 已关闭；`P014_CONSTRUCTION_AUTHORIZED` |
+| PHASE-11 | IN_PROGRESS | P011–P016；P011、P012、P013、P014 已关闭；`P015_CONSTRUCTION_AUTHORIZED` |
 | PHASE-12 | NOT_STARTED | P017–P020；LOCKED |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
@@ -111,8 +111,12 @@ P011 = CHECKPOINT_PASS / CLOSED / run 31871437974
 P012 = CHECKPOINT_PASS / CLOSED / run 31924632658
 P013 = CHECKPOINT_PASS / CLOSED / run 31928350534
 P013 accepted implementation candidate = 397713476d310ba1e7e38fc11cef234ea64b4f0e
-P014 = NOT_STARTED_CHECKPOINT / AUTHORIZED
-P015 = NOT_STARTED_CHECKPOINT
+P014 = CHECKPOINT_PASS / CLOSED / run 31930909868
+P014 accepted implementation candidate = ca52cd8298ee603e7aba1be84d7c797106a23d5f
+P014 candidate checkpoint = run 31930791901 / SUCCESS
+P014 formal route/checkpoint seal HEAD = 5bc7dcd9e0ae8fe17bd2e87c8cba441867a3f72c
+P014 formal seal checkpoint = run 31930909868 / SUCCESS
+P015 = NOT_STARTED_CHECKPOINT / AUTHORIZED
 P016 = NOT_STARTED_CHECKPOINT / PREEXISTING_KERNEL_REUSE_REVIEW
 P017-P020 = PHASE-12 / NOT_STARTED / LOCKED
 ```
@@ -145,5 +149,6 @@ Preparation Gate continuity = run 31865754872 / SUCCESS
 P011 implementation = CHECKPOINT_PASS / CLOSED
 P012 implementation = CHECKPOINT_PASS / CLOSED / run 31924632658
 P013 implementation = CHECKPOINT_PASS / CLOSED / run 31928350534
-P014 implementation = NOT_STARTED / AUTHORIZED
+P014 implementation = CHECKPOINT_PASS / CLOSED / run 31930909868
+P015 implementation = NOT_STARTED / AUTHORIZED
 ```
