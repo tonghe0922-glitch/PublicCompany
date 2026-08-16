@@ -35,30 +35,94 @@ ALTER TABLE org.employee_position
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='ck_p012_current_node') THEN
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT ck_p012_current_node CHECK (
-      current_node_code IN ('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','END'));
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='ck_p012_current_node'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT ck_p012_current_node CHECK (
+        current_node_code IN ('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','END'))
+    $ddl$;
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='ck_p012_review_scores') THEN
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT ck_p012_review_scores CHECK (
-      review_facet_count IS NULL OR review_facet_count >= 1)
-      NOT VALID;
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT ck_p012_score_range CHECK (
-      weighted_review_score IS NULL OR weighted_review_score BETWEEN 0 AND 1000)
-      NOT VALID;
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT ck_p012_threshold_range CHECK (
-      promotion_threshold_score IS NULL OR promotion_threshold_score BETWEEN 0 AND 1000)
-      NOT VALID;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='ck_p012_review_scores'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT ck_p012_review_scores CHECK (
+        review_facet_count IS NULL OR review_facet_count >= 1)
+      NOT VALID
+    $ddl$;
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='fk_p012_performance_cycle') THEN
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT fk_p012_performance_cycle
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='ck_p012_score_range'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT ck_p012_score_range CHECK (
+        weighted_review_score IS NULL OR weighted_review_score BETWEEN 0 AND 1000)
+      NOT VALID
+    $ddl$;
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='ck_p012_threshold_range'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT ck_p012_threshold_range CHECK (
+        promotion_threshold_score IS NULL OR promotion_threshold_score BETWEEN 0 AND 1000)
+      NOT VALID
+    $ddl$;
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='fk_p012_performance_cycle'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT fk_p012_performance_cycle
       FOREIGN KEY (source_performance_cycle_id) REFERENCES performance.performance_cycle(id)
-      NOT VALID;
+      NOT VALID
+    $ddl$;
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='fk_p012_target_position') THEN
-    ALTER TABLE hr.promotion_request ADD CONSTRAINT fk_p012_target_position
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='fk_p012_target_position'
+      AND n.nspname='hr' AND t.relname='promotion_request'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE hr.promotion_request
+      ADD CONSTRAINT fk_p012_target_position
       FOREIGN KEY (target_position_id) REFERENCES org.position(id)
-      NOT VALID;
+      NOT VALID
+    $ddl$;
   END IF;
 END $$;
 
