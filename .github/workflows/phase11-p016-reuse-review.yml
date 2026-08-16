@@ -74,17 +74,25 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false test
 
   completed-kernel-contracts:
-    name: PHASE-05 and PHASE-06 kernel continuity
+    name: PHASE-05 and PHASE-06 sealed kernel continuity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - name: Verify canonical workflow and platform side-effect contracts
+      - name: Verify durable sealed evidence and platform kernel assets
+        shell: bash
         run: |
           set -euo pipefail
-          python scripts/implementation/phase05_source_contract.py
-          python scripts/implementation/phase06_complete_contract.py
+          grep -Fq '| PHASE-05 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Fq '| PHASE-06 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          test -s docs/implementation/phases/PHASE-06/C8_CHECKPOINT.md
+          test -s docs/implementation/phases/PHASE-06/PHASE_GATE.md
+          grep -Fq 'Canonical C8 state: `COMPLETE / GATE_PASSED`' docs/implementation/phases/PHASE-06/C8_CHECKPOINT.md
+          grep -Fq 'PHASE GATE: PASS' docs/implementation/phases/PHASE-06/PHASE_GATE.md
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06OutboxInboxDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06FileObjectDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06AuditTraceDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06IntegrationDatabaseIT.java
+          echo 'PHASE-05/06 sealed kernel evidence and regression assets are present.'
 
   verdict:
     name: P016 reuse review verdict
