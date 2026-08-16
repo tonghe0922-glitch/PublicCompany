@@ -1,0 +1,145 @@
+name: PHASE-11 P013 Verified Repair Run
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p013-repair-run.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: phase11-p013-verified-repair
+  cancel-in-progress: false
+
+env:
+  OFFICIAL_BRANCH: agent/phase-11-performance-growth-welfare
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/phase-11-performance-growth-welfare
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+
+      - name: Generate and apply reviewed P013 repairs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git ls-remote origin refs/heads/$OFFICIAL_BRANCH | cut -f1)"
+          python scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+          python scripts/implementation/phase11_p013_generate_backend.py
+          python scripts/implementation/phase11_p013_generate_database.py
+          python scripts/implementation/phase11_p013_generate_web.py
+          python - <<'PY'
+          from pathlib import Path
+
+          reward = Path('technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/RewardService.java')
+          text = reward.read_text(encoding='utf-8')
+          old = "        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();\n        if (benefit.signum() == 0\n"
+          new = "        long points = command.pointsDelta() == null ? 0L : command.pointsDelta();\n        if (points < 0L) {\n            throw rejected(\"pointsDelta must not be negative\");\n        }\n        if (benefit.signum() == 0\n"
+          if old not in text:
+              raise SystemExit('P013 points validation anchor not found')
+          reward.write_text(text.replace(old, new), encoding='utf-8')
+
+          board = Path('technical-platform/web/src/platform/phase11/shared/Phase11CaseBoard.vue')
+          text = board.read_text(encoding='utf-8')
+          old = 'function inputType(field: Phase11CaseField): string {'
+          new = 'function inputType(field: Phase11CaseField) {'
+          if old not in text:
+              raise SystemExit('P013 input type anchor not found')
+          board.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          rm -f scripts/implementation/phase11_p013_generate_backend.py
+          rm -f scripts/implementation/phase11_p013_generate_database.py
+          rm -f scripts/implementation/phase11_p013_generate_web.py
+          rm -f .github/workflows/phase11-p013-p016-inspect.yml
+          rm -f .github/workflows/phase11-p013-compile-diagnose.yml
+          rm -f .github/workflows/phase11-p013-web-diagnose.yml
+          rm -f .github/workflows/phase11-p013-p016-guarded-build.yml
+          rm -f .github/workflows/phase11-p013-repair-run.yml
+          rm -f .phase11-local-file-probe.txt
+          rm -f docs/implementation/phases/PHASE-11/P012_RECOVERY_CHECKPOINT.md
+          rm -f docs/implementation/phases/PHASE-11/P012_PUSH_RETRY_NOTE.md
+
+      - name: Verify P013 contract and scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          python scripts/implementation/phase11_p013_contract.py
+          python -m py_compile scripts/implementation/phase11_p013_contract.py
+          git diff --check
+          if find technical-platform/backend technical-platform/web/src technical-platform/database -type f -print | grep -E '/(P014|p014|P015|p015|P016|p016)/|P014|P015|P016'; then
+            echo 'P013 introduced a later executable process'
+            exit 1
+          fi
+          if grep -nEi 'CREATE[[:space:]]+TABLE[^;]*(phase[_-]?11|p013|reward_request)' technical-platform/database/flyway-overlays/oms/V124__phase11_p013_reward.sql; then
+            echo 'P013 shadow table is forbidden'
+            exit 1
+          fi
+          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage.*P013|mock.*P013|bypass login' technical-platform/backend technical-platform/web/src technical-platform/database; then
+            exit 1
+          fi
+
+      - name: Java 21 and API behavior
+        shell: bash
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+
+      - name: PostgreSQL 16 P013 integration
+        shell: bash
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/modules/database-baseline -am -Pphase11-p013-integration verify
+
+      - name: Vue TypeScript lint unit quality and builds
+        working-directory: technical-platform/web
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm typecheck
+          pnpm lint
+          pnpm test
+          pnpm quality:duplicates
+          NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+          pnpm build
+
+      - name: Publish verified P013 candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git ls-remote origin refs/heads/$OFFICIAL_BRANCH | cut -f1)"
+          git config user.name phase11-construction
+          git config user.email actions@users.noreply.github.com
+          git add -A
+          git diff --cached --check
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "phase-11: complete P013 reward closure candidate"
+          git push origin HEAD:"$OFFICIAL_BRANCH"
+
+      - name: Dispatch formal P013 checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: gh workflow run phase11-p013-checkpoint.yml --repo "$GITHUB_REPOSITORY" --ref "$OFFICIAL_BRANCH"
