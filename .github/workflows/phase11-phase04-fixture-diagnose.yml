@@ -1,0 +1,32 @@
+name: PHASE-11 Phase04 Fixture Diagnose
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-phase04-fixture-diagnose.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/phase-11-performance-growth-welfare
+      - name: Locate the failing integration fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find technical-platform/backend -type f -name 'Phase04ApiSecurityIntegrationTest.java' -print | sort)
+          printf 'FOUND=%s\n' "${#files[@]}"
+          for file in "${files[@]}"; do
+            echo "===== $file ====="
+            grep -nE '^(package |.*loadsSessionFromDatabaseByOpaqueTokenHash|.*insertSession|.*identity_session|.*set_config|.*app\.tenant_id)' "$file" || true
+            echo '----- lines 80-125 -----'
+            nl -ba "$file" | sed -n '80,125p'
+            echo '----- lines 430-485 -----'
+            nl -ba "$file" | sed -n '430,485p'
+          done
