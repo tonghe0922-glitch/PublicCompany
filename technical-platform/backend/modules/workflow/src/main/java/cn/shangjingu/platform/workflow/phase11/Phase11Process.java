@@ -77,31 +77,30 @@ public enum Phase11Process {
     P014(
             "纪律责任与申诉",
             "reward.discipline_case",
-            "EMP-P014-F01",
+            "CTR-P014-F01",
             "p014.discipline.investigate",
             "p014.discipline.decide",
             List.of(
-                    step("S01", "NEW", "REGISTER_LEAD", "S02"),
-                    step("S02", "TRIAGE_PENDING", "OPEN_INVESTIGATION", "S03"),
-                    step("S03", "INVESTIGATING", "RECORD_STATEMENT", "S04"),
-                    step("S04", "STATEMENT_RECORDED", "HEARING_DECISION", "S05"),
-                    step("S05", "DECISION_PENDING", "SERVE_DECISION", "S06"),
-                    step("S06", "DECISION_SERVED", "OPEN_APPEAL", "S07"),
-                    step("S07", "APPEAL_PENDING", "ASSIGN_APPEAL_REVIEWER", "S08"),
-                    step("S08", "APPEAL_REVIEWING", "RESOLVE_APPEAL", "S09"),
-                    step("S06", "DECISION_SERVED", "CLOSE_NO_APPEAL", "S10"),
-                    step("S09", "APPEAL_RESOLVED", "CLOSE_AFTER_APPEAL", "S10"),
-                    step("S10", "CLOSED", "REOPEN_FOR_DEFECT", "S03"),
-                    step("S10", "CLOSED", "ARCHIVE", "END")),
-            Set.of("OPEN_APPEAL"),
+                    step("S01", "线索登记", "REGISTER_LEAD", "S02"),
+                    step("S02", "先行止险", "APPLY_SAFETY_MEASURE", "S03"),
+                    step("S03", "调查", "COMPLETE_INVESTIGATION", "S04"),
+                    step("S04", "员工申辩", "SUBMIT_DEFENSE", "S05"),
+                    step("S05", "责任评审", "COMPLETE_RESPONSIBILITY_REVIEW", "S06"),
+                    step("S06", "决定审批", "APPROVE_DECISION", "S07"),
+                    step("S07", "送达确认", "ACKNOWLEDGE_SERVICE", "S08"),
+                    step("S08", "影响执行", "EXECUTE_IMPACTS", "S09"),
+                    step("S09", "独立申诉复核", "RESOLVE_APPEAL", "S10"),
+                    step("S10", "核心案件关闭", "CLOSE_CORE_CASE", "S11"),
+                    step("S11", "观察整改", "COMPLETE_OBSERVATION", "S12"),
+                    step("S12", "归档", "ARCHIVE", "END")),
+            Set.of("SUBMIT_DEFENSE", "ACKNOWLEDGE_SERVICE"),
             Set.of(
-                    "HEARING_DECISION",
-                    "SERVE_DECISION",
-                    "ASSIGN_APPEAL_REVIEWER",
+                    "COMPLETE_RESPONSIBILITY_REVIEW",
+                    "APPROVE_DECISION",
+                    "EXECUTE_IMPACTS",
                     "RESOLVE_APPEAL",
-                    "CLOSE_NO_APPEAL",
-                    "CLOSE_AFTER_APPEAL",
-                    "REOPEN_FOR_DEFECT",
+                    "CLOSE_CORE_CASE",
+                    "COMPLETE_OBSERVATION",
                     "ARCHIVE"));
 
     private final String label;
@@ -178,7 +177,7 @@ public enum Phase11Process {
 
     public String labelFor(String node) {
         if ("END".equals(node)) {
-            return this == P014 ? "ARCHIVED" : "已关闭";
+            return this == P014 ? "已归档" : "已关闭";
         }
         String nodeLabel = labelsByNode.get(node);
         if (nodeLabel == null) {

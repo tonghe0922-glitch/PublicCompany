@@ -62,14 +62,14 @@ class Phase11P014DatabaseIT {
     @Test
     void p014PublishedGraphMatchesFrozenContract() throws Exception {
         assertEquals(
-                "S01,S02,S03,S04,S05,S06,S07,S08,S09,S10,END",
+                "S01,S02,S03,S04,S05,S06,S07,S08,S09,S10,S11,S12,END",
                 scalarString("""
                         select string_agg(n.node_code,',' order by n.sort_no)
                         from workflow.wf_node n
                         join workflow.wf_version v on v.tenant_id=n.tenant_id and v.id=n.version_id
                         join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id
                         where d.tenant_id='%s' and d.process_code='P014'
-                          and v.status='PUBLISHED' and v.checksum='phase11-p014-c0-v1'
+                          and v.status='PUBLISHED' and v.checksum='phase11-p014-c0-v2'
                           and not n.is_deleted and not v.is_deleted and not d.is_deleted
                         """.formatted(TENANT)));
         assertEquals(12L, scalarLong("""
@@ -77,16 +77,25 @@ class Phase11P014DatabaseIT {
                 join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=t.version_id
                 join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id
                 where d.tenant_id='%s' and d.process_code='P014'
-                  and v.status='PUBLISHED' and v.checksum='phase11-p014-c0-v1'
+                  and v.status='PUBLISHED' and v.checksum='phase11-p014-c0-v2'
                   and not t.is_deleted and not v.is_deleted and not d.is_deleted
                 """.formatted(TENANT)));
-        assertEquals(2L, scalarLong("""
+        assertEquals(12L, scalarLong("""
                 select count(*) from workflow.wf_transition t
                 join workflow.wf_version v on v.tenant_id=t.tenant_id and v.id=t.version_id
                 join workflow.wf_definition d on d.tenant_id=v.tenant_id and d.id=v.definition_id
                 where d.tenant_id='%s' and d.process_code='P014'
-                  and v.checksum='phase11-p014-c0-v1' and t.from_node_code='S06'
-                  and t.action_code in ('OPEN_APPEAL','CLOSE_NO_APPEAL') and not t.is_deleted
+                  and v.checksum='phase11-p014-c0-v2'
+                  and t.action_code = any(array[
+                    'REGISTER_LEAD','APPLY_SAFETY_MEASURE','COMPLETE_INVESTIGATION','SUBMIT_DEFENSE',
+                    'COMPLETE_RESPONSIBILITY_REVIEW','APPROVE_DECISION','ACKNOWLEDGE_SERVICE',
+                    'EXECUTE_IMPACTS','RESOLVE_APPEAL','CLOSE_CORE_CASE','COMPLETE_OBSERVATION','ARCHIVE'])
+                  and not t.is_deleted
+                """.formatted(TENANT)));
+        assertEquals(1L, scalarLong("""
+                select count(*) from workflow.wf_form_definition
+                where tenant_id='%s' and process_code='P014' and form_code='CTR-P014-F01'
+                  and node_code='S01' and enabled and not is_deleted
                 """.formatted(TENANT)));
     }
 
@@ -97,14 +106,14 @@ class Phase11P014DatabaseIT {
                   id,tenant_id,business_no,status,current_node_code,subject,reason,
                   owner_center_id,owner_employee_id,employee_event_type,fact_occurred_at,
                   fact_summary,impact_level,source_fact_key,source_type)
-                values(gen_random_uuid(),'%s','P014-DUP','NEW','S01','duplicate','duplicate',
+                values(gen_random_uuid(),'%s','P014-DUP','线索登记','S01','duplicate','duplicate',
                   '%s','%s','P014_DISCIPLINE',now(),'duplicate','EMPLOYEE','P014-SOURCE-1','INTERNAL')
                 """.formatted(TENANT, CENTER, SUBJECT));
         assertTrue(message(duplicate).contains("uq_p014_source_fact"));
     }
 
     @Test
-    void databaseRejectsBothSeparationOfDutyViolations() throws SQLException {
+    void databaseRejectsInvestigationDecisionAndAppealRoleConflicts() throws SQLException {
         SQLException selfInvestigation = assertSqlRejected("""
                 update reward.discipline_case
                    set investigator_employee_id='%s'
@@ -112,17 +121,31 @@ class Phase11P014DatabaseIT {
                 """.formatted(SUBJECT, DISCIPLINE));
         assertTrue(message(selfInvestigation).contains("ck_p014_investigator_sod"));
 
+        SQLException selfDecision = assertSqlRejected("""
+                update reward.discipline_case
+                   set decision_employee_id='%s'
+                 where id='%s'
+                """.formatted(SUBJECT, DISCIPLINE));
+        assertTrue(message(selfDecision).contains("ck_p014_decision_sod"));
+
         execute("""
                 update reward.discipline_case
                    set decision_employee_id='%s'
                  where id='%s'
                 """.formatted(DECIDER, DISCIPLINE));
-        SQLException sameReviewer = assertSqlRejected("""
+        SQLException originalDecisionReviewer = assertSqlRejected("""
                 update reward.discipline_case
                    set appeal_reviewer_employee_id='%s'
                  where id='%s'
                 """.formatted(DECIDER, DISCIPLINE));
-        assertTrue(message(sameReviewer).contains("ck_p014_appeal_reviewer_sod"));
+        assertTrue(message(originalDecisionReviewer).contains("ck_p014_appeal_reviewer_sod"));
+
+        SQLException subjectReviewer = assertSqlRejected("""
+                update reward.discipline_case
+                   set appeal_reviewer_employee_id='%s'
+                 where id='%s'
+                """.formatted(SUBJECT, DISCIPLINE));
+        assertTrue(message(subjectReviewer).contains("ck_p014_appeal_reviewer_sod"));
     }
 
     @Test
@@ -132,7 +155,7 @@ class Phase11P014DatabaseIT {
                   id,tenant_id,business_no,status,current_node_code,subject,reason,
                   owner_center_id,owner_employee_id,employee_event_type,fact_occurred_at,
                   fact_summary,impact_level,source_fact_key,source_type)
-                values(gen_random_uuid(),'%s','P014-INTERNAL-2','NEW','S01','internal','internal',
+                values(gen_random_uuid(),'%s','P014-INTERNAL-2','线索登记','S01','internal','internal',
                   '%s','%s','P014_DISCIPLINE',now(),'internal fact','EMPLOYEE','P014-SOURCE-2','INTERNAL')
                 """.formatted(TENANT, CENTER, SUBJECT));
         assertEquals(1L, scalarLong("""
@@ -146,7 +169,7 @@ class Phase11P014DatabaseIT {
                   id,tenant_id,business_no,status,current_node_code,subject,reason,
                   owner_center_id,owner_employee_id,customer_id,customer_name,employee_event_type,
                   fact_occurred_at,fact_summary,impact_level,source_fact_key,source_type)
-                values(gen_random_uuid(),'%s','P014-CRM-INVALID','NEW','S01','invalid','invalid',
+                values(gen_random_uuid(),'%s','P014-CRM-INVALID','线索登记','S01','invalid','invalid',
                   '%s','%s','CRM-1','Customer','P014_DISCIPLINE',now(),'invalid fact','EMPLOYEE',
                   'P014-SOURCE-CRM-INVALID','INTERNAL')
                 """.formatted(TENANT, CENTER, SUBJECT));
@@ -187,7 +210,7 @@ class Phase11P014DatabaseIT {
                   subject,reason,priority,risk_level,owner_center_id,owner_employee_id,
                   employee_event_type,fact_occurred_at,fact_summary,impact_level,
                   source_fact_key,source_type,content_version,period_no)
-                values('%s','%s','P014-DB-TEST','INVESTIGATING','S03',2,date '2026-08-16',
+                values('%s','%s','P014-DB-TEST','调查','S03',2,date '2026-08-16',
                   'P014 discipline test','discipline','NORMAL','HIGH','%s','%s',
                   'P014_DISCIPLINE',timestamptz '2026-08-16 00:00:00+00','discipline fact','EMPLOYEE',
                   'P014-SOURCE-1','INTERNAL','P014-CONTENT-V1','2026-Q3')

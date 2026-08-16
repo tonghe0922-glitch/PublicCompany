@@ -78,12 +78,32 @@ class Phase11ProcessContractTest {
     }
 
     @Test
-    void p014SupportsFrozenBranchingWithoutChangingEarlierGraphs() {
+    void p014GraphMatchesFrozenTwelveStepContract() {
         Phase11Process process = Phase11Process.P014;
-        assertEquals("S07", process.requireTransition("S06", "OPEN_APPEAL").targetNode());
-        assertEquals("S10", process.requireTransition("S06", "CLOSE_NO_APPEAL").targetNode());
-        assertEquals("S03", process.requireTransition("S10", "REOPEN_FOR_DEFECT").targetNode());
-        assertEquals("END", process.requireTransition("S10", "ARCHIVE").targetNode());
+        assertEquals(
+                List.of(
+                        "S01", "S02", "S03", "S04", "S05", "S06",
+                        "S07", "S08", "S09", "S10", "S11", "S12"),
+                process.steps().stream().map(Phase11Process.Step::node).toList());
+        assertEquals(
+                List.of(
+                        "REGISTER_LEAD",
+                        "APPLY_SAFETY_MEASURE",
+                        "COMPLETE_INVESTIGATION",
+                        "SUBMIT_DEFENSE",
+                        "COMPLETE_RESPONSIBILITY_REVIEW",
+                        "APPROVE_DECISION",
+                        "ACKNOWLEDGE_SERVICE",
+                        "EXECUTE_IMPACTS",
+                        "RESOLVE_APPEAL",
+                        "CLOSE_CORE_CASE",
+                        "COMPLETE_OBSERVATION",
+                        "ARCHIVE"),
+                process.steps().stream().map(Phase11Process.Step::action).toList());
+        assertEquals("CTR-P014-F01", process.initialFormCode());
+        assertEquals("S05", process.requireTransition("S04", "SUBMIT_DEFENSE").targetNode());
+        assertEquals("S10", process.requireTransition("S09", "RESOLVE_APPEAL").targetNode());
+        assertEquals("END", process.requireTransition("S12", "ARCHIVE").targetNode());
         assertThrows(
                 ProcessRejectedException.class,
                 () -> process.requireTransition("S06", "ARCHIVE"));

@@ -1,4 +1,4 @@
--- PHASE-11 / P014: discipline responsibility, service evidence and independent appeal.
+-- PHASE-11 / P014: discipline responsibility, independent appeal and remediation.
 SET ROLE sjg_owner;
 
 ALTER TABLE reward.discipline_case
@@ -9,30 +9,37 @@ ALTER TABLE reward.discipline_case
   ADD COLUMN IF NOT EXISTS source_type varchar(32),
   ADD COLUMN IF NOT EXISTS content_version varchar(64),
   ADD COLUMN IF NOT EXISTS period_no varchar(32),
+  ADD COLUMN IF NOT EXISTS safety_measure text,
+  ADD COLUMN IF NOT EXISTS safety_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS safety_measure_at timestamptz,
   ADD COLUMN IF NOT EXISTS investigator_employee_id uuid,
-  ADD COLUMN IF NOT EXISTS investigation_opened_at timestamptz,
-  ADD COLUMN IF NOT EXISTS interview_notes text,
-  ADD COLUMN IF NOT EXISTS employee_statement text,
-  ADD COLUMN IF NOT EXISTS statement_recorded_at timestamptz,
+  ADD COLUMN IF NOT EXISTS investigation_finding text,
+  ADD COLUMN IF NOT EXISTS investigation_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS investigation_completed_at timestamptz,
+  ADD COLUMN IF NOT EXISTS defense_statement text,
+  ADD COLUMN IF NOT EXISTS defense_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS defense_submitted_at timestamptz,
+  ADD COLUMN IF NOT EXISTS responsibility_reviewer_employee_id uuid,
+  ADD COLUMN IF NOT EXISTS responsibility_review text,
+  ADD COLUMN IF NOT EXISTS responsibility_reviewed_at timestamptz,
   ADD COLUMN IF NOT EXISTS decision_employee_id uuid,
   ADD COLUMN IF NOT EXISTS decision_summary text,
   ADD COLUMN IF NOT EXISTS decision_at timestamptz,
   ADD COLUMN IF NOT EXISTS service_proof jsonb,
   ADD COLUMN IF NOT EXISTS decision_served_at timestamptz,
-  ADD COLUMN IF NOT EXISTS appeal_window_ends_at timestamptz,
-  ADD COLUMN IF NOT EXISTS appeal_opened_at timestamptz,
-  ADD COLUMN IF NOT EXISTS appeal_summary text,
-  ADD COLUMN IF NOT EXISTS appeal_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS impact_summary text,
+  ADD COLUMN IF NOT EXISTS impact_execution_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS impact_executed_at timestamptz,
   ADD COLUMN IF NOT EXISTS appeal_reviewer_employee_id uuid,
-  ADD COLUMN IF NOT EXISTS appeal_review_assigned_at timestamptz,
   ADD COLUMN IF NOT EXISTS appeal_result varchar(16),
   ADD COLUMN IF NOT EXISTS appeal_decision text,
   ADD COLUMN IF NOT EXISTS appeal_decision_evidence jsonb,
   ADD COLUMN IF NOT EXISTS appeal_resolved_at timestamptz,
-  ADD COLUMN IF NOT EXISTS appeal_waived boolean DEFAULT false NOT NULL,
-  ADD COLUMN IF NOT EXISTS waiver_evidence jsonb,
-  ADD COLUMN IF NOT EXISTS defect_reopen_reason text,
-  ADD COLUMN IF NOT EXISTS reopened_at timestamptz,
+  ADD COLUMN IF NOT EXISTS closure_summary text,
+  ADD COLUMN IF NOT EXISTS core_closed_at timestamptz,
+  ADD COLUMN IF NOT EXISTS remediation_summary text,
+  ADD COLUMN IF NOT EXISTS observation_evidence jsonb,
+  ADD COLUMN IF NOT EXISTS observation_completed_at timestamptz,
   ADD COLUMN IF NOT EXISTS archived_at timestamptz;
 
 DO $$
@@ -48,7 +55,7 @@ BEGIN
       ALTER TABLE reward.discipline_case
       ADD CONSTRAINT ck_p014_current_node CHECK (
         employee_event_type <> 'P014_DISCIPLINE'
-        OR current_node_code IN ('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','END'))
+        OR current_node_code IN ('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','END'))
     $ddl$;
   END IF;
 
@@ -90,6 +97,24 @@ BEGIN
     SELECT 1 FROM pg_constraint c
     JOIN pg_class t ON t.oid=c.conrelid
     JOIN pg_namespace n ON n.oid=t.relnamespace
+    WHERE c.conname='ck_p014_decision_sod'
+      AND n.nspname='reward' AND t.relname='discipline_case'
+  ) THEN
+    EXECUTE $ddl$
+      ALTER TABLE reward.discipline_case
+      ADD CONSTRAINT ck_p014_decision_sod CHECK (
+        employee_event_type <> 'P014_DISCIPLINE'
+        OR decision_employee_id IS NULL
+        OR owner_employee_id IS NULL
+        OR decision_employee_id <> owner_employee_id)
+      NOT VALID
+    $ddl$;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint c
+    JOIN pg_class t ON t.oid=c.conrelid
+    JOIN pg_namespace n ON n.oid=t.relnamespace
     WHERE c.conname='ck_p014_appeal_reviewer_sod'
       AND n.nspname='reward' AND t.relname='discipline_case'
   ) THEN
@@ -98,8 +123,8 @@ BEGIN
       ADD CONSTRAINT ck_p014_appeal_reviewer_sod CHECK (
         employee_event_type <> 'P014_DISCIPLINE'
         OR appeal_reviewer_employee_id IS NULL
-        OR decision_employee_id IS NULL
-        OR appeal_reviewer_employee_id <> decision_employee_id)
+        OR ((owner_employee_id IS NULL OR appeal_reviewer_employee_id <> owner_employee_id)
+            AND (decision_employee_id IS NULL OR appeal_reviewer_employee_id <> decision_employee_id)))
       NOT VALID
     $ddl$;
   END IF;
@@ -173,10 +198,10 @@ SELECT gen_random_uuid(),'${sjg_tenant_id}'::uuid,v.code,v.name,'PROCESS',v.acti
 FROM (VALUES
   ('p014.discipline.create','P014纪律案件登记','CREATE','HIGH'),
   ('p014.discipline.read','P014纪律案件读取','READ','HIGH'),
-  ('p014.discipline.investigate','P014纪律调查','INVESTIGATE','HIGH'),
-  ('p014.discipline.decide','P014纪律决定与送达','DECIDE','CRITICAL'),
-  ('p014.discipline.appeal','P014独立申诉复核','APPEAL','CRITICAL'),
-  ('p014.discipline.remediate','P014关闭重开与归档','REMEDIATE','CRITICAL'),
+  ('p014.discipline.investigate','P014止险与调查','INVESTIGATE','HIGH'),
+  ('p014.discipline.decide','P014责任评审与决定','DECIDE','CRITICAL'),
+  ('p014.discipline.appeal','P014申辩送达与独立申诉','APPEAL','CRITICAL'),
+  ('p014.discipline.remediate','P014影响关闭观察整改归档','REMEDIATE','CRITICAL'),
   ('p014.discipline.monitor','P014纪律流程监控','MONITOR','NORMAL')
 ) AS v(code,name,action,risk)
 WHERE NOT EXISTS (
@@ -208,48 +233,50 @@ BEGIN
   IF NOT EXISTS (
       SELECT 1 FROM workflow.wf_version
       WHERE tenant_id='${sjg_tenant_id}'::uuid AND definition_id=target_definition_id
-        AND status='PUBLISHED' AND checksum='phase11-p014-c0-v1' AND NOT is_deleted) THEN
+        AND status='PUBLISHED' AND checksum='phase11-p014-c0-v2' AND NOT is_deleted) THEN
     target_version_id:=gen_random_uuid();
     INSERT INTO workflow.wf_version(
       id,tenant_id,definition_id,version_no,status,definition_json,checksum,
       created_at,updated_at,is_deleted)
     SELECT target_version_id,'${sjg_tenant_id}'::uuid,target_definition_id,
       coalesce(max(version_no),0)+1,'DRAFT',
-      '{"processCode":"P014","source":"PHASE11_C0_CONTRACT","states":["NEW","TRIAGE_PENDING","INVESTIGATING","STATEMENT_RECORDED","DECISION_PENDING","DECISION_SERVED","APPEAL_PENDING","APPEAL_REVIEWING","APPEAL_RESOLVED","CLOSED","ARCHIVED"]}'::jsonb,
-      'phase11-p014-c0-v1',now(),now(),false
+      '{"processCode":"P014","source":"PHASE11_WORKFLOW_CONTRACT","nodes":["S01","S02","S03","S04","S05","S06","S07","S08","S09","S10","S11","S12","END"]}'::jsonb,
+      'phase11-p014-c0-v2',now(),now(),false
     FROM workflow.wf_version
     WHERE tenant_id='${sjg_tenant_id}'::uuid AND definition_id=target_definition_id;
 
     INSERT INTO workflow.wf_node(
       id,tenant_id,version_id,node_code,node_name,node_type,actor_rule,sort_no,
       created_at,updated_at,is_deleted) VALUES
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S01','NEW','START',NULL,10,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S02','TRIAGE_PENDING','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"investigatorCandidateIds"}'::jsonb,20,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S03','INVESTIGATING','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"investigatorCandidateIds"}'::jsonb,30,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S04','STATEMENT_RECORDED','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"decisionCandidateIds"}'::jsonb,40,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S05','DECISION_PENDING','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"decisionCandidateIds"}'::jsonb,50,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S06','DECISION_SERVED','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"appealOrRemediationCandidateIds"}'::jsonb,60,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S07','APPEAL_PENDING','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"appealReviewerIds"}'::jsonb,70,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S08','APPEAL_REVIEWING','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"appealReviewerIds"}'::jsonb,80,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S09','APPEAL_RESOLVED','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,90,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S10','CLOSED','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,100,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'END','ARCHIVED','END',NULL,110,now(),now(),false);
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S01','线索登记','START',NULL,10,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S02','先行止险','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"investigatorCandidateIds"}'::jsonb,20,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S03','调查','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"investigatorCandidateIds"}'::jsonb,30,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S04','员工申辩','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"employeeCandidateIds"}'::jsonb,40,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S05','责任评审','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"specialistCandidateIds"}'::jsonb,50,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S06','决定审批','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"specialistCandidateIds"}'::jsonb,60,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S07','送达确认','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"employeeCandidateIds"}'::jsonb,70,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S08','影响执行','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,80,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S09','独立申诉复核','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"appealReviewerIds"}'::jsonb,90,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S10','核心案件关闭','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,100,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S11','观察整改','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,110,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S12','归档','TASK','{"resolver":"CONTEXT_EMPLOYEE_IDS","field":"remediationCandidateIds"}'::jsonb,120,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'END','已归档','END',NULL,130,now(),now(),false);
 
     INSERT INTO workflow.wf_transition(
       id,tenant_id,version_id,from_node_code,action_code,to_node_code,
       condition_expr,is_rollback,created_at,updated_at,is_deleted) VALUES
       (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S01','REGISTER_LEAD','S02',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S02','OPEN_INVESTIGATION','S03',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S03','RECORD_STATEMENT','S04',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S04','HEARING_DECISION','S05',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S05','SERVE_DECISION','S06',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S06','OPEN_APPEAL','S07',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S07','ASSIGN_APPEAL_REVIEWER','S08',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S08','RESOLVE_APPEAL','S09',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S06','CLOSE_NO_APPEAL','S10',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S09','CLOSE_AFTER_APPEAL','S10',NULL,false,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S10','REOPEN_FOR_DEFECT','S03',NULL,true,now(),now(),false),
-      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S10','ARCHIVE','END',NULL,false,now(),now(),false);
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S02','APPLY_SAFETY_MEASURE','S03',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S03','COMPLETE_INVESTIGATION','S04',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S04','SUBMIT_DEFENSE','S05',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S05','COMPLETE_RESPONSIBILITY_REVIEW','S06',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S06','APPROVE_DECISION','S07',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S07','ACKNOWLEDGE_SERVICE','S08',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S08','EXECUTE_IMPACTS','S09',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S09','RESOLVE_APPEAL','S10',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S10','CLOSE_CORE_CASE','S11',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S11','COMPLETE_OBSERVATION','S12',NULL,false,now(),now(),false),
+      (gen_random_uuid(),'${sjg_tenant_id}'::uuid,target_version_id,'S12','ARCHIVE','END',NULL,false,now(),now(),false);
 
     UPDATE workflow.wf_version
     SET status='PUBLISHED',effective_at=now(),updated_at=now()
@@ -259,19 +286,19 @@ BEGIN
   IF NOT EXISTS (
       SELECT 1 FROM workflow.wf_form_definition
       WHERE tenant_id='${sjg_tenant_id}'::uuid
-        AND form_code='EMP-P014-F01' AND process_code='P014'
+        AND form_code='CTR-P014-F01' AND process_code='P014'
         AND node_code='S01' AND enabled AND NOT is_deleted) THEN
     INSERT INTO workflow.wf_form_definition(
       id,tenant_id,form_code,form_name,process_code,node_code,version_no,
       field_schema,layout_schema,validation_schema,visibility_matrix,edit_matrix,
       enabled,created_at,updated_at,is_deleted)
     VALUES(
-      gen_random_uuid(),'${sjg_tenant_id}'::uuid,'EMP-P014-F01',
-      '纪律责任与申诉-事实登记单','P014','S01',1,
+      gen_random_uuid(),'${sjg_tenant_id}'::uuid,'CTR-P014-F01',
+      '纪律责任与申诉-线索登记单','P014','S01',1,
       '{"type":"object","properties":{"process_code":{"type":"string","readOnly":true},"business_no":{"type":"string","readOnly":true},"subject":{"type":"string"},"reason":{"type":"string"},"owner_employee_id":{"type":"string"},"owner_center_id":{"type":"string"},"fact_summary":{"type":"string"},"source_fact_key":{"type":"string"},"source_type":{"type":"string"},"impact_level":{"type":"string"}},"required":["subject","reason","owner_employee_id","owner_center_id","fact_summary","source_fact_key","source_type","impact_level"]}'::jsonb,
-      '{"sections":["纪律事实","被调查员工","来源与影响"]}'::jsonb,
-      '{"serverAuthoritative":["business_no","workflow_instance_id","status","current_node_code","version_no","investigator_employee_id","decision_employee_id","appeal_reviewer_employee_id","appeal_result","closed_at","archived_at"]}'::jsonb,
-      '{"employee":"SELF","center":"AUTHORIZED_SCOPE","tech":"METADATA_ONLY"}'::jsonb,
+      '{"sections":["纪律线索","被调查员工","来源与影响"]}'::jsonb,
+      '{"serverAuthoritative":["business_no","workflow_instance_id","status","current_node_code","version_no","investigator_employee_id","decision_employee_id","appeal_reviewer_employee_id","closed_at","archived_at"]}'::jsonb,
+      '{"employee":"SELF_CASE","center":"CENTER_CASE","tech":"METADATA_ONLY"}'::jsonb,
       '{"employee":[],"center":["subject","reason","owner_employee_id","owner_center_id","fact_summary","source_fact_key","source_type","impact_level","customer_id","customer_name"],"tech":[]}'::jsonb,
       true,now(),now(),false);
   END IF;

@@ -102,11 +102,7 @@ public final class P014DisciplineController {
         support.requireAction(principal, permission, "P014");
         Phase11Record current = required(principal, id);
         support.requireData(principal, permission, support.target(principal, current), "P014");
-        support.audit(
-                principal,
-                "P014_ACTION_ATTEMPT_" + action,
-                "reward.discipline_case",
-                id);
+        support.audit(principal, "P014_ACTION_ATTEMPT_" + action, "reward.discipline_case", id);
         Phase11Record result = discipline.act(
                 support.context(principal),
                 id,
@@ -158,11 +154,10 @@ public final class P014DisciplineController {
 
     static String actionPermission(String action) {
         return switch (action) {
-            case "OPEN_INVESTIGATION", "RECORD_STATEMENT" -> INVESTIGATE;
-            case "HEARING_DECISION", "SERVE_DECISION" -> DECIDE;
-            case "OPEN_APPEAL", "ASSIGN_APPEAL_REVIEWER", "RESOLVE_APPEAL" -> APPEAL;
-            case "CLOSE_NO_APPEAL", "CLOSE_AFTER_APPEAL", "REOPEN_FOR_DEFECT", "ARCHIVE" ->
-                    REMEDIATE;
+            case "APPLY_SAFETY_MEASURE", "COMPLETE_INVESTIGATION" -> INVESTIGATE;
+            case "COMPLETE_RESPONSIBILITY_REVIEW", "APPROVE_DECISION" -> DECIDE;
+            case "SUBMIT_DEFENSE", "ACKNOWLEDGE_SERVICE", "RESOLVE_APPEAL" -> APPEAL;
+            case "EXECUTE_IMPACTS", "CLOSE_CORE_CASE", "COMPLETE_OBSERVATION", "ARCHIVE" -> REMEDIATE;
             default -> throw new IllegalArgumentException("P014 action is invalid");
         };
     }

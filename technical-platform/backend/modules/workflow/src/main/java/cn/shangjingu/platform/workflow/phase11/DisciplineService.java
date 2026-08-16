@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -23,12 +22,11 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
-/** P014 discipline, responsibility and independent appeal lifecycle. */
+/** P014 discipline, responsibility, independent appeal and remediation lifecycle. */
 @Service
 public final class DisciplineService {
     private static final Phase11Process PROCESS = Phase11Process.P014;
     private static final Duration IDEMPOTENCY_TTL = Duration.ofHours(24);
-    private static final String EVENT_TYPE = "P014_DISCIPLINE";
 
     private final TenantTransactionRunner transactions;
     private final IdempotencyRegistry idempotency;
@@ -172,70 +170,62 @@ public final class DisciplineService {
             ActionCommand command) {
         requireText(command.summary(), "summary");
         switch (action) {
-            case "OPEN_INVESTIGATION" -> validateInvestigator(current.ownerEmployeeId(), actorEmployeeId);
-            case "RECORD_STATEMENT" -> {
-                validateInvestigator(current.ownerEmployeeId(), actorEmployeeId);
-                UUID investigator = uuid(current.details(), "investigatorEmployeeId");
-                if (investigator == null || !investigator.equals(actorEmployeeId)) {
-                    throw rejected("only the assigned investigator may record the statement");
-                }
-                requireText(command.interviewNotes(), "interviewNotes");
-                requireText(command.employeeStatement(), "employeeStatement");
+            case "APPLY_SAFETY_MEASURE" -> {
+                requireText(command.safetyMeasure(), "safetyMeasure");
+                requireEvidence(command.safetyEvidence(), "safetyEvidence");
             }
-            case "HEARING_DECISION" -> {
-                requireDetail(current.details(), "statementRecordedAt");
+            case "COMPLETE_INVESTIGATION" -> {
+                validateInvestigator(current.ownerEmployeeId(), actorEmployeeId);
+                requireText(command.investigationFinding(), "investigationFinding");
+                requireEvidence(command.investigationEvidence(), "investigationEvidence");
+            }
+            case "SUBMIT_DEFENSE" -> {
+                validateSubjectAction(current.ownerEmployeeId(), actorEmployeeId, "submit defense");
+                requireText(command.defenseStatement(), "defenseStatement");
+                requireEvidence(command.defenseEvidence(), "defenseEvidence");
+            }
+            case "COMPLETE_RESPONSIBILITY_REVIEW" -> {
+                validateDecisionMaker(current.ownerEmployeeId(), actorEmployeeId);
+                requireDetail(current.details(), "investigationCompletedAt");
+                requireDetail(current.details(), "defenseSubmittedAt");
+                requireText(command.responsibilityReview(), "responsibilityReview");
+            }
+            case "APPROVE_DECISION" -> {
+                validateDecisionMaker(current.ownerEmployeeId(), actorEmployeeId);
+                requireDetail(current.details(), "responsibilityReviewedAt");
                 requireText(command.decision(), "decision");
             }
-            case "SERVE_DECISION" -> {
+            case "ACKNOWLEDGE_SERVICE" -> {
+                validateSubjectAction(current.ownerEmployeeId(), actorEmployeeId, "acknowledge service");
                 requireDetail(current.details(), "decisionEmployeeId");
-                requireDetail(current.details(), "decisionSummary");
                 requireEvidence(command.serviceProof(), "serviceProof");
-                if (command.appealWindowEndsAt() == null) {
-                    throw rejected("appealWindowEndsAt is required from the authoritative decision notice");
-                }
             }
-            case "OPEN_APPEAL" -> {
-                if (current.details().path("appealWaived").asBoolean(false)) {
-                    throw rejected("appeal was already waived");
-                }
-                Instant deadline = instant(current.details(), "appealWindowEndsAt");
-                if (deadline == null || Instant.now().isAfter(deadline)) {
-                    throw rejected("appeal window is not valid");
-                }
-                requireText(command.appealGrounds(), "appealGrounds");
-                requireEvidence(command.appealEvidence(), "appealEvidence");
-            }
-            case "ASSIGN_APPEAL_REVIEWER" -> {
-                UUID decisionEmployee = uuid(current.details(), "decisionEmployeeId");
-                validateAppealReviewer(decisionEmployee, actorEmployeeId);
+            case "EXECUTE_IMPACTS" -> {
+                requireDetail(current.details(), "decisionServedAt");
+                requireText(command.impactSummary(), "impactSummary");
+                requireEvidence(command.impactExecutionEvidence(), "impactExecutionEvidence");
             }
             case "RESOLVE_APPEAL" -> {
-                UUID reviewer = uuid(current.details(), "appealReviewerEmployeeId");
-                if (reviewer == null || !reviewer.equals(actorEmployeeId)) {
-                    throw rejected("only the assigned independent appeal reviewer may resolve the appeal");
-                }
-                String result = normalizedResult(command.appealResult());
-                if (!List.of("UPHOLD", "MODIFY", "OVERTURN").contains(result)) {
-                    throw rejected("appealResult must be UPHOLD, MODIFY or OVERTURN");
-                }
+                UUID decisionEmployee = uuid(current.details(), "decisionEmployeeId");
+                validateAppealReviewer(current.ownerEmployeeId(), decisionEmployee, actorEmployeeId);
+                requireDetail(current.details(), "impactExecutedAt");
                 requireText(command.appealDecision(), "appealDecision");
                 requireEvidence(command.appealDecisionEvidence(), "appealDecisionEvidence");
+                validateOptionalAppealResult(command.appealResult());
             }
-            case "CLOSE_NO_APPEAL" -> {
-                if (command.appealWaived()) {
-                    requireEvidence(command.waiverEvidence(), "waiverEvidence");
-                } else {
-                    Instant deadline = instant(current.details(), "appealWindowEndsAt");
-                    if (deadline == null || !Instant.now().isAfter(deadline)) {
-                        throw rejected("appeal window has not expired and no waiver evidence was supplied");
-                    }
-                }
+            case "CLOSE_CORE_CASE" -> {
+                requireDetail(current.details(), "appealResolvedAt");
+                requireText(command.closureSummary(), "closureSummary");
             }
-            case "CLOSE_AFTER_APPEAL" -> requireDetail(current.details(), "appealResolvedAt");
-            case "REOPEN_FOR_DEFECT" -> requireText(command.defectReason(), "defectReason");
+            case "COMPLETE_OBSERVATION" -> {
+                requireDetail(current.details(), "coreClosedAt");
+                requireText(command.remediationSummary(), "remediationSummary");
+                requireEvidence(command.observationEvidence(), "observationEvidence");
+            }
             case "ARCHIVE" -> {
+                requireDetail(current.details(), "observationCompletedAt");
                 if (current.closedAt() == null) {
-                    throw rejected("closed case fact is required before archive");
+                    throw rejected("core case must be closed before archive");
                 }
             }
             default -> throw rejected("unsupported action: " + action);
@@ -248,7 +238,17 @@ public final class DisciplineService {
         }
     }
 
-    static void validateAppealReviewer(UUID decisionEmployeeId, UUID reviewerEmployeeId) {
+    static void validateDecisionMaker(UUID subjectEmployeeId, UUID decisionEmployeeId) {
+        if (subjectEmployeeId != null && subjectEmployeeId.equals(decisionEmployeeId)) {
+            throw rejected("subject employee cannot decide own case");
+        }
+    }
+
+    static void validateAppealReviewer(
+            UUID subjectEmployeeId, UUID decisionEmployeeId, UUID reviewerEmployeeId) {
+        if (subjectEmployeeId != null && subjectEmployeeId.equals(reviewerEmployeeId)) {
+            throw rejected("subject employee cannot review own appeal");
+        }
         if (decisionEmployeeId != null && decisionEmployeeId.equals(reviewerEmployeeId)) {
             throw rejected("original decision maker cannot be appeal reviewer");
         }
@@ -281,8 +281,7 @@ public final class DisciplineService {
         }
     }
 
-    private Phase11Record draft(
-            DatabaseSecurityContext actor, UUID id, CreateCommand command) {
+    private Phase11Record draft(DatabaseSecurityContext actor, UUID id, CreateCommand command) {
         Instant now = Instant.now();
         ObjectNode details = mapper.createObjectNode();
         details.put("sourceFactKey", command.sourceFactKey().trim());
@@ -366,6 +365,22 @@ public final class DisciplineService {
         }
     }
 
+    private static void validateSubjectAction(UUID subjectEmployeeId, UUID actorEmployeeId, String verb) {
+        if (subjectEmployeeId == null || !subjectEmployeeId.equals(actorEmployeeId)) {
+            throw rejected("only the subject employee may " + verb);
+        }
+    }
+
+    private static void validateOptionalAppealResult(String value) {
+        if (value == null || value.isBlank()) {
+            return;
+        }
+        String result = value.trim().toUpperCase(Locale.ROOT);
+        if (!List.of("UPHOLD", "MODIFY", "OVERTURN").contains(result)) {
+            throw rejected("appealResult must be UPHOLD, MODIFY or OVERTURN when supplied");
+        }
+    }
+
     private static void requireDetail(JsonNode details, String field) {
         JsonNode value = details.path(field);
         if (value.isMissingNode() || value.isNull() || value.asText("").isBlank()) {
@@ -395,18 +410,6 @@ public final class DisciplineService {
         }
     }
 
-    private static Instant instant(JsonNode details, String field) {
-        String value = details.path(field).asText("").trim();
-        if (value.isEmpty()) {
-            return null;
-        }
-        try {
-            return Instant.parse(value);
-        } catch (DateTimeParseException exception) {
-            throw rejected("invalid server timestamp fact: " + field);
-        }
-    }
-
     private static void requireText(String value, String field) {
         if (value == null || value.isBlank()) {
             throw rejected("required field is missing: " + field);
@@ -423,10 +426,6 @@ public final class DisciplineService {
 
     private static String normalized(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value.trim();
-    }
-
-    private static String normalizedResult(String value) {
-        return value == null ? "" : value.trim().toUpperCase(Locale.ROOT);
     }
 
     private static void put(ObjectNode target, String field, String value) {
@@ -477,17 +476,21 @@ public final class DisciplineService {
             int expectedVersion,
             String summary,
             String reason,
-            String interviewNotes,
-            String employeeStatement,
+            String safetyMeasure,
+            JsonNode safetyEvidence,
+            String investigationFinding,
+            JsonNode investigationEvidence,
+            String defenseStatement,
+            JsonNode defenseEvidence,
+            String responsibilityReview,
             String decision,
             JsonNode serviceProof,
-            Instant appealWindowEndsAt,
-            String appealGrounds,
-            JsonNode appealEvidence,
+            String impactSummary,
+            JsonNode impactExecutionEvidence,
             String appealResult,
             String appealDecision,
             JsonNode appealDecisionEvidence,
-            boolean appealWaived,
-            JsonNode waiverEvidence,
-            String defectReason) {}
+            String closureSummary,
+            String remediationSummary,
+            JsonNode observationEvidence) {}
 }

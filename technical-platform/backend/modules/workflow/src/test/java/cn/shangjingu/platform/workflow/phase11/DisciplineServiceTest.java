@@ -14,31 +14,33 @@ import org.junit.jupiter.api.Test;
 class DisciplineServiceTest {
     private static final UUID CENTER = UUID.fromString("10000000-0000-0000-0000-000000001114");
     private static final UUID SUBJECT = UUID.fromString("20000000-0000-0000-0000-000000001114");
-    private static final UUID DECISION_MAKER = UUID.fromString("30000000-0000-0000-0000-000000001114");
+    private static final UUID INVESTIGATOR = UUID.fromString("30000000-0000-0000-0000-000000001114");
+    private static final UUID DECISION_MAKER = UUID.fromString("40000000-0000-0000-0000-000000001114");
+    private static final UUID REVIEWER = UUID.fromString("50000000-0000-0000-0000-000000001114");
 
     @Test
-    void p014GraphMatchesFrozenContractIncludingBothBranches() {
+    void p014GraphMatchesFrozenS01ToS12Contract() {
         Phase11Process process = Phase11Process.P014;
+        assertEquals("CTR-P014-F01", process.initialFormCode());
         assertEquals(
                 List.of(
                         "REGISTER_LEAD",
-                        "OPEN_INVESTIGATION",
-                        "RECORD_STATEMENT",
-                        "HEARING_DECISION",
-                        "SERVE_DECISION",
-                        "OPEN_APPEAL",
-                        "ASSIGN_APPEAL_REVIEWER",
+                        "APPLY_SAFETY_MEASURE",
+                        "COMPLETE_INVESTIGATION",
+                        "SUBMIT_DEFENSE",
+                        "COMPLETE_RESPONSIBILITY_REVIEW",
+                        "APPROVE_DECISION",
+                        "ACKNOWLEDGE_SERVICE",
+                        "EXECUTE_IMPACTS",
                         "RESOLVE_APPEAL",
-                        "CLOSE_NO_APPEAL",
-                        "CLOSE_AFTER_APPEAL",
-                        "REOPEN_FOR_DEFECT",
+                        "CLOSE_CORE_CASE",
+                        "COMPLETE_OBSERVATION",
                         "ARCHIVE"),
                 process.steps().stream().map(Phase11Process.Step::action).toList());
-        assertEquals("S07", process.requireTransition("S06", "OPEN_APPEAL").targetNode());
-        assertEquals("S10", process.requireTransition("S06", "CLOSE_NO_APPEAL").targetNode());
-        assertEquals("S03", process.requireTransition("S10", "REOPEN_FOR_DEFECT").targetNode());
-        assertEquals("END", process.requireTransition("S10", "ARCHIVE").targetNode());
-        assertEquals("ARCHIVED", process.labelFor("END"));
+        assertEquals("S03", process.requireTransition("S02", "APPLY_SAFETY_MEASURE").targetNode());
+        assertEquals("S10", process.requireTransition("S09", "RESOLVE_APPEAL").targetNode());
+        assertEquals("S12", process.requireTransition("S11", "COMPLETE_OBSERVATION").targetNode());
+        assertEquals("END", process.requireTransition("S12", "ARCHIVE").targetNode());
     }
 
     @Test
@@ -56,15 +58,25 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void subjectCannotInvestigateOwnCaseAndDecisionMakerCannotReviewAppeal() {
+    void investigationDecisionAndAppealReviewEnforceSeparationOfDuty() {
         assertThrows(
                 ProcessRejectedException.class,
                 () -> DisciplineService.validateInvestigator(SUBJECT, SUBJECT));
-        assertDoesNotThrow(() -> DisciplineService.validateInvestigator(SUBJECT, DECISION_MAKER));
+        assertDoesNotThrow(() -> DisciplineService.validateInvestigator(SUBJECT, INVESTIGATOR));
+
         assertThrows(
                 ProcessRejectedException.class,
-                () -> DisciplineService.validateAppealReviewer(DECISION_MAKER, DECISION_MAKER));
-        assertDoesNotThrow(() -> DisciplineService.validateAppealReviewer(DECISION_MAKER, SUBJECT));
+                () -> DisciplineService.validateDecisionMaker(SUBJECT, SUBJECT));
+        assertDoesNotThrow(() -> DisciplineService.validateDecisionMaker(SUBJECT, DECISION_MAKER));
+
+        assertThrows(
+                ProcessRejectedException.class,
+                () -> DisciplineService.validateAppealReviewer(SUBJECT, DECISION_MAKER, SUBJECT));
+        assertThrows(
+                ProcessRejectedException.class,
+                () -> DisciplineService.validateAppealReviewer(SUBJECT, DECISION_MAKER, DECISION_MAKER));
+        assertDoesNotThrow(
+                () -> DisciplineService.validateAppealReviewer(SUBJECT, DECISION_MAKER, REVIEWER));
     }
 
     private static DisciplineService.CreateCommand command(

@@ -132,50 +132,56 @@ public class DisciplineRepository {
                 "status", status,
                 "actorId", actorId,
                 "summary", trimToNull(command.summary()),
-                "interviewNotes", trimToNull(command.interviewNotes()),
-                "employeeStatement", trimToNull(command.employeeStatement()),
+                "safetyMeasure", trimToNull(command.safetyMeasure()),
+                "safetyEvidence", json(command.safetyEvidence()),
+                "investigationFinding", trimToNull(command.investigationFinding()),
+                "investigationEvidence", json(command.investigationEvidence()),
+                "defenseStatement", trimToNull(command.defenseStatement()),
+                "defenseEvidence", json(command.defenseEvidence()),
+                "responsibilityReview", trimToNull(command.responsibilityReview()),
                 "decision", trimToNull(command.decision()),
                 "serviceProof", json(command.serviceProof()),
-                "appealWindowEndsAt", timestamp(command.appealWindowEndsAt()),
-                "appealGrounds", trimToNull(command.appealGrounds()),
-                "appealEvidence", json(command.appealEvidence()),
+                "impactSummary", trimToNull(command.impactSummary()),
+                "impactExecutionEvidence", json(command.impactExecutionEvidence()),
                 "appealResult", upperToNull(command.appealResult()),
                 "appealDecision", trimToNull(command.appealDecision()),
                 "appealDecisionEvidence", json(command.appealDecisionEvidence()),
-                "appealWaived", command.appealWaived(),
-                "waiverEvidence", json(command.waiverEvidence()),
-                "defectReason", trimToNull(command.defectReason()));
+                "closureSummary", trimToNull(command.closureSummary()),
+                "remediationSummary", trimToNull(command.remediationSummary()),
+                "observationEvidence", json(command.observationEvidence()));
         String domainSet = switch (action) {
-            case "OPEN_INVESTIGATION" ->
-                    "investigator_employee_id=:actorId,investigation_opened_at=coalesce(investigation_opened_at,now()),";
-            case "RECORD_STATEMENT" ->
-                    "interview_notes=:interviewNotes,employee_statement=:employeeStatement,"
-                            + "statement_recorded_at=coalesce(statement_recorded_at,now()),";
-            case "HEARING_DECISION" ->
+            case "APPLY_SAFETY_MEASURE" ->
+                    "safety_measure=:safetyMeasure,safety_evidence=cast(:safetyEvidence as jsonb),"
+                            + "safety_measure_at=coalesce(safety_measure_at,now()),";
+            case "COMPLETE_INVESTIGATION" ->
+                    "investigator_employee_id=:actorId,investigation_finding=:investigationFinding,"
+                            + "investigation_evidence=cast(:investigationEvidence as jsonb),"
+                            + "investigation_completed_at=coalesce(investigation_completed_at,now()),";
+            case "SUBMIT_DEFENSE" ->
+                    "defense_statement=:defenseStatement,defense_evidence=cast(:defenseEvidence as jsonb),"
+                            + "defense_submitted_at=coalesce(defense_submitted_at,now()),";
+            case "COMPLETE_RESPONSIBILITY_REVIEW" ->
+                    "responsibility_reviewer_employee_id=:actorId,responsibility_review=:responsibilityReview,"
+                            + "responsibility_reviewed_at=coalesce(responsibility_reviewed_at,now()),";
+            case "APPROVE_DECISION" ->
                     "decision_employee_id=:actorId,decision_summary=:decision,"
                             + "decision_at=coalesce(decision_at,now()),";
-            case "SERVE_DECISION" ->
+            case "ACKNOWLEDGE_SERVICE" ->
                     "service_proof=cast(:serviceProof as jsonb),"
-                            + "decision_served_at=coalesce(decision_served_at,now()),"
-                            + "appeal_window_ends_at=:appealWindowEndsAt,";
-            case "OPEN_APPEAL" ->
-                    "appeal_summary=:appealGrounds,appeal_evidence=cast(:appealEvidence as jsonb),"
-                            + "appeal_opened_at=coalesce(appeal_opened_at,now()),";
-            case "ASSIGN_APPEAL_REVIEWER" ->
-                    "appeal_reviewer_employee_id=:actorId,"
-                            + "appeal_review_assigned_at=coalesce(appeal_review_assigned_at,now()),";
+                            + "decision_served_at=coalesce(decision_served_at,now()),";
+            case "EXECUTE_IMPACTS" ->
+                    "impact_summary=:impactSummary,impact_execution_evidence=cast(:impactExecutionEvidence as jsonb),"
+                            + "impact_executed_at=coalesce(impact_executed_at,now()),";
             case "RESOLVE_APPEAL" ->
-                    "appeal_result=:appealResult,appeal_decision=:appealDecision,"
-                            + "appeal_decision_evidence=cast(:appealDecisionEvidence as jsonb),"
+                    "appeal_reviewer_employee_id=:actorId,appeal_result=:appealResult,"
+                            + "appeal_decision=:appealDecision,appeal_decision_evidence=cast(:appealDecisionEvidence as jsonb),"
                             + "appeal_resolved_at=coalesce(appeal_resolved_at,now()),";
-            case "CLOSE_NO_APPEAL" ->
-                    "appeal_waived=:appealWaived,"
-                            + "waiver_evidence=case when :appealWaived then cast(:waiverEvidence as jsonb) else waiver_evidence end,"
-                            + "closed_at=coalesce(closed_at,now()),actual_end_at=coalesce(actual_end_at,now()),";
-            case "CLOSE_AFTER_APPEAL" ->
-                    "closed_at=coalesce(closed_at,now()),actual_end_at=coalesce(actual_end_at,now()),";
-            case "REOPEN_FOR_DEFECT" ->
-                    "defect_reopen_reason=:defectReason,reopened_at=now(),closed_at=null,actual_end_at=null,";
+            case "CLOSE_CORE_CASE" ->
+                    "closure_summary=:closureSummary,core_closed_at=coalesce(core_closed_at,now()),"
+                            + "closed_at=coalesce(closed_at,now()),";
+            case "COMPLETE_OBSERVATION" ->
+                    "remediation_summary=:remediationSummary,observation_evidence=cast(:observationEvidence as jsonb),"
+                            + "observation_completed_at=coalesce(observation_completed_at,now()),";
             case "ARCHIVE" ->
                     "archived_at=coalesce(archived_at,now()),actual_end_at=coalesce(actual_end_at,now()),";
             default -> "";
@@ -221,22 +227,29 @@ public class DisciplineRepository {
                          'customerId',d.customer_id,'customerName',d.customer_name,
                          'contentVersion',d.content_version,'periodNo',d.period_no,
                          'impactLevel',d.impact_level,'impactEffectiveDate',d.impact_effective_date,
+                         'safetyMeasure',d.safety_measure,'safetyEvidence',d.safety_evidence,
+                         'safetyMeasureAt',d.safety_measure_at,
                          'investigatorEmployeeId',d.investigator_employee_id,
-                         'investigationOpenedAt',d.investigation_opened_at,
-                         'interviewNotes',d.interview_notes,'employeeStatement',d.employee_statement,
-                         'statementRecordedAt',d.statement_recorded_at,
+                         'investigationFinding',d.investigation_finding,
+                         'investigationEvidence',d.investigation_evidence,
+                         'investigationCompletedAt',d.investigation_completed_at,
+                         'defenseStatement',d.defense_statement,'defenseEvidence',d.defense_evidence,
+                         'defenseSubmittedAt',d.defense_submitted_at,
+                         'responsibilityReviewerEmployeeId',d.responsibility_reviewer_employee_id,
+                         'responsibilityReview',d.responsibility_review,
+                         'responsibilityReviewedAt',d.responsibility_reviewed_at,
                          'decisionEmployeeId',d.decision_employee_id,'decisionSummary',d.decision_summary,
                          'decisionAt',d.decision_at,'serviceProof',d.service_proof,
-                         'decisionServedAt',d.decision_served_at,'appealWindowEndsAt',d.appeal_window_ends_at,
-                         'appealOpenedAt',d.appeal_opened_at,'appealSummary',d.appeal_summary,
-                         'appealEvidence',d.appeal_evidence,
+                         'decisionServedAt',d.decision_served_at,
+                         'impactSummary',d.impact_summary,'impactExecutionEvidence',d.impact_execution_evidence,
+                         'impactExecutedAt',d.impact_executed_at,
                          'appealReviewerEmployeeId',d.appeal_reviewer_employee_id,
-                         'appealReviewAssignedAt',d.appeal_review_assigned_at,
                          'appealResult',d.appeal_result,'appealDecision',d.appeal_decision,
                          'appealDecisionEvidence',d.appeal_decision_evidence,
-                         'appealResolvedAt',d.appeal_resolved_at,'appealWaived',d.appeal_waived,
-                         'waiverEvidence',d.waiver_evidence,'defectReopenReason',d.defect_reopen_reason,
-                         'reopenedAt',d.reopened_at,'archivedAt',d.archived_at) details
+                         'appealResolvedAt',d.appeal_resolved_at,
+                         'closureSummary',d.closure_summary,'coreClosedAt',d.core_closed_at,
+                         'remediationSummary',d.remediation_summary,'observationEvidence',d.observation_evidence,
+                         'observationCompletedAt',d.observation_completed_at,'archivedAt',d.archived_at) details
                   from reward.discipline_case d
                   left join workflow.wf_instance wi
                     on wi.tenant_id=d.tenant_id and wi.id=d.workflow_instance_id and not wi.is_deleted

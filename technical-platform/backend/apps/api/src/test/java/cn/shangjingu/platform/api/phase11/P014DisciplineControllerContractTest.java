@@ -7,37 +7,37 @@ import org.junit.jupiter.api.Test;
 
 class P014DisciplineControllerContractTest {
     @Test
-    void frozenPermissionsMapToServerActionsOnly() {
+    void frozenPermissionsMapToFrozenServerActionsOnly() {
         assertEquals(
                 P014DisciplineController.INVESTIGATE,
-                P014DisciplineController.actionPermission("OPEN_INVESTIGATION"));
+                P014DisciplineController.actionPermission("APPLY_SAFETY_MEASURE"));
         assertEquals(
                 P014DisciplineController.INVESTIGATE,
-                P014DisciplineController.actionPermission("RECORD_STATEMENT"));
-        assertEquals(
-                P014DisciplineController.DECIDE,
-                P014DisciplineController.actionPermission("HEARING_DECISION"));
-        assertEquals(
-                P014DisciplineController.DECIDE,
-                P014DisciplineController.actionPermission("SERVE_DECISION"));
+                P014DisciplineController.actionPermission("COMPLETE_INVESTIGATION"));
         assertEquals(
                 P014DisciplineController.APPEAL,
-                P014DisciplineController.actionPermission("OPEN_APPEAL"));
+                P014DisciplineController.actionPermission("SUBMIT_DEFENSE"));
+        assertEquals(
+                P014DisciplineController.DECIDE,
+                P014DisciplineController.actionPermission("COMPLETE_RESPONSIBILITY_REVIEW"));
+        assertEquals(
+                P014DisciplineController.DECIDE,
+                P014DisciplineController.actionPermission("APPROVE_DECISION"));
         assertEquals(
                 P014DisciplineController.APPEAL,
-                P014DisciplineController.actionPermission("ASSIGN_APPEAL_REVIEWER"));
+                P014DisciplineController.actionPermission("ACKNOWLEDGE_SERVICE"));
+        assertEquals(
+                P014DisciplineController.REMEDIATE,
+                P014DisciplineController.actionPermission("EXECUTE_IMPACTS"));
         assertEquals(
                 P014DisciplineController.APPEAL,
                 P014DisciplineController.actionPermission("RESOLVE_APPEAL"));
         assertEquals(
                 P014DisciplineController.REMEDIATE,
-                P014DisciplineController.actionPermission("CLOSE_NO_APPEAL"));
+                P014DisciplineController.actionPermission("CLOSE_CORE_CASE"));
         assertEquals(
                 P014DisciplineController.REMEDIATE,
-                P014DisciplineController.actionPermission("CLOSE_AFTER_APPEAL"));
-        assertEquals(
-                P014DisciplineController.REMEDIATE,
-                P014DisciplineController.actionPermission("REOPEN_FOR_DEFECT"));
+                P014DisciplineController.actionPermission("COMPLETE_OBSERVATION"));
         assertEquals(
                 P014DisciplineController.REMEDIATE,
                 P014DisciplineController.actionPermission("ARCHIVE"));
