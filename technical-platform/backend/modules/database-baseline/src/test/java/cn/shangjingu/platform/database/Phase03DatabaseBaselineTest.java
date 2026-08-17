@@ -54,7 +54,12 @@ class Phase03DatabaseBaselineTest {
       "01_sjg_oms:iam.permission_request_grant",
       "01_sjg_oms:integration.webhook_event",
       "01_sjg_oms:learning.learning_assignment_evidence",
-      "01_sjg_oms:learning.qualification_permission_binding");
+      "01_sjg_oms:learning.qualification_permission_binding",
+      "01_sjg_oms:performance.performance_score_entry",
+      "01_sjg_oms:reward.point_balance_snapshot",
+      "01_sjg_oms:reward.point_rule_version",
+      "01_sjg_oms:reward.point_source_guard",
+      "01_sjg_oms:welfare.care_case_fact");
 
   private static PostgreSQLContainer<?> postgres;
   private static Path repoRoot;
