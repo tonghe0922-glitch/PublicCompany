@@ -31,8 +31,8 @@ import '../styles.css'
 tokens
 → base
 → components
-→ extended
 → templates
+→ extended
 → phase10 compatibility
 → rebuilt shell
 → latest reference compatibility overrides

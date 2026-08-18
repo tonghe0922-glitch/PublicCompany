@@ -86,8 +86,8 @@ import '../styles.css'
 tokens.css
 base.css
 components.css
-extended.css
 templates.css
+extended.css
 phase10.css（历史页面）
 rebuild-shell.css
 reference-theme.css（最终兼容覆盖）
@@ -96,6 +96,7 @@ reference-theme.css（最终兼容覆盖）
 规则：
 
 - 所有 `@import` 必须位于文件最前；
+- `templates.css` 建立基础外壳和页面模板，`extended.css` 在其后加载修饰器与扩展状态；
 - `reference-theme.css` 必须最后加载，以接管历史页面视觉；
 - 新页面不得单独导入主题文件；
 - 组件内部仅允许 `scoped` 的结构性样式，不允许重复定义品牌色、圆角、阴影和字号体系。
