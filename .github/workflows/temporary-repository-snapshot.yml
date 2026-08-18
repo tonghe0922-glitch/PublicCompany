@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - 'agent/dual-portal-snapshot'
+  pull_request:
+    branches:
+      - 'Rebuild_website'
 
 permissions:
   contents: read
