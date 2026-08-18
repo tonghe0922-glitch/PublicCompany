@@ -1,0 +1,105 @@
+name: Apply verified dual-portal migration
+
+on:
+  push:
+    branches:
+      - agent/dual-portal-snapshot
+    paths:
+      - scripts/temporary/apply_dual_portal_v2.py
+      - .github/workflows/apply-dual-portal-v2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dual-portal-migration-rebuild-website
+  cancel-in-progress: false
+
+jobs:
+  migrate-test-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preserve migration program and switch to target
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp scripts/temporary/apply_dual_portal_v2.py /tmp/apply_dual_portal_v2.py
+          git fetch origin Rebuild_website
+          git checkout -B dual-portal-work origin/Rebuild_website
+
+      - name: Apply dual-portal refactor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/apply_dual_portal_v2.py
+          python scripts/implementation/dual_portal_guard.py
+          git diff --check
+
+      - name: Verify immutable business sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git status --porcelain | sed 's/^...//' | grep -E '^(Knowledge Base/|technical-platform/api/|technical-platform/(database|db|worker|integrations)/|database/)'; then
+            echo 'Immutable Knowledge Base/backend/database content was modified.' >&2
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+
+      - name: Enable pnpm
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.34.0 --activate
+
+      - name: Install frontend dependencies
+        working-directory: technical-platform/web
+        shell: bash
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        working-directory: technical-platform/web
+        run: pnpm run typecheck
+
+      - name: Lint
+        working-directory: technical-platform/web
+        run: pnpm run lint
+
+      - name: Unit tests
+        working-directory: technical-platform/web
+        run: pnpm run test
+
+      - name: Build work and admin only
+        working-directory: technical-platform/web
+        run: pnpm run build
+
+      - name: Verify build products
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d technical-platform/web/dist/work
+          test -d technical-platform/web/dist/admin
+          test ! -d technical-platform/web/dist/employee
+          test ! -d technical-platform/web/dist/center
+
+      - name: Commit and publish target branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'OpenAI Codex'
+          git config user.email 'codex@openai.com'
+          git add -A
+          git commit -m 'refactor(platform): consolidate runtime into work and tech portals'
+          git push origin HEAD:Rebuild_website
