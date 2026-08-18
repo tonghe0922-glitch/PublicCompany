@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import appSource from '../platform/create-portal-app.ts?raw'
+import sessionHeaderSource from '../platform/PortalSessionHeader.vue?raw'
+import navigationSource from '../router/PortalNavigation.vue?raw'
 import styleEntry from '../styles.css?raw'
 import tokenSource from './tokens.css?raw'
 import shellSource from '../shared/layout/rebuild/rebuild-shell.css?raw'
@@ -38,5 +40,12 @@ describe('Rebuild website design-system entry', () => {
     expect(shellSource).toContain('.rebuild-shell__sidebar')
     expect(shellSource).toContain('.rebuild-shell--drawer-open')
     expect(shellSource).toContain('.rebuild-shell__bottom-nav')
+  })
+
+  it('replaces the old navigation and session header visuals in the components themselves', () => {
+    expect(navigationSource).toContain('portal-navigation__icon')
+    expect(navigationSource).toContain('linear-gradient(135deg, var(--sgj-brand-500), var(--sgj-brand-600))')
+    expect(sessionHeaderSource).toContain('portal-session-header__avatar')
+    expect(sessionHeaderSource).not.toContain('SgjStatusChip')
   })
 })

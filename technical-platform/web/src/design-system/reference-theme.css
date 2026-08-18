@@ -22,100 +22,7 @@
   font-size: var(--sgj-font-xs);
 }
 
-/* Header session component */
-.rebuild-shell .portal-session-header {
-  min-width: 0;
-  gap: var(--sgj-space-2);
-}
-
-.rebuild-shell .portal-session-header__context {
-  padding: 5px 10px 5px 6px;
-  border: 1px solid var(--sgj-border);
-  border-radius: var(--sgj-radius-pill);
-  background: rgba(15, 23, 42, .025);
-}
-
-.rebuild-shell .portal-session-header__context strong {
-  color: var(--sgj-text-primary);
-  font-size: var(--sgj-font-sm);
-}
-
-.rebuild-shell .portal-session-header__identity {
-  width: min(240px, 30vw);
-}
-
-.rebuild-shell .portal-session-header__identity .sgj-field__label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-
-.rebuild-shell .portal-session-header__identity .sgj-control {
-  min-height: 38px;
-  padding-block: 6px;
-  border-radius: var(--sgj-radius-pill);
-  background: rgba(15, 23, 42, .025);
-}
-
-/* Permission-aware router navigation, restyled as the latest sidebar */
-.rebuild-shell .portal-navigation {
-  gap: var(--sgj-space-4);
-}
-
-.rebuild-shell .portal-navigation__links {
-  gap: 3px;
-}
-
-.rebuild-shell .portal-navigation__links a,
-.rebuild-shell .portal-navigation__more summary {
-  min-height: 42px;
-  padding: 9px 12px;
-  border: 1px solid transparent;
-  border-radius: var(--sgj-radius-lg);
-  color: var(--sgj-text-secondary);
-  font-size: 15px;
-  font-weight: 580;
-}
-
-.rebuild-shell .portal-navigation__links a:hover,
-.rebuild-shell .portal-navigation__more summary:hover {
-  color: var(--sgj-brand-700);
-  background: var(--sgj-brand-50);
-  border-color: var(--sgj-brand-100);
-}
-
-.rebuild-shell .portal-navigation__links a[aria-current="page"],
-.rebuild-shell .portal-navigation__more summary[aria-current="page"] {
-  color: #fff;
-  background: linear-gradient(135deg, var(--sgj-brand-500), var(--sgj-brand-600));
-  border-color: var(--sgj-brand-600);
-  box-shadow: var(--sgj-shadow-accent);
-  font-weight: 700;
-}
-
-.rebuild-shell .portal-navigation__taxonomy {
-  padding-top: var(--sgj-space-3);
-  border-top: 1px solid var(--sgj-border);
-}
-
-.rebuild-shell .portal-navigation__caption {
-  margin: 0 0 var(--sgj-space-2);
-  padding-inline: var(--sgj-space-3);
-  color: var(--sgj-text-tertiary);
-  font-size: var(--sgj-font-xs);
-  font-weight: 700;
-  letter-spacing: .05em;
-}
-
-.rebuild-shell .portal-navigation__taxonomy li {
-  padding: 5px 12px;
-  color: var(--sgj-text-tertiary);
-  font-size: var(--sgj-font-sm);
-}
-
-/* Common legacy structures now share the formal component language */
+/* Common legacy structures now share the formal component language. */
 :where(.phase-status, .principle-card, .process-card, .card, .panel, .card2) {
   border: 1px solid var(--sgj-border);
   border-radius: var(--sgj-radius-lg);
@@ -170,7 +77,7 @@
   line-height: 1.4;
 }
 
-/* Unified filter/search language */
+/* Unified filter/search language. */
 :where(.srch, .searchbox-inner, .mem-tools .srch, .todo-toolbar .srch, .apr-filters .srch) {
   min-height: 40px;
   display: flex;
@@ -196,7 +103,7 @@
   background: transparent;
 }
 
-/* Legacy table/list rows */
+/* Legacy table/list rows. */
 :where(.t2 .lh, .mem-list .lh, .todo-table-head, .perm-table-head) {
   color: var(--sgj-text-secondary);
   background: var(--sgj-surface-muted);
@@ -214,7 +121,7 @@
   border-color: var(--sgj-border-hover);
 }
 
-/* Pagination */
+/* Shared pagination for legacy pages. */
 .pagination {
   display: flex;
   align-items: center;
@@ -258,24 +165,4 @@
   margin: 0 var(--sgj-space-2);
   color: var(--sgj-text-tertiary);
   font-size: var(--sgj-font-xs);
-}
-
-@media (max-width: 760px) {
-  .rebuild-shell .portal-session-header__identity { display: none; }
-  .rebuild-shell .portal-navigation--mobile .portal-navigation__links a,
-  .rebuild-shell .portal-navigation--mobile .portal-navigation__more summary {
-    min-height: 58px;
-    padding: 7px 5px;
-    border: 0;
-    border-radius: var(--sgj-radius-md);
-    color: var(--sgj-text-tertiary);
-    background: transparent;
-    box-shadow: none;
-    font-size: var(--sgj-font-xs);
-  }
-  .rebuild-shell .portal-navigation--mobile .portal-navigation__links a[aria-current="page"],
-  .rebuild-shell .portal-navigation--mobile .portal-navigation__more summary[aria-current="page"] {
-    color: var(--sgj-brand-600);
-    background: var(--sgj-brand-50);
-  }
 }
