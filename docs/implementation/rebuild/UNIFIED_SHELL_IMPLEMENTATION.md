@@ -1,52 +1,94 @@
-# Rebuild_website 统一页面外壳实施说明
+# Rebuild Website · 统一设计系统实施记录
 
-## 1. 本次范围
+## 目标
 
-本次只实施三端认证后的公共页面外壳，不改动 PostgreSQL、Flyway、Java 领域服务、工作流状态机、业务权限编码或既有业务数据。
+在 `Rebuild_website` 分支把最新模拟页面的“苹果暖琥珀橙”视觉正式接入 Vue 三端，同时保留现有登录、会话、Router、权限投影、后端接口、数据库和业务状态机。
 
-实施内容：
+## 本次根因
 
-- 将上传模拟站中的顶部品牌栏、全局搜索、左侧导航、面包屑、返回上一层、内容工作区和移动端底部导航转换为正式 Vue 组件；
-- 员工端、中心管理端、技术后台端共用同一个外壳组件；
-- 继续使用现有 Vue Router、Pinia 会话、服务端权限和来源化页面目录；
-- 搜索只展示当前身份已经获得权限、已经注册真实路由且状态为 implemented 的页面；
-- 原有业务页面通过 RouterView 原样承载，不使用静态页面冒充真实业务数据。
+原工程存在两处断链：
 
-## 2. 关键文件
+1. `src/styles.css` 声明了设计系统样式，但 `create-portal-app.ts` 没有导入该入口；
+2. `rebuild-shell.css` 已存在，却没有进入全局 CSS 依赖链。
 
-```text
-technical-platform/web/src/shared/layout/rebuild/
-├─ UnifiedPortalShell.vue
-├─ UnifiedPortalShell.test.ts
-├─ rebuild-shell.css
-└─ types.ts
+因此三端页面无法稳定加载完整设计系统。
+
+## 已实施
+
+### CSS 入口
+
+`src/platform/create-portal-app.ts` 统一导入：
+
+```ts
+import '../styles.css'
 ```
 
-接入点：
+员工端、中心端和技术端共用这一个入口。
+
+### 加载顺序
 
 ```text
-technical-platform/web/src/platform/AuthenticatedPortalLayout.vue
+tokens
+→ base
+→ components
+→ extended
+→ templates
+→ phase10 compatibility
+→ rebuilt shell
+→ latest reference compatibility overrides
 ```
 
-## 3. 权限与数据原则
+### 主题替换
 
-导航入口仍由现有 `projectActiveNavigation` 计算，必须同时满足：
+- 靛蓝替换为暖琥珀橙；
+- 工作区改为 `#F4F4F7`；
+- 白色卡片、细边框、轻阴影；
+- 顶部栏、侧栏和移动底栏采用磨砂玻璃；
+- 表单聚焦、按钮、导航高亮统一使用橙色；
+- 成功、警告、危险、信息和协作色保持语义独立。
 
-1. 属于当前 portal；
-2. 页面状态为 `implemented`；
-3. Vue Router 已注册真实路径；
-4. 当前服务端 SessionView 已授予全部所需权限；
-5. 当前设备允许访问。
+### 组件处理
 
-页面外壳不保存业务数据，不计算业务状态，不放宽权限，也不生成虚假的待办数、消息数或 KPI。
+- 已认证页面继续使用 `UnifiedPortalShell`；
+- 登录和异常页保留 `SgjPortalShell`，但视觉已统一；
+- `SgjButton`、`SgjCard`、表单、表格、状态、弹窗、抽屉、Toast 和页面模板全部换用新主题；
+- 历史页面通过 `reference-theme.css` 获得统一视觉；
+- 后续逐闭环删除对应重复旧样式，不进行一次性破坏性删除。
 
-## 4. 后续闭环开发方式
+### 规范
 
-后续每完成一个业务闭环，按以下顺序落地：
+根 `DESIGN.md` 升级为 V3.0，成为暖琥珀橙设计系统唯一执行基线。
+
+### 自动回归
+
+新增 `theme-entry.test.ts`，检查：
+
+- 三端应用入口确实加载 CSS；
+- 设计系统导入顺序；
+- 主品牌色；
+- 旧靛蓝令牌清除；
+- 桌面、抽屉和移动底栏契约。
+
+## 未改变
+
+- Java 后端；
+- PostgreSQL / Flyway；
+- API；
+- 权限码；
+- 业务状态机；
+- 三端数据范围；
+- 审计与敏感数据规则。
+
+## 后续闭环迁移
+
+每个业务闭环按以下顺序推进：
 
 ```text
-真实路由 → 页面组件 → API 契约 → 后端命令/查询 → 数据库存储
-→ 权限与数据范围 → 通知/审计 → 单元测试 → Playwright 闭环测试
+页面核对
+→ 旧组件清单
+→ 正式组件替换
+→ 真实 API 联调
+→ PC/移动验收
+→ 单元与 E2E
+→ 删除该闭环重复 CSS
 ```
-
-只有路由、权限、接口、数据库和验收测试都通过后，页面目录中的状态才允许变更为 `implemented`，并自动进入真实导航。

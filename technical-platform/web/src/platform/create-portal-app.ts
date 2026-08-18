@@ -1,10 +1,11 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import type { PortalDefinition } from './portal-config'
-import PortalRuntimeRoot from './PortalRuntimeRoot.vue'
-import { recordRuntimeError } from './runtime-error-state'
+import '../styles.css'
 import { createPortalRouter } from '../router'
 import { usePortalSessionStore } from '../session'
+import PortalRuntimeRoot from './PortalRuntimeRoot.vue'
+import type { PortalDefinition } from './portal-config'
+import { recordRuntimeError } from './runtime-error-state'
 
 export function createPortalApp(portal: PortalDefinition) {
   const app = createApp(PortalRuntimeRoot)
