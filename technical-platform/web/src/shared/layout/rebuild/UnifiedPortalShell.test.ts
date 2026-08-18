@@ -34,9 +34,14 @@ async function mountShell() {
 }
 
 describe('rebuild unified portal shell', () => {
-  it('keeps route content, navigation slots and current page context visible', async () => {
+  it('keeps route content, navigation slots and locked brand context visible', async () => {
     const { wrapper } = await mountShell()
-    expect(wrapper.text()).toContain('上金谷管理系统')
+    expect(wrapper.text()).toContain('上金谷管理平台')
+    expect(wrapper.text()).toContain('数字化现场调度协同系统')
+    expect(wrapper.get('.rebuild-shell__brand-tag').text()).toBe('员工端')
+    expect(wrapper.get('.rebuild-shell__brand-logo').attributes('alt')).toBe('上金谷品牌标志')
+    expect(wrapper.get('.rebuild-shell__brand-logo').attributes('src')).toContain('LOGO.svg')
+    expect(wrapper.find('.rebuild-shell__brand-mark').exists()).toBe(false)
     expect(wrapper.text()).toContain('待办与任务')
     expect(wrapper.text()).toContain('任务导航')
     expect(wrapper.text()).toContain('真实业务页面')

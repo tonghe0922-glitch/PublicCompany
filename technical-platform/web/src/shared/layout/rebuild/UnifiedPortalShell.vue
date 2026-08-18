@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<{
 const route = useRoute()
 const router = useRouter()
 const slots = useSlots()
+const brandLogoUrl = new URL('../../../assets/brand/LOGO.svg', import.meta.url).href
 const mainRef = ref<HTMLElement | null>(null)
 const searchInputRef = ref<HTMLInputElement | null>(null)
 const query = ref('')
@@ -26,6 +27,11 @@ const searchOpen = ref(false)
 const sidebarCollapsed = ref(false)
 const drawerOpen = ref(false)
 
+const portalTag = computed(() => ({
+  employee: '员工端',
+  center: '中心端',
+  tech: '技术端',
+})[props.portal.code] ?? '平台端')
 const hasAlert = computed(() => props.alertVisible && Boolean(slots.globalAlert))
 const isHome = computed(() => route.path === '/')
 const searchResults = computed(() => {
@@ -115,11 +121,18 @@ watch(() => route.fullPath, () => {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
       </button>
 
-      <RouterLink class="rebuild-shell__brand" to="/" aria-label="返回系统首页">
-        <span class="rebuild-shell__brand-mark" aria-hidden="true">上</span>
+      <RouterLink class="rebuild-shell__brand" to="/" aria-label="返回上金谷管理平台首页">
+        <img
+          class="rebuild-shell__brand-logo"
+          :src="brandLogoUrl"
+          alt="上金谷品牌标志"
+        />
         <span class="rebuild-shell__brand-copy">
-          <strong>上金谷管理系统</strong>
-          <small>{{ portal.title }} · 企业运营工作台</small>
+          <span class="rebuild-shell__brand-title-row">
+            <strong>上金谷管理平台</strong>
+            <span class="rebuild-shell__brand-tag">{{ portalTag }}</span>
+          </span>
+          <small>数字化现场调度协同系统</small>
         </span>
       </RouterLink>
 
@@ -206,3 +219,4 @@ watch(() => route.fullPath, () => {
 </template>
 
 <style src="./rebuild-shell.css"></style>
+<style src="./brand-topbar.css"></style>
