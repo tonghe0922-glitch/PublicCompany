@@ -20,11 +20,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Package source tree
-        run: tar --exclude=.git -czf repository-snapshot.tar.gz .
+        run: tar --exclude=.git -czf "$RUNNER_TEMP/repository-snapshot.tar.gz" .
       - name: Upload source snapshot
         uses: actions/upload-artifact@v4
         with:
           name: repository-snapshot
-          path: repository-snapshot.tar.gz
+          path: ${{ runner.temp }}/repository-snapshot.tar.gz
           retention-days: 1
           if-no-files-found: error
