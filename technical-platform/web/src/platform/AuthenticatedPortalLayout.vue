@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { ApiClientError } from '../api'
-import { SgjPortalShell, SgjStatusChip } from '../design-system'
+import { SgjStatusChip } from '../design-system'
 import PortalNavigation from '../router/PortalNavigation.vue'
+import { projectActiveNavigation } from '../router/navigation-projection'
+import { PORTAL_IA_NAVIGATION } from '../router/navigation-source'
 import { safeInternalRedirect } from '../router/redirect'
 import { usePortalSessionStore } from '../session'
+import UnifiedPortalShell from '../shared/layout/rebuild/UnifiedPortalShell.vue'
 import type { PortalDefinition } from './portal-config'
 import PortalSessionHeader from './PortalSessionHeader.vue'
 
@@ -15,6 +18,21 @@ const route = useRoute()
 const router = useRouter()
 const sessionNotice = ref('')
 const sessionRequestId = ref<string | undefined>()
+
+const navigationItems = computed(() => projectActiveNavigation(PORTAL_IA_NAVIGATION, {
+  portalCode: props.portal.code,
+  permissions: new Set(session.session?.permissions ?? []),
+  implementedRoutePaths: new Set(router.getRoutes().map((record) => record.path)),
+  mobile: false,
+}))
+
+const pageTitle = computed(() => {
+  if (route.path === '/') return props.portal.homeTitle
+  const matches = navigationItems.value
+    .filter((item) => route.path === item.routePath || route.path.startsWith(`${item.routePath}/`))
+    .sort((left, right) => right.routePath.length - left.routePath.length)
+  return matches[0]?.label ?? props.portal.homeTitle
+})
 
 function showSessionFailure(cause: unknown): void {
   sessionNotice.value = '会话操作未完成，请检查网络或权限后重试。'
@@ -55,7 +73,12 @@ watch(
 </script>
 
 <template>
-  <SgjPortalShell :portal-label="portal.title" :page-title="portal.homeTitle">
+  <UnifiedPortalShell
+    :portal="props.portal"
+    :page-title="pageTitle"
+    :search-items="navigationItems"
+    :alert-visible="Boolean(sessionNotice)"
+  >
     <template #header>
       <PortalSessionHeader
         v-if="session.session"
@@ -68,13 +91,13 @@ watch(
       <SgjStatusChip v-else tone="warning">会话状态：{{ session.phase }}</SgjStatusChip>
     </template>
     <template #globalAlert>
-      <div v-if="sessionNotice" class="phase08-session-alert" role="alert">
+      <div class="phase08-session-alert" role="alert">
         <strong>{{ sessionNotice }}</strong>
         <span v-if="sessionRequestId">Request ID: {{ sessionRequestId }}</span>
       </div>
     </template>
-    <template #sidebar><PortalNavigation :portal-code="portal.code" /></template>
-    <template #bottomNav><PortalNavigation :portal-code="portal.code" mobile /></template>
+    <template #sidebar><PortalNavigation :portal-code="props.portal.code" /></template>
+    <template #bottomNav><PortalNavigation :portal-code="props.portal.code" mobile /></template>
     <RouterView />
-  </SgjPortalShell>
+  </UnifiedPortalShell>
 </template>
