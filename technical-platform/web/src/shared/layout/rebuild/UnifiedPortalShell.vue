@@ -51,12 +51,12 @@ function closeSearch(): void {
   query.value = ''
 }
 
-function toggleNavigation(): void {
-  if (window.matchMedia('(max-width: 959px)').matches) {
-    drawerOpen.value = !drawerOpen.value
-    return
-  }
+function toggleSidebar(): void {
   sidebarCollapsed.value = !sidebarCollapsed.value
+}
+
+function toggleDrawer(): void {
+  drawerOpen.value = !drawerOpen.value
 }
 
 async function navigate(path: string): Promise<void> {
@@ -97,11 +97,20 @@ watch(() => route.fullPath, () => {
 
     <header class="rebuild-shell__topbar">
       <button
-        class="rebuild-shell__nav-toggle"
+        class="rebuild-shell__nav-toggle rebuild-shell__nav-toggle--desktop"
         type="button"
         aria-label="展开或收起主导航"
-        :aria-expanded="(!sidebarCollapsed || drawerOpen).toString()"
-        @click="toggleNavigation"
+        :aria-expanded="(!sidebarCollapsed).toString()"
+        @click="toggleSidebar"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+      <button
+        class="rebuild-shell__nav-toggle rebuild-shell__nav-toggle--mobile"
+        type="button"
+        aria-label="打开主导航"
+        :aria-expanded="drawerOpen.toString()"
+        @click="toggleDrawer"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
       </button>

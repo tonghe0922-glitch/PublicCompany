@@ -53,6 +53,7 @@
 
 .rebuild-shell__nav-toggle:hover,
 .rebuild-shell__search-trigger:hover { color: var(--rebuild-accent); background: var(--rebuild-accent-soft); }
+.rebuild-shell__nav-toggle--mobile { display: none; }
 .rebuild-shell__nav-toggle svg,
 .rebuild-shell__search-trigger svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 
@@ -118,6 +119,8 @@
   .rebuild-shell--has-alert { grid-template-columns: 1fr; grid-template-rows: 64px auto minmax(0, 1fr); }
   .rebuild-shell:not(.rebuild-shell--has-alert) { grid-template-rows: 64px minmax(0, 1fr); }
   .rebuild-shell__topbar { padding: 0 14px; gap: 10px; }
+  .rebuild-shell__nav-toggle--desktop { display: none; }
+  .rebuild-shell__nav-toggle--mobile { display: inline-grid; }
   .rebuild-shell__brand-copy strong { font-size: 15px; }
   .rebuild-shell__search { display: none; }
   .rebuild-shell__search-trigger { display: inline-grid; }
