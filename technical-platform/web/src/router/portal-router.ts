@@ -8,6 +8,7 @@ import {
 } from 'vue-router'
 import AuthenticatedPortalLayout from '../platform/AuthenticatedPortalLayout.vue'
 import type { PortalDefinition } from '../platform/portal-config'
+import NavigationDevelopingPage from '../platform/pages/NavigationDevelopingPage.vue'
 import PlatformShell from '../platform/PlatformShell.vue'
 import ForbiddenPage from '../platform/pages/ForbiddenPage.vue'
 import LoginPage from '../platform/pages/LoginPage.vue'
@@ -27,23 +28,13 @@ export interface PortalRouterSession {
 }
 
 function loginTarget(to: RouteLocationNormalized) {
-  return {
-    name: 'login',
-    query: { redirect: safeInternalRedirect(to.fullPath) },
-  }
+  return { name: 'login', query: { redirect: safeInternalRedirect(to.fullPath) } }
 }
 
-async function restoreOnce(
-  session: PortalRouterSession,
-  state: { attempted: boolean },
-): Promise<void> {
+async function restoreOnce(session: PortalRouterSession, state: { attempted: boolean }): Promise<void> {
   if (state.attempted || session.authenticated) return
   state.attempted = true
-  try {
-    await session.restore()
-  } catch (cause) {
-    recordRuntimeError(cause)
-  }
+  try { await session.restore() } catch (cause) { recordRuntimeError(cause) }
 }
 
 function requiredPermission(to: RouteLocationNormalized): string | undefined {
@@ -52,15 +43,10 @@ function requiredPermission(to: RouteLocationNormalized): string | undefined {
 
 function requiredPermissionsAny(to: RouteLocationNormalized): string[] {
   if (!Array.isArray(to.meta.permissionsAny)) return []
-  return to.meta.permissionsAny.filter(
-    (value): value is string => typeof value === 'string' && value.length > 0,
-  )
+  return to.meta.permissionsAny.filter((value): value is string => typeof value === 'string' && value.length > 0)
 }
 
-function authorizationRedirect(
-  to: RouteLocationNormalized,
-  session: PortalRouterSession,
-) {
+function authorizationRedirect(to: RouteLocationNormalized, session: PortalRouterSession) {
   const permission = requiredPermission(to)
   if (permission && !session.can(permission)) return { name: 'forbidden' }
   const permissionsAny = requiredPermissionsAny(to)
@@ -75,9 +61,7 @@ function registerGuards(router: Router, session: PortalRouterSession): void {
     clearRuntimeError()
     await restoreOnce(session, state)
     if (to.meta.requiresAuth && !session.authenticated) return loginTarget(to)
-    if (to.meta.guestOnly && session.authenticated) {
-      return safeInternalRedirect(to.query.redirect)
-    }
+    if (to.meta.guestOnly && session.authenticated) return safeInternalRedirect(to.query.redirect)
     return authorizationRedirect(to, session) ?? true
   })
   router.onError(recordRuntimeError)
@@ -116,9 +100,15 @@ function authenticatedRoutes(portal: PortalDefinition): RouteRecordRaw {
     props: { portal },
     meta: { requiresAuth: true },
     children: [
-      { path: '', name: 'portal-home', component: PlatformShell, props: { portal } },
+      { path: '', name: 'portal-home', component: PlatformShell, props: { portal }, meta: { pageTitle: portal.homeTitle } },
       ...portalRoutes(portal),
-      { path: '/forbidden', name: 'forbidden', component: ForbiddenPage, props: { portal } },
+      {
+        path: '/developing',
+        name: 'navigation-developing',
+        component: NavigationDevelopingPage,
+        meta: { pageTitle: '正在开发中', navigationState: 'developing' },
+      },
+      { path: '/forbidden', name: 'forbidden', component: ForbiddenPage, props: { portal }, meta: { pageTitle: '无访问权限' } },
     ],
   }
 }
@@ -131,15 +121,9 @@ export function createPortalRouter(
   const router = createRouter({
     history,
     routes: [
-      {
-        path: '/login', name: 'login', component: LoginPage,
-        props: { portal }, meta: { guestOnly: true },
-      },
+      { path: '/login', name: 'login', component: LoginPage, props: { portal }, meta: { guestOnly: true } },
       authenticatedRoutes(portal),
-      {
-        path: '/:pathMatch(.*)*', name: 'not-found',
-        component: NotFoundPage, props: { portal },
-      },
+      { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage, props: { portal } },
     ],
   })
   registerGuards(router, session)

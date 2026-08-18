@@ -4,7 +4,7 @@ import { RouterView, useRoute, useRouter } from 'vue-router'
 import { ApiClientError } from '../api'
 import { SgjStatusChip } from '../design-system'
 import PortalNavigation from '../router/PortalNavigation.vue'
-import { projectActiveNavigation } from '../router/navigation-projection'
+import { projectActiveNavigation, projectNavigationGroups, resolveActiveItem, type NavigationRouteAccessRule } from '../router/navigation-projection'
 import { PORTAL_IA_NAVIGATION } from '../router/navigation-source'
 import { safeInternalRedirect } from '../router/redirect'
 import { usePortalSessionStore } from '../session'
@@ -19,19 +19,46 @@ const router = useRouter()
 const sessionNotice = ref('')
 const sessionRequestId = ref<string | undefined>()
 
+const routeRecords = computed(() => router.getRoutes())
+const implementedRoutePaths = computed(() => new Set(routeRecords.value.map((record) => record.path)))
+const routeAccessRules = computed<ReadonlyMap<string, NavigationRouteAccessRule>>(() => {
+  const rules = new Map<string, NavigationRouteAccessRule>()
+  for (const record of routeRecords.value) {
+    const all = typeof record.meta.permission === 'string' ? [record.meta.permission] : []
+    const any = Array.isArray(record.meta.permissionsAny)
+      ? record.meta.permissionsAny.filter((value): value is string => typeof value === 'string')
+      : []
+    if (all.length || any.length) rules.set(record.path, { all, any })
+  }
+  return rules
+})
+const permissions = computed(() => new Set(session.session?.permissions ?? []))
 const navigationItems = computed(() => projectActiveNavigation(PORTAL_IA_NAVIGATION, {
   portalCode: props.portal.code,
-  permissions: new Set(session.session?.permissions ?? []),
-  implementedRoutePaths: new Set(router.getRoutes().map((record) => record.path)),
+  permissions: permissions.value,
+  implementedRoutePaths: implementedRoutePaths.value,
   mobile: false,
+}))
+const navigationGroups = computed(() => projectNavigationGroups(PORTAL_IA_NAVIGATION, {
+  portalCode: props.portal.code,
+  permissions: permissions.value,
+  implementedRoutePaths: implementedRoutePaths.value,
+  routeAccessRules: routeAccessRules.value,
+  mobile: false,
+  identityLabel: session.session?.identityName ?? null,
 }))
 
 const pageTitle = computed(() => {
+  if (typeof route.meta.pageTitle === 'string') return route.meta.pageTitle
+  if ((route.path === '/developing' || route.path === '/forbidden') && typeof route.query.label === 'string') {
+    return route.query.label
+  }
   if (route.path === '/') return props.portal.homeTitle
-  const matches = navigationItems.value
-    .filter((item) => route.path === item.routePath || route.path.startsWith(`${item.routePath}/`))
-    .sort((left, right) => right.routePath.length - left.routePath.length)
-  return matches[0]?.label ?? props.portal.homeTitle
+  return resolveActiveItem(navigationGroups.value, route.path, route.query.module)?.label
+    ?? navigationItems.value
+      .filter((item) => route.path === item.routePath || route.path.startsWith(`${item.routePath}/`))
+      .sort((left, right) => right.routePath.length - left.routePath.length)[0]?.label
+    ?? props.portal.homeTitle
 })
 
 function showSessionFailure(cause: unknown): void {
@@ -96,8 +123,19 @@ watch(
         <span v-if="sessionRequestId">Request ID: {{ sessionRequestId }}</span>
       </div>
     </template>
-    <template #sidebar><PortalNavigation :portal-code="props.portal.code" /></template>
-    <template #bottomNav><PortalNavigation :portal-code="props.portal.code" mobile /></template>
+    <template #sidebar>
+      <PortalNavigation
+        :portal-code="props.portal.code"
+        :identity-label="session.session?.identityName"
+      />
+    </template>
+    <template #bottomNav>
+      <PortalNavigation
+        :portal-code="props.portal.code"
+        :identity-label="session.session?.identityName"
+        mobile
+      />
+    </template>
     <RouterView />
   </UnifiedPortalShell>
 </template>
