@@ -7,6 +7,11 @@ on:
     paths:
       - '.github/delivery/dual_cleanup_payload.part-*'
       - '.github/workflows/apply-dual-cleanup.yml'
+  pull_request:
+    branches:
+      - Rebuild_website
+    paths:
+      - '.github/delivery/dual_cleanup_pr_trigger.txt'
 
 permissions:
   contents: write
@@ -41,6 +46,7 @@ jobs:
             rm -f -- "$path"
           done < /tmp/dual-cleanup/deletions.txt
           rm -f .github/delivery/dual_cleanup_payload.part-*
+          rm -f .github/delivery/dual_cleanup_pr_trigger.txt
           rm -f .github/workflows/apply-dual-cleanup.yml
           rmdir .github/delivery 2>/dev/null || true
 
@@ -66,5 +72,3 @@ jobs:
           fi
           git commit -m 'refactor(platform): finalize clean dual-portal runtime and authz'
           git push origin HEAD:Rebuild_website
-
-# trigger: 2026-08-19 dual-cleanup
