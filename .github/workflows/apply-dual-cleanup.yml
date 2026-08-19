@@ -1,17 +1,11 @@
-name: Apply dual cleanup delivery
+name: Apply corrected dual cleanup delivery
 
 on:
-  push:
-    branches:
-      - Rebuild_website
-    paths:
-      - '.github/delivery/dual_cleanup_payload.part-*'
-      - '.github/workflows/apply-dual-cleanup.yml'
   pull_request:
     branches:
       - Rebuild_website
     paths:
-      - '.github/delivery/dual_cleanup_pr_trigger.txt'
+      - '.github/delivery/corrected_payload_trigger.txt'
 
 permissions:
   contents: write
@@ -21,20 +15,27 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Checkout target branch
+      - name: Checkout delivery branch
         uses: actions/checkout@v4
         with:
-          ref: Rebuild_website
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Decode and verify payload
+      - name: Decode and verify corrected payload
         shell: bash
         run: |
           set -euo pipefail
-          cat .github/delivery/dual_cleanup_payload.part-* | base64 -d > /tmp/dual_cleanup_payload.tar.gz
-          echo '100f643df688c6531088bbb51cf79d8d595c783d82209d5bcb66c1dbb26297a1  /tmp/dual_cleanup_payload.tar.gz' | sha256sum -c -
+          cat .github/delivery/corrected_payload.part-* | base64 -d > /tmp/dual_cleanup_payload.tar.gz
+          echo '5cc763eba15761f3fd8a15543dcd20bdf60b4df068e4940c99a6388add1bbe96  /tmp/dual_cleanup_payload.tar.gz' | sha256sum -c -
           mkdir -p /tmp/dual-cleanup
           tar -xzf /tmp/dual_cleanup_payload.tar.gz -C /tmp/dual-cleanup
+
+      - name: Switch to latest target branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin Rebuild_website
+          git checkout -B delivery-target origin/Rebuild_website
 
       - name: Apply final clean dual-portal source
         shell: bash
@@ -45,6 +46,7 @@ jobs:
             [ -z "$path" ] && continue
             rm -f -- "$path"
           done < /tmp/dual-cleanup/deletions.txt
+          rm -f .github/delivery/dual_cleanup_payload.b64
           rm -f .github/delivery/dual_cleanup_payload.part-*
           rm -f .github/delivery/dual_cleanup_pr_trigger.txt
           rm -f .github/workflows/apply-dual-cleanup.yml
