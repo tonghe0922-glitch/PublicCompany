@@ -99,18 +99,22 @@ jobs:
         shell: bash
         run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.0
+
       - name: Set up Node.js 22
         uses: actions/setup-node@v5
         with:
           node-version: '22.12.0'
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
 
-      - name: Install pnpm and frontend dependencies
+      - name: Install frontend dependencies
         shell: bash
         working-directory: technical-platform/web
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.34.0 --activate
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Run frontend static quality gates
         shell: bash
