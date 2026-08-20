@@ -49,10 +49,24 @@ jobs:
           import re
 
           java_files = list(Path('technical-platform/backend').rglob('*.java'))
+          deprecated_fields = (
+              'node.fields().forEachRemaining('
+              'entry -> fields.put(entry.getKey(), entry.getValue()));'
+          )
+          current_properties = (
+              'node.properties().forEach('
+              'entry -> fields.put(entry.getKey(), entry.getValue()));'
+          )
+          fields_count = 0
           mockbean_count = 0
+
           for path in java_files:
               text = path.read_text(encoding='utf-8')
               original = text
+              occurrence_count = text.count(deprecated_fields)
+              if occurrence_count:
+                  text = text.replace(deprecated_fields, current_properties)
+                  fields_count += occurrence_count
               if 'org.springframework.boot.test.mock.mockito.MockBean' in text:
                   text = text.replace(
                       'import org.springframework.boot.test.mock.mockito.MockBean;',
@@ -63,16 +77,14 @@ jobs:
               if text != original:
                   path.write_text(text, encoding='utf-8')
 
-          runtime_path = Path(
-              'technical-platform/backend/modules/workflow/src/main/java/'
-              'cn/shangjingu/platform/workflow/WorkflowRuntimeService.java'
-          )
-          runtime = runtime_path.read_text(encoding='utf-8')
-          old_runtime = 'node.fields().forEachRemaining(entry -> fields.put(entry.getKey(), entry.getValue()));'
-          new_runtime = 'node.properties().forEach(entry -> fields.put(entry.getKey(), entry.getValue()));'
-          if old_runtime not in runtime:
-              raise SystemExit('Expected deprecated JsonNode.fields() call was not found')
-          runtime_path.write_text(runtime.replace(old_runtime, new_runtime), encoding='utf-8')
+          if fields_count != 4:
+              raise SystemExit(
+                  f'Expected four deprecated JsonNode.fields() calls, found {fields_count}'
+              )
+          if mockbean_count != 1:
+              raise SystemExit(
+                  f'Expected one deprecated @MockBean file, found {mockbean_count}'
+              )
 
           lifecycle_path = Path(
               'technical-platform/backend/modules/workflow/src/test/java/'
@@ -97,7 +109,11 @@ jobs:
               )
           lifecycle_path.write_text(lifecycle, encoding='utf-8')
 
-          print(f'Updated deprecated @MockBean usage in {mockbean_count} Java file(s).')
+          print(
+              'Updated '
+              f'{fields_count} deprecated JsonNode fields calls and '
+              f'{mockbean_count} deprecated @MockBean file.'
+          )
           PY
 
       - name: Set up Java 21
