@@ -46,6 +46,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
 
           java_files = list(Path('technical-platform/backend').rglob('*.java'))
           mockbean_count = 0
@@ -78,18 +79,23 @@ jobs:
               'cn/shangjingu/platform/workflow/phase11/Phase11LifecycleServiceTest.java'
           )
           lifecycle = lifecycle_path.read_text(encoding='utf-8')
-          old_lifecycle = '''when(transactions.required(any(DatabaseSecurityContext.class), any(Supplier.class)))
-                .thenAnswer(invocation -> ((Supplier<?>) invocation.getArgument(1)).get());'''
-          new_lifecycle = '''when(transactions.required(
+          supplier_pattern = re.compile(
+              r'when\(transactions\.required\(\s*'
+              r'any\(DatabaseSecurityContext\.class\),\s*'
+              r'any\(Supplier\.class\)\s*\)\)\s*'
+              r'\.thenAnswer\(invocation -> '
+              r'\(\(Supplier<\?>\) invocation\.getArgument\(1\)\)\.get\(\)\);'
+          )
+          supplier_replacement = '''when(transactions.required(
                         any(DatabaseSecurityContext.class),
                         org.mockito.ArgumentMatchers.<Supplier<Object>>any()))
                 .thenAnswer(invocation -> invocation.<Supplier<?>>getArgument(1).get());'''
-          if old_lifecycle not in lifecycle:
-              raise SystemExit('Expected raw Supplier matcher was not found')
-          lifecycle_path.write_text(
-              lifecycle.replace(old_lifecycle, new_lifecycle),
-              encoding='utf-8',
-          )
+          lifecycle, replacement_count = supplier_pattern.subn(supplier_replacement, lifecycle)
+          if replacement_count != 1:
+              raise SystemExit(
+                  f'Expected exactly one raw Supplier matcher, found {replacement_count}'
+              )
+          lifecycle_path.write_text(lifecycle, encoding='utf-8')
 
           print(f'Updated deprecated @MockBean usage in {mockbean_count} Java file(s).')
           PY
