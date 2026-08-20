@@ -1,0 +1,157 @@
+name: Authz Module Gate
+
+on:
+  push:
+    branches: [Rebuild_website]
+    paths:
+      - ".github/workflows/authz-module-gate.yml"
+      - "AGENT.md"
+      - "README.md"
+      - "pom.xml"
+      - "docs/implementation/ADR/ADR-006-module-authorization.md"
+      - "docs/implementation/ENGINEERING_BASELINE.md"
+      - "docs/implementation/MASTER_PERMISSION_MATRIX.md"
+      - "scripts/implementation/authz_module_contract.py"
+      - "technical-platform/backend/modules/authz/**"
+      - "technical-platform/backend/modules/database-baseline/pom.xml"
+      - "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/AuthzModuleDatabaseIT.java"
+      - "technical-platform/backend/apps/api/pom.xml"
+      - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/authz/**"
+      - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/JdbcSecurityAuditService.java"
+      - "technical-platform/database/flyway-overlays/oms/V9000__iam_module_authorization.sql"
+      - "technical-platform/database/flyway-overlays/oms/V9001__authz_permissions_and_catalog.sql"
+      - "technical-platform/web/src/contracts/authz.ts"
+      - "technical-platform/web/src/contracts/index.ts"
+      - "technical-platform/web/src/platform/pages/authz/**"
+      - "technical-platform/web/src/router/NavigationIcon.vue"
+      - "technical-platform/web/src/router/authz-router.test.ts"
+      - "technical-platform/web/src/router/navigation-catalog.ts"
+      - "technical-platform/web/src/router/navigation-source.ts"
+      - "technical-platform/web/src/router/portal-route-specs.ts"
+      - "technical-platform/web/src/router/route-meta.d.ts"
+      - "technical-platform/web/src/services/authz/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authz-module-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    name: ADR-006 contract and protected-boundary gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Validate module authorization source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "Rebuild_website"
+          python scripts/implementation/authz_module_contract.py
+          git diff --check HEAD^
+      - name: Reject premature runtime switch, automatic grants, mocks and secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -Eq 'iam\.(position_role|org_module)' technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcIdentityDirectoryAdapter.java
+          ! grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|mock.*authz|fake.*authz|bypass.*authz' \
+            technical-platform/backend/modules/authz \
+            technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/authz \
+            technical-platform/web/src/platform/pages/authz \
+            technical-platform/web/src/services/authz
+          ! grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' \
+            technical-platform/backend/modules/authz \
+            technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/authz \
+            technical-platform/web/src/platform/pages/authz \
+            technical-platform/web/src/services/authz \
+            technical-platform/database/flyway-overlays/oms/V9000__iam_module_authorization.sql \
+            technical-platform/database/flyway-overlays/oms/V9001__authz_permissions_and_catalog.sql
+
+  backend:
+    name: Java 21 authz module and API tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Compile and test API reactor including platform-authz
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e -pl technical-platform/backend/apps/api -am test 2>&1 | tee /tmp/authz-backend.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="; tail -n 260 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Compilation failure|AssertionFailedError' /tmp/authz-backend.log | tail -n 420 || true
+            exit 1
+          fi
+
+  database:
+    name: PostgreSQL 16 module schema RLS and trigger integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run V9000/V9001 integration verification
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e \
+            -pl technical-platform/backend/modules/database-baseline -am \
+            -Pauthz-integration verify 2>&1 | tee /tmp/authz-database.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="; tail -n 300 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|SQLSTATE|AssertionFailedError' /tmp/authz-database.log | tail -n 480 || true
+            exit 1
+          fi
+
+  web:
+    name: Vue TypeScript lint unit and production builds
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+  verdict:
+    name: Authz module gate verdict
+    if: always()
+    needs: [contract, backend, database, web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every module authorization job green
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ needs.contract.result }}" = success
+          test "${{ needs.backend.result }}" = success
+          test "${{ needs.database.result }}" = success
+          test "${{ needs.web.result }}" = success

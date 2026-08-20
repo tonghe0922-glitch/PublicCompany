@@ -51,6 +51,29 @@ public final class JdbcSecurityAuditService implements StepUpAuditSink {
         });
     }
 
+    public void recordConfigurationChange(SessionContext subject, String action, String resourceType, UUID resourceId, String beforeJson, String afterJson) {
+        recordOperation(subject, action, resourceType, resourceId);
+        RequestAuditContext request = RequestAuditContext.current();
+        String remoteAddress = request == null ? null : request.remoteAddress();
+        String device = request == null ? null : request.deviceFingerprint();
+        inTenant(subject.tenantId(), () -> {
+            PlatformTraceContext trace = PlatformTraceContextHolder.currentOrNull();
+            jdbc.update("""
+                    insert into audit.security_event(
+                        tenant_id,event_type,severity,actor_id,ip_address,device_fingerprint,detail,correlation_id,trace_id)
+                    values (?,?,?,?,cast(? as inet),?,jsonb_build_object(
+                        'request_id', cast(? as text),
+                        'identity_id', cast(? as text),
+                        'resource_type', cast(? as text),
+                        'resource_id', cast(? as text),
+                        'before', cast(? as jsonb),
+                        'after', cast(? as jsonb)),?,?)
+                    """, subject.tenantId(),"AUTHZ_CONFIG_CHANGED","HIGH",subject.userId(),remoteAddress,device,
+                    requestId(),subject.identityId()==null?null:subject.identityId().toString(),resourceType,
+                    resourceId==null?null:resourceId.toString(),beforeJson,afterJson,correlation(trace),traceId(trace));
+        });
+    }
+
     public void recordSecurityEvent(UUID tenantId, UUID userId, UUID identityId, String eventType, String severity, String outcome) {
         RequestAuditContext request = RequestAuditContext.current(); String remoteAddress=request==null?null:request.remoteAddress(); String device=request==null?null:request.deviceFingerprint();
         inTenant(tenantId, () -> {

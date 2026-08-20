@@ -40,8 +40,7 @@ call "%ROOT%\scripts\windows\migrate.bat" || goto :error
 
 start "SJG API" /D "%ROOT%" cmd /k "call mvnw.cmd -f technical-platform\backend\apps\api\pom.xml spring-boot:run"
 start "SJG Worker" /D "%ROOT%" cmd /k "call mvnw.cmd -f technical-platform\backend\apps\worker\pom.xml spring-boot:run"
-start "SJG Employee" /D "%ROOT%\technical-platform\web" cmd /k "pnpm dev:employee"
-start "SJG Center" /D "%ROOT%\technical-platform\web" cmd /k "pnpm dev:center"
+start "SJG Work" /D "%ROOT%\technical-platform\web" cmd /k "pnpm dev:work"
 start "SJG Tech" /D "%ROOT%\technical-platform\web" cmd /k "pnpm dev:admin"
 
 echo 开发环境已完成基础设施启动与 Flyway 迁移，应用以独立 runtime 数据库角色启动。

@@ -61,19 +61,19 @@ jobs:
           agent = (root / 'AGENT.md').read_text(encoding='utf-8-sig')
           design = (root / 'DESIGN.md').read_text(encoding='utf-8')
 
-          assert 'portal_runtime_aliases: employee=employee; center=center; tech=admin' in agent
-          assert 'runtime_portals: employee / center / admin' in design
+          assert 'runtime_portals: work / tech' in agent
+          assert 'runtime_portals: work / tech' in design
           assert (root / 'technical-platform/web/admin.html').is_file()
           assert not (root / 'technical-platform/web/tech.html').exists()
           assert (root / 'technical-platform/web/src/portals/admin/main.ts').is_file()
           assert not (root / 'technical-platform/web/src/portals/tech').exists()
-          assert "tech: 'admin'" in portal_config
-          assert "admin: { input: 'admin.html', outDir: 'dist/admin', port: 5175 }" in vite
+          assert "tech: 'tech'" in portal_config and "tech: 'admin'" in portal_config
+          assert "work: { input: 'work.html', outDir: 'dist/work'" in vite and "admin: { input: 'admin.html', outDir: 'dist/admin'" in vite
           assert "tech: { input:" not in vite
           assert '"dev:admin": "vite --mode admin"' in package
           assert '"build:admin": "vite build --mode admin"' in package
           assert '"build:tech"' not in package
-          assert 'pnpm dev:admin' in start_bat
+          assert 'pnpm dev:work' in start_bat and 'pnpm dev:admin' in start_bat
           PY
       - name: Verify PHASE-02 ledgers are idempotent
         shell: bash
@@ -125,7 +125,7 @@ jobs:
         run: ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
 
   frontend:
-    name: Vue three-portal typecheck test and build
+    name: Vue dual-runtime typecheck test and build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -154,7 +154,7 @@ jobs:
       - name: Unit smoke tests
         working-directory: technical-platform/web
         run: pnpm test
-      - name: Build employee center and tech canonical portals through approved runtime aliases
+      - name: Build work and tech canonical runtime portals
         working-directory: technical-platform/web
         run: pnpm build
 

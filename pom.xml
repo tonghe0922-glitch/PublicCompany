@@ -21,6 +21,7 @@
     <module>technical-platform/backend/modules/welfare</module>
     <module>technical-platform/backend/modules/iam</module>
     <module>technical-platform/backend/modules/org</module>
+    <module>technical-platform/backend/modules/authz</module>
     <module>technical-platform/backend/modules/workflow</module>
     <module>technical-platform/backend/modules/hr</module>
     <module>technical-platform/backend/modules/document</module>

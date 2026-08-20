@@ -18,6 +18,7 @@
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-welfare</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-iam</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-org</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-authz</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-workflow</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-hr</artifactId><version>${project.version}</version></dependency>
     <dependency><groupId>cn.shangjingu.platform</groupId><artifactId>platform-document</artifactId><version>${project.version}</version></dependency>
