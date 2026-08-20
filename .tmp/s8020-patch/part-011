@@ -1,0 +1,260 @@
+..333f7bc 100644
+--- a/technical-platform/web/src/router/p015-route-specs.ts
++++ b/technical-platform/web/src/router/p015-route-specs.ts
+@@ -5,14 +5,14 @@ import type { PortalRouteSpec } from './portal-route-specs'
+ 
+ export const P015_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+   {
+-    portal: 'employee',
++    audience: 'self',
+     path: '/employee/08/06/04',
+     name: 'p015-points-self-ledger',
+     component: P015EmployeePage,
+     permission: 'p015.points.read',
+   },
+   {
+-    portal: 'center',
++    audience: 'center',
+     path: '/center/10/09/06',
+     name: 'p015-points-management',
+     component: P015CenterPage,
+@@ -24,7 +24,7 @@ export const P015_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+     ],
+   },
+   {
+-    portal: 'tech',
++    audience: 'tech',
+     path: '/tech/06/06/03',
+     name: 'p015-points-monitor',
+     component: P015TechPage,
+diff --git a/technical-platform/web/src/router/p015-router.test.ts b/technical-platform/web/src/router/p015-router.test.ts
+index e2999ae..0865c40 100644
+--- a/technical-platform/web/src/router/p015-router.test.ts
++++ b/technical-platform/web/src/router/p015-router.test.ts
+@@ -10,7 +10,7 @@ class P015Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P015Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P015 frozen routes', () => {
+   it('binds employee center and tech pages to exact C0 coordinates', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p015.points.read')
++    const employee = routerFor(PORTALS.work, 'p015.points.read')
+     await employee.push('/employee/08/06/04')
+     expect(employee.currentRoute.value.name).toBe('p015-points-self-ledger')
+ 
+-    const center = routerFor(PORTALS.center, 'p015.points.review')
++    const center = routerFor(PORTALS.work, 'p015.points.review')
+     await center.push('/center/10/09/06')
+     expect(center.currentRoute.value.name).toBe('p015-points-management')
+ 
+@@ -38,7 +38,7 @@ describe('PHASE-11 P015 frozen routes', () => {
+   })
+ 
+   it('denies employee immutable-ledger page without read permission', async () => {
+-    const router = createPortalRouter(PORTALS.employee, new P015Session(), createMemoryHistory())
++    const router = createPortalRouter(PORTALS.work, new P015Session(), createMemoryHistory())
+     await router.push('/employee/08/06/04')
+     expect(router.currentRoute.value.name).toBe('forbidden')
+   })
+diff --git a/technical-platform/web/src/router/p016-route-specs.ts b/technical-platform/web/src/router/p016-route-specs.ts
+index 16acb63..40183d7 100644
+--- a/technical-platform/web/src/router/p016-route-specs.ts
++++ b/technical-platform/web/src/router/p016-route-specs.ts
+@@ -5,14 +5,14 @@ import type { PortalRouteSpec } from './portal-route-specs'
+ 
+ export const P016_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+   {
+-    portal: 'employee',
++    audience: 'self',
+     path: '/employee/03/06/05',
+     name: 'p016-care-self-service',
+     component: P016EmployeePage,
+     permissionsAny: ['p016.care.create', 'p016.care.read', 'p016.care.confirm'],
+   },
+   {
+-    portal: 'center',
++    audience: 'center',
+     path: '/center/06/03/09',
+     name: 'p016-care-management',
+     component: P016CenterPage,
+@@ -25,7 +25,7 @@ export const P016_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+     ],
+   },
+   {
+-    portal: 'tech',
++    audience: 'tech',
+     path: '/tech/01/11/04',
+     name: 'p016-care-monitor',
+     component: P016TechPage,
+diff --git a/technical-platform/web/src/router/p016-router.test.ts b/technical-platform/web/src/router/p016-router.test.ts
+index 97fd192..9d560d8 100644
+--- a/technical-platform/web/src/router/p016-router.test.ts
++++ b/technical-platform/web/src/router/p016-router.test.ts
+@@ -10,7 +10,7 @@ class P016Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P016Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P016 frozen routes', () => {
+   it('binds employee center and tech pages to exact C0 coordinates', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p016.care.confirm')
++    const employee = routerFor(PORTALS.work, 'p016.care.confirm')
+     await employee.push('/employee/03/06/05')
+     expect(employee.currentRoute.value.name).toBe('p016-care-self-service')
+ 
+-    const center = routerFor(PORTALS.center, 'p016.care.review')
++    const center = routerFor(PORTALS.work, 'p016.care.review')
+     await center.push('/center/06/03/09')
+     expect(center.currentRoute.value.name).toBe('p016-care-management')
+ 
+@@ -32,7 +32,7 @@ describe('PHASE-11 P016 frozen routes', () => {
+   })
+ 
+   it('allows employee application page with create permission only', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p016.care.create')
++    const employee = routerFor(PORTALS.work, 'p016.care.create')
+     await employee.push('/employee/03/06/05')
+     expect(employee.currentRoute.value.name).toBe('p016-care-self-service')
+   })
+@@ -44,7 +44,7 @@ describe('PHASE-11 P016 frozen routes', () => {
+   })
+ 
+   it('denies employee welfare page without any frozen P016 permission', async () => {
+-    const router = createPortalRouter(PORTALS.employee, new P016Session(), createMemoryHistory())
++    const router = createPortalRouter(PORTALS.work, new P016Session(), createMemoryHistory())
+     await router.push('/employee/03/06/05')
+     expect(router.currentRoute.value.name).toBe('forbidden')
+   })
+diff --git a/technical-platform/web/src/router/portal-route-specs.ts b/technical-platform/web/src/router/portal-route-specs.ts
+index c52b937..3e0f4fd 100644
+--- a/technical-platform/web/src/router/portal-route-specs.ts
++++ b/technical-platform/web/src/router/portal-route-specs.ts
+@@ -1,5 +1,5 @@
+ import type { Component } from 'vue'
+-import type { PortalCode } from '../platform/portal-config'
++import type { BusinessAudience } from '../platform/portal-config'
+ import P001IdentityPage from '../platform/pages/P001IdentityPage.vue'
+ import P002PermissionRequestPage from '../platform/pages/P002PermissionRequestPage.vue'
+ import P003ProfileChangePage from '../platform/pages/P003ProfileChangePage.vue'
+@@ -40,7 +40,7 @@ import P013EmployeePage from '../platform/pages/phase11/P013EmployeePage.vue'
+ import P013TechPage from '../platform/pages/phase11/P013TechPage.vue'
+ 
+ export interface PortalRouteSpec {
+-  portal: PortalCode
++  audience: BusinessAudience
+   path: string
+   name: string
+   component: Component
+@@ -51,66 +51,66 @@ export interface PortalRouteSpec {
+ 
+ const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+   {
+-    portal: 'employee', path: '/employee/13/04/04', name: 'p001-mfa',
++    audience: 'self', path: '/employee/13/04/04', name: 'p001-mfa',
+     component: P001IdentityPage,
+   },
+   {
+-    portal: 'employee', path: '/employee/13/04/06', name: 'p001-sessions',
++    audience: 'self', path: '/employee/13/04/06', name: 'p001-sessions',
+     component: P001IdentityPage,
+   },
+   {
+-    portal: 'tech', path: '/tech/03/01/01', name: 'p001-security-monitor',
++    audience: 'tech', path: '/tech/03/01/01', name: 'p001-security-monitor',
+     component: P001IdentityPage, permission: 'p001.session.monitor',
+   },
+   {
+-    portal: 'employee', path: '/employee/03/07/04',
++    audience: 'self', path: '/employee/03/07/04',
+     name: 'p002-temporary-permission-request', component: P002PermissionRequestPage,
+     props: { mode: 'employee', requestKind: 'TEMPORARY_PERMISSION' },
+     permissionsAny: ['p002.request.submit', 'p002.request.read'],
+   },
+   {
+-    portal: 'employee', path: '/employee/03/07/05',
++    audience: 'self', path: '/employee/03/07/05',
+     name: 'p002-project-permission-request', component: P002PermissionRequestPage,
+     props: { mode: 'employee', requestKind: 'PROJECT_PERMISSION' },
+     permissionsAny: ['p002.request.submit', 'p002.request.read'],
+   },
+   {
+-    portal: 'tech', path: '/tech/03/01/04', name: 'p002-permission-execution',
++    audience: 'tech', path: '/tech/03/01/04', name: 'p002-permission-execution',
+     component: P002PermissionRequestPage, props: { mode: 'tech' },
+     permissionsAny: ['p002.request.read', 'p002.request.execute', 'p002.request.revoke'],
+   },
+   {
+-    portal: 'employee', path: '/employee/03/03/01', name: 'p003-profile-change',
++    audience: 'self', path: '/employee/03/03/01', name: 'p003-profile-change',
+     component: P003ProfileChangePage, props: { mode: 'employee' },
+     permissionsAny: ['p003.change.submit', 'p003.change.read'],
+   },
+   {
+-    portal: 'center', path: '/center/03/02/01', name: 'p003-profile-roster',
++    audience: 'center', path: '/center/03/02/01', name: 'p003-profile-roster',
+     component: P003ProfileChangePage, props: { mode: 'center' },
+     permissionsAny: ['p003.change.read', 'p003.change.review'],
+   },
+   {
+-    portal: 'tech', path: '/tech/04/01/01', name: 'p003-profile-sync-monitor',
++    audience: 'tech', path: '/tech/04/01/01', name: 'p003-profile-sync-monitor',
+     component: P003ProfileChangePage, props: { mode: 'tech' },
+     permissionsAny: ['p003.change.read', 'p003.change.apply'],
+   },
+   {
+-    portal: 'employee', path: '/employee/03/07/01', name: 'p004-generic-request',
++    audience: 'self', path: '/employee/03/07/01', name: 'p004-generic-request',
+     component: P004GenericRequestPage, props: { mode: 'employee' },
+     permissionsAny: ['p004.request.submit', 'p004.request.read'],
+   },
+   {
+-    portal: 'employee', path: '/employee/13/01/05', name: 'p005-notice-receipt',
++    audience: 'self', path: '/employee/13/01/05', name: 'p005-notice-receipt',
+     component: P005NoticePage, props: { mode: 'employee' },
+     permissionsAny: ['p005.notice.read', 'p005.notice.receipt'],
+   },
+   {
+-    portal: 'center', path: '/center/13/01/05', name: 'p005-notice-publish',
++    audience: 'center', path: '/center/13/01/05', name: 'p005-notice-publish',
+     component: P005NoticePage, props: { mode: 'center' },
+     permissionsAny: ['p005.notice.publish', 'p005.notice.manage'],
+   },
+   {
+-    portal: 'center', path: '/center/02/01/01', name: 'phase09-center-inbox',
++    audience: 'center', path: '/center/02/01/01', name: 'phase09-center-inbox',
+     component: Phase09CenterInboxPage,
+     permissionsAny: [
+       'p001.session.monitor', 'p002.request.read', 'p002.request.review',
+@@ -118,7 +118,7 @@ const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+     ],
+   },
+   {
+-    portal: 'tech', path: '/tech/05/03/01', name: 'p004-workflow-instance-monitor',
++    audience: 'tech', path: '/tech/05/03/01', name: 'p004-workflow-instance-monitor',
+     component: Phase09TechWorkflowMonitorPage,
+     permissionsAny: [
+       'p004.request.read', 'p005.notice.monitor', 'p006.meeting.monitor',
+@@ -130,22 +130,22 @@ const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+ 
+ const P006_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+   {
+-    portal: 'employee', path: '/employee/05/01/03', name: 'p006-meeting-detail',
++    audience: 'self', path: '/employee/05/01/03', name: 'p006-meeting-detail',
+     component: P006MeetingPage, props: { mode: 'employee' },
+     permissionsAny: ['p006.meeting.read', 'p006.meeting.action'],
+   },
+   {
+-    portal: 'employee', path: '/employee/05/07/02', name: 'p006-action-
