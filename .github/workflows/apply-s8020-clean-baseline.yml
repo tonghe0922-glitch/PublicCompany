@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: s8020-clean-baseline
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   apply-test-and-commit:
