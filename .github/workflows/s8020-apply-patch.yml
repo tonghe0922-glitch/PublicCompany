@@ -2,10 +2,7 @@ name: Apply S8020 Clean-Baseline Patch
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - .ci/s8020-apply-trigger.txt
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,6 +10,7 @@ permissions:
 
 jobs:
   apply:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
