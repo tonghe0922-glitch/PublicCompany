@@ -76,6 +76,10 @@ jobs:
             technical-platform/web/src/platform/pages/authz/AuthzConfigurationPage.vue
           install_override UnifiedPortalShell.vue \
             technical-platform/web/src/shared/layout/rebuild/UnifiedPortalShell.vue
+          install_override UnifiedPortalShell.test.ts \
+            technical-platform/web/src/shared/layout/rebuild/UnifiedPortalShell.test.ts
+          install_override theme-entry.test.ts \
+            technical-platform/web/src/design-system/theme-entry.test.ts
 
       - name: Remove one-time and generated remediation files
         shell: bash
