@@ -1,0 +1,188 @@
+diff --git a/.env.example b/.env.example
+index ffea7a7..80e4a66 100644
+--- a/.env.example
++++ b/.env.example
+@@ -44,6 +44,6 @@ RABBITMQ_DEFAULT_PASS=__SET_LOCAL_RABBIT_PASSWORD__
+ RABBITMQ_AMQP_PORT=5672
+ RABBITMQ_MANAGEMENT_PORT=15672
+ API_PORT=8080
+-ADMIN_WEB_PORT=5175
++TECH_WEB_PORT=5175
+ 
+ WORK_WEB_PORT=5173
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/AuthController.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/AuthController.java
+index f22113c..13c05ee 100644
+--- a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/AuthController.java
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/AuthController.java
+@@ -10,12 +10,76 @@ import org.springframework.web.bind.annotation.RequestBody;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ 
+-@RestController @RequestMapping("/api/v1/auth")
++@RestController
++@RequestMapping("/api/v1/auth")
+ public final class AuthController {
+-    private final LoginService loginService; private final SessionService sessions; private final JdbcSecurityAuditService audit;
+-    public AuthController(LoginService loginService,SessionService sessions,JdbcSecurityAuditService audit){this.loginService=loginService;this.sessions=sessions;this.audit=audit;}
+-    @PostMapping("/login") public SessionTokenResponse login(@RequestBody LoginRequest r){return SessionTokenResponse.from(loginService.login(r.tenantCode(),r.loginName(),r.password(),r.identityId(),r.mfaCode()));}
+-    @PostMapping("/refresh") public SessionTokenResponse refresh(@RequestBody RefreshRequest r){SessionTokens s=sessions.refresh(r.refreshToken());try{audit.recordOperation(s.context(),"SESSION_REFRESH","SESSION",null);return SessionTokenResponse.from(s);}catch(RuntimeException ex){try{sessions.logout(s.accessToken());}catch(RuntimeException ignored){}throw ex;}}
+-    @PostMapping("/logout") public ResponseEntity<Void> logout(@AuthenticationPrincipal SessionPrincipal p){audit.recordOperation(p.context(),"SESSION_LOGOUT","SESSION",null);sessions.logout(p.accessToken());return ResponseEntity.noContent().build();}
+-    public record LoginRequest(String tenantCode,String loginName,String password,UUID identityId,String mfaCode){} public record RefreshRequest(String refreshToken){}
++    private final LoginService loginService;
++    private final SessionService sessions;
++    private final SessionViewFactory sessionViews;
++    private final JdbcSecurityAuditService audit;
++
++    public AuthController(
++            LoginService loginService,
++            SessionService sessions,
++            SessionViewFactory sessionViews,
++            JdbcSecurityAuditService audit) {
++        this.loginService = loginService;
++        this.sessions = sessions;
++        this.sessionViews = sessionViews;
++        this.audit = audit;
++    }
++
++    @PostMapping("/login")
++    public LoginBootstrapResponse login(@RequestBody LoginRequest request) {
++        LoginService.LoginOutcome outcome = loginService.login(
++                request.tenantCode(),
++                request.loginName(),
++                request.password(),
++                request.identityId(),
++                request.mfaCode());
++        try {
++            return LoginBootstrapResponse.from(
++                    outcome.tokens(),
++                    sessionViews.create(outcome.tokens().context(), outcome.activeIdentities()));
++        } catch (RuntimeException exception) {
++            compensate(outcome.tokens().accessToken());
++            throw exception;
++        }
++    }
++
++    @PostMapping("/refresh")
++    public SessionTokenResponse refresh(@RequestBody RefreshRequest request) {
++        SessionTokens refreshed = sessions.refresh(request.refreshToken());
++        try {
++            audit.recordOperation(refreshed.context(), "SESSION_REFRESH", "SESSION", null);
++            return SessionTokenResponse.from(refreshed);
++        } catch (RuntimeException exception) {
++            compensate(refreshed.accessToken());
++            throw exception;
++        }
++    }
++
++    @PostMapping("/logout")
++    public ResponseEntity<Void> logout(@AuthenticationPrincipal SessionPrincipal principal) {
++        audit.recordOperation(principal.context(), "SESSION_LOGOUT", "SESSION", null);
++        sessions.logout(principal.accessToken());
++        return ResponseEntity.noContent().build();
++    }
++
++    private void compensate(String accessToken) {
++        try {
++            sessions.logout(accessToken);
++        } catch (RuntimeException ignored) {
++            // The original failure remains authoritative and raw credentials are never logged.
++        }
++    }
++
++    public record LoginRequest(
++            String tenantCode,
++            String loginName,
++            String password,
++            UUID identityId,
++            String mfaCode) {}
++
++    public record RefreshRequest(String refreshToken) {}
+ }
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginBootstrapResponse.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginBootstrapResponse.java
+new file mode 100644
+index 0000000..e431677
+--- /dev/null
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginBootstrapResponse.java
+@@ -0,0 +1,37 @@
++package cn.shangjingu.platform.api.security;
++
++import cn.shangjingu.platform.iam.session.SessionTokens;
++import java.time.Instant;
++import java.util.UUID;
++
++public record LoginBootstrapResponse(
++        String accessToken,
++        String refreshToken,
++        Instant accessExpiresAt,
++        Instant refreshExpiresAt,
++        UUID tenantId,
++        UUID userId,
++        UUID identityId,
++        UUID employeeId,
++        UUID appointmentId,
++        UUID orgId,
++        UUID positionId,
++        SessionViewResponse session) {
++
++    static LoginBootstrapResponse from(SessionTokens tokens, SessionViewResponse session) {
++        var context = tokens.context();
++        return new LoginBootstrapResponse(
++                tokens.accessToken(),
++                tokens.refreshToken(),
++                tokens.accessExpiresAt(),
++                tokens.refreshExpiresAt(),
++                context.tenantId(),
++                context.userId(),
++                context.identityId(),
++                context.employeeId(),
++                context.appointmentId(),
++                context.orgId(),
++                context.positionId(),
++                session);
++    }
++}
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginService.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginService.java
+index 654bd8f..88f8980 100644
+--- a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginService.java
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/LoginService.java
+@@ -4,8 +4,10 @@ import cn.shangjingu.platform.iam.application.IdentityDirectoryService;
+ import cn.shangjingu.platform.iam.domain.IdentityRecord;
+ import cn.shangjingu.platform.iam.domain.UserAccountRecord;
+ import cn.shangjingu.platform.iam.mfa.TotpCredentialService;
++import cn.shangjingu.platform.iam.session.SessionRejectedException;
+ import cn.shangjingu.platform.iam.session.SessionService;
+ import cn.shangjingu.platform.iam.session.SessionTokens;
++import cn.shangjingu.platform.org.domain.AppointmentRecord;
+ import java.util.List;
+ import java.util.UUID;
+ import org.springframework.security.crypto.password.PasswordEncoder;
+@@ -13,9 +15,140 @@ import org.springframework.stereotype.Service;
+ 
+ @Service
+ public final class LoginService {
+-    private final IdentityDirectoryService identities; private final SessionService sessions; private final PasswordEncoder passwordEncoder; private final JdbcSecurityAuditService audit; private final TotpCredentialService totp;
+-    public LoginService(IdentityDirectoryService identities,SessionService sessions,PasswordEncoder passwordEncoder,JdbcSecurityAuditService audit,TotpCredentialService totp){this.identities=identities;this.sessions=sessions;this.passwordEncoder=passwordEncoder;this.audit=audit;this.totp=totp;}
+-    public SessionTokens login(String tenantCode,String loginName,String password,UUID requestedIdentityId,String mfaCode){if(tenantCode==null||tenantCode.isBlank()||loginName==null||loginName.isBlank()||password==null||password.isEmpty())throw new LoginRejectedException(LoginRejectedException.Reason.INVALID_CREDENTIALS);UUID tenantId=identities.resolveTenant(tenantCode.strip()).orElseThrow(()->new LoginRejectedException(LoginRejectedException.Reason.INVALID_CREDENTIALS));UserAccountRecord account=identities.findAccount(tenantId,loginName.strip()).orElse(null);if(account==null||!account.active()||!matches(password,account.passwordHash())){audit.recordSecurityEvent(tenantId,account==null?null:account.id(),null,"LOGIN_REJECTED","WARN","INVALID_CREDENTIALS");throw new LoginRejectedException(LoginRejectedException.Reason.INVALID_CREDENTIALS);}if(!totp.verifyLogin(tenantId,account.id(),account.mfaLevel(),mfaCode)){audit.recordSecurityEvent(tenantId,account.id(),null,"LOGIN_REJECTED","WARN","MFA_REQUIRED_OR_INVALID");throw new LoginRejectedException(LoginRejectedException.Reason.MFA_REQUIRED_OR_INVALID);}List<IdentityRecord> active=identities.activeIdentities(tenantId,account.id());IdentityRecord selected=requestedIdentityId==null?active.stream().findFirst().orElse(null):active.stream().filter(i->i.id().equals(requestedIdentityId)).findFirst().orElse(null);if(selected==null){audit.recordSecurityEvent(tenantId,account.id(),null,"LOGIN_REJECTED","WARN","NO_ACTIVE_IDENTITY");throw new LoginRejectedException(LoginRejectedException.Reason.NO_ACTIVE_IDENTITY);}SessionTokens issued=sessions.issue(tenantId,account.id(),selected.id());try{identities.markLogin(tenantId,account.id());audit.recordOperation(issued.context(),"LOGIN_SUCCESS","SESSION",null);return issued;}catch(RuntimeException ex){try{sessions.logout(issued.accessToken());}catch(RuntimeException ignored){}throw ex;}}
+-    public void requirePasswordReauthentication(UUID tenantId,UUID userId,String password){if(tenantId==null||userId==null||password==null||password.isEmpty()){if(tenantId!=null) audit.recordSecurityEvent(tenantId,userId,null,"P001_REAUTH_REJECTED","WARN","INVALID_CREDENTIALS");throw new LoginRejectedException(LoginRejectedException.Reason.INVALID_CREDENTIALS);}UserAccountRecord account=identities.findAccountById(tenantId,userId).orElse(null);if(account==null||!account.active()||!matches(password,account.passwordHash())){audit.recordSecurityEvent(tenantId,userId,null,"P001_REAUTH_REJECTED","WARN","INVALID_CREDENTIALS");throw new LoginRejectedException(LoginRejectedException.Reason.INVALID_CREDENTIALS);}}
+-    private boolean matches(String raw,String hash){if(hash==null||hash.isBlank())return false;try{return passwordEncoder.matches(raw,hash);}catch(IllegalArgumentException ex){return false;}}
++    private final IdentityDirectoryService identities;
++    private final SessionService sessions;
++    private final PasswordEncoder passwordEncoder;
++    private final JdbcSecurityAuditService audit;
++    private final TotpCredentialService totp;
++
++    public LoginService(
++            IdentityDirectoryService identities,
++            SessionService sessions,
++            PasswordEncoder passwordEncoder,
++            JdbcSecurityAuditService audit,
++            TotpCredentialService totp) {
++        this.identities = identities;
++        this.sessions = sessions;
++        this.passwordEncoder = passwordEncoder;
++        this.audit = audit;
++        this.totp = totp;
++    }
++
++    public LoginOutcome login(
++            String t
