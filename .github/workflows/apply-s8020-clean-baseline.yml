@@ -1,0 +1,132 @@
+name: Apply S8020 Clean Baseline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/s8020-clean-baseline
+    paths:
+      - .github/workflows/apply-s8020-clean-baseline.yml
+      - .tmp/s8020-run-request.txt
+
+permissions:
+  contents: write
+
+concurrency:
+  group: s8020-clean-baseline
+  cancel-in-progress: false
+
+jobs:
+  apply-test-and-commit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out the source remediation branch
+        uses: actions/checkout@v5
+        with:
+          ref: refactor/s8020-clean-baseline
+          fetch-depth: 0
+
+      - name: Apply the reviewed remediation patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .tmp/s8020-patch/part-* > /tmp/s8020-clean-baseline.patch
+          test -s /tmp/s8020-clean-baseline.patch
+          sha256sum /tmp/s8020-clean-baseline.patch
+          git apply --index --3way --whitespace=nowarn \
+            --exclude=technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java \
+            --exclude=technical-platform/web/src/router/navigation-catalog.ts \
+            /tmp/s8020-clean-baseline.patch
+
+      - name: Install deterministic reviewed overrides
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://raw.githubusercontent.com/tonghe0922-glitch/S8020/main/.ci/overrides"
+          install_override() {
+            local source_name="$1"
+            local target_path="$2"
+            mkdir -p "$(dirname "$target_path")"
+            curl --fail --location --retry 3 \
+              "$base/$source_name" \
+              --output "$target_path"
+          }
+          install_override SessionService.java \
+            technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java
+          install_override navigation-catalog.ts \
+            technical-platform/web/src/router/navigation-catalog.ts
+          install_override Phase09CenterInboxPage.vue \
+            technical-platform/web/src/platform/pages/Phase09CenterInboxPage.vue
+          install_override AuthzConfigurationPage.vue \
+            technical-platform/web/src/platform/pages/authz/AuthzConfigurationPage.vue
+          install_override UnifiedPortalShell.vue \
+            technical-platform/web/src/shared/layout/rebuild/UnifiedPortalShell.vue
+
+      - name: Remove one-time and generated remediation files
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f technical-platform/web/src/router/generated/portal-ia-navigation.json
+          rm -rf .tmp
+          rm -f .github/workflows/s8020-source-export.yml
+          rm -f .github/workflows/apply-s8020-clean-baseline.yml
+          git add -A
+          git diff --cached --check
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run all backend module tests
+        shell: bash
+        run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api,technical-platform/backend/apps/worker -am test
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22.12.0'
+
+      - name: Install pnpm and frontend dependencies
+        shell: bash
+        working-directory: technical-platform/web
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.0 --activate
+          pnpm install --frozen-lockfile
+
+      - name: Run frontend static quality gates
+        shell: bash
+        working-directory: technical-platform/web
+        run: |
+          pnpm typecheck
+          pnpm lint
+          pnpm quality:duplicates
+          NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+
+      - name: Run frontend unit tests
+        shell: bash
+        working-directory: technical-platform/web
+        run: pnpm test
+
+      - name: Build both runtime ports
+        shell: bash
+        working-directory: technical-platform/web
+        run: pnpm build
+
+      - name: Validate Docker Compose configuration
+        shell: bash
+        run: docker compose --env-file .env.example -f docker/compose/docker-compose.dev.yml config >/tmp/s8020-compose.yml
+
+      - name: Commit the verified source remediation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: establish verified two-port clean baseline"
+          git push origin HEAD:refactor/s8020-clean-baseline
