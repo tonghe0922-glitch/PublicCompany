@@ -1,0 +1,193 @@
+sh(path);expect(String(r.currentRoute.value.name)).toMatch(/^p007-/)}})
+-  it('protects three center scheduling routes with manage/review',async()=>{for(const path of ['/center/04/01/01','/center/04/07/05']){const s=new Session();s.permissions.add('p007.schedule.manage');const r=createPortalRouter(PORTALS.center,s,createMemoryHistory());await r.push(path);expect(String(r.currentRoute.value.name)).toMatch(/^p007-/)}const s=new Session();s.permissions.add('p007.schedule.review');const r=createPortalRouter(PORTALS.center,s,createMemoryHistory());await r.push('/center/04/07/04');expect(r.currentRoute.value.name).toBe('p007-shift-review')})
++  it('protects three employee routes with read/change',async()=>{for(const path of ['/employee/04/01/01','/employee/03/01/09','/employee/03/01/10']){const s=new Session();s.permissions.add('p007.schedule.change');const r=createPortalRouter(PORTALS.work,s,createMemoryHistory());await r.push(path);expect(String(r.currentRoute.value.name)).toMatch(/^p007-/)}})
++  it('protects three center scheduling routes with manage/review',async()=>{for(const path of ['/center/04/01/01','/center/04/07/05']){const s=new Session();s.permissions.add('p007.schedule.manage');const r=createPortalRouter(PORTALS.work,s,createMemoryHistory());await r.push(path);expect(String(r.currentRoute.value.name)).toMatch(/^p007-/)}const s=new Session();s.permissions.add('p007.schedule.review');const r=createPortalRouter(PORTALS.work,s,createMemoryHistory());await r.push('/center/04/07/04');expect(r.currentRoute.value.name).toBe('p007-shift-review')})
+   it('adds frozen P007 monitor to shared tech route',async()=>{const s=new Session();s.permissions.add('p007.schedule.monitor');const r=createPortalRouter(PORTALS.tech,s,createMemoryHistory());await r.push('/tech/05/03/01');expect(r.currentRoute.value.name).toBe('p004-workflow-instance-monitor')})
+ })
+diff --git a/technical-platform/web/src/router/p008-p010-router.test.ts b/technical-platform/web/src/router/p008-p010-router.test.ts
+index 42ccf21..4ab0600 100644
+--- a/technical-platform/web/src/router/p008-p010-router.test.ts
++++ b/technical-platform/web/src/router/p008-p010-router.test.ts
+@@ -87,21 +87,21 @@ function expectDistinctComponents(
+ 
+ describe('PHASE-10 P008-P010 source-bound routes', () => {
+   it('registers all 19 employee and center business pages', async () => {
+-    await expectRoutes(PORTALS.employee, 'p008.leave.read', P008_EMPLOYEE)
+-    await expectRoutes(PORTALS.center, 'p008.leave.manage', P008_CENTER)
+-    await expectRoutes(PORTALS.employee, 'p009.overtime.read', P009_EMPLOYEE)
+-    await expectRoutes(PORTALS.center, 'p009.overtime.manage', P009_CENTER)
+-    await expectRoutes(PORTALS.employee, 'p010.learning.read', P010_EMPLOYEE)
+-    await expectRoutes(PORTALS.center, 'p010.learning.manage', P010_CENTER)
++    await expectRoutes(PORTALS.work, 'p008.leave.read', P008_EMPLOYEE)
++    await expectRoutes(PORTALS.work, 'p008.leave.manage', P008_CENTER)
++    await expectRoutes(PORTALS.work, 'p009.overtime.read', P009_EMPLOYEE)
++    await expectRoutes(PORTALS.work, 'p009.overtime.manage', P009_CENTER)
++    await expectRoutes(PORTALS.work, 'p010.learning.read', P010_EMPLOYEE)
++    await expectRoutes(PORTALS.work, 'p010.learning.manage', P010_CENTER)
+   })
+ 
+   it('uses a distinct component for every P008-P010 business route', () => {
+-    expectDistinctComponents(PORTALS.employee, 'p008.leave.read', P008_EMPLOYEE)
+-    expectDistinctComponents(PORTALS.center, 'p008.leave.manage', P008_CENTER)
+-    expectDistinctComponents(PORTALS.employee, 'p009.overtime.read', P009_EMPLOYEE)
+-    expectDistinctComponents(PORTALS.center, 'p009.overtime.manage', P009_CENTER)
+-    expectDistinctComponents(PORTALS.employee, 'p010.learning.read', P010_EMPLOYEE)
+-    expectDistinctComponents(PORTALS.center, 'p010.learning.manage', P010_CENTER)
++    expectDistinctComponents(PORTALS.work, 'p008.leave.read', P008_EMPLOYEE)
++    expectDistinctComponents(PORTALS.work, 'p008.leave.manage', P008_CENTER)
++    expectDistinctComponents(PORTALS.work, 'p009.overtime.read', P009_EMPLOYEE)
++    expectDistinctComponents(PORTALS.work, 'p009.overtime.manage', P009_CENTER)
++    expectDistinctComponents(PORTALS.work, 'p010.learning.read', P010_EMPLOYEE)
++    expectDistinctComponents(PORTALS.work, 'p010.learning.manage', P010_CENTER)
+   })
+ 
+   it('keeps technical routes monitor-only', async () => {
+diff --git a/technical-platform/web/src/router/p011-router.test.ts b/technical-platform/web/src/router/p011-router.test.ts
+index fde16a6..b699521 100644
+--- a/technical-platform/web/src/router/p011-router.test.ts
++++ b/technical-platform/web/src/router/p011-router.test.ts
+@@ -10,7 +10,7 @@ class P011Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P011Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P011 frozen routes', () => {
+   it('binds employee, center and tech routes to dedicated P011 pages', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p011.performance.self')
++    const employee = routerFor(PORTALS.work, 'p011.performance.self')
+     await employee.push('/employee/08/01/01')
+     expect(employee.currentRoute.value.name).toBe('p011-performance-self')
+ 
+-    const center = routerFor(PORTALS.center, 'p011.performance.evaluate')
++    const center = routerFor(PORTALS.work, 'p011.performance.evaluate')
+     await center.push('/center/10/01/01')
+     expect(center.currentRoute.value.name).toBe('p011-performance-management')
+ 
+diff --git a/technical-platform/web/src/router/p012-router.test.ts b/technical-platform/web/src/router/p012-router.test.ts
+index a49d6cc..6202f34 100644
+--- a/technical-platform/web/src/router/p012-router.test.ts
++++ b/technical-platform/web/src/router/p012-router.test.ts
+@@ -10,7 +10,7 @@ class P012Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P012Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P012 frozen routes', () => {
+   it('binds employee, center and tech routes to dedicated P012 pages', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p012.promotion.read')
++    const employee = routerFor(PORTALS.work, 'p012.promotion.read')
+     await employee.push('/employee/03/03/05')
+     expect(employee.currentRoute.value.name).toBe('p012-promotion-self')
+ 
+-    const center = routerFor(PORTALS.center, 'p012.promotion.review')
++    const center = routerFor(PORTALS.work, 'p012.promotion.review')
+     await center.push('/center/10/06/01')
+     expect(center.currentRoute.value.name).toBe('p012-promotion-management')
+ 
+diff --git a/technical-platform/web/src/router/p013-router.test.ts b/technical-platform/web/src/router/p013-router.test.ts
+index 09f2304..b3d6744 100644
+--- a/technical-platform/web/src/router/p013-router.test.ts
++++ b/technical-platform/web/src/router/p013-router.test.ts
+@@ -10,7 +10,7 @@ class P013Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P013Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P013 frozen routes', () => {
+   it('binds employee center and tech pages to exact C0 coordinates', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p013.reward.read')
++    const employee = routerFor(PORTALS.work, 'p013.reward.read')
+     await employee.push('/employee/08/07/02')
+     expect(employee.currentRoute.value.name).toBe('p013-reward-self')
+ 
+-    const center = routerFor(PORTALS.center, 'p013.reward.review')
++    const center = routerFor(PORTALS.work, 'p013.reward.review')
+     await center.push('/center/10/10/02')
+     expect(center.currentRoute.value.name).toBe('p013-reward-management')
+ 
+diff --git a/technical-platform/web/src/router/p014-route-specs.ts b/technical-platform/web/src/router/p014-route-specs.ts
+index 888f92a..bc624a7 100644
+--- a/technical-platform/web/src/router/p014-route-specs.ts
++++ b/technical-platform/web/src/router/p014-route-specs.ts
+@@ -5,14 +5,14 @@ import type { PortalRouteSpec } from './portal-route-specs'
+ 
+ export const P014_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+   {
+-    portal: 'employee',
++    audience: 'self',
+     path: '/employee/02/03/09',
+     name: 'p014-discipline-self-service',
+     component: P014EmployeePage,
+     permissionsAny: ['p014.discipline.read', 'p014.discipline.appeal'],
+   },
+   {
+-    portal: 'center',
++    audience: 'center',
+     path: '/center/12/02/04',
+     name: 'p014-discipline-management',
+     component: P014CenterPage,
+@@ -26,7 +26,7 @@ export const P014_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+     ],
+   },
+   {
+-    portal: 'tech',
++    audience: 'tech',
+     path: '/tech/06/06/02',
+     name: 'p014-discipline-monitor',
+     component: P014TechPage,
+diff --git a/technical-platform/web/src/router/p014-router.test.ts b/technical-platform/web/src/router/p014-router.test.ts
+index ab7e6df..966b5f3 100644
+--- a/technical-platform/web/src/router/p014-router.test.ts
++++ b/technical-platform/web/src/router/p014-router.test.ts
+@@ -10,7 +10,7 @@ class P014Session implements PortalRouterSession {
+   can(permission: string): boolean { return this.permissions.has(permission) }
+ }
+ 
+-function routerFor(portal: typeof PORTALS.employee, permission: string) {
++function routerFor(portal: typeof PORTALS.work, permission: string) {
+   const session = new P014Session()
+   session.permissions.add(permission)
+   return createPortalRouter(portal, session, createMemoryHistory())
+@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
+ 
+ describe('PHASE-11 P014 frozen routes', () => {
+   it('binds employee center and tech pages to exact C0 coordinates', async () => {
+-    const employee = routerFor(PORTALS.employee, 'p014.discipline.appeal')
++    const employee = routerFor(PORTALS.work, 'p014.discipline.appeal')
+     await employee.push('/employee/02/03/09')
+     expect(employee.currentRoute.value.name).toBe('p014-discipline-self-service')
+ 
+-    const center = routerFor(PORTALS.center, 'p014.discipline.investigate')
++    const center = routerFor(PORTALS.work, 'p014.discipline.investigate')
+     await center.push('/center/12/02/04')
+     expect(center.currentRoute.value.name).toBe('p014-discipline-management')
+ 
+@@ -38,7 +38,7 @@ describe('PHASE-11 P014 frozen routes', () => {
+   })
+ 
+   it('denies employee discipline page without self-case read or appeal permission', async () => {
+-    const router = createPortalRouter(PORTALS.employee, new P014Session(), createMemoryHistory())
++    const router = createPortalRouter(PORTALS.work, new P014Session(), createMemoryHistory())
+     await router.push('/employee/02/03/09')
+     expect(router.currentRoute.value.name).toBe('forbidden')
+   })
+diff --git a/technical-platform/web/src/router/p015-route-specs.ts b/technical-platform/web/src/router/p015-route-specs.ts
+index b4fdd59
