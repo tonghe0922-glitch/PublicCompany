@@ -1,0 +1,39 @@
+name: S8020 Source Export
+
+on:
+  push:
+    branches:
+      - refactor/s8020-clean-baseline
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Package source tree
+        shell: bash
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=target \
+            --exclude=dist \
+            --exclude=reports \
+            --exclude=coverage \
+            -czf source-tree.tgz .
+
+      - name: Upload source tree
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-tree
+          path: source-tree.tgz
+          retention-days: 1
+          if-no-files-found: error
