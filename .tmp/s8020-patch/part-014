@@ -1,0 +1,304 @@
+rops:{portal},meta:{pageTitle:'无访问权限'}}]}}
+-export function createPortalRouter(portal:PortalDefinition,session:PortalRouterSession,history:RouterHistory=createWebHashHistory()):Router{const router=createRouter({history,routes:[{path:'/login',name:'login',component:LoginPage,props:{portal},meta:{guestOnly:true}},authenticatedRoutes(portal),{path:'/:pathMatch(.*)*',name:'not-found',component:NotFoundPage,props:{portal}}]});registerGuards(router,session);return router}
++
++export interface PortalRouterSession {
++  readonly authenticated: boolean
++  restore: () => Promise<boolean>
++  can: (permission: string) => boolean
++}
++
++const ALL_ROUTE_SPECS: readonly PortalRouteSpec[] = [
++  ...PORTAL_ROUTE_SPECS,
++  ...P014_ROUTE_SPECS,
++  ...P015_ROUTE_SPECS,
++  ...P016_ROUTE_SPECS,
++]
++
++function loginTarget(to: RouteLocationNormalized) {
++  return { name: 'login', query: { redirect: safeInternalRedirect(to.fullPath) } }
++}
++
++async function restoreOnce(session: PortalRouterSession, state: { attempted: boolean }): Promise<void> {
++  if (state.attempted || session.authenticated) return
++  state.attempted = true
++  try {
++    await session.restore()
++  } catch (cause) {
++    recordRuntimeError(cause)
++  }
++}
++
++function requiredPermission(to: RouteLocationNormalized): string | undefined {
++  return typeof to.meta.permission === 'string' ? to.meta.permission : undefined
++}
++
++function requiredPermissionsAny(to: RouteLocationNormalized): string[] {
++  if (!Array.isArray(to.meta.permissionsAny)) return []
++  return to.meta.permissionsAny.filter((value): value is string => typeof value === 'string' && value.length > 0)
++}
++
++function authorizationRedirect(to: RouteLocationNormalized, session: PortalRouterSession) {
++  const permission = requiredPermission(to)
++  if (permission && !session.can(permission)) return { name: 'forbidden' }
++  const anyPermissions = requiredPermissionsAny(to)
++  if (anyPermissions.length && !anyPermissions.some((code) => session.can(code))) return { name: 'forbidden' }
++  return undefined
++}
++
++function registerGuards(router: Router, session: PortalRouterSession): void {
++  const state = { attempted: false }
++  router.beforeEach(async (to) => {
++    rotateNavigationAbortSignal()
++    clearRuntimeError()
++    await restoreOnce(session, state)
++    if (to.meta.requiresAuth && !session.authenticated) return loginTarget(to)
++    if (to.meta.guestOnly && session.authenticated) return safeInternalRedirect(to.query.redirect)
++    return authorizationRedirect(to, session) ?? true
++  })
++  router.onError(recordRuntimeError)
++}
++
++function routeMeta(spec: PortalRouteSpec) {
++  return {
++    ...(spec.permission ? { permission: spec.permission } : {}),
++    ...(spec.permissionsAny ? { permissionsAny: [...spec.permissionsAny] } : {}),
++  }
++}
++
++function belongsToPort(spec: PortalRouteSpec, portal: PortalDefinition): boolean {
++  return portal.code === 'tech' ? spec.audience === 'tech' : spec.audience !== 'tech'
++}
++
++function portalRoutes(portal: PortalDefinition): RouteRecordRaw[] {
++  return ALL_ROUTE_SPECS.filter((spec) => belongsToPort(spec, portal)).map((spec) => ({
++    path: spec.path,
++    name: spec.name,
++    component: spec.component,
++    props: { portal, audience: spec.audience, ...spec.props },
++    meta: routeMeta(spec),
++  }))
++}
++
++function authzRoutes(portal: PortalDefinition): RouteRecordRaw[] {
++  if (portal.code !== 'tech') return []
++  return [
++    {
++      path: '/tech/authz/modules',
++      name: 'authz-module-catalog',
++      component: AuthzConfigurationPage,
++      props: { mode: 'modules' },
++      meta: { permissionsAny: ['authz.module.read', 'authz.config.manage'] },
++    },
++    {
++      path: '/tech/authz/modules/:id',
++      name: 'authz-module-permissions',
++      component: AuthzConfigurationPage,
++      props: { mode: 'module-permissions' },
++      meta: { permissionsAny: ['authz.module.read', 'authz.module.manage', 'authz.config.manage'] },
++    },
++    {
++      path: '/tech/authz/orgs/:orgId',
++      name: 'authz-org-modules',
++      component: AuthzConfigurationPage,
++      props: { mode: 'org-modules' },
++      meta: { permissionsAny: ['authz.org.module.manage', 'authz.config.manage'] },
++    },
++    {
++      path: '/tech/authz/positions/:positionId',
++      name: 'authz-position-roles',
++      component: AuthzConfigurationPage,
++      props: { mode: 'position-roles' },
++      meta: { permissionsAny: ['authz.position.role.manage', 'authz.config.manage'] },
++    },
++    {
++      path: '/tech/authz/preview',
++      name: 'authz-config-preview',
++      component: AuthzConfigurationPage,
++      props: { mode: 'preview' },
++      meta: { permissionsAny: ['authz.config.preview', 'authz.config.manage'] },
++    },
++  ]
++}
++
++function authenticatedRoutes(portal: PortalDefinition): RouteRecordRaw {
++  return {
++    path: '/',
++    component: AuthenticatedPortalLayout,
++    props: { portal },
++    meta: { requiresAuth: true },
++    children: [
++      {
++        path: '',
++        name: 'portal-home',
++        component: PlatformShell,
++        props: { portal },
++        meta: { pageTitle: portal.homeTitle },
++      },
++      ...portalRoutes(portal),
++      ...authzRoutes(portal),
++      {
++        path: '/developing',
++        name: 'navigation-developing',
++        component: NavigationDevelopingPage,
++        meta: { pageTitle: '正在开发中', navigationState: 'developing' },
++      },
++      {
++        path: '/forbidden',
++        name: 'forbidden',
++        component: ForbiddenPage,
++        props: { portal },
++        meta: { pageTitle: '无访问权限' },
++      },
++    ],
++  }
++}
++
++export function createPortalRouter(
++  portal: PortalDefinition,
++  session: PortalRouterSession,
++  history: RouterHistory = createWebHashHistory(),
++): Router {
++  const router = createRouter({
++    history,
++    routes: [
++      { path: '/login', name: 'login', component: LoginPage, props: { portal }, meta: { guestOnly: true } },
++      authenticatedRoutes(portal),
++      { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage, props: { portal } },
++    ],
++  })
++  registerGuards(router, session)
++  return router
++}
+diff --git a/technical-platform/web/src/session/iam-api.ts b/technical-platform/web/src/session/iam-api.ts
+index 80eb62a..1ada448 100644
+--- a/technical-platform/web/src/session/iam-api.ts
++++ b/technical-platform/web/src/session/iam-api.ts
+@@ -1,15 +1,20 @@
+ import type { ApiClient } from '../api'
+ import type {
++  LoginBootstrapResponse,
+   LoginRequest,
+   RefreshRequest,
+   SessionTokenResponse,
+   SessionView,
+   SwitchRequest,
+ } from '../contracts'
+-import { parseSessionTokenResponse, parseSessionView } from './iam-validators'
++import {
++  parseLoginBootstrapResponse,
++  parseSessionTokenResponse,
++  parseSessionView,
++} from './iam-validators'
+ 
+ export interface IamApi {
+-  login: (request: LoginRequest) => Promise<SessionTokenResponse>
++  login: (request: LoginRequest) => Promise<LoginBootstrapResponse>
+   refresh: (request: RefreshRequest) => Promise<SessionTokenResponse>
+   current: () => Promise<SessionView>
+   switchIdentity: (request: SwitchRequest) => Promise<SessionTokenResponse>
+@@ -27,8 +32,12 @@ async function tokenCall<TBody>(
+ 
+ export function createIamApi(publicClient: ApiClient, protectedClient: ApiClient): IamApi {
+   return {
+-    login(request) {
+-      return tokenCall(publicClient, '/api/v1/auth/login', request)
++    async login(request) {
++      const value = await publicClient.request<unknown, LoginRequest>('/api/v1/auth/login', {
++        method: 'POST',
++        body: request,
++      })
++      return parseLoginBootstrapResponse(value)
+     },
+     refresh(request) {
+       return tokenCall(publicClient, '/api/v1/auth/refresh', request)
+diff --git a/technical-platform/web/src/session/iam-validators.ts b/technical-platform/web/src/session/iam-validators.ts
+index e705a70..3f7c565 100644
+--- a/technical-platform/web/src/session/iam-validators.ts
++++ b/technical-platform/web/src/session/iam-validators.ts
+@@ -1,5 +1,6 @@
+ import type {
+   AvailableIdentityView,
++  LoginBootstrapResponse,
+   SessionTokenResponse,
+   SessionView,
+ } from '../contracts'
+@@ -83,3 +84,11 @@ export function parseSessionView(value: unknown): SessionView {
+     availableIdentities: candidates.map(identity),
+   }
+ }
++
++export function parseLoginBootstrapResponse(value: unknown): LoginBootstrapResponse {
++  const record = recordOf(value, 'login bootstrap')
++  return {
++    ...parseSessionTokenResponse(record),
++    session: parseSessionView(record.session),
++  }
++}
+diff --git a/technical-platform/web/src/session/portal-session-runtime.ts b/technical-platform/web/src/session/portal-session-runtime.ts
+index 63de1c6..0679081 100644
+--- a/technical-platform/web/src/session/portal-session-runtime.ts
++++ b/technical-platform/web/src/session/portal-session-runtime.ts
+@@ -81,8 +81,8 @@ class DefaultPortalSessionRuntime implements PortalSessionRuntime {
+     this.currentSession = null
+     this.setPhase('authenticating')
+     try {
+-      const tokens = await this.iam.login(request)
+-      return await this.establish(tokens, true)
++      const bootstrap = await this.iam.login(request)
++      return await this.establish(bootstrap, true, bootstrap.session)
+     } catch (cause) {
+       this.fail(cause, true)
+       throw sessionError(cause)
+@@ -161,10 +161,14 @@ class DefaultPortalSessionRuntime implements PortalSessionRuntime {
+     }
+   }
+ 
+-  private async establish(tokens: SessionTokenResponse, clearOnFailure: boolean): Promise<SessionView> {
++  private async establish(
++    tokens: SessionTokenResponse,
++    clearOnFailure: boolean,
++    bootstrapSession?: SessionView,
++  ): Promise<SessionView> {
+     this.vault.setTokens(tokens)
+     try {
+-      const session = await this.iam.current()
++      const session = bootstrapSession ?? await this.iam.current()
+       this.currentSession = session
+       this.lastError = null
+       this.phase = 'authenticated'
+diff --git a/technical-platform/web/src/session/portal-session.test.ts b/technical-platform/web/src/session/portal-session.test.ts
+index e70d60e..21b3d4f 100644
+--- a/technical-platform/web/src/session/portal-session.test.ts
++++ b/technical-platform/web/src/session/portal-session.test.ts
+@@ -82,7 +82,10 @@ function authServer() {
+   const fetchFn: typeof fetch = (input, init) => {
+     const path = requestPath(input)
+     const auth = new Headers(init?.headers).get('Authorization')
+-    if (path.endsWith('/auth/login')) return Promise.resolve(json(tokenBody('access-login', 'refresh-login')))
++    if (path.endsWith('/auth/login')) return Promise.resolve(json({
++      ...tokenBody('access-login', 'refresh-login'),
++      session: sessionBody(),
++    }))
+     if (path.endsWith('/auth/refresh')) {
+       refreshCalls += 1
+       return Promise.resolve(json(tokenBody(`access-refresh-${refreshCalls}`, `refresh-rotated-${refreshCalls}`)))
+@@ -199,8 +202,12 @@ describe('PHASE-08 portal session runtime', () => {
+     const vault = createCredentialVault(storage)
+     const fetchFn: typeof fetch = (input) => {
+       const path = requestPath(input)
+-      if (path.endsWith('/auth/login')) return Promise.resolve(json(tokenBody('access', 'refresh')))
+-      if (path.endsWith('/session')) return Promise.resolve(json({ permissions: [] }))
++      if (path.endsWith('/auth/login')) {
++        return Promise.resolve(json({
++          ...tokenBody('access', 'refresh'),
++          session: { permissions: [] },
++        }))
++      }
+       return Promise.resolve(json({}, 404))
+     }
+     const runtime = createPortalSessionRuntime({ vault, fetchFn })
+diff --git a/technical-platform/web/src/session/session-switch-failure.test.ts b/technical-platform/web/src/session/session-switch-failure.test.ts
+index 31703fe..78db60a 100644
+--- a/technical-platform/web/src/session/session-switch-failure.test.ts
++++ b/technical-platform/web/src/session/session-switch-failure.test.ts
+@@ -44,7 +44,9 @@ descri
