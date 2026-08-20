@@ -1,0 +1,268 @@
+enantCode,
++            String loginName,
++            String password,
++            UUID requestedIdentityId,
++            String mfaCode) {
++        validateCredentials(tenantCode, loginName, password);
++        UUID tenantId = identities.resolveTenant(tenantCode.strip())
++                .orElseThrow(() -> rejected(LoginRejectedException.Reason.INVALID_CREDENTIALS));
++        UserAccountRecord account = identities.findAccount(tenantId, loginName.strip()).orElse(null);
++        requireValidAccount(tenantId, account, password);
++        requireValidMfa(tenantId, account, mfaCode);
++
++        List<IdentityRecord> activeIdentities = identities.activeIdentities(tenantId, account.id());
++        IdentityRecord selected = selectIdentity(activeIdentities, requestedIdentityId);
++        AppointmentRecord appointment = identities.activeAppointment(tenantId, selected)
++                .orElseThrow(() -> new SessionRejectedException(
++                        SessionRejectedException.Reason.APPOINTMENT_INACTIVE));
++        SessionTokens issued = sessions.issue(selected, appointment);
++        completeLogin(tenantId, account.id(), issued);
++        return new LoginOutcome(issued, List.copyOf(activeIdentities));
++    }
++
++    public void requirePasswordReauthentication(UUID tenantId, UUID userId, String password) {
++        if (tenantId == null || userId == null || password == null || password.isEmpty()) {
++            if (tenantId != null) {
++                audit.recordSecurityEvent(
++                        tenantId, userId, null, "P001_REAUTH_REJECTED", "WARN", "INVALID_CREDENTIALS");
++            }
++            throw rejected(LoginRejectedException.Reason.INVALID_CREDENTIALS);
++        }
++        UserAccountRecord account = identities.findAccountById(tenantId, userId).orElse(null);
++        if (account == null || !account.active() || !matches(password, account.passwordHash())) {
++            audit.recordSecurityEvent(
++                    tenantId, userId, null, "P001_REAUTH_REJECTED", "WARN", "INVALID_CREDENTIALS");
++            throw rejected(LoginRejectedException.Reason.INVALID_CREDENTIALS);
++        }
++    }
++
++    private void validateCredentials(String tenantCode, String loginName, String password) {
++        if (tenantCode == null
++                || tenantCode.isBlank()
++                || loginName == null
++                || loginName.isBlank()
++                || password == null
++                || password.isEmpty()) {
++            throw rejected(LoginRejectedException.Reason.INVALID_CREDENTIALS);
++        }
++    }
++
++    private void requireValidAccount(UUID tenantId, UserAccountRecord account, String password) {
++        if (account != null && account.active() && matches(password, account.passwordHash())) return;
++        audit.recordSecurityEvent(
++                tenantId,
++                account == null ? null : account.id(),
++                null,
++                "LOGIN_REJECTED",
++                "WARN",
++                "INVALID_CREDENTIALS");
++        throw rejected(LoginRejectedException.Reason.INVALID_CREDENTIALS);
++    }
++
++    private void requireValidMfa(UUID tenantId, UserAccountRecord account, String mfaCode) {
++        if (totp.verifyLogin(tenantId, account.id(), account.mfaLevel(), mfaCode)) return;
++        audit.recordSecurityEvent(
++                tenantId,
++                account.id(),
++                null,
++                "LOGIN_REJECTED",
++                "WARN",
++                "MFA_REQUIRED_OR_INVALID");
++        throw rejected(LoginRejectedException.Reason.MFA_REQUIRED_OR_INVALID);
++    }
++
++    private IdentityRecord selectIdentity(List<IdentityRecord> activeIdentities, UUID requestedIdentityId) {
++        IdentityRecord selected = requestedIdentityId == null
++                ? activeIdentities.stream().findFirst().orElse(null)
++                : activeIdentities.stream()
++                        .filter(identity -> identity.id().equals(requestedIdentityId))
++                        .findFirst()
++                        .orElse(null);
++        if (selected == null) throw rejected(LoginRejectedException.Reason.NO_ACTIVE_IDENTITY);
++        return selected;
++    }
++
++    private void completeLogin(UUID tenantId, UUID userId, SessionTokens issued) {
++        try {
++            identities.markLogin(tenantId, userId);
++            audit.recordOperation(issued.context(), "LOGIN_SUCCESS", "SESSION", null);
++        } catch (RuntimeException exception) {
++            compensate(issued.accessToken());
++            throw exception;
++        }
++    }
++
++    private void compensate(String accessToken) {
++        try {
++            sessions.logout(accessToken);
++        } catch (RuntimeException ignored) {
++            // The original failure remains authoritative and raw credentials are never logged.
++        }
++    }
++
++    private boolean matches(String raw, String hash) {
++        if (hash == null || hash.isBlank()) return false;
++        try {
++            return passwordEncoder.matches(raw, hash);
++        } catch (IllegalArgumentException exception) {
++            return false;
++        }
++    }
++
++    private LoginRejectedException rejected(LoginRejectedException.Reason reason) {
++        return new LoginRejectedException(reason);
++    }
++
++    public record LoginOutcome(SessionTokens tokens, List<IdentityRecord> activeIdentities) {}
+ }
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionController.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionController.java
+index 02e1cab..f819c3a 100644
+--- a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionController.java
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionController.java
+@@ -1,12 +1,7 @@
+ package cn.shangjingu.platform.api.security;
+ 
+-import cn.shangjingu.platform.iam.application.IdentityDirectoryService;
+-import cn.shangjingu.platform.iam.domain.IdentityRecord;
+ import cn.shangjingu.platform.iam.session.SessionService;
+ import cn.shangjingu.platform.iam.session.SessionTokens;
+-import java.time.OffsetDateTime;
+-import java.util.Comparator;
+-import java.util.List;
+ import java.util.UUID;
+ import org.springframework.security.core.annotation.AuthenticationPrincipal;
+ import org.springframework.web.bind.annotation.GetMapping;
+@@ -19,39 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
+ @RequestMapping("/api/v1/session")
+ public final class SessionController {
+     private final SessionService sessions;
+-    private final IdentityDirectoryService identities;
++    private final SessionViewFactory sessionViews;
+     private final JdbcSecurityAuditService audit;
+ 
+     public SessionController(
+             SessionService sessions,
+-            IdentityDirectoryService identities,
++            SessionViewFactory sessionViews,
+             JdbcSecurityAuditService audit) {
+         this.sessions = sessions;
+-        this.identities = identities;
++        this.sessionViews = sessionViews;
+         this.audit = audit;
+     }
+ 
+     @GetMapping
+-    public SessionView current(@AuthenticationPrincipal SessionPrincipal principal) {
+-        List<String> permissions = identities.authorization(principal.context()).permissions().stream()
+-                .sorted()
+-                .toList();
+-        List<AvailableIdentityView> availableIdentities = identities
+-                .activeIdentities(principal.context().tenantId(), principal.context().userId()).stream()
+-                .sorted(Comparator.comparing(IdentityRecord::primary).reversed()
+-                        .thenComparing(identity -> identity.id().toString()))
+-                .map(AvailableIdentityView::from)
+-                .toList();
+-        return new SessionView(
+-                principal.context().tenantId(),
+-                principal.context().userId(),
+-                principal.context().identityId(),
+-                principal.context().employeeId(),
+-                principal.context().appointmentId(),
+-                principal.context().orgId(),
+-                principal.context().positionId(),
+-                permissions,
+-                availableIdentities);
++    public SessionViewResponse current(@AuthenticationPrincipal SessionPrincipal principal) {
++        return sessionViews.create(principal.context());
+     }
+ 
+     @PostMapping("/switch")
+@@ -62,9 +39,9 @@ public final class SessionController {
+         try {
+             audit.recordOperation(switched.context(), "SESSION_SWITCH", "SESSION", null);
+             return SessionTokenResponse.from(switched);
+-        } catch (RuntimeException ex) {
++        } catch (RuntimeException exception) {
+             compensate(switched.accessToken());
+-            throw ex;
++            throw exception;
+         }
+     }
+ 
+@@ -72,44 +49,9 @@ public final class SessionController {
+         try {
+             sessions.logout(accessToken);
+         } catch (RuntimeException ignored) {
+-            // The critical failure remains authoritative and the raw token is never logged.
++            // The original failure remains authoritative and raw credentials are never logged.
+         }
+     }
+ 
+-    public record SwitchRequest(UUID identityId) {
+-    }
+-
+-    public record AvailableIdentityView(
+-            UUID identityId,
+-            String identityType,
+-            String identityName,
+-            UUID orgId,
+-            UUID positionId,
+-            boolean primary,
+-            OffsetDateTime effectiveStartAt,
+-            OffsetDateTime effectiveEndAt) {
+-        static AvailableIdentityView from(IdentityRecord identity) {
+-            return new AvailableIdentityView(
+-                    identity.id(),
+-                    identity.identityType(),
+-                    identity.identityName(),
+-                    identity.orgId(),
+-                    identity.positionId(),
+-                    identity.primary(),
+-                    identity.effectiveStartAt(),
+-                    identity.effectiveEndAt());
+-        }
+-    }
+-
+-    public record SessionView(
+-            UUID tenantId,
+-            UUID userId,
+-            UUID identityId,
+-            UUID employeeId,
+-            UUID appointmentId,
+-            UUID orgId,
+-            UUID positionId,
+-            List<String> permissions,
+-            List<AvailableIdentityView> availableIdentities) {
+-    }
++    public record SwitchRequest(UUID identityId) {}
+ }
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewFactory.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewFactory.java
+new file mode 100644
+index 0000000..0ad69c6
+--- /dev/null
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewFactory.java
+@@ -0,0 +1,30 @@
++package cn.shangjingu.platform.api.security;
++
++import cn.shangjingu.platform.iam.application.IdentityDirectoryService;
++import cn.shangjingu.platform.iam.domain.IdentityRecord;
++import cn.shangjingu.platform.iam.session.SessionContext;
++import java.util.Comparator;
++import java.util.List;
++import org.springframework.stereotype.Service;
++
++@Service
++public final class SessionViewFactory {
++    private final IdentityDirectoryService identities;
++
++    public SessionViewFactory(IdentityDirectoryService identities) {
++        this.identities = identities;
++    }
++
++    public SessionViewResponse create(SessionContext context) {
++        return create(context, identities.activeIdentities(context.tenantId(), context.userId()));
++    }
++
++    public SessionViewResponse create(SessionContext context, List<IdentityRecord> activeIdentities) {
++        List<String> permissions = identities.authorization(context).permissions().stream().sorted().toList();
++        List<IdentityRecord> sortedIdentities = activeIdentit
