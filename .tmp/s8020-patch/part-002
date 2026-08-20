@@ -1,0 +1,201 @@
+ies.stream()
++                .sorted(Comparator.comparing(IdentityRecord::primary).reversed()
++                        .thenComparing(identity -> identity.id().toString()))
++                .toList();
++        return SessionViewResponse.from(context, permissions, sortedIdentities);
++    }
++}
+diff --git a/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewResponse.java b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewResponse.java
+new file mode 100644
+index 0000000..2f2c7f8
+--- /dev/null
++++ b/technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/security/SessionViewResponse.java
+@@ -0,0 +1,58 @@
++package cn.shangjingu.platform.api.security;
++
++import cn.shangjingu.platform.iam.domain.IdentityRecord;
++import cn.shangjingu.platform.iam.session.SessionContext;
++import java.time.OffsetDateTime;
++import java.util.List;
++import java.util.UUID;
++
++public record SessionViewResponse(
++        UUID tenantId,
++        UUID userId,
++        UUID identityId,
++        UUID employeeId,
++        UUID appointmentId,
++        UUID orgId,
++        UUID positionId,
++        List<String> permissions,
++        List<AvailableIdentityView> availableIdentities) {
++
++    public static SessionViewResponse from(
++            SessionContext context,
++            List<String> permissions,
++            List<IdentityRecord> identities) {
++        return new SessionViewResponse(
++                context.tenantId(),
++                context.userId(),
++                context.identityId(),
++                context.employeeId(),
++                context.appointmentId(),
++                context.orgId(),
++                context.positionId(),
++                List.copyOf(permissions),
++                identities.stream().map(AvailableIdentityView::from).toList());
++    }
++
++    public record AvailableIdentityView(
++            UUID identityId,
++            String identityType,
++            String identityName,
++            UUID orgId,
++            UUID positionId,
++            boolean primary,
++            OffsetDateTime effectiveStartAt,
++            OffsetDateTime effectiveEndAt) {
++
++        static AvailableIdentityView from(IdentityRecord identity) {
++            return new AvailableIdentityView(
++                    identity.id(),
++                    identity.identityType(),
++                    identity.identityName(),
++                    identity.orgId(),
++                    identity.positionId(),
++                    identity.primary(),
++                    identity.effectiveStartAt(),
++                    identity.effectiveEndAt());
++        }
++    }
++}
+diff --git a/technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/security/SessionControllerContractTest.java b/technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/security/SessionControllerContractTest.java
+index d5b2b71..ee40dbc 100644
+--- a/technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/security/SessionControllerContractTest.java
++++ b/technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/security/SessionControllerContractTest.java
+@@ -49,13 +49,14 @@ class SessionControllerContractTest {
+                 identity(IDENTITY_B, ORG_B, POSITION_B, false, "Secondary identity"),
+                 identity(IDENTITY_A, ORG_A, POSITION_A, true, "Primary identity")));
+ 
+-        SessionController controller = new SessionController(sessions, identities, audit);
+-        SessionController.SessionView view = controller.current(principal);
++        SessionViewFactory sessionViews = new SessionViewFactory(identities);
++        SessionController controller = new SessionController(sessions, sessionViews, audit);
++        SessionViewResponse view = controller.current(principal);
+ 
+         assertEquals(IDENTITY_A, view.identityId());
+         assertEquals(List.of("platform.session.read", "platform.session.switch"), view.permissions());
+         assertEquals(List.of(IDENTITY_A, IDENTITY_B), view.availableIdentities().stream()
+-                .map(SessionController.AvailableIdentityView::identityId)
++                .map(SessionViewResponse.AvailableIdentityView::identityId)
+                 .toList());
+         assertEquals("Primary identity", view.availableIdentities().getFirst().identityName());
+         assertTrue(view.availableIdentities().getFirst().primary());
+diff --git a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/IdentityDirectoryService.java b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/IdentityDirectoryService.java
+index 5635731..030b7fd 100644
+--- a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/IdentityDirectoryService.java
++++ b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/application/IdentityDirectoryService.java
+@@ -42,11 +42,14 @@ public final class IdentityDirectoryService {
+     }
+ 
+     public List<IdentityRecord> activeIdentities(UUID tenantId, UUID userId) {
+-        return tenantTransactions.required(tenantId, userId, null,
++        return tenantTransactions.required(
++                tenantId,
++                userId,
++                null,
+                 () -> identities.findActiveIdentities(tenantId, userId).stream()
+-                        .filter(identity -> identity.employeeId() != null && identity.orgId() != null && identity.positionId() != null)
+-                        .filter(identity -> organizations.hasActiveAppointment(
+-                                tenantId, identity.employeeId(), identity.orgId(), identity.positionId()))
++                        .filter(identity -> identity.employeeId() != null)
++                        .filter(identity -> identity.orgId() != null)
++                        .filter(identity -> identity.positionId() != null)
+                         .toList());
+     }
+ 
+@@ -58,6 +61,14 @@ public final class IdentityDirectoryService {
+                                 tenantId, identity.employeeId(), identity.orgId(), identity.positionId())));
+     }
+ 
++    public Optional<AppointmentRecord> activeAppointment(UUID tenantId, IdentityRecord identity) {
++        return tenantTransactions.required(
++                tenantId,
++                identity.userId(),
++                identity.id(),
++                () -> matchingAppointments(tenantId, identity).stream().findFirst());
++    }
++
+     public Optional<AppointmentRecord> activeAppointment(UUID tenantId, UUID userId, UUID identityId) {
+         return tenantTransactions.required(tenantId, userId, identityId, () ->
+                 identities.findActiveIdentity(tenantId, userId, identityId)
+diff --git a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcIdentityDirectoryAdapter.java b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcIdentityDirectoryAdapter.java
+index 1ae86d5..007afd0 100644
+--- a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcIdentityDirectoryAdapter.java
++++ b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/infrastructure/JdbcIdentityDirectoryAdapter.java
+@@ -49,11 +49,23 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
+         return jdbc.query("""
+                 select id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,
+                        is_primary,effective_start_at,effective_end_at
+-                from iam.user_identity
+-                where tenant_id=? and user_id=? and not is_deleted
+-                  and effective_start_at <= now()
+-                  and (effective_end_at is null or effective_end_at > now())
+-                order by is_primary desc,effective_start_at,id
++                from iam.user_identity ui
++                where ui.tenant_id=? and ui.user_id=? and not ui.is_deleted
++                  and ui.effective_start_at <= now()
++                  and (ui.effective_end_at is null or ui.effective_end_at > now())
++                  and exists (
++                    select 1
++                    from org.employee_position ep
++                    where ep.tenant_id=ui.tenant_id
++                      and ep.employee_id=ui.employee_id
++                      and ep.org_id=ui.org_id
++                      and ep.position_id=ui.position_id
++                      and not ep.is_deleted
++                      and ep.status='ACTIVE'
++                      and ep.effective_start_date <= current_date
++                      and (ep.effective_end_date is null or ep.effective_end_date >= current_date)
++                  )
++                order by ui.is_primary desc,ui.effective_start_at,ui.id
+                 """, (rs, n) -> identity(rs), tenantId, userId);
+     }
+ 
+@@ -62,10 +74,22 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
+         return jdbc.query("""
+                 select id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,
+                        is_primary,effective_start_at,effective_end_at
+-                from iam.user_identity
+-                where tenant_id=? and user_id=? and id=? and not is_deleted
+-                  and effective_start_at <= now()
+-                  and (effective_end_at is null or effective_end_at > now())
++                from iam.user_identity ui
++                where ui.tenant_id=? and ui.user_id=? and ui.id=? and not ui.is_deleted
++                  and ui.effective_start_at <= now()
++                  and (ui.effective_end_at is null or ui.effective_end_at > now())
++                  and exists (
++                    select 1
++                    from org.employee_position ep
++                    where ep.tenant_id=ui.tenant_id
++                      and ep.employee_id=ui.employee_id
++                      and ep.org_id=ui.org_id
++                      and ep.position_id=ui.position_id
++                      and not ep.is_deleted
++                      and ep.status='ACTIVE'
++                      and ep.effective_start_date <= current_date
++                      and (ep.effective_end_date is null or ep.effective_end_date >= current_date)
++                  )
+                 """, (rs, n) -> identity(rs), tenantId, userId, identityId).stream().findFirst();
+     }
+ 
+diff --git a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java
+index 6127899..7c9a92c 100644
+--- a/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java
++++ b/technical-platform/backend/modules/iam/src/main/java/cn/shangjingu/platform/iam/session/SessionService.java
+@@ -22,6 +22,7 @@ public final class SessionService {
+     public SessionService(IdentityDirectoryService identities,SessionStore store,SessionPolicy policy){this(identities,store,policy,Clock.systemUTC(),new SecureRandom());}
+     SessionService(IdentityDirectoryService identities,SessionStore store,SessionPolicy policy,Clock clock,SecureRandom random){this.identities=Objects.requireNonNull(identities);this.store=Objects.requireNonNull(store);this.policy=Objects.requireNonNull(policy);this.clock=Objects.requireNonNull(clock);this.random=Objects.requireNonNull(random);}
+     public SessionTokens issue(UUID tenantId,UUID userId,UUID identityId){return issueResolved(resolveIdentity(tenantId,userId,identityId,null));}
++    public SessionTokens issue(IdentityRecord identity,AppointmentRecord appointment){return issueResolved(new ResolvedIdentity(Objects.requireNonNull(identity),Objects.requireNonNull(appointment)));}
+     public Optional<SessionContext> 
