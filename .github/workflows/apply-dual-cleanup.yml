@@ -1,6 +1,11 @@
 name: Apply clean dual latest
 
 on:
+  push:
+    branches:
+      - Rebuild_website
+    paths:
+      - '.github/delivery/delivery-run-trigger.txt'
   pull_request:
     branches:
       - Rebuild_website
@@ -42,6 +47,7 @@ jobs:
           rm -f .github/delivery/dual_cleanup_payload.b64
           rm -f .github/delivery/dual_cleanup_payload.part-*
           rm -f .github/delivery/dual_cleanup_pr_trigger.txt
+          rm -f .github/delivery/delivery-run-trigger.txt
           rm -f .github/delivery/corrected_payload.part-*
           rm -f .github/delivery/corrected_payload_trigger.txt
           rm -f .github/workflows/apply-dual-cleanup.yml
