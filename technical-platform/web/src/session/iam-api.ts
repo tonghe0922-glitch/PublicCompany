@@ -1,15 +1,20 @@
 import type { ApiClient } from '../api'
 import type {
+  LoginBootstrapResponse,
   LoginRequest,
   RefreshRequest,
   SessionTokenResponse,
   SessionView,
   SwitchRequest,
 } from '../contracts'
-import { parseSessionTokenResponse, parseSessionView } from './iam-validators'
+import {
+  parseLoginBootstrapResponse,
+  parseSessionTokenResponse,
+  parseSessionView,
+} from './iam-validators'
 
 export interface IamApi {
-  login: (request: LoginRequest) => Promise<SessionTokenResponse>
+  login: (request: LoginRequest) => Promise<LoginBootstrapResponse>
   refresh: (request: RefreshRequest) => Promise<SessionTokenResponse>
   current: () => Promise<SessionView>
   switchIdentity: (request: SwitchRequest) => Promise<SessionTokenResponse>
@@ -27,8 +32,12 @@ async function tokenCall<TBody>(
 
 export function createIamApi(publicClient: ApiClient, protectedClient: ApiClient): IamApi {
   return {
-    login(request) {
-      return tokenCall(publicClient, '/api/v1/auth/login', request)
+    async login(request) {
+      const value = await publicClient.request<unknown, LoginRequest>('/api/v1/auth/login', {
+        method: 'POST',
+        body: request,
+      })
+      return parseLoginBootstrapResponse(value)
     },
     refresh(request) {
       return tokenCall(publicClient, '/api/v1/auth/refresh', request)

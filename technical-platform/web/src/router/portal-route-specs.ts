@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import type { PortalCode } from '../platform/portal-config'
+import type { BusinessAudience } from '../platform/portal-config'
 import P001IdentityPage from '../platform/pages/P001IdentityPage.vue'
 import P002PermissionRequestPage from '../platform/pages/P002PermissionRequestPage.vue'
 import P003ProfileChangePage from '../platform/pages/P003ProfileChangePage.vue'
@@ -40,7 +40,7 @@ import P013EmployeePage from '../platform/pages/phase11/P013EmployeePage.vue'
 import P013TechPage from '../platform/pages/phase11/P013TechPage.vue'
 
 export interface PortalRouteSpec {
-  portal: PortalCode
+  audience: BusinessAudience
   path: string
   name: string
   component: Component
@@ -51,66 +51,66 @@ export interface PortalRouteSpec {
 
 const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/13/04/04', name: 'p001-mfa',
+    audience: 'self', path: '/employee/13/04/04', name: 'p001-mfa',
     component: P001IdentityPage,
   },
   {
-    portal: 'employee', path: '/employee/13/04/06', name: 'p001-sessions',
+    audience: 'self', path: '/employee/13/04/06', name: 'p001-sessions',
     component: P001IdentityPage,
   },
   {
-    portal: 'tech', path: '/tech/03/01/01', name: 'p001-security-monitor',
+    audience: 'tech', path: '/tech/03/01/01', name: 'p001-security-monitor',
     component: P001IdentityPage, permission: 'p001.session.monitor',
   },
   {
-    portal: 'employee', path: '/employee/03/07/04',
+    audience: 'self', path: '/employee/03/07/04',
     name: 'p002-temporary-permission-request', component: P002PermissionRequestPage,
     props: { mode: 'employee', requestKind: 'TEMPORARY_PERMISSION' },
     permissionsAny: ['p002.request.submit', 'p002.request.read'],
   },
   {
-    portal: 'employee', path: '/employee/03/07/05',
+    audience: 'self', path: '/employee/03/07/05',
     name: 'p002-project-permission-request', component: P002PermissionRequestPage,
     props: { mode: 'employee', requestKind: 'PROJECT_PERMISSION' },
     permissionsAny: ['p002.request.submit', 'p002.request.read'],
   },
   {
-    portal: 'tech', path: '/tech/03/01/04', name: 'p002-permission-execution',
+    audience: 'tech', path: '/tech/03/01/04', name: 'p002-permission-execution',
     component: P002PermissionRequestPage, props: { mode: 'tech' },
     permissionsAny: ['p002.request.read', 'p002.request.execute', 'p002.request.revoke'],
   },
   {
-    portal: 'employee', path: '/employee/03/03/01', name: 'p003-profile-change',
+    audience: 'self', path: '/employee/03/03/01', name: 'p003-profile-change',
     component: P003ProfileChangePage, props: { mode: 'employee' },
     permissionsAny: ['p003.change.submit', 'p003.change.read'],
   },
   {
-    portal: 'center', path: '/center/03/02/01', name: 'p003-profile-roster',
+    audience: 'center', path: '/center/03/02/01', name: 'p003-profile-roster',
     component: P003ProfileChangePage, props: { mode: 'center' },
     permissionsAny: ['p003.change.read', 'p003.change.review'],
   },
   {
-    portal: 'tech', path: '/tech/04/01/01', name: 'p003-profile-sync-monitor',
+    audience: 'tech', path: '/tech/04/01/01', name: 'p003-profile-sync-monitor',
     component: P003ProfileChangePage, props: { mode: 'tech' },
     permissionsAny: ['p003.change.read', 'p003.change.apply'],
   },
   {
-    portal: 'employee', path: '/employee/03/07/01', name: 'p004-generic-request',
+    audience: 'self', path: '/employee/03/07/01', name: 'p004-generic-request',
     component: P004GenericRequestPage, props: { mode: 'employee' },
     permissionsAny: ['p004.request.submit', 'p004.request.read'],
   },
   {
-    portal: 'employee', path: '/employee/13/01/05', name: 'p005-notice-receipt',
+    audience: 'self', path: '/employee/13/01/05', name: 'p005-notice-receipt',
     component: P005NoticePage, props: { mode: 'employee' },
     permissionsAny: ['p005.notice.read', 'p005.notice.receipt'],
   },
   {
-    portal: 'center', path: '/center/13/01/05', name: 'p005-notice-publish',
+    audience: 'center', path: '/center/13/01/05', name: 'p005-notice-publish',
     component: P005NoticePage, props: { mode: 'center' },
     permissionsAny: ['p005.notice.publish', 'p005.notice.manage'],
   },
   {
-    portal: 'center', path: '/center/02/01/01', name: 'phase09-center-inbox',
+    audience: 'center', path: '/center/02/01/01', name: 'phase09-center-inbox',
     component: Phase09CenterInboxPage,
     permissionsAny: [
       'p001.session.monitor', 'p002.request.read', 'p002.request.review',
@@ -118,7 +118,7 @@ const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'tech', path: '/tech/05/03/01', name: 'p004-workflow-instance-monitor',
+    audience: 'tech', path: '/tech/05/03/01', name: 'p004-workflow-instance-monitor',
     component: Phase09TechWorkflowMonitorPage,
     permissionsAny: [
       'p004.request.read', 'p005.notice.monitor', 'p006.meeting.monitor',
@@ -130,22 +130,22 @@ const PHASE09_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P006_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/05/01/03', name: 'p006-meeting-detail',
+    audience: 'self', path: '/employee/05/01/03', name: 'p006-meeting-detail',
     component: P006MeetingPage, props: { mode: 'employee' },
     permissionsAny: ['p006.meeting.read', 'p006.meeting.action'],
   },
   {
-    portal: 'employee', path: '/employee/05/07/02', name: 'p006-action-items',
+    audience: 'self', path: '/employee/05/07/02', name: 'p006-action-items',
     component: P006MeetingPage, props: { mode: 'employee' },
     permissionsAny: ['p006.meeting.read', 'p006.meeting.action'],
   },
   {
-    portal: 'center', path: '/center/06/09/03', name: 'p006-meeting-management',
+    audience: 'center', path: '/center/06/09/03', name: 'p006-meeting-management',
     component: P006MeetingPage, props: { mode: 'center' },
     permissionsAny: ['p006.meeting.create', 'p006.meeting.manage', 'p006.meeting.accept'],
   },
   {
-    portal: 'center', path: '/center/05/02/02', name: 'p006-action-ledger',
+    audience: 'center', path: '/center/05/02/02', name: 'p006-action-ledger',
     component: P006MeetingPage, props: { mode: 'center' },
     permissionsAny: ['p006.meeting.read', 'p006.meeting.manage', 'p006.meeting.accept'],
   },
@@ -153,32 +153,32 @@ const P006_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P007_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/04/01/01', name: 'p007-my-schedule',
+    audience: 'self', path: '/employee/04/01/01', name: 'p007-my-schedule',
     component: P007ShiftPage, props: { mode: 'employee' },
     permissionsAny: ['p007.schedule.read', 'p007.schedule.change'],
   },
   {
-    portal: 'employee', path: '/employee/03/01/09', name: 'p007-shift-change',
+    audience: 'self', path: '/employee/03/01/09', name: 'p007-shift-change',
     component: P007ShiftPage, props: { mode: 'employee' },
     permissionsAny: ['p007.schedule.read', 'p007.schedule.change'],
   },
   {
-    portal: 'employee', path: '/employee/03/01/10', name: 'p007-shift-change-status',
+    audience: 'self', path: '/employee/03/01/10', name: 'p007-shift-change-status',
     component: P007ShiftPage, props: { mode: 'employee' },
     permissionsAny: ['p007.schedule.read', 'p007.schedule.change'],
   },
   {
-    portal: 'center', path: '/center/04/01/01', name: 'p007-schedule-management',
+    audience: 'center', path: '/center/04/01/01', name: 'p007-schedule-management',
     component: P007ShiftPage, props: { mode: 'center' },
     permissionsAny: ['p007.schedule.manage', 'p007.schedule.change'],
   },
   {
-    portal: 'center', path: '/center/04/07/04', name: 'p007-shift-review',
+    audience: 'center', path: '/center/04/07/04', name: 'p007-shift-review',
     component: P007ShiftPage, props: { mode: 'center' },
     permissionsAny: ['p007.schedule.review', 'p007.schedule.manage'],
   },
   {
-    portal: 'center', path: '/center/04/07/05', name: 'p007-shift-ledger',
+    audience: 'center', path: '/center/04/07/05', name: 'p007-shift-ledger',
     component: P007ShiftPage, props: { mode: 'center' },
     permissionsAny: ['p007.schedule.read', 'p007.schedule.manage'],
   },
@@ -186,32 +186,32 @@ const P007_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P008_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/03/01/01', name: 'p008-leave-request',
+    audience: 'self', path: '/employee/03/01/01', name: 'p008-leave-request',
     component: P008LeaveRequestPage,
     permissionsAny: ['p008.leave.submit', 'p008.leave.read'],
   },
   {
-    portal: 'employee', path: '/employee/04/03/02', name: 'p008-quota-ledger',
+    audience: 'self', path: '/employee/04/03/02', name: 'p008-quota-ledger',
     component: P008LeaveQuotaLedgerPage,
     permissionsAny: ['p008.leave.submit', 'p008.leave.read'],
   },
   {
-    portal: 'employee', path: '/employee/03/01/02', name: 'p008-leave-change',
+    audience: 'self', path: '/employee/03/01/02', name: 'p008-leave-change',
     component: P008LeaveChangePage,
     permissionsAny: ['p008.leave.submit', 'p008.leave.read'],
   },
   {
-    portal: 'center', path: '/center/04/04/01', name: 'p008-leave-review',
+    audience: 'center', path: '/center/04/04/01', name: 'p008-leave-review',
     component: P008LeaveReviewPage,
     permissionsAny: ['p008.leave.read', 'p008.leave.review', 'p008.leave.manage'],
   },
   {
-    portal: 'center', path: '/center/04/04/03', name: 'p008-quota-management',
+    audience: 'center', path: '/center/04/04/03', name: 'p008-quota-management',
     component: P008QuotaManagementPage,
     permissionsAny: ['p008.leave.read', 'p008.leave.review', 'p008.leave.manage'],
   },
   {
-    portal: 'center', path: '/center/04/04/06', name: 'p008-leave-change-center',
+    audience: 'center', path: '/center/04/04/06', name: 'p008-leave-change-center',
     component: P008LeaveChangeCenterPage,
     permissionsAny: ['p008.leave.read', 'p008.leave.review', 'p008.leave.manage'],
   },
@@ -219,22 +219,22 @@ const P008_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P009_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/03/01/06', name: 'p009-overtime-request',
+    audience: 'self', path: '/employee/03/01/06', name: 'p009-overtime-request',
     component: P009OvertimeRequestPage,
     permissionsAny: ['p009.overtime.submit', 'p009.overtime.read'],
   },
   {
-    portal: 'employee', path: '/employee/03/01/07', name: 'p009-time-off-request',
+    audience: 'self', path: '/employee/03/01/07', name: 'p009-time-off-request',
     component: P009TimeOffRequestPage,
     permissionsAny: ['p009.overtime.submit', 'p009.overtime.read'],
   },
   {
-    portal: 'employee', path: '/employee/04/04/02', name: 'p009-result-acceptance',
+    audience: 'self', path: '/employee/04/04/02', name: 'p009-result-acceptance',
     component: P009ResultAcceptancePage,
     permissionsAny: ['p009.overtime.submit', 'p009.overtime.read'],
   },
   {
-    portal: 'center', path: '/center/04/05/01', name: 'p009-overtime-management',
+    audience: 'center', path: '/center/04/05/01', name: 'p009-overtime-management',
     component: P009OvertimeManagementPage,
     permissionsAny: [
       'p009.overtime.read', 'p009.overtime.review',
@@ -242,7 +242,7 @@ const P009_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'center', path: '/center/04/05/05', name: 'p009-hr-review',
+    audience: 'center', path: '/center/04/05/05', name: 'p009-hr-review',
     component: P009HrReviewPage,
     permissionsAny: [
       'p009.overtime.read', 'p009.overtime.review',
@@ -250,7 +250,7 @@ const P009_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'center', path: '/center/04/05/06', name: 'p009-payroll-basis',
+    audience: 'center', path: '/center/04/05/06', name: 'p009-payroll-basis',
     component: P009PayrollBasisPage,
     permissionsAny: [
       'p009.overtime.read', 'p009.overtime.review',
@@ -261,37 +261,37 @@ const P009_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P010_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/07/01/01', name: 'p010-learning-tasks',
+    audience: 'self', path: '/employee/07/01/01', name: 'p010-learning-tasks',
     component: P010LearningTasksPage,
     permissionsAny: ['p010.learning.read', 'p010.learning.complete', 'p010.learning.exam'],
   },
   {
-    portal: 'employee', path: '/employee/07/04/02', name: 'p010-online-exam',
+    audience: 'self', path: '/employee/07/04/02', name: 'p010-online-exam',
     component: P010OnlineExamPage,
     permissionsAny: ['p010.learning.read', 'p010.learning.complete', 'p010.learning.exam'],
   },
   {
-    portal: 'employee', path: '/employee/07/05/01', name: 'p010-practical-task',
+    audience: 'self', path: '/employee/07/05/01', name: 'p010-practical-task',
     component: P010PracticalTaskPage,
     permissionsAny: ['p010.learning.read', 'p010.learning.complete', 'p010.learning.exam'],
   },
   {
-    portal: 'employee', path: '/employee/07/06/01', name: 'p010-qualifications',
+    audience: 'self', path: '/employee/07/06/01', name: 'p010-qualifications',
     component: P010QualificationsPage,
     permissionsAny: ['p010.learning.read', 'p010.learning.complete', 'p010.learning.exam'],
   },
   {
-    portal: 'center', path: '/center/06/03/07', name: 'p010-learning-management',
+    audience: 'center', path: '/center/06/03/07', name: 'p010-learning-management',
     component: P010LearningManagementPage,
     permissionsAny: ['p010.learning.manage', 'p010.learning.certify', 'p010.learning.read'],
   },
   {
-    portal: 'center', path: '/center/10/08/03', name: 'p010-practical-certification',
+    audience: 'center', path: '/center/10/08/03', name: 'p010-practical-certification',
     component: P010PracticalCertificationPage,
     permissionsAny: ['p010.learning.manage', 'p010.learning.certify', 'p010.learning.read'],
   },
   {
-    portal: 'center', path: '/center/10/08/07', name: 'p010-permission-linkage',
+    audience: 'center', path: '/center/10/08/07', name: 'p010-permission-linkage',
     component: P010PermissionLinkagePage,
     permissionsAny: ['p010.learning.manage', 'p010.learning.certify', 'p010.learning.read'],
   },
@@ -300,12 +300,12 @@ const P010_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P011_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/08/01/01', name: 'p011-performance-self',
+    audience: 'self', path: '/employee/08/01/01', name: 'p011-performance-self',
     component: P011EmployeePage,
     permissionsAny: ['p011.performance.self', 'p011.performance.read'],
   },
   {
-    portal: 'center', path: '/center/10/01/01', name: 'p011-performance-management',
+    audience: 'center', path: '/center/10/01/01', name: 'p011-performance-management',
     component: P011CenterPage,
     permissionsAny: [
       'p011.performance.create', 'p011.performance.evaluate',
@@ -314,7 +314,7 @@ const P011_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'tech', path: '/tech/06/05/01', name: 'p011-performance-monitor',
+    audience: 'tech', path: '/tech/06/05/01', name: 'p011-performance-monitor',
     component: P011TechPage, permission: 'p011.performance.monitor',
   },
 ]
@@ -322,12 +322,12 @@ const P011_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P012_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/03/03/05', name: 'p012-promotion-self',
+    audience: 'self', path: '/employee/03/03/05', name: 'p012-promotion-self',
     component: P012EmployeePage,
     permissionsAny: ['p012.promotion.create', 'p012.promotion.read'],
   },
   {
-    portal: 'center', path: '/center/10/06/01', name: 'p012-promotion-management',
+    audience: 'center', path: '/center/10/06/01', name: 'p012-promotion-management',
     component: P012CenterPage,
     permissionsAny: [
       'p012.promotion.create', 'p012.promotion.review',
@@ -335,7 +335,7 @@ const P012_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'tech', path: '/tech/01/11/07', name: 'p012-promotion-monitor',
+    audience: 'tech', path: '/tech/01/11/07', name: 'p012-promotion-monitor',
     component: P012TechPage, permission: 'p012.promotion.monitor',
   },
 ]
@@ -343,35 +343,35 @@ const P012_ROUTE_SPECS: readonly PortalRouteSpec[] = [
 
 const P013_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee', path: '/employee/08/07/02', name: 'p013-reward-self',
+    audience: 'self', path: '/employee/08/07/02', name: 'p013-reward-self',
     component: P013EmployeePage,
     permissionsAny: ['p013.reward.create', 'p013.reward.read'],
   },
   {
-    portal: 'center', path: '/center/10/10/02', name: 'p013-reward-management',
+    audience: 'center', path: '/center/10/10/02', name: 'p013-reward-management',
     component: P013CenterPage,
     permissionsAny: ['p013.reward.create', 'p013.reward.review', 'p013.reward.execute'],
   },
   {
-    portal: 'tech', path: '/tech/06/06/01', name: 'p013-reward-monitor',
+    audience: 'tech', path: '/tech/06/06/01', name: 'p013-reward-monitor',
     component: P013TechPage, permission: 'p013.reward.monitor',
   },
 ]
 
 const PHASE10_TECH_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'tech', path: '/tech/07/11/01',
+    audience: 'tech', path: '/tech/07/11/01',
     name: 'p008-p009-attendance-integration-monitor', component: Phase10TechMonitorPage,
     props: { processes: ['P008', 'P009'] },
     permissionsAny: ['p008.leave.monitor', 'p009.overtime.monitor'],
   },
   {
-    portal: 'tech', path: '/tech/07/09/01',
+    audience: 'tech', path: '/tech/07/09/01',
     name: 'p009-payroll-integration-monitor', component: Phase10TechMonitorPage,
     props: { processes: ['P009'] }, permission: 'p009.overtime.monitor',
   },
   {
-    portal: 'tech', path: '/tech/03/03/09',
+    audience: 'tech', path: '/tech/03/03/09',
     name: 'p010-role-permission-audit', component: Phase10TechMonitorPage,
     props: { processes: ['P010'] }, permission: 'p010.learning.monitor',
   },

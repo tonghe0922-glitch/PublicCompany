@@ -5,14 +5,14 @@ import type { PortalRouteSpec } from './portal-route-specs'
 
 export const P014_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee',
+    audience: 'self',
     path: '/employee/02/03/09',
     name: 'p014-discipline-self-service',
     component: P014EmployeePage,
     permissionsAny: ['p014.discipline.read', 'p014.discipline.appeal'],
   },
   {
-    portal: 'center',
+    audience: 'center',
     path: '/center/12/02/04',
     name: 'p014-discipline-management',
     component: P014CenterPage,
@@ -26,7 +26,7 @@ export const P014_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'tech',
+    audience: 'tech',
     path: '/tech/06/06/02',
     name: 'p014-discipline-monitor',
     component: P014TechPage,

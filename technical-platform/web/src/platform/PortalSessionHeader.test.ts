@@ -34,9 +34,9 @@ function session(permissions: string[] = ['portal.read', 'platform.session.switc
 describe('PHASE-08 PortalSessionHeader', () => {
   it('renders the current server identity and emits only explicit switch/logout intents', async () => {
     const wrapper = mount(PortalSessionHeader, {
-      props: { portal: PORTALS.center, session: session() },
+      props: { portal: PORTALS.work, session: session() },
     })
-    expect(wrapper.text()).toContain('中心管理端')
+    expect(wrapper.text()).toContain('工作端')
     expect(wrapper.text()).toContain('主岗位')
 
     const select = wrapper.get('select')
@@ -51,7 +51,7 @@ describe('PHASE-08 PortalSessionHeader', () => {
 
   it('does not emit a switch when the current identity is selected again', async () => {
     const wrapper = mount(PortalSessionHeader, {
-      props: { portal: PORTALS.employee, session: session() },
+      props: { portal: PORTALS.work, session: session() },
     })
     await wrapper.get('select').setValue('identity-a')
     expect(wrapper.emitted('switchIdentity')).toBeUndefined()

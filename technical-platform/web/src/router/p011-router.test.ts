@@ -10,7 +10,7 @@ class P011Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P011Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P011 frozen routes', () => {
   it('binds employee, center and tech routes to dedicated P011 pages', async () => {
-    const employee = routerFor(PORTALS.employee, 'p011.performance.self')
+    const employee = routerFor(PORTALS.work, 'p011.performance.self')
     await employee.push('/employee/08/01/01')
     expect(employee.currentRoute.value.name).toBe('p011-performance-self')
 
-    const center = routerFor(PORTALS.center, 'p011.performance.evaluate')
+    const center = routerFor(PORTALS.work, 'p011.performance.evaluate')
     await center.push('/center/10/01/01')
     expect(center.currentRoute.value.name).toBe('p011-performance-management')
 

@@ -82,7 +82,10 @@ function authServer() {
   const fetchFn: typeof fetch = (input, init) => {
     const path = requestPath(input)
     const auth = new Headers(init?.headers).get('Authorization')
-    if (path.endsWith('/auth/login')) return Promise.resolve(json(tokenBody('access-login', 'refresh-login')))
+    if (path.endsWith('/auth/login')) return Promise.resolve(json({
+      ...tokenBody('access-login', 'refresh-login'),
+      session: sessionBody(),
+    }))
     if (path.endsWith('/auth/refresh')) {
       refreshCalls += 1
       return Promise.resolve(json(tokenBody(`access-refresh-${refreshCalls}`, `refresh-rotated-${refreshCalls}`)))
@@ -199,8 +202,12 @@ describe('PHASE-08 portal session runtime', () => {
     const vault = createCredentialVault(storage)
     const fetchFn: typeof fetch = (input) => {
       const path = requestPath(input)
-      if (path.endsWith('/auth/login')) return Promise.resolve(json(tokenBody('access', 'refresh')))
-      if (path.endsWith('/session')) return Promise.resolve(json({ permissions: [] }))
+      if (path.endsWith('/auth/login')) {
+        return Promise.resolve(json({
+          ...tokenBody('access', 'refresh'),
+          session: { permissions: [] },
+        }))
+      }
       return Promise.resolve(json({}, 404))
     }
     const runtime = createPortalSessionRuntime({ vault, fetchFn })

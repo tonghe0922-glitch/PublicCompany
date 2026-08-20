@@ -10,7 +10,7 @@ class P015Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P015Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P015 frozen routes', () => {
   it('binds employee center and tech pages to exact C0 coordinates', async () => {
-    const employee = routerFor(PORTALS.employee, 'p015.points.read')
+    const employee = routerFor(PORTALS.work, 'p015.points.read')
     await employee.push('/employee/08/06/04')
     expect(employee.currentRoute.value.name).toBe('p015-points-self-ledger')
 
-    const center = routerFor(PORTALS.center, 'p015.points.review')
+    const center = routerFor(PORTALS.work, 'p015.points.review')
     await center.push('/center/10/09/06')
     expect(center.currentRoute.value.name).toBe('p015-points-management')
 
@@ -38,7 +38,7 @@ describe('PHASE-11 P015 frozen routes', () => {
   })
 
   it('denies employee immutable-ledger page without read permission', async () => {
-    const router = createPortalRouter(PORTALS.employee, new P015Session(), createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, new P015Session(), createMemoryHistory())
     await router.push('/employee/08/06/04')
     expect(router.currentRoute.value.name).toBe('forbidden')
   })

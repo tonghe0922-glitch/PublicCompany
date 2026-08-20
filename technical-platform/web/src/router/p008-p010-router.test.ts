@@ -87,21 +87,21 @@ function expectDistinctComponents(
 
 describe('PHASE-10 P008-P010 source-bound routes', () => {
   it('registers all 19 employee and center business pages', async () => {
-    await expectRoutes(PORTALS.employee, 'p008.leave.read', P008_EMPLOYEE)
-    await expectRoutes(PORTALS.center, 'p008.leave.manage', P008_CENTER)
-    await expectRoutes(PORTALS.employee, 'p009.overtime.read', P009_EMPLOYEE)
-    await expectRoutes(PORTALS.center, 'p009.overtime.manage', P009_CENTER)
-    await expectRoutes(PORTALS.employee, 'p010.learning.read', P010_EMPLOYEE)
-    await expectRoutes(PORTALS.center, 'p010.learning.manage', P010_CENTER)
+    await expectRoutes(PORTALS.work, 'p008.leave.read', P008_EMPLOYEE)
+    await expectRoutes(PORTALS.work, 'p008.leave.manage', P008_CENTER)
+    await expectRoutes(PORTALS.work, 'p009.overtime.read', P009_EMPLOYEE)
+    await expectRoutes(PORTALS.work, 'p009.overtime.manage', P009_CENTER)
+    await expectRoutes(PORTALS.work, 'p010.learning.read', P010_EMPLOYEE)
+    await expectRoutes(PORTALS.work, 'p010.learning.manage', P010_CENTER)
   })
 
   it('uses a distinct component for every P008-P010 business route', () => {
-    expectDistinctComponents(PORTALS.employee, 'p008.leave.read', P008_EMPLOYEE)
-    expectDistinctComponents(PORTALS.center, 'p008.leave.manage', P008_CENTER)
-    expectDistinctComponents(PORTALS.employee, 'p009.overtime.read', P009_EMPLOYEE)
-    expectDistinctComponents(PORTALS.center, 'p009.overtime.manage', P009_CENTER)
-    expectDistinctComponents(PORTALS.employee, 'p010.learning.read', P010_EMPLOYEE)
-    expectDistinctComponents(PORTALS.center, 'p010.learning.manage', P010_CENTER)
+    expectDistinctComponents(PORTALS.work, 'p008.leave.read', P008_EMPLOYEE)
+    expectDistinctComponents(PORTALS.work, 'p008.leave.manage', P008_CENTER)
+    expectDistinctComponents(PORTALS.work, 'p009.overtime.read', P009_EMPLOYEE)
+    expectDistinctComponents(PORTALS.work, 'p009.overtime.manage', P009_CENTER)
+    expectDistinctComponents(PORTALS.work, 'p010.learning.read', P010_EMPLOYEE)
+    expectDistinctComponents(PORTALS.work, 'p010.learning.manage', P010_CENTER)
   })
 
   it('keeps technical routes monitor-only', async () => {

@@ -26,7 +26,7 @@ class FakeSession implements PortalRouterSession {
 describe('PHASE-08 portal router guard', () => {
   it('redirects an anonymous protected route to login and preserves intended path', async () => {
     const session = new FakeSession(false)
-    const router = createPortalRouter(PORTALS.employee, session, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, session, createMemoryHistory())
     await router.push('/')
     expect(router.currentRoute.value.name).toBe('login')
     expect(router.currentRoute.value.query.redirect).toBe('/')
@@ -35,7 +35,7 @@ describe('PHASE-08 portal router guard', () => {
 
   it('restores once and enters the protected shell when refresh succeeds', async () => {
     const session = new FakeSession(true)
-    const router = createPortalRouter(PORTALS.center, session, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, session, createMemoryHistory())
     await router.push('/')
     expect(router.currentRoute.value.name).toBe('portal-home')
     await router.push('/unknown')
@@ -54,7 +54,7 @@ describe('PHASE-08 portal router guard', () => {
   it('sends a route with unmet permission metadata to forbidden', async () => {
     const session = new FakeSession(true)
     session.authenticated = true
-    const router = createPortalRouter(PORTALS.employee, session, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, session, createMemoryHistory())
     router.addRoute({
       path: '/permission-test',
       name: 'permission-test',
@@ -68,14 +68,14 @@ describe('PHASE-08 portal router guard', () => {
   it('supports any-of permission metadata for shared source routes', async () => {
     const denied = new FakeSession(true)
     denied.authenticated = true
-    const deniedRouter = createPortalRouter(PORTALS.center, denied, createMemoryHistory())
+    const deniedRouter = createPortalRouter(PORTALS.work, denied, createMemoryHistory())
     await deniedRouter.push('/center/02/01/01')
     expect(deniedRouter.currentRoute.value.name).toBe('forbidden')
 
     const allowed = new FakeSession(true)
     allowed.authenticated = true
     allowed.permissions.add('p002.request.review')
-    const allowedRouter = createPortalRouter(PORTALS.center, allowed, createMemoryHistory())
+    const allowedRouter = createPortalRouter(PORTALS.work, allowed, createMemoryHistory())
     await allowedRouter.push('/center/02/01/01')
     expect(allowedRouter.currentRoute.value.name).toBe('phase09-center-inbox')
   })
@@ -85,7 +85,7 @@ describe('PHASE-09 P001 source-bound routes', () => {
   it('keeps both employee MFA and session source routes on the same server-backed page', async () => {
     const session = new FakeSession(true)
     session.authenticated = true
-    const router = createPortalRouter(PORTALS.employee, session, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, session, createMemoryHistory())
     await router.push('/employee/13/04/04')
     expect(router.currentRoute.value.name).toBe('p001-mfa')
     await router.push('/employee/13/04/06')
@@ -96,7 +96,7 @@ describe('PHASE-09 P001 source-bound routes', () => {
     const allowed = new FakeSession(true)
     allowed.authenticated = true
     allowed.permissions.add('p001.session.monitor')
-    const router = createPortalRouter(PORTALS.center, allowed, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, allowed, createMemoryHistory())
     await router.push('/center/02/01/01')
     expect(router.currentRoute.value.name).toBe('phase09-center-inbox')
   })
@@ -115,14 +115,14 @@ describe('PHASE-09 P002 source-bound routes', () => {
   it('binds both employee permission request routes and denies identities without P002 permissions', async () => {
     const denied = new FakeSession(true)
     denied.authenticated = true
-    const deniedRouter = createPortalRouter(PORTALS.employee, denied, createMemoryHistory())
+    const deniedRouter = createPortalRouter(PORTALS.work, denied, createMemoryHistory())
     await deniedRouter.push('/employee/03/07/04')
     expect(deniedRouter.currentRoute.value.name).toBe('forbidden')
 
     const allowed = new FakeSession(true)
     allowed.authenticated = true
     allowed.permissions.add('p002.request.submit')
-    const router = createPortalRouter(PORTALS.employee, allowed, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, allowed, createMemoryHistory())
     await router.push('/employee/03/07/04')
     expect(router.currentRoute.value.name).toBe('p002-temporary-permission-request')
     await router.push('/employee/03/07/05')
@@ -133,7 +133,7 @@ describe('PHASE-09 P002 source-bound routes', () => {
     const session = new FakeSession(true)
     session.authenticated = true
     session.permissions.add('p002.request.review')
-    const router = createPortalRouter(PORTALS.center, session, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, session, createMemoryHistory())
     await router.push('/center/02/01/01')
     expect(router.currentRoute.value.name).toBe('phase09-center-inbox')
   })

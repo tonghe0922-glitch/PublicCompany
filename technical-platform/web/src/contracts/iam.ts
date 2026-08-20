@@ -24,6 +24,10 @@ export interface SessionTokenResponse {
   positionId: string
 }
 
+export interface LoginBootstrapResponse extends SessionTokenResponse {
+  session: SessionView
+}
+
 export interface AvailableIdentityView {
   identityId: string
   identityType: string

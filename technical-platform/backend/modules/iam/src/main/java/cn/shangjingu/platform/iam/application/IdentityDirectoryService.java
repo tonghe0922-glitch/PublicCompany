@@ -42,11 +42,14 @@ public final class IdentityDirectoryService {
     }
 
     public List<IdentityRecord> activeIdentities(UUID tenantId, UUID userId) {
-        return tenantTransactions.required(tenantId, userId, null,
+        return tenantTransactions.required(
+                tenantId,
+                userId,
+                null,
                 () -> identities.findActiveIdentities(tenantId, userId).stream()
-                        .filter(identity -> identity.employeeId() != null && identity.orgId() != null && identity.positionId() != null)
-                        .filter(identity -> organizations.hasActiveAppointment(
-                                tenantId, identity.employeeId(), identity.orgId(), identity.positionId()))
+                        .filter(identity -> identity.employeeId() != null)
+                        .filter(identity -> identity.orgId() != null)
+                        .filter(identity -> identity.positionId() != null)
                         .toList());
     }
 
@@ -56,6 +59,14 @@ public final class IdentityDirectoryService {
                         .filter(identity -> identity.employeeId() != null && identity.orgId() != null && identity.positionId() != null)
                         .filter(identity -> organizations.hasActiveAppointment(
                                 tenantId, identity.employeeId(), identity.orgId(), identity.positionId())));
+    }
+
+    public Optional<AppointmentRecord> activeAppointment(UUID tenantId, IdentityRecord identity) {
+        return tenantTransactions.required(
+                tenantId,
+                identity.userId(),
+                identity.id(),
+                () -> matchingAppointments(tenantId, identity).stream().findFirst());
     }
 
     public Optional<AppointmentRecord> activeAppointment(UUID tenantId, UUID userId, UUID identityId) {

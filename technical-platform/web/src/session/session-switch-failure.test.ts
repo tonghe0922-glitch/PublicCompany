@@ -44,7 +44,9 @@ describe('PHASE-08 identity switch failure boundary', () => {
   it('preserves the previous valid session when the switch command itself is rejected', async () => {
     const fetchFn: typeof fetch = (input) => {
       const path = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
-      if (path.endsWith('/auth/login')) return Promise.resolve(json(tokenResponse()))
+      if (path.endsWith('/auth/login')) {
+        return Promise.resolve(json({ ...tokenResponse(), session: sessionResponse() }))
+      }
       if (path.endsWith('/session/switch')) {
         return Promise.resolve(json({ status: 403, code: 'forbidden', detail: 'denied', requestId: 'req-switch' }, 403))
       }

@@ -1,36 +1,42 @@
-import { describe, expect, it } from 'vitest'
-import appSource from '../platform/create-portal-app.ts?raw'
-import sessionHeaderSource from '../platform/PortalSessionHeader.vue?raw'
-import navigationSource from '../router/PortalNavigation.vue?raw'
-import styleEntry from '../styles.css?raw'
-import tokenSource from './tokens.css?raw'
-import shellSource from '../shared/layout/rebuild/rebuild-shell.css?raw'
+/// <reference types="node" />
 
-describe('Rebuild website design-system entry', () => {
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+
+function readSource(relativePath: string): string {
+  return readFileSync(new URL(relativePath, import.meta.url), 'utf8')
+}
+
+const createPortalAppSource = readSource('../platform/create-portal-app.ts')
+const styleEntry = readSource('../styles.css')
+const tokenSource = readSource('./tokens.css')
+const shellSource = readSource('../shared/layout/rebuild/rebuild-shell.css')
+const navigationSource = readSource('../router/PortalNavigation.vue')
+const sessionHeaderSource = readSource('../platform/PortalSessionHeader.vue')
+
+describe('current two-port design-system entry', () => {
   it('loads the global style entry for every portal application', () => {
-    expect(appSource).toContain("import '../styles.css'")
+    expect(createPortalAppSource).toContain("import '../styles.css'")
   })
 
-  it('loads the complete design system and the rebuilt shell in deterministic order', () => {
+  it('loads canonical design layers and the rebuilt shell in deterministic order', () => {
     const expectedImports = [
       './design-system/tokens.css',
       './design-system/base.css',
       './design-system/components.css',
       './design-system/templates.css',
       './design-system/extended.css',
-      './platform/phase10/phase10.css',
       './shared/layout/rebuild/rebuild-shell.css',
-      './design-system/reference-theme.css',
     ]
     let previousIndex = -1
     for (const path of expectedImports) {
       const currentIndex = styleEntry.indexOf(path)
-      expect(currentIndex).toBeGreaterThan(previousIndex)
+      expect(currentIndex, `${path} must be imported`).toBeGreaterThan(previousIndex)
       previousIndex = currentIndex
     }
   })
 
-  it('uses the latest warm amber-orange reference instead of the old indigo token set', () => {
+  it('uses the approved warm amber-orange reference instead of the old indigo token set', () => {
     expect(tokenSource).toContain('--sgj-brand-600: #ea580c')
     expect(tokenSource).toContain('--sgj-canvas: #f4f4f7')
     expect(tokenSource).not.toContain('#4f46e5')
@@ -42,10 +48,13 @@ describe('Rebuild website design-system entry', () => {
     expect(shellSource).toContain('.rebuild-shell__bottom-nav')
   })
 
-  it('replaces the old navigation and session header visuals in the components themselves', () => {
-    expect(navigationSource).toContain('portal-navigation__icon')
-    expect(navigationSource).toContain('linear-gradient(135deg, var(--sgj-brand-500), var(--sgj-brand-600))')
+  it('keeps navigation active-state and session identity visuals inside their components', () => {
+    expect(navigationSource).toContain("import NavigationIcon from './NavigationIcon.vue'")
+    expect(navigationSource).toContain('.portal-navigation :deep(svg)')
+    expect(navigationSource).toContain('.portal-navigation__child-link.is-active')
     expect(sessionHeaderSource).toContain('portal-session-header__avatar')
-    expect(sessionHeaderSource).not.toContain('SgjStatusChip')
+    expect(sessionHeaderSource).toContain(
+      'linear-gradient(135deg, var(--sgj-brand-400), var(--sgj-brand-600))',
+    )
   })
 })

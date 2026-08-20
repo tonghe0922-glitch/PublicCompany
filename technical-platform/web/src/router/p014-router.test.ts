@@ -10,7 +10,7 @@ class P014Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P014Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P014 frozen routes', () => {
   it('binds employee center and tech pages to exact C0 coordinates', async () => {
-    const employee = routerFor(PORTALS.employee, 'p014.discipline.appeal')
+    const employee = routerFor(PORTALS.work, 'p014.discipline.appeal')
     await employee.push('/employee/02/03/09')
     expect(employee.currentRoute.value.name).toBe('p014-discipline-self-service')
 
-    const center = routerFor(PORTALS.center, 'p014.discipline.investigate')
+    const center = routerFor(PORTALS.work, 'p014.discipline.investigate')
     await center.push('/center/12/02/04')
     expect(center.currentRoute.value.name).toBe('p014-discipline-management')
 
@@ -38,7 +38,7 @@ describe('PHASE-11 P014 frozen routes', () => {
   })
 
   it('denies employee discipline page without self-case read or appeal permission', async () => {
-    const router = createPortalRouter(PORTALS.employee, new P014Session(), createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, new P014Session(), createMemoryHistory())
     await router.push('/employee/02/03/09')
     expect(router.currentRoute.value.name).toBe('forbidden')
   })

@@ -11,7 +11,7 @@ class AuthenticatedSession implements PortalRouterSession {
 
 describe('navigation developing route', () => {
   it('keeps the placeholder inside the authenticated portal shell without a fake business permission', async () => {
-    const router = createPortalRouter(PORTALS.employee, new AuthenticatedSession(), createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, new AuthenticatedSession(), createMemoryHistory())
     await router.push('/developing?module=shows-program&label=节目单&group=演出节目')
     expect(router.currentRoute.value.name).toBe('navigation-developing')
     expect(router.currentRoute.value.query.module).toBe('shows-program')

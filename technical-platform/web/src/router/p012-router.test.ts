@@ -10,7 +10,7 @@ class P012Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P012Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P012 frozen routes', () => {
   it('binds employee, center and tech routes to dedicated P012 pages', async () => {
-    const employee = routerFor(PORTALS.employee, 'p012.promotion.read')
+    const employee = routerFor(PORTALS.work, 'p012.promotion.read')
     await employee.push('/employee/03/03/05')
     expect(employee.currentRoute.value.name).toBe('p012-promotion-self')
 
-    const center = routerFor(PORTALS.center, 'p012.promotion.review')
+    const center = routerFor(PORTALS.work, 'p012.promotion.review')
     await center.push('/center/10/06/01')
     expect(center.currentRoute.value.name).toBe('p012-promotion-management')
 

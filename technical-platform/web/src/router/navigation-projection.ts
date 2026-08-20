@@ -1,40 +1,209 @@
-import { RUNTIME_OF, type BusinessPortalCode, type RuntimePortalCode } from '../platform/portal-config'
-import { NAVIGATION_CATALOG, type NavigationCatalogChild, type NavigationCatalogSection, type NavigationIconKey } from './navigation-catalog'
-import type { NavigationSourceEntry } from './navigation-source'
+import type { RuntimePortCode } from '../platform/portal-config'
+import {
+  NAVIGATION_CATALOG,
+  type NavigationCatalogItem,
+  type NavigationCatalogSection,
+  type NavigationIconKey,
+} from './navigation-catalog'
 
-export interface ActiveNavigationItem { sourceKey:string; label:string; routeName:string|null; routePath:string; limited:boolean }
-export interface TaxonomyItem { label:string; sourceCount:number }
-export interface NavigationProjectionOptions { runtimeCode:RuntimePortalCode; permissions:ReadonlySet<string>; implementedRoutePaths:ReadonlySet<string>; mobile:boolean }
-export interface MobileNavigationGroups { primary:readonly ActiveNavigationItem[]; overflow:readonly ActiveNavigationItem[] }
-export type ProjectedNavigationState='implemented'|'developing'|'unauthorized'
-export interface NavigationRouteAccessRule { readonly all?:readonly string[]; readonly any?:readonly string[] }
-export interface ProjectedNavigationItem { readonly key:string; readonly label:string; readonly groupKey:string; readonly groupLabel:string; readonly routePath:string; readonly sourceRoutePath:string|null; readonly sourceKey:string|null; readonly routeName:string|null; readonly state:ProjectedNavigationState; readonly limited:boolean; readonly permissionCodes:readonly string[]; readonly dataScope:string|null }
-export interface ProjectedNavigationGroup { readonly key:string; readonly label:string; readonly iconKey:NavigationIconKey; readonly items:readonly ProjectedNavigationItem[]; readonly state:ProjectedNavigationState; readonly mobileAccess:'primary'|'more'; readonly centerScoped:boolean; readonly contextLabel:string|null }
-export interface FullNavigationProjectionOptions extends NavigationProjectionOptions { readonly routeAccessRules?:ReadonlyMap<string,NavigationRouteAccessRule>; readonly identityLabel?:string|null; readonly catalog?:readonly NavigationCatalogSection[] }
-export interface ProjectedMobileNavigationGroups { readonly primary:readonly ProjectedNavigationGroup[]; readonly overflow:readonly ProjectedNavigationGroup[] }
+export type ProjectedNavigationState = 'implemented' | 'developing' | 'unauthorized'
 
-function permissionsSatisfied(required:readonly string[],granted:ReadonlySet<string>){return required.every(p=>granted.has(p))}
-function routeAccessSatisfied(rule:NavigationRouteAccessRule|undefined,fallback:readonly string[],granted:ReadonlySet<string>){if(rule?.all?.length&&!rule.all.every(p=>granted.has(p)))return false;if(rule?.any?.length&&!rule.any.some(p=>granted.has(p)))return false;if(rule?.all?.length||rule?.any?.length)return true;return permissionsSatisfied(fallback,granted)}
-function availableOnDevice(entry:NavigationSourceEntry,mobile:boolean){return !mobile||entry.mobileAccess!=='no'}
-function isActiveEntry(entry:NavigationSourceEntry,options:NavigationProjectionOptions):entry is NavigationSourceEntry&{routePath:string}{return RUNTIME_OF[entry.portalCode as BusinessPortalCode]===options.runtimeCode&&typeof entry.routePath==='string'&&entry.routePath.startsWith('/')&&options.implementedRoutePaths.has(entry.routePath)&&availableOnDevice(entry,options.mobile)&&permissionsSatisfied(entry.permissionCodes,options.permissions)}
-export function projectActiveNavigation(entries:readonly NavigationSourceEntry[],options:NavigationProjectionOptions):ActiveNavigationItem[]{return entries.filter(e=>isActiveEntry(e,options)).map(e=>({sourceKey:e.sourceKey,label:e.label,routeName:e.routeName,routePath:e.routePath,limited:options.mobile&&e.mobileAccess==='limited'})).sort((a,b)=>a.label.localeCompare(b.label,'zh-CN'))}
-export function splitMobileNavigation(items:readonly ActiveNavigationItem[],primaryLimit=3):MobileNavigationGroups{const limit=Math.max(0,Math.trunc(primaryLimit));return{primary:items.slice(0,limit),overflow:items.slice(limit)}}
-export function projectPortalTaxonomy(entries:readonly NavigationSourceEntry[],runtimeCode:RuntimePortalCode):TaxonomyItem[]{const counts=new Map<string,number>();for(const e of entries){if(RUNTIME_OF[e.portalCode as BusinessPortalCode]!==runtimeCode)continue;counts.set(e.level1,(counts.get(e.level1)??0)+1)}return Array.from(counts.entries()).map(([label,sourceCount])=>({label,sourceCount})).sort((a,b)=>a.label.localeCompare(b.label,'zh-CN'))}
-function normalize(value:string|null|undefined){return(value??'').toLocaleLowerCase('zh-CN').replace(/[\s·/\\_—–（）()【】\[\]：:，,。.\-]/g,'')}
-function terms(label:string,aliases:readonly string[]|undefined){return[label,...(aliases??[])].map(normalize).filter(Boolean)}
-function scoreTerm(value:string,candidates:readonly string[]){if(!value)return 0;let score=0;for(const c of candidates){if(value===c)score=Math.max(score,100);else if(value.includes(c)||c.includes(value))score=Math.max(score,55)}return score}
-function scoreEntry(entry:NavigationSourceEntry,section:NavigationCatalogSection,child?:NavigationCatalogChild){const st=terms(section.label,section.aliases);const ct=child?terms(child.label,child.aliases):st;const sectionScore=scoreTerm(normalize(entry.level1),st);const childScore=scoreTerm(normalize(entry.level2),ct)*2+scoreTerm(normalize(entry.label),ct)*3+scoreTerm(normalize(entry.routeName),ct)+scoreTerm(normalize(entry.sourceKey),ct);if(child&&childScore===0)return 0;return sectionScore+childScore+(child&&sectionScore>0?40:0)}
-function bestSourceEntry(entries:readonly NavigationSourceEntry[],section:NavigationCatalogSection,child?:NavigationCatalogChild){return entries.map(entry=>({entry,score:scoreEntry(entry,section,child)})).filter(c=>c.score>0).sort((a,b)=>{const ar=a.entry.routePath?1:0,br=b.entry.routePath?1:0;return br-ar||b.score-a.score})[0]?.entry}
-function genericTarget(state:Exclude<ProjectedNavigationState,'implemented'>,key:string,label:string,groupLabel:string){const path=state==='unauthorized'?'/forbidden':'/developing';return`${path}?${new URLSearchParams({module:key,label,group:groupLabel}).toString()}`}
-function homeItem(section:NavigationCatalogSection,key:string,label:string):ProjectedNavigationItem{return{key,label,groupKey:section.key,groupLabel:section.label,routePath:'/',sourceRoutePath:'/',sourceKey:'portal-home',routeName:'portal-home',state:'implemented',limited:false,permissionCodes:[],dataScope:null}}
-function developingItem(section:NavigationCatalogSection,key:string,label:string,source:NavigationSourceEntry|undefined,mobile:boolean):ProjectedNavigationItem{return{key,label,groupKey:section.key,groupLabel:section.label,routePath:genericTarget('developing',key,label,section.label),sourceRoutePath:null,sourceKey:source?.sourceKey??null,routeName:source?.routeName??null,state:'developing',limited:mobile&&source?.mobileAccess==='limited',permissionCodes:source?.permissionCodes??[],dataScope:source?.dataScope??null}}
-function routedItem(section:NavigationCatalogSection,key:string,label:string,source:NavigationSourceEntry&{routePath:string},options:FullNavigationProjectionOptions):ProjectedNavigationItem{const allowed=routeAccessSatisfied(options.routeAccessRules?.get(source.routePath),source.permissionCodes,options.permissions);return{key,label,groupKey:section.key,groupLabel:section.label,routePath:allowed?source.routePath:genericTarget('unauthorized',key,label,section.label),sourceRoutePath:source.routePath,sourceKey:source.sourceKey,routeName:source.routeName,state:allowed?'implemented':'unauthorized',limited:options.mobile&&source.mobileAccess==='limited',permissionCodes:source.permissionCodes,dataScope:source.dataScope}}
-function projectLeaf(section:NavigationCatalogSection,child:NavigationCatalogChild|undefined,sourceEntries:readonly NavigationSourceEntry[],options:FullNavigationProjectionOptions):ProjectedNavigationItem{const key=child?.key??section.key,label=child?.label??section.label;if(section.key==='home'&&options.implementedRoutePaths.has('/'))return homeItem(section,key,label);const source=bestSourceEntry(sourceEntries,section,child),routePath=source?.routePath;const hasRealRoute=typeof routePath==='string'&&options.implementedRoutePaths.has(routePath);if(!hasRealRoute||typeof routePath!=='string')return developingItem(section,key,label,source,options.mobile);return routedItem(section,key,label,{...source,routePath},options)}
-function groupState(items:readonly ProjectedNavigationItem[]):ProjectedNavigationState{if(items.some(i=>i.state==='implemented'))return'implemented';if(items.some(i=>i.state==='unauthorized'))return'unauthorized';return'developing'}
-export function projectNavigationGroups(entries:readonly NavigationSourceEntry[],options:FullNavigationProjectionOptions):ProjectedNavigationGroup[]{const portalEntries=entries.filter(e=>RUNTIME_OF[e.portalCode as BusinessPortalCode]===options.runtimeCode);return(options.catalog??NAVIGATION_CATALOG).filter(s=>!s.portalCodes?.length||s.portalCodes.includes(options.runtimeCode)).map(section=>{const items=section.children?.length?section.children.map(c=>projectLeaf(section,c,portalEntries,options)):[projectLeaf(section,undefined,portalEntries,options)];return{key:section.key,label:section.label,iconKey:section.iconKey,items,state:groupState(items),mobileAccess:section.mobileAccess,centerScoped:Boolean(section.centerScoped),contextLabel:section.centerScoped?options.identityLabel?.trim()||null:null}})}
-export function flattenProjectedNavigation(groups:readonly ProjectedNavigationGroup[]){return groups.flatMap(g=>g.items)}
-export function pathMatchesNavigationItem(currentPath:string,routePath:string){if(routePath==='/')return currentPath==='/';return currentPath===routePath||currentPath.startsWith(`${routePath}/`)}
-export function projectedItemIsActive(currentPath:string,currentModule:unknown,item:ProjectedNavigationItem){if(item.state==='implemented'&&item.sourceRoutePath)return pathMatchesNavigationItem(currentPath,item.sourceRoutePath);return(currentPath==='/developing'||currentPath==='/forbidden')&&currentModule===item.key}
-export function resolveActiveItem(groups:readonly ProjectedNavigationGroup[],currentPath:string,currentModule?:unknown){return flattenProjectedNavigation(groups).filter(i=>projectedItemIsActive(currentPath,currentModule,i)).sort((a,b)=>(b.sourceRoutePath?.length??0)-(a.sourceRoutePath?.length??0))[0]}
-export function resolveActiveGroup(groups:readonly ProjectedNavigationGroup[],currentPath:string,currentModule?:unknown){const active=resolveActiveItem(groups,currentPath,currentModule);return active?groups.find(g=>g.key===active.groupKey):undefined}
-export function splitProjectedMobileNavigation(groups:readonly ProjectedNavigationGroup[],primaryLimit=4):ProjectedMobileNavigationGroups{const preferred=groups.filter(g=>g.mobileAccess==='primary');const primary=preferred.slice(0,Math.max(0,Math.trunc(primaryLimit)));const keys=new Set(primary.map(g=>g.key));return{primary,overflow:groups.filter(g=>!keys.has(g.key))}}
+export interface NavigationRouteAccessRule {
+  readonly all?: readonly string[]
+  readonly any?: readonly string[]
+}
+
+export interface NavigationProjectionOptions {
+  readonly runtimeCode: RuntimePortCode
+  readonly permissions: ReadonlySet<string>
+  readonly implementedRoutePaths: ReadonlySet<string>
+  readonly routeAccessRules?: ReadonlyMap<string, NavigationRouteAccessRule>
+  readonly mobile: boolean
+  readonly identityLabel?: string | null
+  readonly catalog?: readonly NavigationCatalogSection[]
+}
+
+export interface ActiveNavigationItem {
+  readonly sourceKey: string
+  readonly label: string
+  readonly routePath: string
+  readonly limited: boolean
+}
+
+export interface ProjectedNavigationItem {
+  readonly key: string
+  readonly label: string
+  readonly groupKey: string
+  readonly groupLabel: string
+  readonly routePath: string
+  readonly sourceRoutePath: string | null
+  readonly state: ProjectedNavigationState
+  readonly limited: boolean
+}
+
+export interface ProjectedNavigationGroup {
+  readonly key: string
+  readonly label: string
+  readonly iconKey: NavigationIconKey
+  readonly items: readonly ProjectedNavigationItem[]
+  readonly state: ProjectedNavigationState
+  readonly mobileAccess: 'primary' | 'more'
+  readonly centerScoped: boolean
+  readonly contextLabel: string | null
+}
+
+export interface ProjectedMobileNavigationGroups {
+  readonly primary: readonly ProjectedNavigationGroup[]
+  readonly overflow: readonly ProjectedNavigationGroup[]
+}
+
+function routeAccessSatisfied(
+  rule: NavigationRouteAccessRule | undefined,
+  granted: ReadonlySet<string>,
+): boolean {
+  if (rule?.all?.length && !rule.all.every((permission) => granted.has(permission))) return false
+  if (rule?.any?.length && !rule.any.some((permission) => granted.has(permission))) return false
+  return true
+}
+
+function placeholderPath(
+  state: Exclude<ProjectedNavigationState, 'implemented'>,
+  item: NavigationCatalogItem,
+  section: NavigationCatalogSection,
+): string {
+  const path = state === 'unauthorized' ? '/forbidden' : '/developing'
+  const query = new URLSearchParams({
+    module: item.key,
+    label: item.label,
+    group: section.label,
+  })
+  return `${path}?${query.toString()}`
+}
+
+function itemState(
+  routePath: string | undefined,
+  options: NavigationProjectionOptions,
+): ProjectedNavigationState {
+  if (!routePath || !options.implementedRoutePaths.has(routePath)) return 'developing'
+  const rule = options.routeAccessRules?.get(routePath)
+  return routeAccessSatisfied(rule, options.permissions) ? 'implemented' : 'unauthorized'
+}
+
+function projectItem(
+  item: NavigationCatalogItem,
+  section: NavigationCatalogSection,
+  options: NavigationProjectionOptions,
+): ProjectedNavigationItem {
+  const state = itemState(item.routePath, options)
+  const sourceRoutePath = state === 'developing' ? null : item.routePath ?? null
+  return {
+    key: item.key,
+    label: item.label,
+    groupKey: section.key,
+    groupLabel: section.label,
+    routePath: state === 'implemented'
+      ? item.routePath ?? '/'
+      : placeholderPath(state, item, section),
+    sourceRoutePath,
+    state,
+    limited: options.mobile && section.mobileAccess === 'more',
+  }
+}
+
+function groupState(items: readonly ProjectedNavigationItem[]): ProjectedNavigationState {
+  if (items.some((item) => item.state === 'implemented')) return 'implemented'
+  if (items.some((item) => item.state === 'unauthorized')) return 'unauthorized'
+  return 'developing'
+}
+
+function projectSection(
+  section: NavigationCatalogSection,
+  options: NavigationProjectionOptions,
+): ProjectedNavigationGroup {
+  const sourceItems = section.children?.length ? section.children : [section]
+  const items = sourceItems.map((item) => projectItem(item, section, options))
+  return {
+    key: section.key,
+    label: section.label,
+    iconKey: section.iconKey,
+    items,
+    state: groupState(items),
+    mobileAccess: section.mobileAccess,
+    centerScoped: Boolean(section.centerScoped),
+    contextLabel: section.centerScoped ? options.identityLabel?.trim() || null : null,
+  }
+}
+
+export function projectNavigationGroups(
+  options: NavigationProjectionOptions,
+): ProjectedNavigationGroup[] {
+  const catalog = options.catalog ?? NAVIGATION_CATALOG
+  return catalog
+    .filter((section) => section.ports.includes(options.runtimeCode))
+    .map((section) => projectSection(section, options))
+}
+
+export function flattenProjectedNavigation(
+  groups: readonly ProjectedNavigationGroup[],
+): ProjectedNavigationItem[] {
+  return groups.flatMap((group) => group.items)
+}
+
+export function projectActiveNavigation(
+  options: NavigationProjectionOptions,
+): ActiveNavigationItem[] {
+  return flattenProjectedNavigation(projectNavigationGroups(options))
+    .filter((item) => item.state === 'implemented')
+    .map((item) => ({
+      sourceKey: item.key,
+      label: item.label,
+      routePath: item.routePath,
+      limited: item.limited,
+    }))
+}
+
+export function pathMatchesNavigationItem(currentPath: string, routePath: string): boolean {
+  if (routePath === '/') return currentPath === '/'
+  return currentPath === routePath || currentPath.startsWith(`${routePath}/`)
+}
+
+export function projectedItemIsActive(
+  currentPath: string,
+  currentModule: unknown,
+  item: ProjectedNavigationItem,
+): boolean {
+  if (item.state === 'implemented' && item.sourceRoutePath) {
+    return pathMatchesNavigationItem(currentPath, item.sourceRoutePath)
+  }
+  const placeholder = currentPath === '/developing' || currentPath === '/forbidden'
+  return placeholder && currentModule === item.key
+}
+
+export function resolveActiveItem(
+  groups: readonly ProjectedNavigationGroup[],
+  currentPath: string,
+  currentModule?: unknown,
+): ProjectedNavigationItem | undefined {
+  return flattenProjectedNavigation(groups)
+    .filter((item) => projectedItemIsActive(currentPath, currentModule, item))
+    .sort((left, right) => (right.sourceRoutePath?.length ?? 0) - (left.sourceRoutePath?.length ?? 0))[0]
+}
+
+export function resolveActiveGroup(
+  groups: readonly ProjectedNavigationGroup[],
+  currentPath: string,
+  currentModule?: unknown,
+): ProjectedNavigationGroup | undefined {
+  const active = resolveActiveItem(groups, currentPath, currentModule)
+  return active ? groups.find((group) => group.key === active.groupKey) : undefined
+}
+
+export function splitProjectedMobileNavigation(
+  groups: readonly ProjectedNavigationGroup[],
+  primaryLimit = 4,
+): ProjectedMobileNavigationGroups {
+  const preferred = groups.filter((group) => group.mobileAccess === 'primary')
+  const primary = preferred.slice(0, Math.max(0, Math.trunc(primaryLimit)))
+  const primaryKeys = new Set(primary.map((group) => group.key))
+  return { primary, overflow: groups.filter((group) => !primaryKeys.has(group.key)) }
+}

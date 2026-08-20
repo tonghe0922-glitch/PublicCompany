@@ -13,13 +13,13 @@ class P005Session implements PortalRouterSession {
 describe('PHASE-09 P005 source-bound routes', () => {
   it('binds the frozen employee receipt route to P005 receipt permissions', async () => {
     const denied = new P005Session()
-    const deniedRouter = createPortalRouter(PORTALS.employee, denied, createMemoryHistory())
+    const deniedRouter = createPortalRouter(PORTALS.work, denied, createMemoryHistory())
     await deniedRouter.push('/employee/13/01/05')
     expect(deniedRouter.currentRoute.value.name).toBe('forbidden')
 
     const allowed = new P005Session()
     allowed.permissions.add('p005.notice.receipt')
-    const router = createPortalRouter(PORTALS.employee, allowed, createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, allowed, createMemoryHistory())
     await router.push('/employee/13/01/05')
     expect(router.currentRoute.value.name).toBe('p005-notice-receipt')
   })
@@ -27,13 +27,13 @@ describe('PHASE-09 P005 source-bound routes', () => {
   it('binds the frozen center publish route to publish or manage capability', async () => {
     const publisher = new P005Session()
     publisher.permissions.add('p005.notice.publish')
-    const publishRouter = createPortalRouter(PORTALS.center, publisher, createMemoryHistory())
+    const publishRouter = createPortalRouter(PORTALS.work, publisher, createMemoryHistory())
     await publishRouter.push('/center/13/01/05')
     expect(publishRouter.currentRoute.value.name).toBe('p005-notice-publish')
 
     const manager = new P005Session()
     manager.permissions.add('p005.notice.manage')
-    const manageRouter = createPortalRouter(PORTALS.center, manager, createMemoryHistory())
+    const manageRouter = createPortalRouter(PORTALS.work, manager, createMemoryHistory())
     await manageRouter.push('/center/13/01/05')
     expect(manageRouter.currentRoute.value.name).toBe('p005-notice-publish')
   })

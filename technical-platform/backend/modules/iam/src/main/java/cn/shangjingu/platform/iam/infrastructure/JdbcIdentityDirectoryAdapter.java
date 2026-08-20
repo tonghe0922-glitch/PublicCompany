@@ -49,11 +49,23 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
         return jdbc.query("""
                 select id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,
                        is_primary,effective_start_at,effective_end_at
-                from iam.user_identity
-                where tenant_id=? and user_id=? and not is_deleted
-                  and effective_start_at <= now()
-                  and (effective_end_at is null or effective_end_at > now())
-                order by is_primary desc,effective_start_at,id
+                from iam.user_identity ui
+                where ui.tenant_id=? and ui.user_id=? and not ui.is_deleted
+                  and ui.effective_start_at <= now()
+                  and (ui.effective_end_at is null or ui.effective_end_at > now())
+                  and exists (
+                    select 1
+                    from org.employee_position ep
+                    where ep.tenant_id=ui.tenant_id
+                      and ep.employee_id=ui.employee_id
+                      and ep.org_id=ui.org_id
+                      and ep.position_id=ui.position_id
+                      and not ep.is_deleted
+                      and ep.status='ACTIVE'
+                      and ep.effective_start_date <= current_date
+                      and (ep.effective_end_date is null or ep.effective_end_date >= current_date)
+                  )
+                order by ui.is_primary desc,ui.effective_start_at,ui.id
                 """, (rs, n) -> identity(rs), tenantId, userId);
     }
 
@@ -62,10 +74,22 @@ public class JdbcIdentityDirectoryAdapter implements IdentityDirectoryPort {
         return jdbc.query("""
                 select id,tenant_id,user_id,employee_id,identity_type,identity_name,org_id,position_id,
                        is_primary,effective_start_at,effective_end_at
-                from iam.user_identity
-                where tenant_id=? and user_id=? and id=? and not is_deleted
-                  and effective_start_at <= now()
-                  and (effective_end_at is null or effective_end_at > now())
+                from iam.user_identity ui
+                where ui.tenant_id=? and ui.user_id=? and ui.id=? and not ui.is_deleted
+                  and ui.effective_start_at <= now()
+                  and (ui.effective_end_at is null or ui.effective_end_at > now())
+                  and exists (
+                    select 1
+                    from org.employee_position ep
+                    where ep.tenant_id=ui.tenant_id
+                      and ep.employee_id=ui.employee_id
+                      and ep.org_id=ui.org_id
+                      and ep.position_id=ui.position_id
+                      and not ep.is_deleted
+                      and ep.status='ACTIVE'
+                      and ep.effective_start_date <= current_date
+                      and (ep.effective_end_date is null or ep.effective_end_date >= current_date)
+                  )
                 """, (rs, n) -> identity(rs), tenantId, userId, identityId).stream().findFirst();
     }
 

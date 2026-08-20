@@ -10,7 +10,7 @@ class P016Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P016Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P016 frozen routes', () => {
   it('binds employee center and tech pages to exact C0 coordinates', async () => {
-    const employee = routerFor(PORTALS.employee, 'p016.care.confirm')
+    const employee = routerFor(PORTALS.work, 'p016.care.confirm')
     await employee.push('/employee/03/06/05')
     expect(employee.currentRoute.value.name).toBe('p016-care-self-service')
 
-    const center = routerFor(PORTALS.center, 'p016.care.review')
+    const center = routerFor(PORTALS.work, 'p016.care.review')
     await center.push('/center/06/03/09')
     expect(center.currentRoute.value.name).toBe('p016-care-management')
 
@@ -32,7 +32,7 @@ describe('PHASE-11 P016 frozen routes', () => {
   })
 
   it('allows employee application page with create permission only', async () => {
-    const employee = routerFor(PORTALS.employee, 'p016.care.create')
+    const employee = routerFor(PORTALS.work, 'p016.care.create')
     await employee.push('/employee/03/06/05')
     expect(employee.currentRoute.value.name).toBe('p016-care-self-service')
   })
@@ -44,7 +44,7 @@ describe('PHASE-11 P016 frozen routes', () => {
   })
 
   it('denies employee welfare page without any frozen P016 permission', async () => {
-    const router = createPortalRouter(PORTALS.employee, new P016Session(), createMemoryHistory())
+    const router = createPortalRouter(PORTALS.work, new P016Session(), createMemoryHistory())
     await router.push('/employee/03/06/05')
     expect(router.currentRoute.value.name).toBe('forbidden')
   })

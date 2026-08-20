@@ -81,8 +81,8 @@ class DefaultPortalSessionRuntime implements PortalSessionRuntime {
     this.currentSession = null
     this.setPhase('authenticating')
     try {
-      const tokens = await this.iam.login(request)
-      return await this.establish(tokens, true)
+      const bootstrap = await this.iam.login(request)
+      return await this.establish(bootstrap, true, bootstrap.session)
     } catch (cause) {
       this.fail(cause, true)
       throw sessionError(cause)
@@ -161,10 +161,14 @@ class DefaultPortalSessionRuntime implements PortalSessionRuntime {
     }
   }
 
-  private async establish(tokens: SessionTokenResponse, clearOnFailure: boolean): Promise<SessionView> {
+  private async establish(
+    tokens: SessionTokenResponse,
+    clearOnFailure: boolean,
+    bootstrapSession?: SessionView,
+  ): Promise<SessionView> {
     this.vault.setTokens(tokens)
     try {
-      const session = await this.iam.current()
+      const session = bootstrapSession ?? await this.iam.current()
       this.currentSession = session
       this.lastError = null
       this.phase = 'authenticated'

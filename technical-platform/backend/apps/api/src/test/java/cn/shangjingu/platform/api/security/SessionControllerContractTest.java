@@ -49,13 +49,14 @@ class SessionControllerContractTest {
                 identity(IDENTITY_B, ORG_B, POSITION_B, false, "Secondary identity"),
                 identity(IDENTITY_A, ORG_A, POSITION_A, true, "Primary identity")));
 
-        SessionController controller = new SessionController(sessions, identities, audit);
-        SessionController.SessionView view = controller.current(principal);
+        SessionViewFactory sessionViews = new SessionViewFactory(identities);
+        SessionController controller = new SessionController(sessions, sessionViews, audit);
+        SessionViewResponse view = controller.current(principal);
 
         assertEquals(IDENTITY_A, view.identityId());
         assertEquals(List.of("platform.session.read", "platform.session.switch"), view.permissions());
         assertEquals(List.of(IDENTITY_A, IDENTITY_B), view.availableIdentities().stream()
-                .map(SessionController.AvailableIdentityView::identityId)
+                .map(SessionViewResponse.AvailableIdentityView::identityId)
                 .toList());
         assertEquals("Primary identity", view.availableIdentities().getFirst().identityName());
         assertTrue(view.availableIdentities().getFirst().primary());

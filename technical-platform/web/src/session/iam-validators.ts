@@ -1,5 +1,6 @@
 import type {
   AvailableIdentityView,
+  LoginBootstrapResponse,
   SessionTokenResponse,
   SessionView,
 } from '../contracts'
@@ -81,5 +82,13 @@ export function parseSessionView(value: unknown): SessionView {
     positionId: requiredString(record, 'positionId'),
     permissions: stringArray(record, 'permissions'),
     availableIdentities: candidates.map(identity),
+  }
+}
+
+export function parseLoginBootstrapResponse(value: unknown): LoginBootstrapResponse {
+  const record = recordOf(value, 'login bootstrap')
+  return {
+    ...parseSessionTokenResponse(record),
+    session: parseSessionView(record.session),
   }
 }

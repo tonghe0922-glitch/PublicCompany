@@ -86,3 +86,38 @@ async function submit(): Promise<void> {
     </div>
   </SgjPortalShell>
 </template>
+
+
+<style scoped>
+.platform-login-layout {
+  width: min(440px, calc(100% - 32px));
+  display: grid;
+  gap: var(--sgj-space-4);
+  margin: clamp(16px, 5vh, 64px) auto 0;
+}
+
+.platform-login-layout :deep(.sgj-card) {
+  width: 100%;
+}
+
+.platform-login-layout :deep(.sgj-card__header),
+.platform-login-layout :deep(.sgj-card__body) {
+  padding-inline: clamp(20px, 5vw, 32px);
+}
+
+.platform-login-layout :deep(.sgj-card__header p) {
+  margin: var(--sgj-space-2) 0 0;
+}
+
+.platform-login-form {
+  display: grid;
+  gap: var(--sgj-space-4);
+}
+
+@media (max-width: 480px) {
+  .platform-login-layout {
+    width: calc(100% - 32px);
+    margin-top: 16px;
+  }
+}
+</style>

@@ -14,13 +14,13 @@ describe('PHASE-10 P006 source-bound routes', () => {
   it('binds both frozen employee meeting/action routes', async () => {
     for (const path of ['/employee/05/01/03', '/employee/05/07/02']) {
       const denied = new P006Session()
-      const deniedRouter = createPortalRouter(PORTALS.employee, denied, createMemoryHistory())
+      const deniedRouter = createPortalRouter(PORTALS.work, denied, createMemoryHistory())
       await deniedRouter.push(path)
       expect(deniedRouter.currentRoute.value.name).toBe('forbidden')
 
       const allowed = new P006Session()
       allowed.permissions.add('p006.meeting.action')
-      const router = createPortalRouter(PORTALS.employee, allowed, createMemoryHistory())
+      const router = createPortalRouter(PORTALS.work, allowed, createMemoryHistory())
       await router.push(path)
       expect(['p006-meeting-detail', 'p006-action-items']).toContain(router.currentRoute.value.name)
     }
@@ -29,13 +29,13 @@ describe('PHASE-10 P006 source-bound routes', () => {
   it('binds both frozen center routes to P006 management capabilities', async () => {
     const creator = new P006Session()
     creator.permissions.add('p006.meeting.create')
-    const managementRouter = createPortalRouter(PORTALS.center, creator, createMemoryHistory())
+    const managementRouter = createPortalRouter(PORTALS.work, creator, createMemoryHistory())
     await managementRouter.push('/center/06/09/03')
     expect(managementRouter.currentRoute.value.name).toBe('p006-meeting-management')
 
     const manager = new P006Session()
     manager.permissions.add('p006.meeting.manage')
-    const ledgerRouter = createPortalRouter(PORTALS.center, manager, createMemoryHistory())
+    const ledgerRouter = createPortalRouter(PORTALS.work, manager, createMemoryHistory())
     await ledgerRouter.push('/center/05/02/02')
     expect(ledgerRouter.currentRoute.value.name).toBe('p006-action-ledger')
   })

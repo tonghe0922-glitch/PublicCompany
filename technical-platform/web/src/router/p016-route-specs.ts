@@ -5,14 +5,14 @@ import type { PortalRouteSpec } from './portal-route-specs'
 
 export const P016_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
-    portal: 'employee',
+    audience: 'self',
     path: '/employee/03/06/05',
     name: 'p016-care-self-service',
     component: P016EmployeePage,
     permissionsAny: ['p016.care.create', 'p016.care.read', 'p016.care.confirm'],
   },
   {
-    portal: 'center',
+    audience: 'center',
     path: '/center/06/03/09',
     name: 'p016-care-management',
     component: P016CenterPage,
@@ -25,7 +25,7 @@ export const P016_ROUTE_SPECS: readonly PortalRouteSpec[] = [
     ],
   },
   {
-    portal: 'tech',
+    audience: 'tech',
     path: '/tech/01/11/04',
     name: 'p016-care-monitor',
     component: P016TechPage,

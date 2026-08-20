@@ -1,34 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import { PORTALS, PORTAL_RUNTIME_ALIASES } from './portal-config'
+import { PORTALS } from './portal-config'
 
 describe('portal definitions', () => {
-  it('uses exactly the three canonical portal codes', () => {
-    expect(Object.keys(PORTALS).sort()).toEqual(['center', 'employee', 'tech'])
+  it('defines exactly the work and tech ports', () => {
+    expect(Object.keys(PORTALS).sort()).toEqual(['tech', 'work'])
+    expect(PORTALS.work.entry).toBe('work')
+    expect(PORTALS.tech.entry).toBe('tech')
   })
 
-  it('maps canonical tech to the approved admin runtime/build alias', () => {
-    expect(PORTAL_RUNTIME_ALIASES).toEqual({
-      employee: 'employee',
-      center: 'center',
-      tech: 'admin',
-    })
-    expect(PORTALS.tech.runtimeCode).toBe('admin')
-    expect(Object.values(PORTALS).map((portal) => portal.runtimeCode).sort()).toEqual(['admin', 'center', 'employee'])
+  it('keeps employee and center responsibilities inside the work port', () => {
+    expect(PORTALS.work.description).toContain('员工本人业务和中心管理业务')
+    expect(PORTALS.work.homeTitle).toBe('我的工作台')
   })
 
-  it('does not model tech as a business super administrator', () => {
+  it('does not model the tech port as a business super administrator', () => {
     expect(PORTALS.tech.description).toContain('不代表业务超级管理员')
   })
 
-  it('keeps the three home responsibilities distinct and free of engineering evidence', () => {
-    expect(new Set(Object.values(PORTALS).map((portal) => portal.homeTitle)).size).toBe(3)
-    expect(PORTALS.employee.homeTitle).toBe('员工工作入口')
-    expect(PORTALS.center.homeTitle).toBe('中心管理工作入口')
-    expect(PORTALS.tech.homeTitle).toBe('技术运行工作入口')
-
+  it('keeps runtime descriptions free of engineering phase evidence', () => {
     const serialized = JSON.stringify(PORTALS)
+    expect(serialized).not.toMatch(/PHASE|阶段\s*\d+/i)
     expect(serialized).not.toMatch(/\bP\d{3}\b/)
-    expect(serialized).not.toContain('/api/v1/phase05/')
-    expect(serialized).not.toMatch(/\b(?:welfare|document|integration|audit)\.[a-z_]+\b/)
   })
 })

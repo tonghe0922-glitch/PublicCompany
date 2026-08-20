@@ -10,7 +10,7 @@ class P013Session implements PortalRouterSession {
   can(permission: string): boolean { return this.permissions.has(permission) }
 }
 
-function routerFor(portal: typeof PORTALS.employee, permission: string) {
+function routerFor(portal: typeof PORTALS.work, permission: string) {
   const session = new P013Session()
   session.permissions.add(permission)
   return createPortalRouter(portal, session, createMemoryHistory())
@@ -18,11 +18,11 @@ function routerFor(portal: typeof PORTALS.employee, permission: string) {
 
 describe('PHASE-11 P013 frozen routes', () => {
   it('binds employee center and tech pages to exact C0 coordinates', async () => {
-    const employee = routerFor(PORTALS.employee, 'p013.reward.read')
+    const employee = routerFor(PORTALS.work, 'p013.reward.read')
     await employee.push('/employee/08/07/02')
     expect(employee.currentRoute.value.name).toBe('p013-reward-self')
 
-    const center = routerFor(PORTALS.center, 'p013.reward.review')
+    const center = routerFor(PORTALS.work, 'p013.reward.review')
     await center.push('/center/10/10/02')
     expect(center.currentRoute.value.name).toBe('p013-reward-management')
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import type { PortalDefinition } from '../portal-config'
+import type { BusinessAudience, PortalDefinition } from '../portal-config'
 import { usePortalSessionStore } from '../../session'
 
 interface Enrollment {
@@ -38,7 +38,7 @@ interface SessionSummary {
   refreshExpiresAt: string
 }
 
-const props = defineProps<{ portal: PortalDefinition }>()
+const props = defineProps<{ portal: PortalDefinition; audience: BusinessAudience }>()
 const session = usePortalSessionStore()
 const enrollment = ref<Enrollment | null>(null)
 const mfaStatus = ref<MfaStatus | null>(null)
@@ -52,9 +52,9 @@ const targetUserId = ref('')
 const busy = ref(false)
 const feedback = ref('')
 
-const isTech = computed(() => props.portal.code === 'tech')
-const isCenter = computed(() => props.portal.code === 'center')
-const isMonitorPortal = computed(() => isTech.value || isCenter.value)
+const isTech = computed(() => props.audience === 'tech')
+const isCenter = computed(() => props.audience === 'center')
+const isMonitorPortal = computed(() => props.audience !== 'self')
 const canMonitor = computed(() => session.can('p001.session.monitor'))
 const mfaActive = computed(() => mfaStatus.value?.status === 'ACTIVE')
 const title = computed(() => {
