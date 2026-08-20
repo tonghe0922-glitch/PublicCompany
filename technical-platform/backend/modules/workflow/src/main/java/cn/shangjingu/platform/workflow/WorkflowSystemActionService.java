@@ -201,7 +201,7 @@ public class WorkflowSystemActionService {
         if (node.isObject()) {
             ObjectNode sorted = objectMapper.createObjectNode();
             TreeMap<String, JsonNode> fields = new TreeMap<>();
-            node.fields().forEachRemaining(entry -> fields.put(entry.getKey(), entry.getValue()));
+            node.properties().forEach(entry -> fields.put(entry.getKey(), entry.getValue()));
             fields.forEach((key, child) -> sorted.set(key, canonical(child)));
             return sorted;
         }

@@ -45,8 +45,10 @@ class Phase11LifecycleServiceTest {
         outbox = mock(TransactionalOutboxService.class);
         workflow = mock(Phase11WorkflowCoordinator.class);
         repository = mock(Phase11Repository.class);
-        when(transactions.required(any(DatabaseSecurityContext.class), any(Supplier.class)))
-                .thenAnswer(invocation -> ((Supplier<?>) invocation.getArgument(1)).get());
+        when(transactions.required(
+              any(DatabaseSecurityContext.class),
+              org.mockito.ArgumentMatchers.<Supplier<Object>>any()))
+      .thenAnswer(invocation -> invocation.<Supplier<?>>getArgument(1).get());
         service = new Phase11LifecycleService(
                 transactions,
                 idempotency,
