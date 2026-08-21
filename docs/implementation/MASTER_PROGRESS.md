@@ -1,15 +1,14 @@
 # MASTER_PROGRESS
 
 > Repository: `tonghe0922-glitch/PublicCompany`
-> Construction branch: `agent/phase-10-public-capabilities-b`
+> Construction branch: `agent/phase-11-performance-growth-welfare`
 > Target branch: `main`
 > Latest completed phase: `PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS`
-> Current construction state: `PHASE-10 = SEALED`
-> Next phase: `PHASE-11 = NOT_STARTED / UNLOCKED_ONLY`
+> Current construction state: `PHASE-11 = IN_PROGRESS / READY_FOR_FULL_GATE`
+> Current legal checkpoint: `PHASE-11 Full Construction Gate = NOT_STARTED / AUTHORIZED`
+> Next phase: `PHASE-12 = NOT_STARTED / LOCKED`
 
-根目录 `Construction Master Schedule.csv` 固定 PHASE-10=`P006–P010 公共能力 B`，核心门槛=`5流程三端闭环`。本阶段已完成 P006 会议与行动项、P007 排班与班次调整、P008 请假与考勤、P009 加班与调休、P010 员工学习/考试/资格的服务端、数据库、员工端、中心端、技术端和真实基础设施闭环验证。
-
-当前仓库身份以本文件顶部为准。PHASE-10 封板不等于自动启动 PHASE-11；P011–P016 仍为 `NOT_STARTED`，只有收到明确开工指令并完成 PHASE-11 准备门禁后才能施工。
+根目录 `Construction Master Schedule.csv` 固定 PHASE-11=`P011–P016 绩效成长福利`，核心门槛=`6流程三端闭环`。PHASE-11 Preparation Gate 与 C0 Contract Freeze 已通过；P011 绩效管理、P012 晋升任职、P013 奖励与认可、P014 纪律责任与申诉、P015 成长积分与荣誉积分、P016 福利关怀与台账均已通过各自 Checkpoint Gate 并关闭；当前唯一合法施工点为 PHASE-11 Full Construction Gate 阶段总封板。P017+ 保持锁定，Full Construction Gate 全绿前不得启动 PHASE-12。
 
 | Phase | 状态 | 备注 |
 |---|---|---|
@@ -23,9 +22,9 @@
 | PHASE-07 | COMPLETE | Cycle 3 完整度复核；独立 Formal Gate PASS |
 | PHASE-08 | COMPLETE | Portal Runtime 正式收口 |
 | PHASE-09 | COMPLETE | P001–P005 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate PASS |
-| PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；Full Construction Gate run `31803920306` SUCCESS |
-| PHASE-11 | NOT_STARTED | P011–P016；`UNLOCKED_ONLY`，未自动开工 |
-| PHASE-12 | NOT_STARTED | P017–P020 |
+| PHASE-10 | COMPLETE | P006–P010 `CHECKPOINT_PASS / CLOSED`；封板后质量整改 HEAD `79edc420...` CI SUCCESS |
+| PHASE-11 | IN_PROGRESS | P011–P016 `CHECKPOINT_PASS / CLOSED`；`READY_FOR_FULL_GATE` |
+| PHASE-12 | NOT_STARTED | P017–P020；LOCKED |
 | PHASE-13 | NOT_STARTED | P021–P023 |
 | PHASE-14 | NOT_STARTED | P024–P027 |
 | PHASE-15 | NOT_STARTED | P028–P030 |
@@ -74,50 +73,95 @@ P008 = CHECKPOINT_PASS / CLOSED
 P009 = CHECKPOINT_PASS / CLOSED
 P010 = CHECKPOINT_PASS / CLOSED
 Accepted implementation candidate = 43eda5911038be3837b66bfb487838f32dc6d3a8
-Full Construction Gate = run 31803920306 / run #147 / SUCCESS
-Final verdict job = 94778697853 / SUCCESS
-Contract job = 94778126921 / SUCCESS
-Java 21 service behavior job = 94778126975 / SUCCESS
-PHASE-04 API security regression job = 94778126980 / SUCCESS
-Vue TypeScript/lint/unit/duplicates/deadcode/three-build job = 94778127039 / SUCCESS
-P006-P010 PostgreSQL16 + Redis + three-portal Playwright job = 94778127040 / SUCCESS
-PostgreSQL regression profiles = PHASE-03/05/06/09/10 / SUCCESS
-Live artifact = 9220411386
-Live artifact SHA256 = fca4b61a827493811d39efe29070f2ae7af5af8deba904a59119e54e47d49617
-Canonical facts = closed:5, workflows:5, leave-ledger:3, learning-evidence:7,
-                  qualification-grant:1, outbox:50, audit:156,
-                  credential-hits:0, redis-keys:29
+Formal seal HEAD = fc717ef58e609fa579ab86f9887ac336580a3a38
+Post-seal remediation HEAD = 79edc420802bfb9d2e47a0976b6198a67e80c4c2
+Post-seal Full Construction Gate = run 31817116978 / run #150 / SUCCESS
 PHASE-10 = COMPLETE / FULL_CONSTRUCTION_GATE_PASS
-PHASE-11 = NOT_STARTED / UNLOCKED_ONLY
 ```
 
-## PHASE-10 C0 source and contract freeze
+## PHASE-11 preparation ledger
 
 ```text
-P006-P010 authoritative XLSX actual parse = 15/15
-Sheets = 90
-Non-empty source rows = 4,745
+Scope = P011-P016 / 绩效成长福利
+Source Probe = run 31818722531 / SUCCESS
+Source Probe artifact = 9226054438
+Source Probe artifact SHA256 = 635f4576931620835b1cbdadb5a17f1e27f15e71b9bf410ef8ba0860c33bc652
+Preparation Analysis = run 31819889568 / SUCCESS
+Preparation Analysis artifact = 9226506967
+Preparation Analysis artifact SHA256 = d73e755908f0e46b4ba4442cad3da7e0ebc2a7285dd09c47fc8e12223fa134b0
+Authoritative XLSX actual parse = 18/18
+Sheets = 108
+Non-empty source rows = 5,655
 Parse failures = 0
-PHASE-01 direct page process binding = 0 (historical fact retained)
-Explicit source-coordinate page bindings = FROZEN / PHASE10_PAGE_BINDINGS.json
-Business HTTP source baseline = 0 (historical fact retained)
-Engineering HTTP/permission identifiers = FROZEN / contracts/phase-10
-Canonical primary tables = EXISTING (V5/V10/V28)
-Additive PHASE-10 overlays = V115-V121
+Business HTTP source records = 0 / inference forbidden
+Canonical primary tables = EXISTING_BASELINE_DDL / 6
+P011-P015 implementation = BASELINE_TABLE_ONLY
+P016 implementation = PREEXISTING_PHASE05_KERNEL / REUSE_REVIEW_REQUIRED
+Production files changed since PHASE-10 baseline during preparation = 0
+Accepted preparation evidence candidate = 2f3bc41ebb0571d34ac9a75cbef8bedbf19a85ec
+Preparation Gate = run 31821929837 / run #2 / SUCCESS
+Preparation Gate artifact = 9227280256
+Preparation Gate artifact SHA256 = 786f6a5f19a4720066829fef65dc21ddae0be43d2743ad7787a222565d59dacb
 ```
 
-历史来源中缺少直接 `process_codes` 页面绑定和业务 HTTP 路径，不代表运行实现缺失。本阶段通过冻结的 source-coordinate 页面映射、工程 HTTP/permission contract、canonical 数据表、发布工作流和可执行测试形成可追溯实现，没有把工程补充标识伪装成 XLSX 原始事实。
+## PHASE-11 process ledger
+
+```text
+P011 = CHECKPOINT_PASS / CLOSED / run 31871437974
+P012 = CHECKPOINT_PASS / CLOSED / run 31924632658
+P013 = CHECKPOINT_PASS / CLOSED / run 31928350534
+P013 accepted implementation candidate = 397713476d310ba1e7e38fc11cef234ea64b4f0e
+P014 = CHECKPOINT_PASS / CLOSED / run 31930909868
+P014 accepted implementation candidate = ca52cd8298ee603e7aba1be84d7c797106a23d5f
+P014 candidate checkpoint = run 31930791901 / SUCCESS
+P014 formal route/checkpoint seal HEAD = 5bc7dcd9e0ae8fe17bd2e87c8cba441867a3f72c
+P014 formal seal checkpoint = run 31930909868 / SUCCESS
+P015 = CHECKPOINT_PASS / CLOSED / run 31932006960
+P015 backend implementation candidate = 578168ed6cc9071123238ba485fb82a0423107d5
+P015 formal checkpoint foundation HEAD = ba051ecbdc8bfed58d19b9388379d5e7c105f5b3
+P015 backend checkpoint = run 31931819807 / SUCCESS
+P015 accepted three-portal implementation candidate = fa0f4c33e9e367db35e3f0772eea9e5d9592e9ac
+P015 final checkpoint = run 31932006960 / SUCCESS
+P016 reuse review foundation HEAD = 48d673472f943218c14cca54d174df73e3c8454e
+P016 accepted reuse review candidate = 6abb1a83fd09b38ec4e6c1c2dde9ed3d73dca7d4
+P016 reuse review gate = run 31933487876 / SUCCESS
+P016 = CHECKPOINT_PASS / CLOSED / run 31934614405
+P016 accepted implementation candidate = 13ae7492f72844c4e72bf35627f17be395c66cd0
+P016 final checkpoint = run 31934614405 / SUCCESS
+PHASE-11 Full Construction Gate = NOT_STARTED / AUTHORIZED
+P017-P020 = PHASE-12 / NOT_STARTED / LOCKED
+```
 
 ## Repository identity
 
 ```text
 Canonical repository = tonghe0922-glitch/PublicCompany
-PHASE-10 construction branch = agent/phase-10-public-capabilities-b
-main base SHA = cd4f5c05f259c043fbe3e1288d6addccff6110e9
-Repository identity guard = PASS
+PHASE-11 construction branch = agent/phase-11-performance-growth-welfare
+PHASE-10 preparation baseline = 79edc420802bfb9d2e47a0976b6198a67e80c4c2
 Force push = FORBIDDEN
 ```
 
 ## Completed-phase regression lifecycle
 
 已完成阶段必须在后续施工期间继续保持可执行。PHASE-11 不得降低 PHASE-03/04/05/06/09/10 数据库、API、安全、前端质量或真实三端 E2E 门槛；任何回归失败必须先修复，再继续新流程施工。
+
+## PHASE-11 C0 candidate
+
+```text
+C0 decisions = C0-01..C0-08 RESOLVED
+Page bindings = 18 / PHYSICAL IA XLSX COORDINATES
+HTTP/permission = FROZEN ENGINEERING CONTRACT
+Workflow nodes/actions = FROZEN / P011-P016
+Database overlays = V122-V127 RESERVED
+Test matrix = FROZEN
+Production implementation changed at C0 = 0
+C0 Contract Freeze = run 31865754854 / SUCCESS
+Preparation Gate continuity = run 31865754872 / SUCCESS
+P011 implementation = CHECKPOINT_PASS / CLOSED
+P012 implementation = CHECKPOINT_PASS / CLOSED / run 31924632658
+P013 implementation = CHECKPOINT_PASS / CLOSED / run 31928350534
+P014 implementation = CHECKPOINT_PASS / CLOSED / run 31930909868
+P015 implementation = CHECKPOINT_PASS / CLOSED / run 31932006960
+P016 implementation = CHECKPOINT_PASS / CLOSED / run 31934614405
+PHASE-11 final gate = NOT_STARTED / AUTHORIZED
+```

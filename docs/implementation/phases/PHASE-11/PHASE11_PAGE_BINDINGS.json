@@ -1,0 +1,175 @@
+{
+  "phase": "PHASE-11",
+  "state": "C0_FROZEN",
+  "source_category": "PHYSICAL_IA_XLSX_REVIEWED_BINDING",
+  "bindings": [
+    {
+      "process_code": "P011",
+      "portal": "employee",
+      "purpose": "我的绩效周期与员工动作",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:459",
+      "route_path": "/employee/08/01/01",
+      "data_scope": "SELF",
+      "sensitive_level": "P1/P2"
+    },
+    {
+      "process_code": "P011",
+      "portal": "center",
+      "purpose": "绩效周期、评价、校准与申诉复核",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:767",
+      "route_path": "/center/10/01/01",
+      "data_scope": "CENTER",
+      "sensitive_level": "P1/P2"
+    },
+    {
+      "process_code": "P011",
+      "portal": "tech",
+      "purpose": "绩效规则与流程运行监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:611",
+      "route_path": "/tech/06/05/01",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    },
+    {
+      "process_code": "P012",
+      "portal": "employee",
+      "purpose": "晋升申请与本人进度",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:280",
+      "route_path": "/employee/03/03/05",
+      "data_scope": "SELF",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P012",
+      "portal": "center",
+      "purpose": "晋升资格、评审、任命与正式生效",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:801",
+      "route_path": "/center/10/06/01",
+      "data_scope": "CENTER",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P012",
+      "portal": "tech",
+      "purpose": "人力资源流程配置与版本监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:94",
+      "route_path": "/tech/01/11/07",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    },
+    {
+      "process_code": "P013",
+      "portal": "employee",
+      "purpose": "奖励来源与荣誉影响回执",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:491",
+      "route_path": "/employee/08/07/02",
+      "data_scope": "SELF",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P013",
+      "portal": "center",
+      "purpose": "奖励案件、影响防重与执行回执",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:831",
+      "route_path": "/center/10/10/02",
+      "data_scope": "CENTER",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P013",
+      "portal": "tech",
+      "purpose": "奖励规则与运行监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:620",
+      "route_path": "/tech/06/06/01",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    },
+    {
+      "process_code": "P014",
+      "portal": "employee",
+      "purpose": "纪律送达、陈述申辩与申诉",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:56",
+      "route_path": "/employee/02/03/09",
+      "data_scope": "SELF_CASE",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P014",
+      "portal": "center",
+      "purpose": "纪律案件、独立调查、决定和申诉复核",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:925",
+      "route_path": "/center/12/02/04",
+      "data_scope": "CENTER_CASE",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P014",
+      "portal": "tech",
+      "purpose": "纪律风险规则与运行监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:621",
+      "route_path": "/tech/06/06/02",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    },
+    {
+      "process_code": "P015",
+      "portal": "employee",
+      "purpose": "成长积分不可变流水与申诉",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:487",
+      "route_path": "/employee/08/06/04",
+      "data_scope": "SELF",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P015",
+      "portal": "center",
+      "purpose": "成长与荣誉积分复核、冲销和重算",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:828",
+      "route_path": "/center/10/09/06",
+      "data_scope": "CENTER",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P015",
+      "portal": "tech",
+      "purpose": "积分规则版本和运行监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:622",
+      "route_path": "/tech/06/06/03",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    },
+    {
+      "process_code": "P016",
+      "portal": "employee",
+      "purpose": "福利关怀申请、执行确认与回执",
+      "source_key": "Knowledge Base/01 完整的页面架构/1-2员工全层级页面.xlsx#三级页面明细:300",
+      "route_path": "/employee/03/06/05",
+      "data_scope": "SELF",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P016",
+      "portal": "center",
+      "purpose": "福利资格、审批、执行和对账",
+      "source_key": "Knowledge Base/01 完整的页面架构/2-2中心全层级页面.xlsx#三级页面明细:337",
+      "route_path": "/center/06/03/09",
+      "data_scope": "CENTER",
+      "sensitive_level": "P1/P2/P3"
+    },
+    {
+      "process_code": "P016",
+      "portal": "tech",
+      "purpose": "福利事件、任务与集成运行监控",
+      "source_key": "Knowledge Base/01 完整的页面架构/3-2技术-全层级页面.xlsx#三级页面明细:91",
+      "route_path": "/tech/01/11/04",
+      "data_scope": "METADATA_ONLY",
+      "sensitive_level": "P1"
+    }
+  ],
+  "rules": {
+    "one_business_truth": true,
+    "tech_business_decision": "FORBIDDEN",
+    "fuzzy_binding": "FORBIDDEN",
+    "catalog_reclassification_before_checkpoint": "FORBIDDEN"
+  }
+}

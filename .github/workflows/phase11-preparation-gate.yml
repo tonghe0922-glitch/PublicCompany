@@ -1,0 +1,162 @@
+name: PHASE-11 Preparation Gate
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-preparation-*.yml"
+      - "scripts/implementation/phase11_*.py"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/MASTER_PAGE_CATALOG.json"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "docs/implementation/contracts/phase-11/**"
+      - "docs/implementation/MASTER_PROCESS_CATALOG.json"
+      - "Knowledge Base/01 完整的页面架构/**"
+      - "Knowledge Base/02 业务流程 表单 字段/S1 三端业务流程表单字段包/**/01_平台公共能力/*.xlsx"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-preparation-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preparation-contract:
+    name: PHASE-11 source impact gap and boundary contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Guard repository and branch identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
+          python scripts/implementation/phase11_repository_identity.py
+      - name: Detect preparation lifecycle
+        id: mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'P011 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md; then
+            echo 'sealed=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'sealed=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify sealed preparation record
+        if: steps.mode.outputs.sealed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/implementation/phases/PHASE-11/README.md
+          test -s docs/implementation/phases/PHASE-11/PREPARATION_REPORT.md
+          test -s docs/implementation/phases/PHASE-11/IMPACT_MATRIX.md
+          test -s docs/implementation/phases/PHASE-11/GAP_MATRIX.md
+          test -s docs/implementation/phases/PHASE-11/PHASE11_HTTP_PERMISSION_CONTRACT.json
+          test -s docs/implementation/phases/PHASE-11/PHASE11_WORKFLOW_CONTRACT.json
+          test -s docs/implementation/phases/PHASE-11/PHASE11_PAGE_BINDINGS.json
+          test -s docs/implementation/phases/PHASE-11/DATABASE_CONTRACT.md
+          test -s docs/implementation/contracts/phase-11/C0_DECISION_LOG.md
+          echo 'PHASE-11 preparation record is sealed; ephemeral generated evidence remains in the original preparation artifact.'
+      - name: Rebuild and verify deterministic preparation evidence
+        if: steps.mode.outputs.sealed != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/implementation/phase11_preparation_extract.py \
+            scripts/implementation/phase11_source_contract.py \
+            scripts/implementation/phase11_page_candidates.py \
+            scripts/implementation/phase11_implementation_probe.py \
+            scripts/implementation/phase11_preparation_contract.py \
+            scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_preparation_extract.py
+          python scripts/implementation/phase11_source_contract.py
+          python scripts/implementation/phase11_page_candidates.py
+          python scripts/implementation/phase11_implementation_probe.py
+          sha256sum \
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json \
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.md \
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_CONTRACT.json \
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_CONTRACT.md \
+            docs/implementation/phases/PHASE-11/P011_P016_PAGE_CANDIDATES.json \
+            docs/implementation/phases/PHASE-11/P011_P016_PAGE_CANDIDATES.md \
+            docs/implementation/phases/PHASE-11/P011_P016_IMPLEMENTATION_PROBE.json \
+            docs/implementation/phases/PHASE-11/P011_P016_IMPLEMENTATION_PROBE.md \
+            > /tmp/phase11-preparation.sha256
+          python scripts/implementation/phase11_preparation_extract.py
+          python scripts/implementation/phase11_source_contract.py
+          python scripts/implementation/phase11_page_candidates.py
+          python scripts/implementation/phase11_implementation_probe.py
+          sha256sum -c /tmp/phase11-preparation.sha256
+          python scripts/implementation/phase11_preparation_contract.py
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        if: steps.mode.outputs.sealed != 'true'
+        with:
+          name: phase11-preparation-gate-evidence-${{ github.sha }}
+          path: |
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.md
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_CONTRACT.json
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_CONTRACT.md
+            docs/implementation/phases/PHASE-11/P011_P016_PAGE_CANDIDATES.json
+            docs/implementation/phases/PHASE-11/P011_P016_PAGE_CANDIDATES.md
+            docs/implementation/phases/PHASE-11/P011_P016_IMPLEMENTATION_PROBE.json
+            docs/implementation/phases/PHASE-11/P011_P016_IMPLEMENTATION_PROBE.md
+            docs/implementation/phases/PHASE-11/README.md
+            docs/implementation/phases/PHASE-11/PREPARATION_REPORT.md
+            docs/implementation/phases/PHASE-11/IMPACT_MATRIX.md
+            docs/implementation/phases/PHASE-11/GAP_MATRIX.md
+            docs/implementation/contracts/phase-11/C0_DECISION_LOG.md
+          if-no-files-found: error
+          retention-days: 30
+
+  completed-phase-continuity:
+    name: Preserve PHASE-10 quality and preparation boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify PHASE-10 continuity and preparation-only drift rule
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=79edc420802bfb9d2e47a0976b6198a67e80c4c2
+          if ! grep -q 'P011 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md; then
+            test -z "$(git diff --name-only "$BASE"...HEAD -- \
+              technical-platform/backend \
+              technical-platform/web/src \
+              technical-platform/web/e2e \
+              technical-platform/database)"
+            echo 'PHASE-11 is still in preparation; zero production drift enforced.'
+          else
+            echo 'PHASE-11 construction has started; zero production drift rule is sealed and no longer applicable.'
+          fi
+          python scripts/implementation/phase10_frontend_contract.py
+          python scripts/implementation/phase10_remediation_contract.py
+          echo 'PHASE-10 continuity PASS.'
+
+  verdict:
+    name: PHASE-11 preparation gate verdict
+    if: always()
+    needs: [preparation-contract, completed-phase-continuity]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every preparation gate green
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ needs.preparation-contract.result }}" = "success"
+          test "${{ needs.completed-phase-continuity.result }}" = "success"

@@ -29,6 +29,15 @@ import P010PermissionLinkagePage from '../platform/pages/phase10/P010PermissionL
 import P010PracticalCertificationPage from '../platform/pages/phase10/P010PracticalCertificationPage.vue'
 import P010PracticalTaskPage from '../platform/pages/phase10/P010PracticalTaskPage.vue'
 import P010QualificationsPage from '../platform/pages/phase10/P010QualificationsPage.vue'
+import P011CenterPage from '../platform/pages/phase11/P011CenterPage.vue'
+import P011EmployeePage from '../platform/pages/phase11/P011EmployeePage.vue'
+import P011TechPage from '../platform/pages/phase11/P011TechPage.vue'
+import P012CenterPage from '../platform/pages/phase11/P012CenterPage.vue'
+import P012EmployeePage from '../platform/pages/phase11/P012EmployeePage.vue'
+import P012TechPage from '../platform/pages/phase11/P012TechPage.vue'
+import P013CenterPage from '../platform/pages/phase11/P013CenterPage.vue'
+import P013EmployeePage from '../platform/pages/phase11/P013EmployeePage.vue'
+import P013TechPage from '../platform/pages/phase11/P013TechPage.vue'
 
 export interface PortalRouteSpec {
   portal: PortalCode
@@ -288,6 +297,67 @@ const P010_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   },
 ]
 
+
+const P011_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  {
+    portal: 'employee', path: '/employee/08/01/01', name: 'p011-performance-self',
+    component: P011EmployeePage,
+    permissionsAny: ['p011.performance.self', 'p011.performance.read'],
+  },
+  {
+    portal: 'center', path: '/center/10/01/01', name: 'p011-performance-management',
+    component: P011CenterPage,
+    permissionsAny: [
+      'p011.performance.create', 'p011.performance.evaluate',
+      'p011.performance.calibrate', 'p011.performance.appeal',
+      'p011.performance.impact',
+    ],
+  },
+  {
+    portal: 'tech', path: '/tech/06/05/01', name: 'p011-performance-monitor',
+    component: P011TechPage, permission: 'p011.performance.monitor',
+  },
+]
+
+
+const P012_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  {
+    portal: 'employee', path: '/employee/03/03/05', name: 'p012-promotion-self',
+    component: P012EmployeePage,
+    permissionsAny: ['p012.promotion.create', 'p012.promotion.read'],
+  },
+  {
+    portal: 'center', path: '/center/10/06/01', name: 'p012-promotion-management',
+    component: P012CenterPage,
+    permissionsAny: [
+      'p012.promotion.create', 'p012.promotion.review',
+      'p012.promotion.appoint', 'p012.promotion.activate',
+    ],
+  },
+  {
+    portal: 'tech', path: '/tech/01/11/07', name: 'p012-promotion-monitor',
+    component: P012TechPage, permission: 'p012.promotion.monitor',
+  },
+]
+
+
+const P013_ROUTE_SPECS: readonly PortalRouteSpec[] = [
+  {
+    portal: 'employee', path: '/employee/08/07/02', name: 'p013-reward-self',
+    component: P013EmployeePage,
+    permissionsAny: ['p013.reward.create', 'p013.reward.read'],
+  },
+  {
+    portal: 'center', path: '/center/10/10/02', name: 'p013-reward-management',
+    component: P013CenterPage,
+    permissionsAny: ['p013.reward.create', 'p013.reward.review', 'p013.reward.execute'],
+  },
+  {
+    portal: 'tech', path: '/tech/06/06/01', name: 'p013-reward-monitor',
+    component: P013TechPage, permission: 'p013.reward.monitor',
+  },
+]
+
 const PHASE10_TECH_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   {
     portal: 'tech', path: '/tech/07/11/01',
@@ -315,4 +385,7 @@ export const PORTAL_ROUTE_SPECS: readonly PortalRouteSpec[] = [
   ...P009_ROUTE_SPECS,
   ...P010_ROUTE_SPECS,
   ...PHASE10_TECH_ROUTE_SPECS,
+  ...P011_ROUTE_SPECS,
+  ...P012_ROUTE_SPECS,
+  ...P013_ROUTE_SPECS,
 ]

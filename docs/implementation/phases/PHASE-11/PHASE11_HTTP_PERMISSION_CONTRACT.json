@@ -1,0 +1,82 @@
+{
+  "phase": "PHASE-11",
+  "state": "C0_FROZEN",
+  "source_category": "ENGINEERING_CONTRACT_NOT_XLSX_HTTP_FACT",
+  "processes": {
+    "P011": {
+      "base": "/api/v1/processes/P011/performance-cycles",
+      "permissions": [
+        "p011.performance.create",
+        "p011.performance.read",
+        "p011.performance.self",
+        "p011.performance.evaluate",
+        "p011.performance.calibrate",
+        "p011.performance.appeal",
+        "p011.performance.impact",
+        "p011.performance.monitor"
+      ]
+    },
+    "P012": {
+      "base": "/api/v1/processes/P012/promotions",
+      "permissions": [
+        "p012.promotion.create",
+        "p012.promotion.read",
+        "p012.promotion.review",
+        "p012.promotion.appoint",
+        "p012.promotion.activate",
+        "p012.promotion.monitor"
+      ]
+    },
+    "P013": {
+      "base": "/api/v1/processes/P013/rewards",
+      "permissions": [
+        "p013.reward.create",
+        "p013.reward.read",
+        "p013.reward.review",
+        "p013.reward.execute",
+        "p013.reward.monitor"
+      ]
+    },
+    "P014": {
+      "base": "/api/v1/processes/P014/discipline-cases",
+      "permissions": [
+        "p014.discipline.create",
+        "p014.discipline.read",
+        "p014.discipline.investigate",
+        "p014.discipline.decide",
+        "p014.discipline.appeal",
+        "p014.discipline.remediate",
+        "p014.discipline.monitor"
+      ]
+    },
+    "P015": {
+      "base": "/api/v1/processes/P015/points",
+      "permissions": [
+        "p015.points.create",
+        "p015.points.read",
+        "p015.points.review",
+        "p015.points.reverse",
+        "p015.points.monitor"
+      ]
+    },
+    "P016": {
+      "base": "/api/v1/processes/P016/care-cases",
+      "permissions": [
+        "p016.care.create",
+        "p016.care.read",
+        "p016.care.review",
+        "p016.care.execute",
+        "p016.care.confirm",
+        "p016.care.reconcile",
+        "p016.care.monitor"
+      ]
+    }
+  },
+  "rules": {
+    "idempotency_key_required_for_writes": true,
+    "expected_version_required_for_actions": true,
+    "client_target_status": "FORBIDDEN",
+    "server_action_code_only": true,
+    "problem_json": true
+  }
+}

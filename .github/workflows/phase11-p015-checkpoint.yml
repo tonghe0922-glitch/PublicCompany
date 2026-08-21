@@ -1,0 +1,180 @@
+name: PHASE-11 P015 Checkpoint
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p015-checkpoint.yml"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "scripts/implementation/phase11_c0_contract.py"
+      - "scripts/implementation/phase11_p011_contract.py"
+      - "scripts/implementation/phase11_p012_contract.py"
+      - "scripts/implementation/phase11_p013_contract.py"
+      - "scripts/implementation/phase11_p014_contract.py"
+      - "scripts/implementation/phase11_p015_contract.py"
+      - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase11/**"
+      - "technical-platform/backend/apps/api/src/test/java/cn/shangjingu/platform/api/phase11/**"
+      - "technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/**"
+      - "technical-platform/backend/modules/workflow/src/test/java/cn/shangjingu/platform/workflow/phase11/**"
+      - "technical-platform/backend/modules/database-baseline/pom.xml"
+      - "technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase11P015DatabaseIT.java"
+      - "technical-platform/database/flyway-overlays/oms/V126__phase11_p015_points.sql"
+      - "technical-platform/web/src/platform/phase11/**"
+      - "technical-platform/web/src/platform/pages/phase11/**"
+      - "technical-platform/web/src/router/portal-router.ts"
+      - "technical-platform/web/src/router/p015-route-specs.ts"
+      - "technical-platform/web/src/router/p015-router.test.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-p015-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE11_C0_SHA: 5c4b3d75fe3afab86f3b83f5fdf5a2f70870f724
+
+jobs:
+  contract:
+    name: P015 C0, immutable ledger and scope contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify frozen contracts and checkpoint order
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
+          python scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+          python scripts/implementation/phase11_p013_contract.py
+          python scripts/implementation/phase11_p014_contract.py
+          python scripts/implementation/phase11_p015_contract.py
+          git diff --check "$PHASE11_C0_SHA"...HEAD
+      - name: Reject premature P016 drift, ledger mutation bypasses, mock truth and secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGETS=(technical-platform/backend technical-platform/web/src technical-platform/web/e2e technical-platform/database)
+          ADDED=$(git diff -U0 "$PHASE11_C0_SHA"...HEAD -- "${TARGETS[@]}" | grep '^+' | grep -v '^+++' || true)
+          if ! grep -q 'P015 = CHECKPOINT_PASS / CLOSED' docs/implementation/MASTER_PROGRESS.md; then
+            if printf '%s\n' "$ADDED" | grep -Eq '\bP016\b|\bP0(17|18|19|20)\b|\bPHASE-12\b'; then
+              echo 'P015 checkpoint introduced a later executable process before P015 closure'
+              exit 1
+            fi
+          fi
+          if grep -R -nEi 'TODO|FIXME|@ts-ignore|@ts-nocheck|localStorage.*P015|mock.*P015|bypass login' "${TARGETS[@]}"; then exit 1; fi
+          if grep -R -nE 'github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9_]+|\bsk-[A-Za-z0-9_-]{12,}\b' "${TARGETS[@]}"; then exit 1; fi
+
+  backend-unit:
+    name: Java 21 P015 application and API behavior
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - run: bash ./mvnw -B -ntp -pl technical-platform/backend/apps/api -am test
+      - name: Require P015 tests explicitly
+        run: >-
+          bash ./mvnw -B -ntp
+          -pl technical-platform/backend/apps/api -am
+          -Dtest=Phase11ProcessContractTest,PointLedgerServiceTest,P015PointsControllerContractTest,Phase11ApiExceptionHandlerTest
+          -Dsurefire.failIfNoSpecifiedTests=false test
+
+  api-security-regression:
+    name: PHASE-04 API security regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run PostgreSQL 16 API integration regression
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e -pl technical-platform/backend/apps/api -am -Pphase04-integration verify 2>&1 | tee /tmp/phase11-p015-api.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="; tail -n 240 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|AssertionFailedError' /tmp/phase11-p015-api.log | tail -n 360 || true
+            exit 1
+          fi
+
+  database:
+    name: PostgreSQL 16 P015 immutable ledger integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run P015 database integration test
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! bash ./mvnw -B -ntp -e \
+            -pl technical-platform/backend/modules/database-baseline -am \
+            -Dtest=Phase11P015DatabaseIT \
+            -Dsurefire.failIfNoSpecifiedTests=false test 2>&1 | tee /tmp/phase11-p015-db.log; then
+            find . -type f \( -path '*/surefire-reports/*' -o -path '*/failsafe-reports/*' \) -print | sort | while read -r report; do
+              echo "===== $report ====="; tail -n 280 "$report" || true
+            done
+            grep -nEi 'BUILD FAILURE|ERROR|Caused by:|Flyway|Migration|PSQLException|SQLException|AssertionFailedError|SQLSTATE' /tmp/phase11-p015-db.log | tail -n 420 || true
+            exit 1
+          fi
+
+  web:
+    name: P015 Vue TypeScript lint unit quality and builds
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: technical-platform/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: {version: 10.34.0}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: pnpm
+          cache-dependency-path: technical-platform/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm quality:duplicates
+      - run: NODE_OPTIONS=--max-old-space-size=4096 pnpm quality:deadcode
+      - run: pnpm build
+
+  verdict:
+    name: P015 checkpoint verdict
+    if: always()
+    needs: [contract, backend-unit, api-security-regression, database, web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every P015 checkpoint job green
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ needs.contract.result }}" = success
+          test "${{ needs.backend-unit.result }}" = success
+          test "${{ needs.api-security-regression.result }}" = success
+          test "${{ needs.database.result }}" = success
+          test "${{ needs.web.result }}" = success

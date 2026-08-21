@@ -1,0 +1,645 @@
+{
+  "duplicates": [
+    {
+      "firstFile": {
+        "end": 58,
+        "endLoc": {
+          "column": 6,
+          "line": 58,
+          "position": 1735
+        },
+        "name": "design-system/components/Dialog.vue:html",
+        "start": 42,
+        "startLoc": {
+          "column": 6,
+          "line": 42,
+          "position": 1032
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 17,
+      "secondFile": {
+        "end": 56,
+        "endLoc": {
+          "column": 6,
+          "line": 56,
+          "position": 1736
+        },
+        "name": "design-system/components/Drawer.vue:html",
+        "start": 40,
+        "startLoc": {
+          "column": 6,
+          "line": 40,
+          "position": 1033
+        }
+      },
+      "tokens": 150
+    },
+    {
+      "firstFile": {
+        "end": 35,
+        "endLoc": {
+          "column": 9,
+          "line": 35,
+          "position": 892
+        },
+        "name": "design-system/components/Input.vue:typescript",
+        "start": 24,
+        "startLoc": {
+          "column": 14,
+          "line": 24,
+          "position": 619
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 31,
+        "endLoc": {
+          "column": 9,
+          "line": 31,
+          "position": 710
+        },
+        "name": "design-system/components/Textarea.vue:typescript",
+        "start": 20,
+        "startLoc": {
+          "column": 9,
+          "line": 20,
+          "position": 437
+        }
+      },
+      "tokens": 75
+    },
+    {
+      "firstFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 4,
+          "line": 38,
+          "position": 848
+        },
+        "name": "design-system/components/OrganizationPicker.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 38,
+      "secondFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 4,
+          "line": 38,
+          "position": 848
+        },
+        "name": "design-system/components/PersonPicker.vue:html",
+        "start": 1,
+        "startLoc": {
+          "column": 0,
+          "line": 1,
+          "position": 0
+        }
+      },
+      "tokens": 72
+    },
+    {
+      "firstFile": {
+        "end": 126,
+        "endLoc": {
+          "column": 22,
+          "line": 126,
+          "position": 3657
+        },
+        "name": "platform/pages/P002PermissionRequestPage.vue:typescript",
+        "start": 110,
+        "startLoc": {
+          "column": 0,
+          "line": 110,
+          "position": 3294
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 17,
+      "secondFile": {
+        "end": 123,
+        "endLoc": {
+          "column": 42,
+          "line": 123,
+          "position": 4367
+        },
+        "name": "platform/pages/P004GenericRequestPage.vue:typescript",
+        "start": 114,
+        "startLoc": {
+          "column": 0,
+          "line": 114,
+          "position": 4024
+        }
+      },
+      "tokens": 91
+    },
+    {
+      "firstFile": {
+        "end": 123,
+        "endLoc": {
+          "column": 7,
+          "line": 123,
+          "position": 4332
+        },
+        "name": "platform/pages/P004GenericRequestPage.vue:typescript",
+        "start": 112,
+        "startLoc": {
+          "column": 112,
+          "line": 112,
+          "position": 4006
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 12,
+      "secondFile": {
+        "end": 154,
+        "endLoc": {
+          "column": 7,
+          "line": 154,
+          "position": 5408
+        },
+        "name": "platform/pages/P005NoticePage.vue:typescript",
+        "start": 143,
+        "startLoc": {
+          "column": 124,
+          "line": 143,
+          "position": 5082
+        }
+      },
+      "tokens": 83
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 57,
+          "line": 47,
+          "position": 1927
+        },
+        "name": "platform/pages/phase10/P009HrReviewPage.vue:html",
+        "start": 24,
+        "startLoc": {
+          "column": 102,
+          "line": 24,
+          "position": 1090
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 24,
+      "secondFile": {
+        "end": 45,
+        "endLoc": {
+          "column": 57,
+          "line": 45,
+          "position": 1941
+        },
+        "name": "platform/pages/phase10/P009OvertimeManagementPage.vue:html",
+        "start": 23,
+        "startLoc": {
+          "column": 78,
+          "line": 23,
+          "position": 1111
+        }
+      },
+      "tokens": 99
+    },
+    {
+      "firstFile": {
+        "end": 48,
+        "endLoc": {
+          "column": 8,
+          "line": 48,
+          "position": 1936
+        },
+        "name": "platform/pages/phase10/P009HrReviewPage.vue:html",
+        "start": 24,
+        "startLoc": {
+          "column": 96,
+          "line": 24,
+          "position": 1084
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 25,
+      "secondFile": {
+        "end": 49,
+        "endLoc": {
+          "column": 13,
+          "line": 49,
+          "position": 2045
+        },
+        "name": "platform/pages/phase10/P009ResultAcceptancePage.vue:html",
+        "start": 25,
+        "startLoc": {
+          "column": 108,
+          "line": 25,
+          "position": 1172
+        }
+      },
+      "tokens": 105
+    },
+    {
+      "firstFile": {
+        "end": 46,
+        "endLoc": {
+          "column": 13,
+          "line": 46,
+          "position": 1955
+        },
+        "name": "platform/pages/phase10/P009OvertimeManagementPage.vue:html",
+        "start": 23,
+        "startLoc": {
+          "column": 77,
+          "line": 23,
+          "position": 1110
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 24,
+      "secondFile": {
+        "end": 48,
+        "endLoc": {
+          "column": 13,
+          "line": 48,
+          "position": 2091
+        },
+        "name": "platform/pages/phase10/P009PayrollBasisPage.vue:html",
+        "start": 24,
+        "startLoc": {
+          "column": 78,
+          "line": 24,
+          "position": 1170
+        }
+      },
+      "tokens": 102
+    },
+    {
+      "firstFile": {
+        "end": 41,
+        "endLoc": {
+          "column": 45,
+          "line": 41,
+          "position": 1675
+        },
+        "name": "platform/pages/phase10/P010PermissionLinkagePage.vue:html",
+        "start": 22,
+        "startLoc": {
+          "column": 2,
+          "line": 22,
+          "position": 992
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 20,
+      "secondFile": {
+        "end": 41,
+        "endLoc": {
+          "column": 45,
+          "line": 41,
+          "position": 1646
+        },
+        "name": "platform/pages/phase10/P010PracticalCertificationPage.vue:html",
+        "start": 22,
+        "startLoc": {
+          "column": 2,
+          "line": 22,
+          "position": 969
+        }
+      },
+      "tokens": 70
+    },
+    {
+      "firstFile": {
+        "end": 70,
+        "endLoc": {
+          "column": 11,
+          "line": 70,
+          "position": 2639
+        },
+        "name": "platform/phase10/p008/components/LeaveRecordsTable.vue:html",
+        "start": 49,
+        "startLoc": {
+          "column": 67,
+          "line": 49,
+          "position": 1926
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 22,
+      "secondFile": {
+        "end": 75,
+        "endLoc": {
+          "column": 11,
+          "line": 75,
+          "position": 2945
+        },
+        "name": "platform/phase10/p009/components/OvertimeRecordsTable.vue:html",
+        "start": 54,
+        "startLoc": {
+          "column": 56,
+          "line": 54,
+          "position": 2232
+        }
+      },
+      "tokens": 111
+    },
+    {
+      "firstFile": {
+        "end": 31,
+        "endLoc": {
+          "column": 1,
+          "line": 31,
+          "position": 1173
+        },
+        "name": "platform/phase10/p008/components/LeaveRecordsTable.vue:typescript",
+        "start": 21,
+        "startLoc": {
+          "column": 76,
+          "line": 21,
+          "position": 748
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 11,
+      "secondFile": {
+        "end": 40,
+        "endLoc": {
+          "column": 1,
+          "line": 40,
+          "position": 1401
+        },
+        "name": "platform/phase10/p010/components/LearningRecordsTable.vue:typescript",
+        "start": 29,
+        "startLoc": {
+          "column": 68,
+          "line": 29,
+          "position": 976
+        }
+      },
+      "tokens": 104
+    },
+    {
+      "firstFile": {
+        "end": 16,
+        "endLoc": {
+          "column": 5,
+          "line": 16,
+          "position": 507
+        },
+        "name": "platform/phase10/p008/components/LeaveRequestForm.vue:typescript",
+        "start": 6,
+        "startLoc": {
+          "column": 11,
+          "line": 6,
+          "position": 85
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 11,
+      "secondFile": {
+        "end": 17,
+        "endLoc": {
+          "column": 5,
+          "line": 17,
+          "position": 520
+        },
+        "name": "platform/phase10/p009/components/OvertimeRequestForm.vue:typescript",
+        "start": 7,
+        "startLoc": {
+          "column": 11,
+          "line": 7,
+          "position": 98
+        }
+      },
+      "tokens": 90
+    },
+    {
+      "firstFile": {
+        "end": 97,
+        "endLoc": {
+          "column": 18,
+          "line": 97,
+          "position": 4491
+        },
+        "name": "platform/phase11/p011/P011PerformanceWorkspace.vue:html",
+        "start": 89,
+        "startLoc": {
+          "column": 147,
+          "line": 89,
+          "position": 4082
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 115,
+        "endLoc": {
+          "column": 18,
+          "line": 115,
+          "position": 5095
+        },
+        "name": "platform/phase11/p012/P012PromotionWorkspace.vue:html",
+        "start": 103,
+        "startLoc": {
+          "column": 85,
+          "line": 103,
+          "position": 4632
+        }
+      },
+      "tokens": 106
+    },
+    {
+      "firstFile": {
+        "end": 60,
+        "endLoc": {
+          "column": 24,
+          "line": 60,
+          "position": 2262
+        },
+        "name": "platform/phase11/p011/P011PerformanceWorkspace.vue:html",
+        "start": 127,
+        "startLoc": {
+          "column": 72,
+          "line": 127,
+          "position": 6069
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 1,
+      "secondFile": {
+        "end": 50,
+        "endLoc": {
+          "column": 24,
+          "line": 50,
+          "position": 1810
+        },
+        "name": "platform/phase11/p012/P012PromotionWorkspace.vue:html",
+        "start": 131,
+        "startLoc": {
+          "column": 103,
+          "line": 131,
+          "position": 5982
+        }
+      },
+      "tokens": 141
+    },
+    {
+      "firstFile": {
+        "end": 57,
+        "endLoc": {
+          "column": 67,
+          "line": 57,
+          "position": 2167
+        },
+        "name": "platform/phase11/p011/P011PerformanceWorkspace.vue:html",
+        "start": 129,
+        "startLoc": {
+          "column": 62,
+          "line": 129,
+          "position": 6230
+        }
+      },
+      "format": "html",
+      "fragment": "",
+      "lines": 1,
+      "secondFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 67,
+          "line": 64,
+          "position": 2073
+        },
+        "name": "platform/phase11/shared/Phase11CaseBoard.vue:html",
+        "start": 144,
+        "startLoc": {
+          "column": 71,
+          "line": 144,
+          "position": 5514
+        }
+      },
+      "tokens": 99
+    },
+    {
+      "firstFile": {
+        "end": 150,
+        "endLoc": {
+          "column": 85,
+          "line": 150,
+          "position": 6868
+        },
+        "name": "platform/phase11/p011/usePerformanceOperations.ts",
+        "start": 142,
+        "startLoc": {
+          "column": 83,
+          "line": 142,
+          "position": 6395
+        }
+      },
+      "format": "typescript",
+      "fragment": "",
+      "lines": 9,
+      "secondFile": {
+        "end": 146,
+        "endLoc": {
+          "column": 11,
+          "line": 146,
+          "position": 4712
+        },
+        "name": "platform/phase11/shared/usePhase11CaseBoard.ts",
+        "start": 132,
+        "startLoc": {
+          "column": 10,
+          "line": 132,
+          "position": 4225
+        }
+      },
+      "tokens": 128
+    }
+  ],
+  "statistics": {
+    "detectionDate": "2026-08-16T05:07:46.391Z",
+    "formats": {
+      "css": {
+        "clones": 0,
+        "duplicatedLines": 0,
+        "duplicatedTokens": 0,
+        "lines": 2493,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.0,
+        "percentageTokens": 0.0,
+        "sources": 19,
+        "tokens": 14541
+      },
+      "html": {
+        "clones": 10,
+        "duplicatedLines": 171,
+        "duplicatedTokens": 1055,
+        "lines": 5395,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 3.169601482854495,
+        "percentageTokens": 4.79044635154157,
+        "sources": 84,
+        "tokens": 22023
+      },
+      "typescript": {
+        "clones": 6,
+        "duplicatedLines": 66,
+        "duplicatedTokens": 571,
+        "lines": 6106,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 1.0809040288241074,
+        "percentageTokens": 1.427071878436469,
+        "sources": 98,
+        "tokens": 40012
+      },
+      "vue": {
+        "clones": 0,
+        "duplicatedLines": 0,
+        "duplicatedTokens": 0,
+        "lines": 5227,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.0,
+        "percentageTokens": 0.0,
+        "sources": 85,
+        "tokens": 37633
+      }
+    },
+    "total": {
+      "clones": 16,
+      "duplicatedLines": 237,
+      "duplicatedTokens": 1626,
+      "lines": 19221,
+      "newClones": 0,
+      "newDuplicatedLines": 0,
+      "percentage": 1.233026377399719,
+      "percentageTokens": 1.4237056624259032,
+      "sources": 286,
+      "tokens": 114209
+    }
+  }
+}

@@ -58,7 +58,8 @@ public class SecurityConfiguration {
                                 "/api/v1/processes/P007/**",
                                 "/api/v1/processes/P008/**",
                                 "/api/v1/processes/P009/**",
-                                "/api/v1/processes/P010/**")
+                                "/api/v1/processes/P010/**",
+                                "/api/v1/processes/P011/**")
                         .authenticated()
                         .requestMatchers("/api/v1/phase05/**", "/api/v1/workflow/**")
                         .authenticated()

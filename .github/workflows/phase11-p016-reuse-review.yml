@@ -1,0 +1,109 @@
+name: PHASE-11 P016 Reuse Review
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-p016-reuse-review.yml"
+      - "docs/implementation/MASTER_PROGRESS.md"
+      - "docs/implementation/phases/PHASE-11/**"
+      - "docs/implementation/contracts/phase-11/C0_DECISION_LOG.md"
+      - "scripts/implementation/phase11_p016_reuse_review.py"
+      - "technical-platform/backend/modules/welfare/**"
+      - "technical-platform/backend/apps/api/src/main/java/cn/shangjingu/platform/api/phase05/WelfareCareCaseController.java"
+      - "technical-platform/backend/modules/workflow/src/main/java/cn/shangjingu/platform/workflow/phase11/Phase11Process.java"
+      - "technical-platform/database/flyway/oms/V44__welfare_tables.sql"
+      - "technical-platform/database/flyway-overlays/oms/V127__phase11_p016_welfare.sql"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-p016-reuse-review-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PHASE11_C0_SHA: 5c4b3d75fe3afab86f3b83f5fdf5a2f70870f724
+
+jobs:
+  reuse-contract:
+    name: P016 frozen contract and reuse boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Verify repository identity, frozen contracts and reuse review
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
+          python scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_c0_contract.py
+          python scripts/implementation/phase11_p011_contract.py
+          python scripts/implementation/phase11_p012_contract.py
+          python scripts/implementation/phase11_p013_contract.py
+          python scripts/implementation/phase11_p014_contract.py
+          python scripts/implementation/phase11_p015_contract.py
+          python scripts/implementation/phase11_p016_reuse_review.py
+          git diff --check "$PHASE11_C0_SHA"...HEAD
+      - name: Keep generated V44 welfare baseline immutable
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code "$PHASE11_C0_SHA"...HEAD -- technical-platform/database/flyway/oms/V44__welfare_tables.sql
+
+  legacy-kernel-regression:
+    name: PHASE-05 welfare kernel regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Run existing CareCase domain tests
+        run: >-
+          bash ./mvnw -B -ntp
+          -pl technical-platform/backend/modules/welfare -am
+          -Dtest=CareCaseServiceTest
+          -Dsurefire.failIfNoSpecifiedTests=false test
+
+  completed-kernel-contracts:
+    name: PHASE-05 and PHASE-06 sealed kernel continuity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify durable sealed evidence and platform kernel assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '| PHASE-05 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          grep -Fq '| PHASE-06 | COMPLETE |' docs/implementation/MASTER_PROGRESS.md
+          test -s docs/implementation/phases/PHASE-06/C8_CHECKPOINT.md
+          test -s docs/implementation/phases/PHASE-06/PHASE_GATE.md
+          grep -Fq 'Canonical C8 state: `COMPLETE / GATE_PASSED`' docs/implementation/phases/PHASE-06/C8_CHECKPOINT.md
+          grep -Fq 'PHASE GATE: PASS' docs/implementation/phases/PHASE-06/PHASE_GATE.md
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06OutboxInboxDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06FileObjectDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06AuditTraceDatabaseIT.java
+          test -s technical-platform/backend/modules/database-baseline/src/test/java/cn/shangjingu/platform/database/Phase06IntegrationDatabaseIT.java
+          echo 'PHASE-05/06 sealed kernel evidence and regression assets are present.'
+
+  verdict:
+    name: P016 reuse review verdict
+    if: always()
+    needs: [reuse-contract, legacy-kernel-regression, completed-kernel-contracts]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every reuse-review job green
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ needs.reuse-contract.result }}" = success
+          test "${{ needs.legacy-kernel-regression.result }}" = success
+          test "${{ needs.completed-kernel-contracts.result }}" = success

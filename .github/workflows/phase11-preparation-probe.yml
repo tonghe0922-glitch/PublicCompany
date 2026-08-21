@@ -1,0 +1,89 @@
+name: PHASE-11 Preparation Source Probe
+
+on:
+  push:
+    branches: [agent/phase-11-performance-growth-welfare]
+    paths:
+      - ".github/workflows/phase11-preparation-probe.yml"
+      - "scripts/implementation/phase11_preparation_extract.py"
+      - "scripts/implementation/phase11_repository_identity.py"
+      - "docs/implementation/MASTER_PROCESS_CATALOG.json"
+      - "Knowledge Base/02 业务流程 表单 字段/S1 三端业务流程表单字段包/**/01_平台公共能力/*.xlsx"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-preparation-source-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-probe:
+    name: Parse P011-P016 authoritative three-portal XLSX
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Guard canonical repository and PHASE-11 branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "tonghe0922-glitch/PublicCompany"
+          test "$GITHUB_REF_NAME" = "agent/phase-11-performance-growth-welfare"
+          python scripts/implementation/phase11_repository_identity.py
+      - name: Parse authoritative P011-P016 sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/implementation/phase11_preparation_extract.py \
+            scripts/implementation/phase11_repository_identity.py
+          python scripts/implementation/phase11_preparation_extract.py
+          test -s docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json
+          test -s docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          snapshot = json.loads(
+              Path(
+                  "docs/implementation/phases/PHASE-11/"
+                  "P011_P016_SOURCE_SNAPSHOT.json"
+              ).read_text(encoding="utf-8")
+          )
+          assert snapshot["phase"] == "PHASE-11"
+          assert snapshot["process_codes"] == [
+              "P011", "P012", "P013", "P014", "P015", "P016"
+          ]
+          assert snapshot["process_count"] == 6
+          assert snapshot["portal_count"] == 3
+          assert snapshot["workbook_count"] == 18
+          assert snapshot["parse_failures"] == 0
+          assert snapshot["sheet_count"] >= 108
+          assert snapshot["nonempty_row_count"] > 0
+          print(json.dumps({
+              key: snapshot[key]
+              for key in (
+                  "process_count",
+                  "portal_count",
+                  "workbook_count",
+                  "sheet_count",
+                  "nonempty_row_count",
+                  "parse_failures",
+              )
+          }, ensure_ascii=False))
+          PY
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase11-p011-p016-source-probe
+          path: |
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.json
+            docs/implementation/phases/PHASE-11/P011_P016_SOURCE_SNAPSHOT.md
+          if-no-files-found: error
+          retention-days: 14
